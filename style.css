@@ -401,7 +401,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cl-cell {
   background: linear-gradient(158deg, #1c1c1c, #141414);
   padding: clamp(0.35rem, 1vh, 0.75rem) clamp(0.4rem, 1vw, 0.9rem);
-  display: flex; flex-direction: column; justify-content: flex-end; gap: 4px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; text-align: center;
   min-height: 0;
 }
 .cl-cell.wide { grid-column: span 2; }
