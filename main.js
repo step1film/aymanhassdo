@@ -181,21 +181,9 @@
       wrap.classList.add('playing');
     }
 
-    // Autoload the iframe only once the hero is actually in view so the
-    // user lands on a moving picture, not on a static black frame.
-    const heroEl = document.getElementById('hero');
-    if (heroEl && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        if (entries.some(e => e.isIntersecting && e.intersectionRatio > 0.4)) {
-          loadVideo();
-          io.disconnect();
-        }
-      }, { threshold: [0, 0.4, 0.6] });
-      io.observe(heroEl);
-    } else {
-      // No IO — eager load
-      loadVideo();
-    }
+    // Load the iframe eagerly so the video is ready and autoplaying
+    // as soon as the user reaches the hero section.
+    loadVideo();
 
     playBtn.addEventListener('click', loadVideo);
   }
