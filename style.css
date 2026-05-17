@@ -2,6 +2,22 @@
    STEP1FILM — Ayman Hassdo
    ===================================================== */
 
+/* DSEG7 Classic — 7-segment LCD display font */
+@font-face {
+  font-family: 'DSEG7Classic';
+  src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DSEG7Classic';
+  src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---- Tokens ---- */
 :root {
   --bg:        #0c0c0c;
@@ -408,10 +424,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* Timecode display — 7-segment LCD style */
 .cl-timecode {
-  font-family: 'VT323', monospace;
-  font-size: clamp(1.8rem, 4vw, 3.4rem);
-  font-weight: 400;
-  letter-spacing: 0.06em;
+  font-family: 'DSEG7Classic', monospace;
+  font-size: clamp(1.4rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: var(--accent);
   line-height: 1;
   text-shadow: 0 0 14px rgba(224,28,28,0.65), 0 0 3px rgba(224,28,28,0.95);
