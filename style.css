@@ -392,7 +392,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cl-cell--full { grid-column: span 4; }
 
 .cl-key {
-  font-size: clamp(0.54rem, 1vw, 0.72rem);
+  font-size: clamp(0.62rem, 1.1vw, 0.82rem);
   letter-spacing: 0.22em;
   color: #6e6e6e;
   text-transform: uppercase;
@@ -400,7 +400,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .cl-val {
   font-family: var(--ff-display);
-  font-size: clamp(1.05rem, 2.4vw, 1.9rem);
+  font-size: clamp(1.2rem, 2.8vw, 2.2rem);
   letter-spacing: 0.05em;
   color: var(--white);
   line-height: 1;
@@ -409,11 +409,12 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Timecode display */
 .cl-timecode {
   font-family: 'Courier New', 'Lucida Console', monospace;
-  font-size: clamp(1.1rem, 2.8vw, 2.2rem);
-  letter-spacing: 0.12em;
+  font-size: clamp(1.4rem, 3.4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
   color: var(--accent);
   line-height: 1;
-  text-shadow: 0 0 12px rgba(224,28,28,0.55);
+  text-shadow: 0 0 18px rgba(224,28,28,0.7), 0 0 4px rgba(224,28,28,0.9);
 }
 
 .cl-hint {
