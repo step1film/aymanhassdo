@@ -379,7 +379,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .cl-brand {
   font-family: var(--ff-display);
-  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
+  font-size: clamp(2rem, 4.5vw, 4.2rem);
   letter-spacing: 0.08em;
   color: var(--white);
   border-bottom: 1px solid #3a3a3a;
