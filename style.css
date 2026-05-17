@@ -1114,10 +1114,20 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .foot-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .foot-col--right { align-items: flex-start; }
 
-  /* Clapperboard: smaller, no shadow */
-  .cl-prop { width: 92vw; filter: none; }
+  /* Clapperboard: flat, full-width, no 3D perspective on mobile */
+  .cl-prop {
+    width: 94vw;
+    filter: none;
+    transform: translate(-50%, -50%) scale(1) rotateY(0deg) rotateX(0deg);
+    top: 50%;
+  }
   .cl-grid { grid-template-columns: repeat(2, 1fr); }
   .cl-cell.wide { grid-column: span 2; }
+  .cl-cell--full { grid-column: span 2; }
+  .cl-brand { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+  .cl-val   { font-size: clamp(1rem, 3.5vw, 1.6rem); }
+  .cl-key   { font-size: clamp(0.55rem, 1.8vw, 0.72rem); }
+  .cl-timecode { font-size: clamp(1.2rem, 5.5vw, 2rem); }
 
   /* Hero: pull play button up so it doesn't collide with the dock */
   .hero-play { transform: translate(-50%, calc(-50% + 9vh)); }
@@ -1135,6 +1145,12 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .hero-eyebrow, .hero-sub { letter-spacing: 0.3em; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
+
+  /* Clapper: single column on very small phones */
+  .cl-grid { grid-template-columns: repeat(2, 1fr); }
+  .cl-board { aspect-ratio: auto; }
+  .cl-timecode { font-size: clamp(1rem, 7vw, 1.6rem); }
+  .cl-val { font-size: clamp(0.9rem, 4.5vw, 1.4rem); }
 }
 
 /* Hover-capable / pointer guard for mobile (no custom cursor on touch) */
