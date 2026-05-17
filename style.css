@@ -1121,18 +1121,18 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     transform: translate(-50%, -50%) scale(1);
     top: 50%;
   }
-  /* 2-column grid — all cells span 1 col unless overridden */
+  /* Keep 4-col grid so SCENE|TAKE|DATE|DAY/NIGHT all sit in one row */
   .cl-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: 1fr;
   }
-  .cl-cell.wide  { grid-column: span 1; }
-  .cl-cell--full { grid-column: span 2; }
-  /* Scale text down to fit the smaller 16:9 board */
-  .cl-brand    { font-size: 4.5vw; }
-  .cl-key      { font-size: 1.6vw; }
-  .cl-val      { font-size: 3.8vw; }
-  .cl-timecode { font-size: 3.8vw; }
+  .cl-cell.wide  { grid-column: span 2; }
+  .cl-cell--full { grid-column: span 4; }
+  /* Scale all text proportionally to the 92vw board */
+  .cl-brand    { font-size: 3.8vw; }
+  .cl-key      { font-size: 1.4vw; }
+  .cl-val      { font-size: 3vw; }
+  .cl-timecode { font-size: 3vw; }
   .cl-hint     { display: none; }
 
   /* Hero: pull play button up so it doesn't collide with the dock */
@@ -1152,11 +1152,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
 
-  /* Very small phones — keep 16:9, tighten text further */
-  .cl-brand    { font-size: 5vw; }
-  .cl-key      { font-size: 2vw; }
-  .cl-val      { font-size: 4.2vw; }
-  .cl-timecode { font-size: 4.2vw; }
+  /* Very small phones — 4 cols still, just tighter text */
+  .cl-brand    { font-size: 4.2vw; }
+  .cl-key      { font-size: 1.5vw; }
+  .cl-val      { font-size: 3.2vw; }
+  .cl-timecode { font-size: 3.2vw; }
   .cl-hint     { display: none; }
 }
 
