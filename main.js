@@ -595,6 +595,22 @@
       const h = new Date().getHours();
       dnEl.textContent = (h >= 6 && h < 18) ? 'DAY' : 'NIGHT';
     }
+
+    // TIMECODE — live hh:mm:ss:ff at 25fps
+    const tcEl = document.getElementById('clTimecode');
+    if (tcEl) {
+      const FPS = 25;
+      function tickTimecode() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+        const ff = String(Math.floor(now.getMilliseconds() / (1000 / FPS))).padStart(2, '0');
+        tcEl.textContent = hh + ':' + mm + ':' + ss + ':' + ff;
+      }
+      tickTimecode();
+      setInterval(tickTimecode, 1000 / FPS);
+    }
   }
 
   /* --------------------------------------------------
