@@ -406,15 +406,15 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   line-height: 1;
 }
 
-/* Timecode display */
+/* Timecode display — 7-segment LCD style */
 .cl-timecode {
-  font-family: 'Courier New', 'Lucida Console', monospace;
-  font-size: clamp(1.4rem, 3.4vw, 2.8rem);
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: 'VT323', monospace;
+  font-size: clamp(1.8rem, 4vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
   color: var(--accent);
   line-height: 1;
-  text-shadow: 0 0 18px rgba(224,28,28,0.7), 0 0 4px rgba(224,28,28,0.9);
+  text-shadow: 0 0 14px rgba(224,28,28,0.65), 0 0 3px rgba(224,28,28,0.95);
 }
 
 .cl-hint {
