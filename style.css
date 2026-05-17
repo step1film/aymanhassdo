@@ -1133,6 +1133,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .cl-key      { font-size: 1.6vw; }
   .cl-val      { font-size: 3.8vw; }
   .cl-timecode { font-size: 3.8vw; }
+  .cl-hint     { display: none; }
 
   /* Hero: pull play button up so it doesn't collide with the dock */
   .hero-play { transform: translate(-50%, calc(-50% + 9vh)); }
@@ -1156,6 +1157,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .cl-key      { font-size: 2vw; }
   .cl-val      { font-size: 4.2vw; }
   .cl-timecode { font-size: 4.2vw; }
+  .cl-hint     { display: none; }
 }
 
 /* Hover-capable / pointer guard for mobile (no custom cursor on touch) */
