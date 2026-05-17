@@ -184,43 +184,40 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   position: fixed; inset: 0;
   z-index: 7999;
   overflow: hidden;
-  background: #05040d;
+  background: #080808;
 }
 
-/* Animated bokeh orbs — out-of-focus cinema lights */
+/* Spotlight cone from top-centre down toward the clapper */
 #stage-bg::before {
   content: '';
-  position: absolute; inset: -20%;
+  position: absolute; inset: 0;
   background:
-    radial-gradient(circle 340px at 15%  25%,  rgba(224, 28,  28,  0.13) 0%, transparent 70%),
-    radial-gradient(circle 500px at 80%  15%,  rgba(60,  40,  160, 0.14) 0%, transparent 65%),
-    radial-gradient(circle 280px at 65%  80%,  rgba(224, 28,  28,  0.09) 0%, transparent 60%),
-    radial-gradient(circle 420px at 5%   75%,  rgba(80,  20,  180, 0.10) 0%, transparent 65%),
-    radial-gradient(circle 600px at 50%  50%,  rgba(20,  10,  60,  0.60) 0%, transparent 75%),
-    linear-gradient(145deg, #0a071a 0%, #05040d 45%, #0d0508 100%);
-  animation: bokeh-drift 22s ease-in-out infinite alternate;
+    conic-gradient(from 264deg at 50% -8%,
+      transparent          0deg,
+      rgba(255,245,220, 0.07) 6deg,
+      rgba(255,245,220, 0.13) 10deg,
+      rgba(255,245,220, 0.07) 14deg,
+      transparent          20deg
+    ),
+    radial-gradient(ellipse 55% 55% at 50% 62%, rgba(255,240,200, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 30%, #000 100%);
+  animation: spot-sway 12s ease-in-out infinite alternate;
 }
 
-/* Vignette + red glow at bottom centre */
+/* Floor glow — warm pool of light where spotlight hits */
 #stage-bg::after {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 70% 40% at 50% 110%, rgba(224, 28, 28, 0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.75) 100%);
-  animation: glow-pulse 8s ease-in-out infinite alternate;
+    radial-gradient(ellipse 40% 25% at 50% 72%, rgba(255,235,180, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(180,140,80, 0.08) 0%, transparent 60%);
+  animation: spot-sway 12s ease-in-out infinite alternate;
 }
 
-@keyframes bokeh-drift {
-  0%   { transform: translate(0,    0)    scale(1);    }
-  33%  { transform: translate(2%,  -3%)   scale(1.04); }
-  66%  { transform: translate(-3%,  2%)   scale(0.97); }
-  100% { transform: translate(1%,   4%)   scale(1.02); }
-}
-
-@keyframes glow-pulse {
-  0%   { opacity: 0.7; }
-  100% { opacity: 1;   }
+@keyframes spot-sway {
+  0%   { transform: translateX(0);    }
+  40%  { transform: translateX(-2%);  }
+  100% { transform: translateX(2.5%); }
 }
 
 /* =====================================================
