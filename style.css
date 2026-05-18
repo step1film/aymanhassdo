@@ -613,7 +613,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 #about   { z-index: 2; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild02') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
 #awards  { z-index: 3; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild03') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
 #press   { z-index: 4; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild04') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#contact { z-index: 5; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild01') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#contact { z-index: 5; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild05') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
 
 .panel-inner {
   height: 100%;
