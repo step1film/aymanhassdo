@@ -151,7 +151,6 @@
     const provider = cfg.provider || 'youtube';
 
     if (!id) {
-      // No ID configured — keep the poster, leave the button as a silent cue
       wrap.classList.add('no-video');
       playBtn.setAttribute('aria-disabled', 'true');
       playBtn.addEventListener('click', e => e.preventDefault());
@@ -159,16 +158,28 @@
     }
 
     let loaded = false;
+    let iframe = null;
+
+    function sendCommand(cmd) {
+      if (!iframe) return;
+      try {
+        if (provider === 'vimeo') {
+          iframe.contentWindow.postMessage(JSON.stringify({ method: cmd }), '*');
+        } else {
+          iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: cmd, args: '' }), '*');
+        }
+      } catch (e) {}
+    }
+
     function loadVideo() {
       if (loaded) return;
       loaded = true;
-      const iframe = document.createElement('iframe');
+      iframe = document.createElement('iframe');
       let src = '';
       if (provider === 'vimeo') {
         src = `https://player.vimeo.com/video/${encodeURIComponent(id)}?background=1&autoplay=1&muted=1&loop=1`;
       } else {
-        // Built to match YouTube's official embed snippet for embed reliability.
-        src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&loop=1&playlist=${encodeURIComponent(id)}&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1`;
+        src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&loop=1&playlist=${encodeURIComponent(id)}&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1&enablejsapi=1`;
       }
       iframe.setAttribute('src', src);
       iframe.setAttribute('title', 'Showreel');
@@ -181,19 +192,24 @@
       wrap.classList.add('playing');
     }
 
-    // Autoload the iframe only once the hero is actually in view so the
-    // user lands on a moving picture, not on a static black frame.
+    // Load at 40% visibility, play/pause on scroll in/out.
     const heroEl = document.getElementById('hero');
     if (heroEl && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
-        if (entries.some(e => e.isIntersecting && e.intersectionRatio > 0.4)) {
-          loadVideo();
-          io.disconnect();
-        }
-      }, { threshold: [0, 0.4, 0.6] });
+        entries.forEach(entry => {
+          if (entry.intersectionRatio >= 0.4) {
+            if (!loaded) {
+              loadVideo();
+            } else {
+              sendCommand(provider === 'vimeo' ? 'play' : 'playVideo');
+            }
+          } else {
+            sendCommand(provider === 'vimeo' ? 'pause' : 'pauseVideo');
+          }
+        });
+      }, { threshold: [0, 0.1, 0.4, 0.6, 1.0] });
       io.observe(heroEl);
     } else {
-      // No IO — eager load
       loadVideo();
     }
 
