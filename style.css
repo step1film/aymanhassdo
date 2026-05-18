@@ -445,7 +445,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   text-transform: uppercase;
   animation: clHint 2s ease-in-out infinite;
 }
-.cl-hint svg { width: 18px; height: 18px; opacity: 0.55; color: #aaa; }
+.cl-hint svg { width: 18px; height: 18px; opacity: 0.85; color: var(--red); }
 @keyframes clHint { 0%,100%{opacity:0.5;transform:translateY(0)} 50%{opacity:1;transform:translateY(4px)} }
 
 /* =====================================================
