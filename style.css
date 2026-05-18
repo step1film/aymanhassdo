@@ -318,17 +318,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cl-arm-stripes::before {
   content: '';
   position: absolute;
-  inset: -20% -5%;
-  background: repeating-linear-gradient(
+  inset: -30% -10%;
+  background: linear-gradient(
     -65deg,
-    #1a1a1a    0px,
-    #1a1a1a    55px,
-    #555555    55px,
-    #555555    110px,
-    #2a2a2a    110px,
-    #2a2a2a    165px,
-    #6a6a6a    165px,
-    #6a6a6a    220px
+    #111111  0%,      #111111  14.28%,
+    #cccccc  14.28%,  #cccccc  28.57%,
+    #111111  28.57%,  #111111  42.85%,
+    #cccccc  42.85%,  #cccccc  57.14%,
+    #111111  57.14%,  #111111  71.42%,
+    #cccccc  71.42%,  #cccccc  85.71%,
+    #111111  85.71%,  #111111  100%
   );
 }
 
