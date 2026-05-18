@@ -290,6 +290,7 @@
           // Reset wipe clipPath when scrolling back into CLOSE
           clapper.style.clipPath = '';
           clapper.style.opacity = '1';
+          if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; }
           clapper.style.transform = '';
           clapFired = false;
         } else {
@@ -307,10 +308,11 @@
           const exitP = (clapP - CLOSE_END) / (1 - CLOSE_END);
           const easedExit = 1 - Math.pow(1 - exitP, 3); // easeOutCubic
           // Vertical wipe — clapper slides up out of frame, hero revealed below
-          clapper.style.clipPath = `inset(0 0 ${easedExit * 100}% 0)`;
+          const wipeClip = `inset(0 0 ${easedExit * 100}% 0)`;
+          clapper.style.clipPath = wipeClip;
           clapper.style.opacity = '1';
           clapper.style.transform = '';
-          if (stageEl) stageEl.style.opacity = String(Math.max(0, 1 - easedExit));
+          if (stageEl) { stageEl.style.clipPath = wipeClip; stageEl.style.opacity = '1'; }
         }
       } else {
         clapper.style.display = 'none';
@@ -378,6 +380,7 @@
             }
             clapper.style.clipPath = '';
             clapper.style.opacity = '1';
+            if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; }
             clapFired = false;
           } else {
             arm.style.transform = 'rotate(0deg)';
@@ -392,9 +395,10 @@
             }
             const exitP = (clapP - CLOSE_END) / (1 - CLOSE_END);
             const easedExit = 1 - Math.pow(1 - exitP, 3);
-            clapper.style.clipPath = `inset(0 0 ${easedExit * 100}% 0)`;
+            const wipeClip = `inset(0 0 ${easedExit * 100}% 0)`;
+            clapper.style.clipPath = wipeClip;
             clapper.style.opacity = '1';
-            if (stageEl) stageEl.style.opacity = String(Math.max(0, 1 - easedExit));
+            if (stageEl) { stageEl.style.clipPath = wipeClip; stageEl.style.opacity = '1'; }
           }
         } else {
           clapper.style.display = 'none';
