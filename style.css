@@ -346,14 +346,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   justify-content: space-between;
   padding: 0 6px;
 }
-.cl-hinge-dot {
-  display: block;
-  width: 13px; height: 13px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #d0d0d0, #555);
-  border: 1px solid #333;
-  flex-shrink: 0;
-}
+.cl-hinge-dot { display: none; }
 
 /* ---- Board body (DARK variant) — 16:9 aspect ---- */
 .cl-board {
