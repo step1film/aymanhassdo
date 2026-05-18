@@ -309,17 +309,27 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cl-arm-stripes {
   position: absolute;
   top: 12%; left: 3%; right: 3%; bottom: 12%;
-  background: linear-gradient(
-    90deg,
-    #1a1a1a 0%,   #1a1a1a 5%,
-    #303030 5%,   #303030 19%,
-    #555555 19%,  #555555 33%,
-    #2a2a2a 33%,  #2a2a2a 47%,
-    #6a6a6a 47%,  #6a6a6a 61%,
-    #3d3d3d 61%,  #3d3d3d 75%,
-    #1a1a1a 75%,  #1a1a1a 100%
-  );
+  display: flex;
+  overflow: hidden;
+  gap: 3px;
   border: 1px solid rgba(255,255,255,0.06);
+}
+
+.cl-arm-stripes::before {
+  content: '';
+  position: absolute;
+  inset: -20% -5%;
+  background: repeating-linear-gradient(
+    -65deg,
+    #1a1a1a    0px,
+    #1a1a1a    18px,
+    #555555    18px,
+    #555555    36px,
+    #2a2a2a    36px,
+    #2a2a2a    54px,
+    #6a6a6a    54px,
+    #6a6a6a    72px
+  );
 }
 
 .cl-arm-info {
@@ -431,6 +441,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--accent);
   line-height: 1;
   text-shadow: 0 0 14px rgba(224,28,28,0.65), 0 0 3px rgba(224,28,28,0.95);
+  background: #0a0a0a;
+  border: 1.5px solid rgba(224,28,28,0.45);
+  border-radius: 4px;
+  padding: 0.3em 0.6em;
+  box-shadow: 0 0 10px rgba(224,28,28,0.15), inset 0 0 8px rgba(0,0,0,0.8);
 }
 
 .cl-hint {
