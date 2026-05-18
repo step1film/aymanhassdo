@@ -322,11 +322,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background: linear-gradient(
     -65deg,
     #111111  0%,      #111111  14.28%,
-    #cccccc  14.28%,  #cccccc  28.57%,
+    #888888  14.28%,  #888888  28.57%,
     #111111  28.57%,  #111111  42.85%,
-    #cccccc  42.85%,  #cccccc  57.14%,
+    #888888  42.85%,  #888888  57.14%,
     #111111  57.14%,  #111111  71.42%,
-    #cccccc  71.42%,  #cccccc  85.71%,
+    #888888  71.42%,  #888888  85.71%,
     #111111  85.71%,  #111111  100%
   );
 }
