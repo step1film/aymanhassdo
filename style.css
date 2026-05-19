@@ -948,7 +948,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border-top: 1px solid var(--line);
 }
 .pq-author { font-family: var(--ff-display); font-size: 0.8rem; letter-spacing: 0.18em; color: var(--white); }
-.pq-meta { font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
+.pq-meta { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
 .press-note {
   font-size: 0.6rem;
   letter-spacing: 0.25em;
