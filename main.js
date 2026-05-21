@@ -589,7 +589,7 @@
       if (rollEl) {
         const visits = (parseInt(localStorage.getItem('s1f.visits') || '0', 10) || 0) + 1;
         localStorage.setItem('s1f.visits', String(visits));
-        rollEl.textContent = String(Math.min(visits, 99)).padStart(2, '0');
+        rollEl.textContent = String(Math.min(visits, 999)).padStart(3, '0');
       }
     } catch (e) { /* localStorage blocked */ }
 
