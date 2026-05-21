@@ -818,7 +818,6 @@
     async function runBlock(block) {
       inner.textContent = '';
       inner.dir = block.dir;
-      stageTxt.style.opacity = '1';
       for (const line of block.lines) {
         const p = document.createElement('p');
         p.className = line.cls;
@@ -832,8 +831,9 @@
     }
 
     async function run() {
-      while (document.body.classList.contains('is-loading')) await sleep(150);
-      await sleep(1300);
+      // Start typing immediately — text is already mid-flow when the loader lifts
+      await sleep(400);
+      stageTxt.style.opacity = '1';
       let idx = 0;
       while (true) {
         await runBlock(BLOCKS[idx % BLOCKS.length]);
@@ -841,7 +841,7 @@
         stageTxt.style.opacity    = '0';
         await sleep(1500);
         stageTxt.style.transition = '';
-        await sleep(1000 + Math.random() * 700);
+        await sleep(800 + Math.random() * 600);
         idx++;
       }
     }

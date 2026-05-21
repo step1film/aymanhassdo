@@ -250,24 +250,25 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 #stage-text-inner {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.68rem, 1.25vw, 0.87rem);
-  line-height: 1.95;
-  color: rgba(220, 215, 200, 0.30);
+  font-size: clamp(0.75rem, 1.35vw, 0.95rem);
+  line-height: 2;
+  color: rgba(230, 225, 210, 0.72);
+  text-shadow: 0 1px 14px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,0.8);
 }
 #stage-text-inner p { margin: 0; }
 
 .nb-h {
   font-family: var(--ff-display);
-  font-size: clamp(0.52rem, 0.95vw, 0.68rem);
+  font-size: clamp(0.56rem, 1vw, 0.72rem);
   letter-spacing: 0.38em;
-  color: rgba(220, 215, 200, 0.22);
+  color: rgba(230, 225, 210, 0.48);
   line-height: 2.4;
 }
-.nb-b { line-height: 1.95; }
+.nb-b { line-height: 2; }
 .nb-rtl {
   direction: rtl;
   font-family: 'Segoe UI', 'Noto Naskh Arabic', Arial, sans-serif;
-  font-size: clamp(0.75rem, 1.35vw, 0.92rem);
+  font-size: clamp(0.82rem, 1.45vw, 1rem);
   letter-spacing: 0;
   line-height: 2.1;
 }
@@ -278,7 +279,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: inline-block;
   width: 1.5px;
   height: 0.82em;
-  background: rgba(220, 215, 200, 0.52);
+  background: rgba(230, 225, 210, 0.80);
   vertical-align: text-bottom;
   margin-left: 2px;
   animation: nb-blink 0.88s step-end infinite;
