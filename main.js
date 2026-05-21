@@ -634,6 +634,126 @@
   }
 
   /* --------------------------------------------------
+     NOTEBOOK TYPING TEXT — stage backdrop
+  -------------------------------------------------- */
+  function initNotebookText() {
+    if (prefersReducedMotion) return;
+
+    const stageTxt = document.getElementById('stage-text');
+    const inner    = document.getElementById('stage-text-inner');
+    if (!stageTxt || !inner) return;
+
+    const GLITCH = {
+      'a':'s','s':'a','d':'f','f':'d','g':'h','h':'g','j':'k','k':'j','l':'k',
+      'e':'r','r':'e','t':'y','y':'t','u':'i','i':'u','o':'p','n':'m','m':'n',
+      'b':'v','v':'b','w':'e','A':'S','S':'A','E':'R','R':'E','T':'Y','Y':'T',
+      'ä':'å','å':'ä','ö':'ä'
+    };
+
+    const BLOCKS = [
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'UTKAST 7',                    pauseAfter: 900  },
+          { cls: 'nb-b', text: 'En man filmar världen.',       pauseAfter: 220  },
+          { cls: 'nb-b', text: 'Världen filmar tillbaka.',     pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Det kallas konst.',            glitch: true, pauseAfter: 350  },
+          { cls: 'nb-b', text: 'Det kallas också bevakning.',  pauseAfter: 4400 }
+        ]
+      },
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'DRAFT 7',                     pauseAfter: 900  },
+          { cls: 'nb-b', text: 'A man films the world.',       pauseAfter: 450  },
+          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b', text: 'The world films back.',        pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b', text: 'You are watching.',            pauseAfter: 2700 },
+          { cls: 'nb-b', text: 'But who is watching you?',     glitch: true, pauseAfter: 5000 }
+        ]
+      },
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-rtl', text: 'مسودة ٧',              pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: 'رجلٌ يصوّر العالم.',   pauseAfter: 700  },
+          { cls: 'nb-b nb-rtl', text: 'والعالم يصوّره.',       pauseAfter: 1600 },
+          { cls: 'nb-b nb-rtl', text: '',                       pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'من يراقبك؟',            pauseAfter: 4400 }
+        ]
+      }
+    ];
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function typeInto(el, text, glitch, rtl) {
+      el.classList.add('nb-typing');
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+
+        // Mistype → delete → retype
+        if (glitch && !rtl && GLITCH[ch] && Math.random() < 0.07) {
+          el.textContent += GLITCH[ch];
+          await sleep(130 + Math.random() * 90);
+          el.textContent = el.textContent.slice(0, -1);
+          await sleep(70);
+        }
+
+        // Natural hesitation
+        if (!rtl && Math.random() < 0.038) await sleep(180 + Math.random() * 260);
+
+        el.textContent += ch;
+
+        const delay = ch === ' '             ? 38 + Math.random() * 42
+                    : '.,?!:—'.includes(ch)  ? 88 + Math.random() * 62
+                    : rtl                    ? 62 + Math.random() * 52
+                    :                          50 + Math.random() * 82;
+        await sleep(delay);
+      }
+      el.classList.remove('nb-typing');
+    }
+
+    async function runBlock(block) {
+      inner.textContent = '';
+      inner.dir = block.dir;
+      stageTxt.style.opacity = '1';
+      for (const line of block.lines) {
+        const p = document.createElement('p');
+        p.className = line.cls;
+        inner.appendChild(p);
+        if (line.text.length > 0) {
+          const rtl = line.cls.includes('nb-rtl');
+          await typeInto(p, line.text, line.glitch || false, rtl);
+        }
+        await sleep(line.pauseAfter || 120);
+      }
+    }
+
+    async function run() {
+      // Wait for the boot loader to clear before starting
+      while (document.body.classList.contains('is-loading')) {
+        await sleep(150);
+      }
+      await sleep(1300);
+
+      let idx = 0;
+      while (true) {
+        await runBlock(BLOCKS[idx % BLOCKS.length]);
+        stageTxt.style.transition = 'opacity 1.4s ease';
+        stageTxt.style.opacity    = '0';
+        await sleep(1500);
+        stageTxt.style.transition = '';
+        await sleep(1000 + Math.random() * 700);
+        idx++;
+      }
+    }
+
+    run();
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -642,6 +762,7 @@
     initTweaks();
     initHeroVideo();
     initClapperLive();
+    initNotebookText();
 
     const clapper = document.getElementById('clapper');
 
