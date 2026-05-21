@@ -634,6 +634,222 @@
   }
 
   /* --------------------------------------------------
+     NOTEBOOK TYPING TEXT — stage backdrop
+  -------------------------------------------------- */
+  function initNotebookText() {
+    if (prefersReducedMotion) return;
+
+    const stageTxt = document.getElementById('stage-text');
+    const inner    = document.getElementById('stage-text-inner');
+    if (!stageTxt || !inner) return;
+
+    const GLITCH = {
+      'a':'s','s':'a','d':'f','f':'d','g':'h','h':'g','j':'k','k':'j','l':'k',
+      'e':'r','r':'e','t':'y','y':'t','u':'i','i':'u','o':'p','n':'m','m':'n',
+      'b':'v','v':'b','w':'e','A':'S','S':'A','E':'R','R':'E','T':'Y','Y':'T',
+      'ä':'å','å':'ä','ö':'ä'
+    };
+
+    const BLOCKS = [
+      // ── FILMSCEN 1 — arabiska ─────────────────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-rtl', text: 'مسودة ٣  —  مشهد داخلي',      pauseAfter: 1000 },
+          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'طفلةٌ تجلس وحدها أمام نافذة.', pauseAfter: 500  },
+          { cls: 'nb-b nb-rtl', text: 'تمطر في الخارج.',               pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: 'تضع يدها على الزجاج.',          pauseAfter: 1400 },
+          { cls: 'nb-b nb-rtl', text: 'تبقى هناك.',                    pauseAfter: 2200 },
+          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'لا حوار.',                      pauseAfter: 700  },
+          { cls: 'nb-b nb-rtl', text: 'فقط الصوت.',                    pauseAfter: 4800 }
+        ]
+      },
+      // ── FILMSCEN 2 — svenska ──────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'SCEN 12 — EXT. FÄLT — GRYNING', pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Mannen går mot horisonten.',      pauseAfter: 450  },
+          { cls: 'nb-b', text: 'Kameran följer inte.',            pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Han försvinner.',                 pauseAfter: 1100 },
+          { cls: 'nb-b', text: 'Fältet är kvar.',                 pauseAfter: 2000 },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Vi stannar kvar med gräset.',     pauseAfter: 5000 }
+        ]
+      },
+      // ── FILMSCEN 3 — engelska (V.O.) ─────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'SCENE 4 — V.O.',                  pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'I left everything.',               pauseAfter: 1700 },
+          { cls: 'nb-b', text: 'I kept the language.',             pauseAfter: 2600 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'But language was the first thing', pauseAfter: 220  },
+          { cls: 'nb-b', text: 'they tried to take.',              glitch: true, pauseAfter: 3800 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-h', text: 'CUT TO BLACK.',                    pauseAfter: 5000 }
+        ]
+      },
+      // ── PEDAGOGIK 1 — svenska ────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'ANTECKNING — pedagogik',           pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Barn lär sig inte av svar.',       pauseAfter: 700  },
+          { cls: 'nb-b', text: 'De lär sig av frågor',             pauseAfter: 220  },
+          { cls: 'nb-b', text: 'som vuxna inte kan besvara.',      pauseAfter: 2000 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Idé: en film där barnet',          pauseAfter: 220  },
+          { cls: 'nb-b', text: 'är den som frågar.',               pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Kameran svarar.',                  pauseAfter: 4800 }
+        ]
+      },
+      // ── PEDAGOGIK 2 — arabiska ───────────────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-rtl', text: 'ملاحظة — تعليم',            pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'الطفل يرسم المدرسة كسجن.',  pauseAfter: 1600 },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'نسأله: لماذا؟',              pauseAfter: 1300 },
+          { cls: 'nb-b nb-rtl', text: 'يقول: لأنني لا أختار',       pauseAfter: 400  },
+          { cls: 'nb-b nb-rtl', text: 'ماذا أتعلّم.',               pauseAfter: 3200 },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'فكرة فيلم.',                 pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 1 — engelska ─────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'IDEA — unfinished',                 pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'A documentary about silence.',      pauseAfter: 500  },
+          { cls: 'nb-b', text: 'Not the absence of sound.',         pauseAfter: 1400 },
+          { cls: 'nb-b', text: 'The kind of silence',              pauseAfter: 220  },
+          { cls: 'nb-b', text: 'that fills a room',                pauseAfter: 220  },
+          { cls: 'nb-b', text: 'after a hard word.',               pauseAfter: 3400 },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-h', text: 'Working title: AFTER.',             pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 2 — svenska (ljud) ───────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'IDÉSKISS',                          pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Vad om vi spelade in',              pauseAfter: 320  },
+          { cls: 'nb-b', text: 'ett barn som lär sig',              pauseAfter: 320  },
+          { cls: 'nb-b', text: 'ett nytt ord —',                    pauseAfter: 1600 },
+          { cls: 'nb-b', text: 'varje dag i ett år.',               pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Bara ljudet.',                      pauseAfter: 900  },
+          { cls: 'nb-b', text: 'Ingen bild.',                       glitch: true, pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 3 — arabiska + engelska ──────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h',        text: 'VISUAL IDEA',                pauseAfter: 900  },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'كاميرا ثابتة.',              pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: 'باب مفتوح.',                  pauseAfter: 1600 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b',        text: 'Someone walks in.',           pauseAfter: 700  },
+          { cls: 'nb-b',        text: 'Someone walks out.',          pauseAfter: 2000 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b',        text: 'We never see their face.',    glitch: true, pauseAfter: 2600 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'الباب يبقى مفتوحاً.',        pauseAfter: 4800 }
+        ]
+      },
+      // ── FÖRELÄSNINGSUTKAST — svenska ─────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'FÖRELÄSNING — UTKAST',                    pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: '"Att berätta utan att äga berättelsen"',    pauseAfter: 1400 },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: '1.  Vem har rätt att berätta?',             pauseAfter: 700  },
+          { cls: 'nb-b', text: '2.  Kameran som maktverktyg.',              pauseAfter: 700  },
+          { cls: 'nb-b', text: '3.  Dokumentär som dialog',                 pauseAfter: 220  },
+          { cls: 'nb-b', text: '    — inte monolog.',                        pauseAfter: 2800 },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Avslutning: visa klipp.',                   pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Fråga publiken.',                           glitch: true, pauseAfter: 4800 }
+        ]
+      }
+    ];
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function typeInto(el, text, glitch, rtl) {
+      el.classList.add('nb-typing');
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (glitch && !rtl && GLITCH[ch] && Math.random() < 0.07) {
+          el.textContent += GLITCH[ch];
+          await sleep(130 + Math.random() * 90);
+          el.textContent = el.textContent.slice(0, -1);
+          await sleep(70);
+        }
+        if (!rtl && Math.random() < 0.038) await sleep(180 + Math.random() * 260);
+        el.textContent += ch;
+        const delay = ch === ' '            ? 38 + Math.random() * 42
+                    : '.,?!:—'.includes(ch) ? 88 + Math.random() * 62
+                    : rtl                   ? 62 + Math.random() * 52
+                    :                         50 + Math.random() * 82;
+        await sleep(delay);
+      }
+      el.classList.remove('nb-typing');
+    }
+
+    async function runBlock(block) {
+      inner.textContent = '';
+      inner.dir = block.dir;
+      stageTxt.style.opacity = '1';
+      for (const line of block.lines) {
+        const p = document.createElement('p');
+        p.className = line.cls;
+        inner.appendChild(p);
+        if (line.text.length > 0) {
+          const rtl = line.cls.includes('nb-rtl');
+          await typeInto(p, line.text, line.glitch || false, rtl);
+        }
+        await sleep(line.pauseAfter || 120);
+      }
+    }
+
+    async function run() {
+      while (document.body.classList.contains('is-loading')) await sleep(150);
+      await sleep(1300);
+      let idx = 0;
+      while (true) {
+        await runBlock(BLOCKS[idx % BLOCKS.length]);
+        stageTxt.style.transition = 'opacity 1.4s ease';
+        stageTxt.style.opacity    = '0';
+        await sleep(1500);
+        stageTxt.style.transition = '';
+        await sleep(1000 + Math.random() * 700);
+        idx++;
+      }
+    }
+
+    run();
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -642,6 +858,7 @@
     initTweaks();
     initHeroVideo();
     initClapperLive();
+    initNotebookText();
 
     const clapper = document.getElementById('clapper');
 

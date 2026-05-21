@@ -237,6 +237,64 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* =====================================================
+   NOTEBOOK TYPING TEXT — sits inside stage-bg backdrop
+   ===================================================== */
+#stage-text {
+  position: absolute;
+  bottom: clamp(3.5rem, 9vh, 7rem);
+  left: clamp(1.5rem, 6vw, 6rem);
+  max-width: min(46ch, calc(100vw - 3rem));
+  pointer-events: none;
+  opacity: 0;
+}
+
+#stage-text-inner {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(0.68rem, 1.25vw, 0.87rem);
+  line-height: 1.95;
+  color: rgba(220, 215, 200, 0.30);
+}
+#stage-text-inner p { margin: 0; }
+
+.nb-h {
+  font-family: var(--ff-display);
+  font-size: clamp(0.52rem, 0.95vw, 0.68rem);
+  letter-spacing: 0.38em;
+  color: rgba(220, 215, 200, 0.22);
+  line-height: 2.4;
+}
+.nb-b { line-height: 1.95; }
+.nb-rtl {
+  direction: rtl;
+  font-family: 'Segoe UI', 'Noto Naskh Arabic', Arial, sans-serif;
+  font-size: clamp(0.75rem, 1.35vw, 0.92rem);
+  letter-spacing: 0;
+  line-height: 2.1;
+}
+
+.nb-h.nb-typing::after,
+.nb-b.nb-typing::after {
+  content: '';
+  display: inline-block;
+  width: 1.5px;
+  height: 0.82em;
+  background: rgba(220, 215, 200, 0.52);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: nb-blink 0.88s step-end infinite;
+}
+@keyframes nb-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+@media (max-width: 900px) {
+  #stage-text {
+    bottom: clamp(2rem, 5vh, 3.5rem);
+    left: clamp(1.25rem, 4vw, 2rem);
+    max-width: min(34ch, calc(100vw - 2.5rem));
+  }
+  #stage-text-inner { font-size: clamp(0.62rem, 2.2vw, 0.78rem); }
+}
+
+/* =====================================================
    CLAPPERBOARD
    ===================================================== */
 #clapper {
