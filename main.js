@@ -651,37 +651,143 @@
     };
 
     const BLOCKS = [
-      {
-        dir: 'ltr',
-        lines: [
-          { cls: 'nb-h', text: 'UTKAST 7',                    pauseAfter: 900  },
-          { cls: 'nb-b', text: 'En man filmar världen.',       pauseAfter: 220  },
-          { cls: 'nb-b', text: 'Världen filmar tillbaka.',     pauseAfter: 900  },
-          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
-          { cls: 'nb-b', text: 'Det kallas konst.',            glitch: true, pauseAfter: 350  },
-          { cls: 'nb-b', text: 'Det kallas också bevakning.',  pauseAfter: 4400 }
-        ]
-      },
-      {
-        dir: 'ltr',
-        lines: [
-          { cls: 'nb-h', text: 'DRAFT 7',                     pauseAfter: 900  },
-          { cls: 'nb-b', text: 'A man films the world.',       pauseAfter: 450  },
-          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
-          { cls: 'nb-b', text: 'The world films back.',        pauseAfter: 2400 },
-          { cls: 'nb-b', text: '',                             pauseAfter: 80   },
-          { cls: 'nb-b', text: 'You are watching.',            pauseAfter: 2700 },
-          { cls: 'nb-b', text: 'But who is watching you?',     glitch: true, pauseAfter: 5000 }
-        ]
-      },
+      // ── FILMSCEN 1 — arabiska ─────────────────────────────
       {
         dir: 'rtl',
         lines: [
-          { cls: 'nb-h nb-rtl', text: 'مسودة ٧',              pauseAfter: 900  },
-          { cls: 'nb-b nb-rtl', text: 'رجلٌ يصوّر العالم.',   pauseAfter: 700  },
-          { cls: 'nb-b nb-rtl', text: 'والعالم يصوّره.',       pauseAfter: 1600 },
-          { cls: 'nb-b nb-rtl', text: '',                       pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'من يراقبك؟',            pauseAfter: 4400 }
+          { cls: 'nb-h nb-rtl', text: 'مسودة ٣  —  مشهد داخلي',      pauseAfter: 1000 },
+          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'طفلةٌ تجلس وحدها أمام نافذة.', pauseAfter: 500  },
+          { cls: 'nb-b nb-rtl', text: 'تمطر في الخارج.',               pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: 'تضع يدها على الزجاج.',          pauseAfter: 1400 },
+          { cls: 'nb-b nb-rtl', text: 'تبقى هناك.',                    pauseAfter: 2200 },
+          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'لا حوار.',                      pauseAfter: 700  },
+          { cls: 'nb-b nb-rtl', text: 'فقط الصوت.',                    pauseAfter: 4800 }
+        ]
+      },
+      // ── FILMSCEN 2 — svenska ──────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'SCEN 12 — EXT. FÄLT — GRYNING', pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Mannen går mot horisonten.',      pauseAfter: 450  },
+          { cls: 'nb-b', text: 'Kameran följer inte.',            pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Han försvinner.',                 pauseAfter: 1100 },
+          { cls: 'nb-b', text: 'Fältet är kvar.',                 pauseAfter: 2000 },
+          { cls: 'nb-b', text: '',                                pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Vi stannar kvar med gräset.',     pauseAfter: 5000 }
+        ]
+      },
+      // ── FILMSCEN 3 — engelska (V.O.) ─────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'SCENE 4 — V.O.',                  pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'I left everything.',               pauseAfter: 1700 },
+          { cls: 'nb-b', text: 'I kept the language.',             pauseAfter: 2600 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'But language was the first thing', pauseAfter: 220  },
+          { cls: 'nb-b', text: 'they tried to take.',              glitch: true, pauseAfter: 3800 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-h', text: 'CUT TO BLACK.',                    pauseAfter: 5000 }
+        ]
+      },
+      // ── PEDAGOGIK 1 — svenska ────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'ANTECKNING — pedagogik',           pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Barn lär sig inte av svar.',       pauseAfter: 700  },
+          { cls: 'nb-b', text: 'De lär sig av frågor',             pauseAfter: 220  },
+          { cls: 'nb-b', text: 'som vuxna inte kan besvara.',      pauseAfter: 2000 },
+          { cls: 'nb-b', text: '',                                  pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Idé: en film där barnet',          pauseAfter: 220  },
+          { cls: 'nb-b', text: 'är den som frågar.',               pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Kameran svarar.',                  pauseAfter: 4800 }
+        ]
+      },
+      // ── PEDAGOGIK 2 — arabiska ───────────────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-rtl', text: 'ملاحظة — تعليم',            pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'الطفل يرسم المدرسة كسجن.',  pauseAfter: 1600 },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'نسأله: لماذا؟',              pauseAfter: 1300 },
+          { cls: 'nb-b nb-rtl', text: 'يقول: لأنني لا أختار',       pauseAfter: 400  },
+          { cls: 'nb-b nb-rtl', text: 'ماذا أتعلّم.',               pauseAfter: 3200 },
+          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'فكرة فيلم.',                 pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 1 — engelska ─────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'IDEA — unfinished',                 pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'A documentary about silence.',      pauseAfter: 500  },
+          { cls: 'nb-b', text: 'Not the absence of sound.',         pauseAfter: 1400 },
+          { cls: 'nb-b', text: 'The kind of silence',              pauseAfter: 220  },
+          { cls: 'nb-b', text: 'that fills a room',                pauseAfter: 220  },
+          { cls: 'nb-b', text: 'after a hard word.',               pauseAfter: 3400 },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-h', text: 'Working title: AFTER.',             pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 2 — svenska (ljud) ───────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'IDÉSKISS',                          pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Vad om vi spelade in',              pauseAfter: 320  },
+          { cls: 'nb-b', text: 'ett barn som lär sig',              pauseAfter: 320  },
+          { cls: 'nb-b', text: 'ett nytt ord —',                    pauseAfter: 1600 },
+          { cls: 'nb-b', text: 'varje dag i ett år.',               pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Bara ljudet.',                      pauseAfter: 900  },
+          { cls: 'nb-b', text: 'Ingen bild.',                       glitch: true, pauseAfter: 4800 }
+        ]
+      },
+      // ── KREATIV IDÉ 3 — blandad (arabiska + engelska) ────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h',        text: 'VISUAL IDEA',                pauseAfter: 900  },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'كاميرا ثابتة.',              pauseAfter: 900  },
+          { cls: 'nb-b nb-rtl', text: 'باب مفتوح.',                  pauseAfter: 1600 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b',        text: 'Someone walks in.',           pauseAfter: 700  },
+          { cls: 'nb-b',        text: 'Someone walks out.',          pauseAfter: 2000 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b',        text: 'We never see their face.',    glitch: true, pauseAfter: 2600 },
+          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
+          { cls: 'nb-b nb-rtl', text: 'الباب يبقى مفتوحاً.',        pauseAfter: 4800 }
+        ]
+      },
+      // ── FÖRELÄSNINGSUTKAST — svenska ─────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'FÖRELÄSNING — UTKAST',                    pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: '"Att berätta utan att äga berättelsen"',    pauseAfter: 1400 },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: '1.  Vem har rätt att berätta?',             pauseAfter: 700  },
+          { cls: 'nb-b', text: '2.  Kameran som maktverktyg.',              pauseAfter: 700  },
+          { cls: 'nb-b', text: '3.  Dokumentär som dialog',                 pauseAfter: 220  },
+          { cls: 'nb-b', text: '    — inte monolog.',                        pauseAfter: 2800 },
+          { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Avslutning: visa klipp.',                   pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Fråga publiken.',                           glitch: true, pauseAfter: 4800 }
         ]
       }
     ];
