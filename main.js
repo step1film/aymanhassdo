@@ -287,11 +287,11 @@
             propEl.classList.toggle('is-closing', clapP > 0.05);
             propEl.classList.remove('is-closed');
           }
-          // Reset wipe clipPath when scrolling back into CLOSE
+          // Reset slide when scrolling back into CLOSE
           clapper.style.clipPath = '';
-          clapper.style.opacity = '1';
-          if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; }
           clapper.style.transform = '';
+          clapper.style.opacity = '1';
+          if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.transform = ''; stageEl.style.opacity = '1'; }
           clapFired = false;
         } else {
           // EXIT phase — horizontal wipe (clip-path) reveals the hero behind
@@ -307,17 +307,18 @@
           }
           const exitP = (clapP - CLOSE_END) / (1 - CLOSE_END);
           const easedExit = 1 - Math.pow(1 - exitP, 3); // easeOutCubic
-          // Vertical wipe — clapper slides up out of frame, hero revealed below
-          const wipeClip = `inset(0 0 ${easedExit * 100}% 0)`;
-          clapper.style.clipPath = wipeClip;
+          // Slide clapper + stage-bg up together; hero revealed from below edge-to-edge
+          const slideY = `translateY(${-easedExit * 100}vh)`;
+          clapper.style.clipPath = '';
           clapper.style.opacity = '1';
-          clapper.style.transform = '';
-          if (stageEl) { stageEl.style.clipPath = wipeClip; stageEl.style.opacity = '1'; }
+          clapper.style.transform = slideY;
+          if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; stageEl.style.transform = slideY; }
         }
       } else {
         clapper.style.display = 'none';
         clapper.style.clipPath = '';
-        if (stageEl) stageEl.style.display = 'none';
+        clapper.style.transform = '';
+        if (stageEl) { stageEl.style.display = 'none'; stageEl.style.transform = ''; }
       }
 
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
@@ -379,8 +380,9 @@
               propEl.classList.remove('is-closed');
             }
             clapper.style.clipPath = '';
+            clapper.style.transform = '';
             clapper.style.opacity = '1';
-            if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; }
+            if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.transform = ''; stageEl.style.opacity = '1'; }
             clapFired = false;
           } else {
             arm.style.transform = 'rotate(0deg)';
@@ -395,15 +397,17 @@
             }
             const exitP = (clapP - CLOSE_END) / (1 - CLOSE_END);
             const easedExit = 1 - Math.pow(1 - exitP, 3);
-            const wipeClip = `inset(0 0 ${easedExit * 100}% 0)`;
-            clapper.style.clipPath = wipeClip;
+            const slideY = `translateY(${-easedExit * 100}vh)`;
+            clapper.style.clipPath = '';
             clapper.style.opacity = '1';
-            if (stageEl) { stageEl.style.clipPath = wipeClip; stageEl.style.opacity = '1'; }
+            clapper.style.transform = slideY;
+            if (stageEl) { stageEl.style.clipPath = ''; stageEl.style.opacity = '1'; stageEl.style.transform = slideY; }
           }
         } else {
           clapper.style.display = 'none';
           clapper.style.clipPath = '';
-          if (stageEl) stageEl.style.display = 'none';
+          clapper.style.transform = '';
+          if (stageEl) { stageEl.style.display = 'none'; stageEl.style.transform = ''; }
         }
       }
       window.addEventListener('scroll', onMobileScroll, { passive: true });
