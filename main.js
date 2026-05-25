@@ -654,19 +654,17 @@
     };
 
     const BLOCKS = [
-      // ── FILMSCEN 1 — arabiska ─────────────────────────────
+      // ── FILMSCEN 1 — svenska (kök, natt) ────────────────
       {
-        dir: 'rtl',
+        dir: 'ltr',
         lines: [
-          { cls: 'nb-h nb-rtl', text: 'مسودة ٣  —  مشهد داخلي',      pauseAfter: 1000 },
-          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'طفلةٌ تجلس وحدها أمام نافذة.', pauseAfter: 500  },
-          { cls: 'nb-b nb-rtl', text: 'تمطر في الخارج.',               pauseAfter: 900  },
-          { cls: 'nb-b nb-rtl', text: 'تضع يدها على الزجاج.',          pauseAfter: 1400 },
-          { cls: 'nb-b nb-rtl', text: 'تبقى هناك.',                    pauseAfter: 2200 },
-          { cls: 'nb-b nb-rtl', text: '',                               pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'لا حوار.',                      pauseAfter: 700  },
-          { cls: 'nb-b nb-rtl', text: 'فقط الصوت.',                    pauseAfter: 4800 }
+          { cls: 'nb-h', text: 'SCEN 7 — INT. KÖK — NATT',          pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Ingen pratar vid middagsbordet.',     pauseAfter: 1600 },
+          { cls: 'nb-b', text: 'Bara bestick mot porslin.',           pauseAfter: 2200 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Barnet tittar på föräldrarna.',      pauseAfter: 1400 },
+          { cls: 'nb-b', text: 'Föräldrarna tittar inte tillbaka.',  glitch: true, pauseAfter: 5000 }
         ]
       },
       // ── FILMSCEN 2 — svenska ──────────────────────────────
@@ -714,19 +712,18 @@
           { cls: 'nb-b', text: 'Kameran svarar.',                  pauseAfter: 4800 }
         ]
       },
-      // ── PEDAGOGIK 2 — arabiska ───────────────────────────
+      // ── PEDAGOGIK 2 — engelska (barn + kamera) ───────────
       {
-        dir: 'rtl',
+        dir: 'ltr',
         lines: [
-          { cls: 'nb-h nb-rtl', text: 'ملاحظة — تعليم',            pauseAfter: 900  },
-          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'الطفل يرسم المدرسة كسجن.',  pauseAfter: 1600 },
-          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'نسأله: لماذا؟',              pauseAfter: 1300 },
-          { cls: 'nb-b nb-rtl', text: 'يقول: لأنني لا أختار',       pauseAfter: 400  },
-          { cls: 'nb-b nb-rtl', text: 'ماذا أتعلّم.',               pauseAfter: 3200 },
-          { cls: 'nb-b nb-rtl', text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'فكرة فيلم.',                 pauseAfter: 4800 }
+          { cls: 'nb-h', text: 'NOTE — children & film',             pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Give a child a camera.',             pauseAfter: 1200 },
+          { cls: 'nb-b', text: "Don't tell them what to film.",      pauseAfter: 1800 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Watch what they choose.',            pauseAfter: 2400 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-h', text: 'That is the documentary.',           pauseAfter: 4800 }
         ]
       },
       // ── KREATIV IDÉ 1 — engelska ─────────────────────────
@@ -759,21 +756,21 @@
           { cls: 'nb-b', text: 'Ingen bild.',                       glitch: true, pauseAfter: 4800 }
         ]
       },
-      // ── KREATIV IDÉ 3 — arabiska + engelska ──────────────
+      // ── KREATIV IDÉ 3 — engelska (fixed camera) ──────────
       {
         dir: 'ltr',
         lines: [
-          { cls: 'nb-h',        text: 'VISUAL IDEA',                pauseAfter: 900  },
-          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'كاميرا ثابتة.',              pauseAfter: 900  },
-          { cls: 'nb-b nb-rtl', text: 'باب مفتوح.',                  pauseAfter: 1600 },
-          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b',        text: 'Someone walks in.',           pauseAfter: 700  },
-          { cls: 'nb-b',        text: 'Someone walks out.',          pauseAfter: 2000 },
-          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b',        text: 'We never see their face.',    glitch: true, pauseAfter: 2600 },
-          { cls: 'nb-b',        text: '',                            pauseAfter: 80   },
-          { cls: 'nb-b nb-rtl', text: 'الباب يبقى مفتوحاً.',        pauseAfter: 4800 }
+          { cls: 'nb-h', text: 'VISUAL IDEA',                        pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Fixed camera.',                      pauseAfter: 1200 },
+          { cls: 'nb-b', text: 'Open door.',                         pauseAfter: 1800 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Someone walks in.',                  pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Someone walks out.',                 pauseAfter: 2000 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'We never see their face.',           glitch: true, pauseAfter: 2800 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'The door stays open.',               pauseAfter: 4800 }
         ]
       },
       // ── FÖRELÄSNINGSUTKAST — svenska ─────────────────────
