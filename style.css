@@ -215,10 +215,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   max-width: min(34ch, 26vw);
   pointer-events: none;
   opacity: 1;
-  padding: 0.45em 0.8em 0.55em;
-  background: rgba(255, 252, 232, 0.03);
-  border-radius: 1px;
-}
+  }
 
 .nb-zone-inner {
   font-family: 'Courier New', Courier, monospace;
