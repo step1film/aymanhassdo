@@ -760,17 +760,17 @@
       {
         dir: 'ltr',
         lines: [
-          { cls: 'nb-h', text: 'EN IDÉ OM EN APP',                        pauseAfter: 900  },
+          { cls: 'nb-h', text: 'VISUAL IDEA',                        pauseAfter: 900  },
           { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
-          { cls: 'nb-b', text: 'Inte bara teknik — utan ett system,.',                      pauseAfter: 1200 },
-          { cls: 'nb-b', text: 'ett beteende.',                         pauseAfter: 1800 },
+          { cls: 'nb-b', text: 'Fixed camera.',                      pauseAfter: 1200 },
+          { cls: 'nb-b', text: 'Open door.',                         pauseAfter: 1800 },
           { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
-          { cls: 'nb-b', text: 'ett sätt att förändra ',                  pauseAfter: 700  },
-          { cls: 'nb-b', text: ' ',                 pauseAfter: 2000 },
-          { cls: 'nb-b', text: 'hur människor,',                                    pauseAfter: 80   },
-          { cls: 'nb-b', text: 'interagerar vid event,',           glitch: true, pauseAfter: 2800 },
+          { cls: 'nb-b', text: 'Someone walks in.',                  pauseAfter: 700  },
+          { cls: 'nb-b', text: 'Someone walks out.',                 pauseAfter: 2000 },
           { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
-          { cls: 'nb-b', text: 'eller arbete.',               pauseAfter: 4800 }
+          { cls: 'nb-b', text: 'We never see their face.',           glitch: true, pauseAfter: 2800 },
+          { cls: 'nb-b', text: '',                                    pauseAfter: 80   },
+          { cls: 'nb-b', text: 'The door stays open.',               pauseAfter: 4800 }
         ]
       },
       // ── FÖRELÄSNINGSUTKAST — svenska ─────────────────────
@@ -788,20 +788,6 @@
           { cls: 'nb-b', text: '',                                          pauseAfter: 80   },
           { cls: 'nb-b', text: 'Avslutning: visa klipp.',                   pauseAfter: 700  },
           { cls: 'nb-b', text: 'Fråga publiken.',                           glitch: true, pauseAfter: 4800 }
-        ]
-      },
-      // ── SURYOYO 1 — suryanî filmscen ─────────────────────
-      {
-        dir: 'rtl',
-        lines: [
-          { cls: 'nb-h nb-syr', text: 'ܡܣܡܒܪܝܫܐ — ܣܗܕܘܬܐ',       pauseAfter: 1000 },
-          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
-          { cls: 'nb-b nb-syr', text: 'ܛܠܝܬܐ ܝܬܒܐ ܠܘܬ ܟܘܬܐ.',      pauseAfter: 800  },
-          { cls: 'nb-b nb-syr', text: 'ܡܛܪܐ ܒܠܒܪ.',                 pauseAfter: 1400 },
-          { cls: 'nb-b nb-syr', text: 'ܡܪܝܡܐ ܐܝܕܗ ܥܠ ܓܠܝܕܐ.',      pauseAfter: 1800 },
-          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
-          { cls: 'nb-b nb-syr', text: 'ܫܠܝ.',                        pauseAfter: 2400 },
-          { cls: 'nb-b nb-syr', text: 'ܠܐ ܡ̈ܠܐ.',                   pauseAfter: 4800 }
         ]
       },
       // ── SURYOYO 2 — suryanî pedagogik ────────────────────
