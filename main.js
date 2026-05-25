@@ -839,12 +839,12 @@
     // Zone definitions — each has its own tilt and width for a notebook-scrap feel.
     // mobilePos: null = zone is skipped on mobile (only 3 zones on mobile).
     const ZONE_CONFIGS = [
-      { pos: { top:'10%',  left:'16%'  }, mobilePos: { top:'6%',  left:'5%'  }, delay: 200,  rotate: -3, maxWidth: '28ch' },
-      { pos: { top:'11%', left:'68%' }, mobilePos: null,                       delay: 11100, rotate:  5, maxWidth: '22ch' },
-      { pos: { top:'35%', left:'14%'  }, mobilePos: { top:'38%', left:'36%' }, delay: 11600,  rotate: -6, maxWidth: '32ch' },
-      { pos: { top:'41%', left:'82%' }, mobilePos: null,                       delay: 1800, rotate:  3, maxWidth: '24ch' },
-      { pos: { top:'63%', left:'20%'  }, mobilePos: { top:'69%', left:'5%'  }, delay: 11400,  rotate:  0, maxWidth: '26ch' },
-      { pos: { top:'67%', left:'73%' }, mobilePos: null,                       delay: 1900, rotate: -7, maxWidth: '30ch' }
+      { pos: { top:'10%',  left:'16%'  }, mobilePos: { top:'6%',  left:'5%'  }, delay: 6200,  rotate: -3, maxWidth: '28ch' },
+      { pos: { top:'11%', left:'68%' }, mobilePos: null,                       delay: 15100, rotate:  5, maxWidth: '22ch' },
+      { pos: { top:'35%', left:'14%'  }, mobilePos: { top:'38%', left:'36%' }, delay: 29600,  rotate: -6, maxWidth: '32ch' },
+      { pos: { top:'41%', left:'82%' }, mobilePos: null,                       delay: 19500, rotate:  3, maxWidth: '24ch' },
+      { pos: { top:'63%', left:'20%'  }, mobilePos: { top:'69%', left:'5%'  }, delay: 38400,  rotate:  0, maxWidth: '26ch' },
+      { pos: { top:'67%', left:'73%' }, mobilePos: null,                       delay: 60900, rotate: -7, maxWidth: '30ch' }
     ];
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
