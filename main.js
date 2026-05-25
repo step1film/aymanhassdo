@@ -831,11 +831,11 @@
     }
 
     async function run() {
-      // Start typing immediately — text is already mid-flow when the loader lifts
-      await sleep(400);
-      stageTxt.style.opacity = '1';
+      await sleep(300);
       let idx = 0;
       while (true) {
+        stageTxt.style.transition = '';
+        stageTxt.style.opacity    = '1';
         await runBlock(BLOCKS[idx % BLOCKS.length]);
         stageTxt.style.transition = 'opacity 1.4s ease';
         stageTxt.style.opacity    = '0';

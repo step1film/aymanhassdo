@@ -201,39 +201,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   z-index: 7999;
 }
 
-/* Spotlight cone from top-centre down toward the clapper */
-#stage-bg::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    conic-gradient(from 264deg at 50% -8%,
-      transparent          0deg,
-      rgba(255,245,220, 0.07) 6deg,
-      rgba(255,245,220, 0.13) 10deg,
-      rgba(255,245,220, 0.07) 14deg,
-      transparent          20deg
-    ),
-    radial-gradient(ellipse 55% 55% at 50% 62%, rgba(255,240,200, 0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 30%, #000 100%);
-  animation: spot-sway 12s ease-in-out infinite alternate;
-}
-
-/* Floor glow — warm pool of light where spotlight hits */
-#stage-bg::after {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 40% 25% at 50% 72%, rgba(255,235,180, 0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(180,140,80, 0.08) 0%, transparent 60%);
-  animation: spot-sway 12s ease-in-out infinite alternate;
-}
-
-@keyframes spot-sway {
-  0%   { transform: translateX(0);    }
-  40%  { transform: translateX(-2%);  }
-  100% { transform: translateX(2.5%); }
-}
-
 /* =====================================================
    NOTEBOOK TYPING TEXT — sits inside stage-bg backdrop
    ===================================================== */
@@ -243,7 +210,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   left: clamp(1.5rem, 6vw, 6rem);
   max-width: min(46ch, calc(100vw - 3rem));
   pointer-events: none;
-  opacity: 0;
+  opacity: 1;
 }
 
 #stage-text-inner {
