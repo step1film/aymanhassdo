@@ -836,14 +836,15 @@
       }
     ];
 
-    // Zone definitions: desktop uses all 6; mobile (≤900px) uses the 3 with mobilePos
+    // Zone definitions — each has its own tilt and width for a notebook-scrap feel.
+    // mobilePos: null = zone is skipped on mobile (only 3 zones on mobile).
     const ZONE_CONFIGS = [
-      { pos: { top:'6%',  left:'3%'   }, mobilePos: { top:'5%',  left:'4%'  }, delay: 200  },
-      { pos: { top:'8%',  right:'4%'  }, mobilePos: null,                       delay: 1100 },
-      { pos: { top:'38%', left:'5%'   }, mobilePos: { top:'38%', right:'4%' }, delay: 600  },
-      { pos: { top:'42%', right:'3%'  }, mobilePos: null,                       delay: 1800 },
-      { pos: { top:'68%', left:'4%'   }, mobilePos: { top:'70%', left:'4%'  }, delay: 400  },
-      { pos: { top:'72%', right:'5%'  }, mobilePos: null,                       delay: 1400 }
+      { pos: { top:'8%',  left:'4%'  }, mobilePos: { top:'6%',  left:'5%'  }, delay: 200,  rotate: -3, maxWidth: '28ch' },
+      { pos: { top:'11%', left:'68%' }, mobilePos: null,                       delay: 1100, rotate:  5, maxWidth: '22ch' },
+      { pos: { top:'35%', left:'4%'  }, mobilePos: { top:'38%', left:'36%' }, delay: 600,  rotate: -6, maxWidth: '32ch' },
+      { pos: { top:'41%', left:'62%' }, mobilePos: null,                       delay: 1800, rotate:  3, maxWidth: '24ch' },
+      { pos: { top:'63%', left:'7%'  }, mobilePos: { top:'69%', left:'5%'  }, delay: 400,  rotate:  4, maxWidth: '26ch' },
+      { pos: { top:'67%', left:'63%' }, mobilePos: null,                       delay: 1400, rotate: -7, maxWidth: '30ch' }
     ];
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -884,10 +885,21 @@
       }
     }
 
-    async function runZone(config, pos) {
+    async function runZone(config, basePos) {
       const zoneEl = document.createElement('div');
       zoneEl.className = 'nb-zone';
-      Object.assign(zoneEl.style, pos);
+
+      // Position with small random jitter so no two sessions look identical
+      Object.entries(basePos).forEach(([prop, val]) => {
+        const base = parseFloat(val);
+        const jitter = (Math.random() - 0.5) * 4; // ±2 percentage points
+        zoneEl.style[prop] = (base + jitter) + '%';
+      });
+
+      // Each zone keeps its tilt and width — its "notebook scrap" personality
+      zoneEl.style.transform = `rotate(${config.rotate}deg)`;
+      zoneEl.style.maxWidth = config.maxWidth;
+
       const innerEl = document.createElement('div');
       innerEl.className = 'nb-zone-inner';
       zoneEl.appendChild(innerEl);
