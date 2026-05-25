@@ -882,6 +882,9 @@
       }
     }
 
+    // Shared across all zones — tracks which block indices are currently displayed
+    const inUse = new Set();
+
     async function runZone(config, basePos) {
       const zoneEl = document.createElement('div');
       zoneEl.className = 'nb-zone';
@@ -906,14 +909,25 @@
 
       let lastIdx = -1;
       while (true) {
+        // Pick a block not currently shown in any other zone
         let idx;
-        do { idx = Math.floor(Math.random() * BLOCKS.length); } while (idx === lastIdx && BLOCKS.length > 1);
+        let tries = 0;
+        do {
+          idx = Math.floor(Math.random() * BLOCKS.length);
+          tries++;
+        } while ((inUse.has(idx) || idx === lastIdx) && tries < BLOCKS.length * 3);
+
+        inUse.add(idx);
         lastIdx = idx;
 
         zoneEl.style.transition = '';
         zoneEl.style.opacity = '1';
         await runBlock(innerEl, BLOCKS[idx]);
         await sleep(1200 + Math.random() * 800);
+
+        // Release before fading so other zones can reuse this block sooner
+        inUse.delete(idx);
+
         zoneEl.style.transition = 'opacity 1.6s ease';
         zoneEl.style.opacity = '0';
         await sleep(1700);
