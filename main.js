@@ -830,6 +830,62 @@
           { cls: 'nb-b nb-syr', text: 'ܡ̈ܠܐ ܕܐܒ̈ܗܬܐ.',               pauseAfter: 1300 },
           { cls: 'nb-b nb-syr', text: 'ܘܡ̈ܠܐ ܕܝܠܘ̈ܦܐ.',              glitch: false, pauseAfter: 4800 }
         ]
+      },
+      // ── APP-IDÉ — svenska ─────────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'EN IDÉ OM EN APP',                    pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Inte bara teknik.',                    pauseAfter: 1400 },
+          { cls: 'nb-b', text: 'Ett system.',                          pauseAfter: 800  },
+          { cls: 'nb-b', text: 'Ett beteende.',                        pauseAfter: 800  },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Ett sätt att förändra hur',           pauseAfter: 320  },
+          { cls: 'nb-b', text: 'människor interagerar',                pauseAfter: 320  },
+          { cls: 'nb-b', text: 'vid event eller arbete.',              pauseAfter: 4800 }
+        ]
+      },
+      // ── ANTI-ELITISM — engelska ───────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'NOTE — intelligence',                  pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: 'Why do some people underestimate',     pauseAfter: 320  },
+          { cls: 'nb-b', text: 'the intelligence of',                  pauseAfter: 320  },
+          { cls: 'nb-b', text: '"ordinary people"?',                   pauseAfter: 2200 },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: 'A frustration with how society',       pauseAfter: 320  },
+          { cls: 'nb-b', text: 'measures intelligence',                pauseAfter: 320  },
+          { cls: 'nb-b', text: 'and culture.',                         glitch: true, pauseAfter: 4800 }
+        ]
+      },
+      // ── HALVFÄRDIG TANKE — svenska ────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'HALVFÄRDIG TANKE',                    pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: '"Vad händer om…',                     pauseAfter: 3600 },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: '(fortsättning saknas)',                glitch: true, pauseAfter: 4800 }
+        ]
+      },
+      // ── AFFÄRSIDÉ — svenska ───────────────────────────────
+      {
+        dir: 'ltr',
+        lines: [
+          { cls: 'nb-h', text: 'AFFÄRSIDÉ — UTKAST',                  pauseAfter: 900  },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: 'abonnemangsmodell',                    pauseAfter: 600  },
+          { cls: 'nb-b', text: 'partnerlösningar',                     pauseAfter: 600  },
+          { cls: 'nb-b', text: 'AI-integration',                       pauseAfter: 600  },
+          { cls: 'nb-b', text: 'skalbart koncept',                     pauseAfter: 1800 },
+          { cls: 'nb-b', text: '',                                     pauseAfter: 80   },
+          { cls: 'nb-b', text: '"Konst utan själ',                     pauseAfter: 400  },
+          { cls: 'nb-b', text: ' är bara reklam."',                    pauseAfter: 4800 }
+        ]
       }
     ];
 
