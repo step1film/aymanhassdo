@@ -202,40 +202,52 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* =====================================================
-   NOTEBOOK TYPING TEXT — sits inside stage-bg backdrop
+   NOTEBOOK ZONES — scattered across stage-bg backdrop
    ===================================================== */
-#stage-text {
+#nb-canvas {
   position: absolute;
-  bottom: clamp(3.5rem, 9vh, 7rem);
-  left: clamp(1.5rem, 6vw, 6rem);
-  max-width: min(46ch, calc(100vw - 3rem));
+  inset: 0;
   pointer-events: none;
-  opacity: 1;
 }
 
-#stage-text-inner {
+.nb-zone {
+  position: absolute;
+  max-width: min(34ch, 26vw);
+  pointer-events: none;
+  opacity: 1;
+  transition: none;
+}
+
+.nb-zone-inner {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.75rem, 1.35vw, 0.95rem);
+  font-size: clamp(0.60rem, 1.0vw, 0.78rem);
   line-height: 2;
   color: rgba(230, 225, 210, 0.72);
   text-shadow: 0 1px 14px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,0.8);
 }
-#stage-text-inner p { margin: 0; }
+.nb-zone-inner p { margin: 0; }
 
 .nb-h {
   font-family: var(--ff-display);
-  font-size: clamp(0.56rem, 1vw, 0.72rem);
+  font-size: clamp(0.50rem, 0.88vw, 0.65rem);
   letter-spacing: 0.38em;
-  color: rgba(230, 225, 210, 0.48);
-  line-height: 2.4;
+  color: rgba(230, 225, 210, 0.44);
+  line-height: 2.5;
 }
 .nb-b { line-height: 2; }
+.nb-syr {
+  direction: rtl;
+  font-family: 'Estrangelo Edessa', 'Serto Jerusalem', 'Noto Sans Syriac', serif;
+  font-size: clamp(0.70rem, 1.15vw, 0.88rem);
+  letter-spacing: 0.02em;
+  line-height: 2.2;
+}
 .nb-rtl {
   direction: rtl;
   font-family: 'Segoe UI', 'Noto Naskh Arabic', Arial, sans-serif;
-  font-size: clamp(0.82rem, 1.45vw, 1rem);
+  font-size: clamp(0.70rem, 1.2vw, 0.88rem);
   letter-spacing: 0;
-  line-height: 2.1;
+  line-height: 2.2;
 }
 
 .nb-h.nb-typing::after,
@@ -244,7 +256,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: inline-block;
   width: 1.5px;
   height: 0.82em;
-  background: rgba(230, 225, 210, 0.80);
+  background: rgba(230, 225, 210, 0.75);
   vertical-align: text-bottom;
   margin-left: 2px;
   animation: nb-blink 0.88s step-end infinite;
@@ -252,12 +264,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 @keyframes nb-blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
 @media (max-width: 900px) {
-  #stage-text {
-    bottom: clamp(2rem, 5vh, 3.5rem);
-    left: clamp(1.25rem, 4vw, 2rem);
-    max-width: min(34ch, calc(100vw - 2.5rem));
-  }
-  #stage-text-inner { font-size: clamp(0.62rem, 2.2vw, 0.78rem); }
+  .nb-zone { max-width: min(28ch, 80vw); }
+  .nb-zone-inner { font-size: clamp(0.58rem, 2vw, 0.72rem); }
 }
 
 /* =====================================================

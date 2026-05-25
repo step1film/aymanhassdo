@@ -634,14 +634,13 @@
   }
 
   /* --------------------------------------------------
-     NOTEBOOK TYPING TEXT — stage backdrop
+     NOTEBOOK TYPING TEXT — multi-zone stage backdrop
   -------------------------------------------------- */
   function initNotebookText() {
     if (prefersReducedMotion) return;
 
-    const stageTxt = document.getElementById('stage-text');
-    const inner    = document.getElementById('stage-text-inner');
-    if (!stageTxt || !inner) return;
+    const canvas = document.getElementById('nb-canvas');
+    if (!canvas) return;
 
     const GLITCH = {
       'a':'s','s':'a','d':'f','f':'d','g':'h','h':'g','j':'k','k':'j','l':'k',
@@ -734,9 +733,9 @@
           { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
           { cls: 'nb-b', text: 'A documentary about silence.',      pauseAfter: 500  },
           { cls: 'nb-b', text: 'Not the absence of sound.',         pauseAfter: 1400 },
-          { cls: 'nb-b', text: 'The kind of silence',              pauseAfter: 220  },
-          { cls: 'nb-b', text: 'that fills a room',                pauseAfter: 220  },
-          { cls: 'nb-b', text: 'after a hard word.',               pauseAfter: 3400 },
+          { cls: 'nb-b', text: 'The kind of silence',               pauseAfter: 220  },
+          { cls: 'nb-b', text: 'that fills a room',                 pauseAfter: 220  },
+          { cls: 'nb-b', text: 'after a hard word.',                pauseAfter: 3400 },
           { cls: 'nb-b', text: '',                                   pauseAfter: 80   },
           { cls: 'nb-h', text: 'Working title: AFTER.',             pauseAfter: 4800 }
         ]
@@ -789,7 +788,58 @@
           { cls: 'nb-b', text: 'Avslutning: visa klipp.',                   pauseAfter: 700  },
           { cls: 'nb-b', text: 'Fråga publiken.',                           glitch: true, pauseAfter: 4800 }
         ]
+      },
+      // ── SURYOYO 1 — suryanî filmscen ─────────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-syr', text: 'ܡܣܡܒܪܝܫܐ — ܣܗܕܘܬܐ',       pauseAfter: 1000 },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܛܠܝܬܐ ܝܬܒܐ ܠܘܬ ܟܘܬܐ.',      pauseAfter: 800  },
+          { cls: 'nb-b nb-syr', text: 'ܡܛܪܐ ܒܠܒܪ.',                 pauseAfter: 1400 },
+          { cls: 'nb-b nb-syr', text: 'ܡܪܝܡܐ ܐܝܕܗ ܥܠ ܓܠܝܕܐ.',      pauseAfter: 1800 },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܫܠܝ.',                        pauseAfter: 2400 },
+          { cls: 'nb-b nb-syr', text: 'ܠܐ ܡ̈ܠܐ.',                   pauseAfter: 4800 }
+        ]
+      },
+      // ── SURYOYO 2 — suryanî pedagogik ────────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-syr', text: 'ܪܫܝܡܬܐ — ܝܘܠܦܢܐ',           pauseAfter: 900  },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܝܠܘܦܐ ܫܐܠ ܫܘܐܠܐ.',           pauseAfter: 1200 },
+          { cls: 'nb-b nb-syr', text: 'ܡܠܦܢܐ ܫܬܩ.',                  pauseAfter: 2000 },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܗܢܐ ܗܘ ܝܘܠܦܢܐ ܫܪܝܪܐ.',       pauseAfter: 3200 },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܦܟܪܐ ܕܦܝܠܡܐ.',               pauseAfter: 4800 }
+        ]
+      },
+      // ── SURYOYO 3 — suryanî kreativ idé ──────────────────
+      {
+        dir: 'rtl',
+        lines: [
+          { cls: 'nb-h nb-syr', text: 'ܪܥܝܢܐ — ܠܐ ܓܡܝܪܐ',          pauseAfter: 900  },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܒܠܚܘܕ ܩ̈ܠܐ.',                 pauseAfter: 1100 },
+          { cls: 'nb-b nb-syr', text: 'ܠܐ ܨܘܪ̈ܬܐ.',                  pauseAfter: 1600 },
+          { cls: 'nb-b nb-syr', text: '',                             pauseAfter: 80   },
+          { cls: 'nb-b nb-syr', text: 'ܡ̈ܠܐ ܕܐܒ̈ܗܬܐ.',               pauseAfter: 1300 },
+          { cls: 'nb-b nb-syr', text: 'ܘܡ̈ܠܐ ܕܝܠܘ̈ܦܐ.',              glitch: false, pauseAfter: 4800 }
+        ]
       }
+    ];
+
+    // Zone definitions: desktop uses all 6; mobile (≤900px) uses the 3 with mobilePos
+    const ZONE_CONFIGS = [
+      { pos: { top:'6%',  left:'3%'   }, mobilePos: { top:'5%',  left:'4%'  }, delay: 200  },
+      { pos: { top:'8%',  right:'4%'  }, mobilePos: null,                       delay: 1100 },
+      { pos: { top:'38%', left:'5%'   }, mobilePos: { top:'38%', right:'4%' }, delay: 600  },
+      { pos: { top:'42%', right:'3%'  }, mobilePos: null,                       delay: 1800 },
+      { pos: { top:'68%', left:'4%'   }, mobilePos: { top:'70%', left:'4%'  }, delay: 400  },
+      { pos: { top:'72%', right:'5%'  }, mobilePos: null,                       delay: 1400 }
     ];
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -815,38 +865,56 @@
       el.classList.remove('nb-typing');
     }
 
-    async function runBlock(block) {
-      inner.textContent = '';
-      inner.dir = block.dir;
+    async function runBlock(innerEl, block) {
+      innerEl.textContent = '';
+      innerEl.dir = block.dir;
       for (const line of block.lines) {
         const p = document.createElement('p');
         p.className = line.cls;
-        inner.appendChild(p);
+        innerEl.appendChild(p);
         if (line.text.length > 0) {
-          const rtl = line.cls.includes('nb-rtl');
+          const rtl = line.cls.includes('nb-rtl') || line.cls.includes('nb-syr');
           await typeInto(p, line.text, line.glitch || false, rtl);
         }
         await sleep(line.pauseAfter || 120);
       }
     }
 
-    async function run() {
-      await sleep(300);
-      let idx = 0;
+    async function runZone(config, pos) {
+      const zoneEl = document.createElement('div');
+      zoneEl.className = 'nb-zone';
+      Object.assign(zoneEl.style, pos);
+      const innerEl = document.createElement('div');
+      innerEl.className = 'nb-zone-inner';
+      zoneEl.appendChild(innerEl);
+      canvas.appendChild(zoneEl);
+
+      await sleep(config.delay);
+
+      let lastIdx = -1;
       while (true) {
-        stageTxt.style.transition = '';
-        stageTxt.style.opacity    = '1';
-        await runBlock(BLOCKS[idx % BLOCKS.length]);
-        stageTxt.style.transition = 'opacity 1.4s ease';
-        stageTxt.style.opacity    = '0';
-        await sleep(1500);
-        stageTxt.style.transition = '';
-        await sleep(800 + Math.random() * 600);
-        idx++;
+        let idx;
+        do { idx = Math.floor(Math.random() * BLOCKS.length); } while (idx === lastIdx && BLOCKS.length > 1);
+        lastIdx = idx;
+
+        zoneEl.style.transition = '';
+        zoneEl.style.opacity = '1';
+        await runBlock(innerEl, BLOCKS[idx]);
+        await sleep(1200 + Math.random() * 800);
+        zoneEl.style.transition = 'opacity 1.6s ease';
+        zoneEl.style.opacity = '0';
+        await sleep(1700);
+        zoneEl.style.transition = '';
+        await sleep(600 + Math.random() * 1400);
       }
     }
 
-    run();
+    const mobile = !isWideScreen();
+    ZONE_CONFIGS.forEach(config => {
+      const pos = mobile ? config.mobilePos : config.pos;
+      if (!pos) return;
+      runZone(config, pos);
+    });
   }
 
   /* --------------------------------------------------
