@@ -911,23 +911,78 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .anlabel { font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
 
 /* =====================================================
-   PRACTICE PANEL (was AWARDS — now disciplines list)
+   PRACTICE PANEL — card grid
    ===================================================== */
-.awards-list { display: flex; flex-direction: column; flex: 1; justify-content: space-between; overflow: hidden; min-height: 0; }
-.award-row {
+.panel-inner--practice { gap: clamp(1rem, 2vh, 2rem); }
+
+.practice-grid {
   display: grid;
-  grid-template-columns: 3.2rem 1fr 1.6fr;
-  gap: 0 2rem;
-  align-items: center;
-  padding: clamp(0.7rem, 1.4vh, 1rem) 0;
-  border-top: 1px solid var(--line);
-  transition: border-color 0.3s, transform 0.4s var(--ease);
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.7rem, 1.4vw, 1.2rem);
+  flex: 1;
+  min-height: 0;
+  align-content: start;
 }
-.award-row:last-child { border-bottom: 1px solid var(--line); }
-.award-row:hover { border-color: var(--line-s); }
-.aw-year   { font-family: var(--ff-display); font-size: 0.78rem; letter-spacing: 0.18em; color: var(--accent); }
-.aw-name   { font-family: var(--ff-display); font-size: clamp(0.95rem, 1.6vw, 1.3rem); color: var(--white); letter-spacing: 0.04em; }
-.aw-detail { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+
+.practice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  transition: border-color 0.3s, background 0.3s;
+}
+.practice-card:hover {
+  border-color: var(--line-s);
+  background: rgba(255,255,255,0.04);
+}
+.practice-card--corner {
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+  background: color-mix(in oklab, var(--accent) 4%, transparent);
+}
+.practice-card--corner:hover {
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  background: color-mix(in oklab, var(--accent) 7%, transparent);
+}
+
+.pc-num {
+  font-family: var(--ff-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.practice-card--corner .pc-num { font-size: 1rem; line-height: 1; }
+
+.pc-title {
+  font-family: var(--ff-display);
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.pc-desc {
+  font-size: clamp(0.7rem, 1.1vw, 0.82rem);
+  color: var(--text-dim);
+  line-height: 1.7;
+  flex: 1;
+}
+
+.pc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin-top: 0.2rem;
+}
+.pc-tags li {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  padding: 0.18rem 0.55rem;
+}
 
 /* =====================================================
    PRESS / QUOTES PANEL
@@ -1131,9 +1186,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     flex: none;
   }
 
-  /* Practice list: collapse the detail column under the name on small screens */
-  .award-row { grid-template-columns: 2.5rem 1fr; gap: 0.25rem 1rem; padding: 0.9rem 0; }
-  .aw-detail { grid-column: 2; font-size: 0.72rem; }
+  /* Practice grid: single column on small screens */
+  .practice-grid { grid-template-columns: 1fr; }
 
   /* Contact: stacked rows */
   .contact-row { grid-template-columns: 1fr; gap: 0.15rem; padding: 0.9rem 0; }
