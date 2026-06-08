@@ -260,7 +260,7 @@
       //   0 → 0.75   CLOSE   (arm rotates + prop rotates to face-on + scales up)
       //   0.75 → 1.0  EXIT    (clapper fades out + slight scale-up)
       const clapP = sy / vh;
-      const CLOSE_END = 0.75;
+      const CLOSE_END = 0.92;
       const propEl = clapper.querySelector('.cl-prop');
       const stageEl = document.getElementById('stage-bg');
 
@@ -356,7 +356,7 @@
         const sy = window.scrollY;
         const vh = window.innerHeight;
         const clapP = sy / vh;
-        const CLOSE_END = 0.75;
+        const CLOSE_END = 0.92;
         const propEl = clapper.querySelector('.cl-prop');
         const stageEl = document.getElementById('stage-bg');
 
