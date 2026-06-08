@@ -197,7 +197,7 @@
     if (heroEl && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.intersectionRatio >= 0.4) {
+          if (entry.intersectionRatio >= 0.6) {
             if (!loaded) {
               loadVideo();
             } else {
