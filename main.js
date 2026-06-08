@@ -270,6 +270,7 @@
       if (clapP < 1) {
         clapper.style.display = '';
         if (stageEl) { stageEl.style.opacity = '1'; stageEl.style.display = ''; }
+        document.body.classList.add('clapper-visible');
 
         if (clapP < CLOSE_END) {
           // CLOSE phase — drive arm + prop together
@@ -319,6 +320,7 @@
         clapper.style.clipPath = '';
         clapper.style.transform = '';
         if (stageEl) { stageEl.style.display = 'none'; stageEl.style.transform = ''; }
+        document.body.classList.remove('clapper-visible');
       }
 
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
@@ -366,6 +368,7 @@
         if (clapP < 1) {
           clapper.style.display = '';
           if (stageEl) { stageEl.style.opacity = '1'; stageEl.style.display = ''; }
+          document.body.classList.add('clapper-visible');
           if (clapP < CLOSE_END) {
             const p = clapP / CLOSE_END;
             const armEase = p;
@@ -408,6 +411,7 @@
           clapper.style.clipPath = '';
           clapper.style.transform = '';
           if (stageEl) { stageEl.style.display = 'none'; stageEl.style.transform = ''; }
+          document.body.classList.remove('clapper-visible');
         }
       }
       window.addEventListener('scroll', onMobileScroll, { passive: true });
@@ -998,6 +1002,7 @@
     initNotebookText();
 
     const clapper = document.getElementById('clapper');
+    document.body.classList.add('clapper-visible');
 
     initLoader(() => {
       if (clapper) {
