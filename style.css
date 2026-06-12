@@ -919,6 +919,15 @@ body.clapper-visible #hero { visibility: hidden; }
 /* =====================================================
    PRACTICE PANEL (was AWARDS — now disciplines list)
    ===================================================== */
+.panel-intro {
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+  color: var(--text-dim);
+  max-width: 58ch;
+  line-height: 1.8;
+  text-wrap: pretty;
+  margin-top: calc(-1 * clamp(0.8rem, 1.6vh, 1.4rem));
+}
+
 .awards-list { display: flex; flex-direction: column; flex: 1; justify-content: space-between; overflow: hidden; min-height: 0; }
 .award-row {
   display: grid;

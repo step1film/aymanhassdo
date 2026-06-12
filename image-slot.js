@@ -284,6 +284,17 @@
       // naturalWidth/Height aren't known until load — re-apply so the cover
       // baseline is computed from real dimensions, not the 100%×100% fallback.
       this._img.addEventListener('load', () => this._applyView());
+      // An author `src` may point at a file that hasn't been uploaded yet
+      // (slots are pre-wired to assets/ paths). Fall back to the empty
+      // placeholder instead of a broken-image glyph; the slot recovers as
+      // soon as the file exists (or a user drop overrides it).
+      this._img.addEventListener('error', () => {
+        const cur = this._img.getAttribute('src');
+        if (cur && !this._userUrl && cur === this.getAttribute('src')) {
+          this._srcBroken = cur;
+          this._render();
+        }
+      });
       // Gated on editable + fit=cover so share links and contain/fill slots
       // stay static.
       this.addEventListener('dblclick', (e) => {
@@ -601,7 +612,8 @@
       // (Claude wrote it into the HTML) so it passes through unchanged.
       let stored = this.id ? getSlot(this.id) : this._local;
       if (stored && stored.u && !/^data:image\//i.test(stored.u)) stored = null;
-      const srcAttr = this.getAttribute('src') || '';
+      let srcAttr = this.getAttribute('src') || '';
+      if (srcAttr && srcAttr === this._srcBroken) srcAttr = '';
       this._userUrl = (stored && stored.u) || null;
       const url = this._userUrl || srcAttr;
       // Don't clobber an in-flight reframe with a store-triggered re-render.
