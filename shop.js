@@ -139,7 +139,7 @@
     sv: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1FILM STORE',
-      heroText: 'Plagg, kepsar och muggar för den som lever bakom kameran. Välj färg, storlek och lägg i vagnen.',
+      heroText: 'Du blir garanterat lite mer kreativ med en Step1Film på dig. 🙂 Välj färg, storlek och lägg i vagnen.',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       add: 'Lägg i vagn', added: 'Tillagd ✓',
@@ -168,7 +168,7 @@
     en: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1FILM STORE',
-      heroText: 'Garments, caps and mugs for the people behind the camera. Pick a colour, a size and add to cart.',
+      heroText: "You're guaranteed to get a little more creative wearing a Step1Film. 🙂 Pick a colour, a size and add to cart.",
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       add: 'Add to cart', added: 'Added ✓',
