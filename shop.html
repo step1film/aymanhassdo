@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0c0c" />
+
+  <title>STEP1FILM Store — Merch, Caps & Mugs · Ayman Hassdo</title>
+  <meta name="description" content="STEP1FILM Store — official merch by filmmaker Ayman Hassdo. Tees, hoodies, caps and mugs. Choose colour and size." />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="STEP1FILM" />
+  <meta property="og:title" content="STEP1FILM Store" />
+  <meta property="og:description" content="Merch, caps and mugs for the people behind the camera." />
+  <meta property="og:image" content="https://step1film.com/bg-stage.jpg" />
+
+  <!-- Favicon (matches index.html) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="shop.css" />
+</head>
+<body>
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+  <header class="shop-header">
+    <a class="logo-text" href="index.html" aria-label="STEP1FILM — home">
+      STEP<span>1</span>FILM
+      <small>STORE</small>
+    </a>
+
+    <div class="header-spacer"></div>
+
+    <a class="header-link hide-sm" href="index.html" data-i18n="coBack">Tillbaka</a>
+
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="sv">SV</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+
+    <button class="cart-btn" id="cartOpen" type="button" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="9" cy="20" r="1.4"></circle>
+        <circle cx="18" cy="20" r="1.4"></circle>
+        <path d="M2 3h3l2.4 12.2a1.6 1.6 0 0 0 1.6 1.3h8.5a1.6 1.6 0 0 0 1.6-1.3L22 7H6"></path>
+      </svg>
+      <span data-i18n="cart">Vagn</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
+  <section class="shop-hero">
+    <p class="eyebrow" data-i18n="tagline">MERCH & PRINT</p>
+    <h1 data-i18n="heroTitle">STEP1FILM STORE</h1>
+    <p data-i18n="heroText">Plagg, kepsar och muggar för den som lever bakom kameran. Välj färg, storlek och lägg i vagnen.</p>
+  </section>
+
+  <!-- Category filter -->
+  <nav class="cat-filter" aria-label="Categories">
+    <button type="button" data-cat="all" class="active">Allt</button>
+    <button type="button" data-cat="clothing">Kläder</button>
+    <button type="button" data-cat="caps">Kepsar</button>
+    <button type="button" data-cat="mugs">Muggar</button>
+  </nav>
+
+  <!-- =====================================================
+       PRODUCT GRID
+  ====================================================== -->
+  <main class="product-grid" id="grid" aria-live="polite"></main>
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="shop-footer">
+    <div class="foot-logo">STEP<span>1</span>FILM</div>
+    <p>Ayman Hassdo · Jönköping, Småland · <a href="mailto:step1film@gmail.com">step1film@gmail.com</a></p>
+    <p style="margin-top:0.5rem">&copy; <span id="year"></span> STEP1FILM — <a href="index.html">step1film.com</a></p>
+  </footer>
+
+  <!-- =====================================================
+       CART / CHECKOUT DRAWER
+  ====================================================== -->
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="drawer" id="drawer" aria-label="Cart">
+
+    <!-- CART VIEW -->
+    <div id="cartView" style="display:flex;flex-direction:column;height:100%">
+      <div class="drawer-head">
+        <h2 data-i18n="cartTitle">Din vagn</h2>
+        <button class="icon-btn" id="cartClose" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="drawer-body" id="cartBody"></div>
+
+      <div class="drawer-foot" id="cartFoot">
+        <div class="cart-total">
+          <span data-i18n="subtotal">Summa</span>
+          <span id="cartTotalVal">0 kr</span>
+        </div>
+        <button class="btn-primary" id="toCheckout" type="button" data-i18n="checkout">Till kassan</button>
+        <button class="btn-ghost" id="keepShopping" type="button" data-i18n="keepShopping">Fortsätt handla</button>
+      </div>
+    </div>
+
+    <!-- CHECKOUT VIEW -->
+    <div id="checkoutView" style="display:none;height:100%;overflow-y:auto">
+      <div class="drawer-head">
+        <button class="icon-btn" id="backToCart" type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24"><polyline points="14,6 8,12 14,18"></polyline></svg>
+        </button>
+        <h2 data-i18n="coTitle">Kassa</h2>
+        <button class="icon-btn" id="cartClose2" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="checkout-body">
+        <span class="opt-label" style="margin-bottom:0.7rem" data-i18n="orderSummary">Sammanfattning</span>
+        <div class="order-summary" id="orderSummary"></div>
+
+        <div class="field-row">
+          <div class="field">
+            <label data-i18n="name">Namn</label>
+            <input type="text" id="coName" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label data-i18n="phone">Telefon</label>
+            <input type="tel" id="coPhone" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="email">E-post</label>
+          <input type="email" id="coEmail" autocomplete="email" required />
+        </div>
+
+        <div class="field">
+          <label data-i18n="address">Adress</label>
+          <input type="text" id="coAddress" autocomplete="street-address" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label data-i18n="zip">Postnr</label>
+            <input type="text" id="coZip" autocomplete="postal-code" />
+          </div>
+          <div class="field">
+            <label data-i18n="city">Ort</label>
+            <input type="text" id="coCity" autocomplete="address-level2" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="notes">Meddelande (valfritt)</label>
+          <textarea id="coNotes" rows="2"></textarea>
+        </div>
+
+        <button class="btn-primary" id="placeOrder" type="button" data-i18n="placeOrder">Skicka beställning</button>
+      </div>
+    </div>
+
+    <!-- THANKS VIEW -->
+    <div id="thanksView" style="display:none;height:100%">
+      <div class="drawer-head">
+        <h2 data-i18n="coTitle">Kassa</h2>
+        <button class="icon-btn" id="cartClose3" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="checkout-body">
+        <div class="swish-result">
+          <div class="success-tick">
+            <svg viewBox="0 0 24 24"><polyline points="4,12 10,18 20,6"></polyline></svg>
+          </div>
+          <h3 data-i18n="thanksTitle">Tack för din beställning!</h3>
+          <p class="swish-note" style="max-width:34ch;margin:0.6rem auto 0" data-i18n="thanksText"></p>
+          <button class="btn-primary" id="thanksDone" type="button" style="margin-top:1.5rem" data-i18n="done">Klar</button>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="shop.js"></script>
+</body>
+</html>
