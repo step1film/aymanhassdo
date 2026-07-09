@@ -815,6 +815,11 @@ body.clapper-visible #hero { visibility: hidden; }
 .film-item:hover,
 .film-item:focus-within { border-color: var(--line-s); }
 
+/* Store entry — reads as a call-to-action link */
+.film-item--store .film-title { color: var(--accent); transition: letter-spacing 0.35s var(--ease), color 0.25s ease; }
+.film-item--store:hover .film-title { color: var(--white); }
+.film-item--store .film-syn { color: var(--text); }
+
 .film-thumb {
   --slot-bg: #161616;
   width: 100%;
