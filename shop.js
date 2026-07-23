@@ -111,6 +111,24 @@
         'assets/products/reel-mugg-lifestyle.png'
       ]
     },
+    {
+      id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
+      name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
+      desc: { sv: 'Vit glansig mugg. Rosa pixel-tryck "I\'m Awesome". Fri frakt.', en: 'White glossy mug. Pink pixel print "I\'m Awesome". Free shipping.' },
+      price: 229,
+      freeShipping: true,
+      colors: ['white'],
+      sizes: null,
+      image: 'assets/products/awesome-mugg.png',
+      gallery: [
+        'assets/products/awesome-mugg.png',
+        'assets/products/awesome-mugg-holiday.png',
+        'assets/products/awesome-mugg-hands.png',
+        'assets/products/awesome-mugg-model.png',
+        'assets/products/awesome-mugg-stacked.png',
+        'assets/products/awesome-mugg-box.png'
+      ]
+    },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
     {

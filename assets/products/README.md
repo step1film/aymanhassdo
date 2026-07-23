@@ -17,6 +17,12 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | REEL MUGG (framsida) | `reel-mugg.png` |
 | REEL MUGG (handtag vänster) | `reel-mugg-2.png` |
 | REEL MUGG (livsstil) | `reel-mugg-lifestyle.png` |
+| AWESOME MUGG (huvudbild) | `awesome-mugg.png` |
+| AWESOME MUGG (jul) | `awesome-mugg-holiday.png` |
+| AWESOME MUGG (händer) | `awesome-mugg-hands.png` |
+| AWESOME MUGG (modell) | `awesome-mugg-model.png` |
+| AWESOME MUGG (staplade) | `awesome-mugg-stacked.png` |
+| AWESOME MUGG (förpackning) | `awesome-mugg-box.png` |
 
 *(Fyll på listan i takt med att fler produkter läggs till.)*
 
