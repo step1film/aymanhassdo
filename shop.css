@@ -270,6 +270,13 @@ body::before {
 }
 .product-card:hover .pc-visual .garment { transform: scale(1.04); }
 
+/* Riktig produktbild (Printful) — samma yta som SVG-mockupen */
+.pc-visual .garment-photo,
+.ci-visual .garment-photo {
+  object-fit: contain;
+  display: block;
+}
+
 .garment-body {
   fill: var(--gc, #222);
   stroke: rgba(255,255,255,0.16);

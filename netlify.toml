@@ -1,0 +1,24 @@
+# =====================================================
+# STEP1FILM Store — Netlify-konfiguration
+# =====================================================
+# Netlify publicerar denna repo som statisk sida (din nuvarande
+# GitHub Pages-sida) OCH kör mappen functions/ som serverless-
+# endpoints, så din Printful-nyckel aldrig hamnar i webbläsaren.
+#
+# Efter driftsättning nås funktionerna på:
+#   https://DIN-SAJT/.netlify/functions/printful-products
+#   https://DIN-SAJT/.netlify/functions/printful-order
+#
+# Sätt då CONFIG.printful.apiBase = '/.netlify/functions' i shop.js.
+# =====================================================
+
+[build]
+  # Sidan är redan statisk HTML i repo-roten — ingen byggprocess behövs.
+  publish = "."
+  functions = "functions"
+
+# Snygg genväg: /api/* → funktionerna (valfritt, gör apiBase = '/api')
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

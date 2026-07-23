@@ -13,6 +13,11 @@ Personal portfolio for filmmaker Ayman Hassdo (STEP1FILM).
 | `shop.html` | Merch store — tees, hoodies, caps, mugs |
 | `shop.css` | Store styling (matches the film site) |
 | `shop.js` | Store logic: products, live colour preview, cart, SV/EN, checkout |
+| `printful.js` | Frontend bridge to the Printful serverless functions |
+| `functions/` | Serverless endpoints for Printful (keep the API key server-side) |
+| `netlify.toml` | Deploy config (static site + functions) |
+| `.env.example` | Template for the secret keys (Printful / Stripe) |
+| `PRINTFUL_SETUP.md` | Step-by-step guide to wire the store to Printful (print-on-demand) |
 | `bg-stage.jpg` | Background behind the clapperboard |
 | `cursor.png` | Custom cursor |
 | `robots.txt` | Search engine directive |
@@ -61,6 +66,19 @@ or custom cursor).
 **Payment** is deliberately not wired yet — checkout sends an order request by
 e-mail. Real payment (Swish / card) can be added once the site moves to its own
 domain; the `CONFIG` block already has a place for the Swish number.
+
+### Print-on-demand via Printful
+
+The store is prepared to connect to **Printful** so your own designs are printed
+and shipped automatically on each order. See **`PRINTFUL_SETUP.md`** for the full
+walkthrough. Short version:
+
+- Printful only handles **printing + shipping** — it never takes payment, so you
+  always pair it with a checkout (Stripe / Snipcart) that collects money.
+- Your API key must stay server-side: the browser talks only to the functions in
+  `functions/`, never to Printful directly.
+- Nothing changes on the live site until you set `CONFIG.printful.enabled = true`
+  in `shop.js`. Until then it runs exactly as today (SVG mock-ups + e-mail order).
 
 ## Domain / SEO
 

@@ -1,0 +1,15 @@
+# Hemliga nycklar — får ALDRIG checkas in
+.env
+.env.*
+!.env.example
+
+# Netlify
+.netlify/
+
+# Beroenden / bygg
+node_modules/
+dist/
+
+# OS-skräp
+.DS_Store
+Thumbs.db

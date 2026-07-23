@@ -19,8 +19,25 @@
     contactEmail: 'step1film@gmail.com',
     // Swish number is shown at checkout as info only for now.
     // Leave empty to hide until you have a business number.
-    swishNumber: ''
+    swishNumber: '',
+
+    /* ---------------------------------------------------
+       PRINTFUL (print-on-demand) — se PRINTFUL_SETUP.md
+       ---------------------------------------------------
+       Så länge apiBase är tomt / enabled = false körs butiken
+       precis som idag (SVG-mockuper + mejlbeställning).
+       Sätt apiBase till din funktions-URL och enabled: true
+       när dina Printful-produkter och backend är på plats.
+         Netlify:          '/.netlify/functions'  (eller '/api')
+    --------------------------------------------------- */
+    printful: {
+      apiBase: '',
+      enabled: false
+    }
   };
+
+  // Exponera konfigurationen så printful.js kan läsa den.
+  window.S1F_CONFIG = CONFIG;
 
   /* -----------------------------------------------------
      COLOUR PALETTE — hex used for the live garment preview
@@ -130,6 +147,34 @@
       colors: ['white', 'red', 'black'],
       sizes: null
     }
+
+    /* ---------------------------------------------------
+       EXEMPEL — riktig Printful-produkt (kopiera & fyll i)
+       ---------------------------------------------------
+       Skillnaden mot mockuperna ovan:
+         • `images` : riktiga produktbilder per färg (från Printful)
+         • `variants`: kartar färg+storlek → Printfuls variant_id
+           (hämtas från /printful-products, se PRINTFUL_SETUP.md)
+       Så länge du inte fyllt i `images` faller kortet tillbaka
+       till SVG-mockupen automatiskt.
+
+    , {
+      id: 'tee-real', cat: 'clothing', type: 'tee', print: 'S1F',
+      name: { sv: 'STEP1FILM Tee', en: 'STEP1FILM Tee' },
+      desc: { sv: 'Din riktiga design, tryckt av Printful.', en: 'Your real design, printed by Printful.' },
+      price: 279,
+      colors: ['black', 'white'],
+      sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
+      images: {
+        black: 'https://.../din-svarta-tee.png',
+        white: 'https://.../din-vita-tee.png'
+      },
+      variants: {
+        'black|S': 4011111, 'black|M': 4011112, 'black|L': 4011113, 'black|XL': 4011114,
+        'white|S': 4011121, 'white|M': 4011122, 'white|L': 4011123, 'white|XL': 4011124
+      }
+    }
+    --------------------------------------------------- */
   ];
 
   /* -----------------------------------------------------
@@ -218,7 +263,7 @@
      GARMENT RENDER HELPER
   ----------------------------------------------------- */
   function garmentMarkup(product, colorKey) {
-    const c = COLORS[colorKey];
+    const c = COLORS[colorKey] || COLORS.black;
     const pc = c.light ? '#1a1a1a' : '#f2f2f2';
     const wrap = document.createElement('div');
     wrap.style.setProperty('--gc', c.hex);
@@ -228,7 +273,20 @@
     wrap.style.display = 'flex';
     wrap.style.alignItems = 'center';
     wrap.style.justifyContent = 'center';
-    wrap.innerHTML = SVG[product.type](product.print);
+
+    // Riktig produktbild (från Printful) om den finns för vald färg,
+    // annars en enda produktbild, annars SVG-mockupen.
+    const photo = (product.images && product.images[colorKey]) || product.image;
+    if (photo) {
+      const img = document.createElement('img');
+      img.className = 'garment garment-photo';
+      img.src = photo;
+      img.alt = (product.name && (product.name[lang] || product.name.sv)) || '';
+      img.loading = 'lazy';
+      wrap.appendChild(img);
+    } else {
+      wrap.innerHTML = SVG[product.type](product.print);
+    }
     return wrap;
   }
 
@@ -355,10 +413,16 @@
     if (existing) {
       existing.qty += 1;
     } else {
+      // Printful-variantens ID (om produkten har en variants-karta).
+      // Nyckel: 'colorKey|SIZE' för kläder, 'colorKey|one' för one-size.
+      const variantId = p.variants
+        ? (p.variants[`${sel.color}|${sel.size || 'one'}`] || null)
+        : null;
       cart.push({
         key, id: p.id, type: p.type, print: p.print,
         name: p.name, price: p.price,
-        color: sel.color, size: sel.size, qty: 1
+        color: sel.color, size: sel.size, qty: 1,
+        variant_id: variantId
       });
     }
     saveCart();
