@@ -99,11 +99,17 @@
     {
       id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
       name: { sv: 'REEL MUGG', en: 'REEL MUG' },
-      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck.', en: 'Black glossy mug, 15 oz. Pink film-reel print.' },
-      price: 199,
+      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck. Fri frakt.', en: 'Black glossy mug, 15 oz. Pink film-reel print. Free shipping.' },
+      price: 229,
+      freeShipping: true,
       colors: ['black'],
       sizes: null,
-      image: 'assets/products/reel-mugg.png'
+      image: 'assets/products/reel-mugg.png',
+      gallery: [
+        'assets/products/reel-mugg.png',
+        'assets/products/reel-mugg-2.png',
+        'assets/products/reel-mugg-lifestyle.png'
+      ]
     },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
@@ -218,6 +224,7 @@
       placeOrder: 'Skicka beställning',
       orderSummary: 'Sammanfattning',
       shipping: 'Frakt', shippingCalc: 'Räknas vid utcheckning',
+      freeShipping: 'Fri frakt',
       total: 'Totalt',
       thanksTitle: 'Tack för din beställning!',
       thanksText: 'Vi har tagit emot din förfrågan och hör av oss på mejl med betalning och leverans. Betalning (Swish/kort) aktiveras när butiken flyttat till egen domän.',
@@ -247,6 +254,7 @@
       placeOrder: 'Place order',
       orderSummary: 'Summary',
       shipping: 'Shipping', shippingCalc: 'Calculated at checkout',
+      freeShipping: 'Free shipping',
       total: 'Total',
       thanksTitle: 'Thank you for your order!',
       thanksText: "We've received your request and will email you with payment and delivery. Payment (Swish/card) goes live once the store moves to its own domain.",
@@ -338,6 +346,31 @@
       badge.textContent = badgeText;
       visual.appendChild(badge);
       visual.appendChild(garmentMarkup(p, sel.color));
+
+      // Bildgalleri — klickbara miniatyrer (byter huvudbilden)
+      if (p.gallery && p.gallery.length > 1) {
+        const thumbs = document.createElement('div');
+        thumbs.className = 'pc-thumbs';
+        p.gallery.forEach((src, idx) => {
+          const tb = document.createElement('button');
+          tb.type = 'button';
+          tb.className = 'pc-thumb' + (idx === 0 ? ' active' : '');
+          tb.setAttribute('aria-label', `${p.name[lang]} — ${idx + 1}`);
+          const timg = document.createElement('img');
+          timg.src = src;
+          timg.loading = 'lazy';
+          timg.alt = '';
+          tb.appendChild(timg);
+          tb.addEventListener('click', () => {
+            const main = visual.querySelector('.garment-photo');
+            if (main) main.src = src;
+            thumbs.querySelectorAll('.pc-thumb').forEach((el) => el.classList.remove('active'));
+            tb.classList.add('active');
+          });
+          thumbs.appendChild(tb);
+        });
+        visual.appendChild(thumbs);
+      }
 
       // Body
       const body = document.createElement('div');
@@ -578,8 +611,13 @@
         <span>${item.price * item.qty} ${CONFIG.currency}</span>
       </div>`;
     });
+    const allFree = cart.length > 0 && cart.every((i) => {
+      const p = PRODUCTS.find((x) => x.id === i.id);
+      return p && p.freeShipping;
+    });
+    const shipVal = allFree ? t('freeShipping') : t('shippingCalc');
     sum.innerHTML = rows +
-      `<div class="os-row"><span>${t('shipping')}</span><span>${t('shippingCalc')}</span></div>
+      `<div class="os-row"><span>${t('shipping')}</span><span>${shipVal}</span></div>
        <div class="os-row total"><span>${t('total')}</span><span>${cartTotal()} ${CONFIG.currency}</span></div>`;
   }
 

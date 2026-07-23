@@ -14,9 +14,14 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 
 | Produkt | Filnamn |
 |---|---|
-| REEL MUGG | `reel-mugg.png` |
+| REEL MUGG (framsida) | `reel-mugg.png` |
+| REEL MUGG (handtag vänster) | `reel-mugg-2.png` |
+| REEL MUGG (livsstil) | `reel-mugg-lifestyle.png` |
 
 *(Fyll på listan i takt med att fler produkter läggs till.)*
+
+> **Obs om uppladdning:** när du drar in filer via GitHub, döp dem till exakt
+> namnen ovan (utan dubbel ändelse som `.png.png`).
 
 ## Tips
 - **PNG eller JPG** funkar. Håll gärna filen under ~800 KB så sidan laddar snabbt.
