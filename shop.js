@@ -91,6 +91,22 @@
   ----------------------------------------------------- */
   const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const PRODUCTS = [
+    /* ===== RIKTIGA PRINTFUL-PRODUKTER =====================
+       Bild laddas från assets/products/. Ladda upp filen med
+       exakt det filnamn som står i `image` nedan. Saknas den
+       visas mockupen tills vidare. Variant-ID:n läggs till när
+       vi kopplar leverans. */
+    {
+      id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
+      name: { sv: 'REEL MUGG', en: 'REEL MUG' },
+      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck.', en: 'Black glossy mug, 15 oz. Pink film-reel print.' },
+      price: 199,
+      colors: ['black'],
+      sizes: null,
+      image: 'assets/products/reel-mugg.png'
+    },
+
+    /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
     {
       id: 'tee-classic', cat: 'clothing', type: 'tee', print: 'S1F',
       name: { sv: 'STEP1FILM Tee', en: 'STEP1FILM Tee' },
@@ -283,6 +299,11 @@
       img.src = photo;
       img.alt = (product.name && (product.name[lang] || product.name.sv)) || '';
       img.loading = 'lazy';
+      // Om bildfilen inte finns ännu (t.ex. inte uppladdad) — visa
+      // SVG-mockupen istället så inget ser trasigt ut.
+      img.addEventListener('error', () => {
+        wrap.innerHTML = SVG[product.type] ? SVG[product.type](product.print) : '';
+      });
       wrap.appendChild(img);
     } else {
       wrap.innerHTML = SVG[product.type](product.print);
