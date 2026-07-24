@@ -198,6 +198,16 @@ body::before {
   color: var(--text-dim);
   font-size: 0.98rem;
 }
+.shop-hero .hero-note {
+  max-width: 46ch;
+  margin: 1.4rem auto 0;
+  color: var(--white);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid var(--line);
+  border-radius: 40px;
+  padding: 0.6rem 1.2rem;
+}
 
 /* Category filter */
 .cat-filter {
