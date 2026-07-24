@@ -33,6 +33,10 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | ICON STICKERS | `icon-stickers.png` + `-1`, `-2` |
 | REEL TRUCKER CAP (marinblå) | `trucker-cap-navy.png` + `-1`, `-2`, `-3`, `-5` |
 | REEL TRUCKER CAP (silver) | `trucker-cap-silver.png` + `-1`…`-5` |
+| REEL TRUCKER CAP (svart) | `trucker-cap-black.png` + `-1`…`-5` |
+| DIRECTOR'S BEANIE | `beanie-<black/brown/navy/olive>.png` + numrerade |
+| STATIC REEL SLEEVE | `static-sleeve.png` + `-1`, `-2` |
+| LIL' DIRECTOR TEE | `lil-tee-<pink/lightblue/white>.png` + numrerade |
 
 > **Saknas just nu:** `take-one-sleeve-3.png` och `backpack-pink-2.png`
 > (ladda upp dem så läggs de automatiskt till i respektive bildspel).

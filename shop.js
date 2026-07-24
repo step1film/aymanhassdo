@@ -58,8 +58,12 @@
     red:      { hex: '#c11a1a', sv: 'Röd',      en: 'Red',      light: false },
     pink:     { hex: '#e85ba0', sv: 'Rosa',     en: 'Pink',     light: false },
     lightpink:{ hex: '#f2cfe0', sv: 'Ljusrosa', en: 'Light pink', light: true },
+    candy:    { hex: '#f4a7c3', sv: 'Rosa',     en: 'Pink',     light: true  },
     natural:  { hex: '#e9e0c9', sv: 'Naturvit', en: 'Natural',  light: true  },
     silver:   { hex: '#b3b7ba', sv: 'Silver',   en: 'Silver',   light: true  },
+    lightblue:{ hex: '#a9cce3', sv: 'Ljusblå',  en: 'Light blue', light: true },
+    brown:    { hex: '#5a4632', sv: 'Brun',     en: 'Brown',    light: false },
+    olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -279,12 +283,13 @@
       name: { sv: 'REEL TRUCKER CAP', en: 'REEL TRUCKER CAP' },
       desc: { sv: 'Trucker-keps med vit mesh. Broderad STEP1 Film-logga. Justerbar spänne. Välj färg. One size.', en: 'Trucker cap with white mesh. Embroidered STEP1 Film logo. Adjustable snap. Pick a colour. One size.' },
       price: 349,
-      colors: ['navy', 'silver'],
+      colors: ['navy', 'silver', 'black'],
       sizes: null,
       image: 'assets/products/trucker-cap-navy.png',
       images: {
         navy: 'assets/products/trucker-cap-navy.png',
-        silver: 'assets/products/trucker-cap-silver.png'
+        silver: 'assets/products/trucker-cap-silver.png',
+        black: 'assets/products/trucker-cap-black.png'
       },
       galleries: {
         navy: [
@@ -301,6 +306,14 @@
           'assets/products/trucker-cap-silver-3.png',
           'assets/products/trucker-cap-silver-4.png',
           'assets/products/trucker-cap-silver-5.png'
+        ],
+        black: [
+          'assets/products/trucker-cap-black.png',
+          'assets/products/trucker-cap-black-1.png',
+          'assets/products/trucker-cap-black-2.png',
+          'assets/products/trucker-cap-black-3.png',
+          'assets/products/trucker-cap-black-4.png',
+          'assets/products/trucker-cap-black-5.png'
         ]
       }
     },
@@ -317,6 +330,62 @@
         'assets/products/icon-stickers-1.png',
         'assets/products/icon-stickers-2.png'
       ]
+    },
+
+    {
+      id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
+      name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
+      desc: { sv: 'Ribbstickad mössa med broderat "Reserved for Vision". Vikt kant. Välj färg. One size.', en: 'Ribbed knit beanie, embroidered "Reserved for Vision". Cuffed. Pick a colour. One size.' },
+      price: 329,
+      colors: ['black', 'brown', 'navy', 'olive'],
+      sizes: null,
+      image: 'assets/products/beanie-black.png',
+      images: {
+        black: 'assets/products/beanie-black.png',
+        brown: 'assets/products/beanie-brown.png',
+        navy: 'assets/products/beanie-navy.png',
+        olive: 'assets/products/beanie-olive.png'
+      },
+      galleries: {
+        black: ['assets/products/beanie-black.png', 'assets/products/beanie-black-1.png', 'assets/products/beanie-black-2.png', 'assets/products/beanie-black-3.png', 'assets/products/beanie-black-5.png'],
+        brown: ['assets/products/beanie-brown.png', 'assets/products/beanie-brown-1.png', 'assets/products/beanie-brown-2.png', 'assets/products/beanie-brown-3.png', 'assets/products/beanie-brown-4.png'],
+        navy: ['assets/products/beanie-navy.png', 'assets/products/beanie-navy-1.png', 'assets/products/beanie-navy-2.png', 'assets/products/beanie-navy-3.png'],
+        olive: ['assets/products/beanie-olive.png', 'assets/products/beanie-olive-1.png', 'assets/products/beanie-olive-2.png', 'assets/products/beanie-olive-3.png', 'assets/products/beanie-olive-4.png']
+      }
+    },
+    {
+      id: 'static-reel-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
+      name: { sv: 'STATIC REEL SLEEVE', en: 'STATIC REEL SLEEVE' },
+      desc: { sv: 'Laptop-fodral med "static"-mönster i grått, rosa logga. Vadderat med dragkedja.', en: 'Laptop sleeve with grey "static" pattern and pink logo. Padded, zippered.' },
+      price: 429,
+      sizePrices: { '13"': 429, '15"': 499 },
+      colors: ['silver'],
+      sizes: ['13"', '15"'], defaultSize: '13"',
+      image: 'assets/products/static-sleeve.png',
+      gallery: [
+        'assets/products/static-sleeve.png',
+        'assets/products/static-sleeve-1.png',
+        'assets/products/static-sleeve-2.png'
+      ]
+    },
+    {
+      id: 'lil-director-tee', cat: 'clothing', type: 'tee', print: 'LIL',
+      name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
+      desc: { sv: 'Baby-t-shirt "Get ready for some movies". Mjuk bomull. Välj färg. Storlek 6–24 mån.', en: 'Baby tee "Get ready for some movies". Soft cotton. Pick a colour. Sizes 6–24 months.' },
+      price: 249,
+      colors: ['candy', 'lightblue', 'white'],
+      sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
+      image: 'assets/products/lil-tee-pink.png',
+      images: {
+        candy: 'assets/products/lil-tee-pink.png',
+        lightblue: 'assets/products/lil-tee-lightblue.png',
+        white: 'assets/products/lil-tee-white.png'
+      },
+      galleries: {
+        candy: ['assets/products/lil-tee-pink.png', 'assets/products/lil-tee-pink-1.png', 'assets/products/lil-tee-pink-2.png', 'assets/products/lil-tee-pink-3.png'],
+        lightblue: ['assets/products/lil-tee-lightblue.png', 'assets/products/lil-tee-lightblue-1.png', 'assets/products/lil-tee-lightblue-2.png', 'assets/products/lil-tee-lightblue-3.png', 'assets/products/lil-tee-lightblue-4.png'],
+        white: ['assets/products/lil-tee-white.png', 'assets/products/lil-tee-white-1.png', 'assets/products/lil-tee-white-2.png', 'assets/products/lil-tee-white-3.png']
+      }
     },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
