@@ -418,6 +418,7 @@
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
+      zoomHint: 'Klicka för att zooma', zoomTip: 'Klicka på bilden för att zooma · dra för att panorera',
       add: 'Lägg i vagn', added: 'Tillagd ✓',
       cart: 'Vagn', cartTitle: 'Din vagn', empty: 'Din vagn är tom.',
       keepShopping: 'Fortsätt handla',
@@ -450,6 +451,7 @@
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       detailsLabel: 'Details & size', materialLabel: 'Material & details',
+      zoomHint: 'Click to zoom', zoomTip: 'Click the image to zoom · drag to pan',
       add: 'Add to cart', added: 'Added ✓',
       cart: 'Cart', cartTitle: 'Your cart', empty: 'Your cart is empty.',
       keepShopping: 'Keep shopping',
@@ -572,7 +574,10 @@
         img.src = src;
         img.alt = p.name[lang];
         img.loading = i === 0 ? 'eager' : 'lazy';
+        img.title = t('zoomHint');
         img.addEventListener('error', () => { s.innerHTML = SVG[p.type] ? SVG[p.type](p.print) : ''; });
+        // Klicka för att zooma (öppnar förstoringsläge)
+        img.addEventListener('click', (e) => { e.stopPropagation(); openLightbox(imgs, i, p.name[lang]); });
         s.appendChild(img);
         slidesWrap.appendChild(s);
         slideEls.push(s);
@@ -1071,9 +1076,112 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
   }
 
   /* -----------------------------------------------------
+     LIGHTBOX / ZOOM — helskärm med förstoring & panorering
+  ----------------------------------------------------- */
+  let lb, lbImg, lbStage, lbCounter, lbImages = [], lbIndex = 0, lbZoom = false;
+
+  function buildLightbox() {
+    lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.innerHTML =
+      '<button class="lb-close" aria-label="Stäng">×</button>' +
+      '<button class="lb-nav lb-prev" aria-label="Föregående">‹</button>' +
+      '<button class="lb-nav lb-next" aria-label="Nästa">›</button>' +
+      '<div class="lb-stage"><img class="lb-img" alt=""></div>' +
+      '<div class="lb-counter"></div>' +
+      '<div class="lb-hint"></div>';
+    document.body.appendChild(lb);
+    lbImg = lb.querySelector('.lb-img');
+    lbStage = lb.querySelector('.lb-stage');
+    lbCounter = lb.querySelector('.lb-counter');
+
+    lb.querySelector('.lb-close').addEventListener('click', closeLightbox);
+    lb.querySelector('.lb-prev').addEventListener('click', (e) => { e.stopPropagation(); lbGo(lbIndex - 1); });
+    lb.querySelector('.lb-next').addEventListener('click', (e) => { e.stopPropagation(); lbGo(lbIndex + 1); });
+    // Klick på bakgrunden (utanför bild) stänger
+    lb.addEventListener('click', (e) => { if (e.target === lb || e.target === lbStage) closeLightbox(); });
+
+    // Dator: rör musen över zoomad bild för att panorera
+    lbStage.addEventListener('mousemove', (e) => {
+      if (!lbZoom) return;
+      setOrigin(e.clientX, e.clientY);
+    });
+    // Klick på bilden växlar zoom in/ut
+    lbImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (lbZoom) { setZoom(false); } else { setZoom(true); setOrigin(e.clientX, e.clientY); }
+    });
+
+    // Mobil: tryck för att växla zoom, dra för att panorera, svajp för att byta bild
+    let tX = 0, tY = 0, moved = false;
+    lbStage.addEventListener('touchstart', (e) => {
+      const t0 = e.changedTouches[0]; tX = t0.clientX; tY = t0.clientY; moved = false;
+    }, { passive: true });
+    lbStage.addEventListener('touchmove', (e) => {
+      const t0 = e.changedTouches[0];
+      if (Math.abs(t0.clientX - tX) > 8 || Math.abs(t0.clientY - tY) > 8) moved = true;
+      if (lbZoom) setOrigin(t0.clientX, t0.clientY);
+    }, { passive: true });
+    lbStage.addEventListener('touchend', (e) => {
+      const t0 = e.changedTouches[0];
+      const dx = t0.clientX - tX;
+      if (!lbZoom && moved && Math.abs(dx) > 40) { lbGo(lbIndex + (dx < 0 ? 1 : -1)); return; }
+      if (!moved) { // tap
+        if (lbZoom) setZoom(false); else { setZoom(true); setOrigin(t0.clientX, t0.clientY); }
+      }
+    }, { passive: true });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') lbGo(lbIndex - 1);
+      else if (e.key === 'ArrowRight') lbGo(lbIndex + 1);
+    });
+  }
+
+  function setOrigin(clientX, clientY) {
+    const r = lbImg.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+    lbImg.style.transformOrigin = x + '% ' + y + '%';
+  }
+  function setZoom(on) {
+    lbZoom = on;
+    lbImg.style.transform = on ? 'scale(2.4)' : 'scale(1)';
+    lbImg.classList.toggle('zoomed', on);
+  }
+  function lbGo(n) {
+    if (!lbImages.length) return;
+    lbIndex = (n + lbImages.length) % lbImages.length;
+    setZoom(false);
+    lbImg.style.transformOrigin = 'center center';
+    lbImg.src = lbImages[lbIndex];
+    lbCounter.textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+    lb.querySelectorAll('.lb-nav').forEach((el) => { el.style.display = lbImages.length > 1 ? '' : 'none'; });
+  }
+  function openLightbox(images, index, alt) {
+    if (!lb) buildLightbox();
+    lbImages = images.slice();
+    lbImg.alt = alt || '';
+    lb.querySelector('.lb-hint').textContent = t('zoomTip');
+    lbGo(index || 0);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    if (!lb) return;
+    lb.classList.remove('open');
+    setZoom(false);
+    if (!drawer.classList.contains('open')) document.body.style.overflow = '';
+  }
+
+  /* -----------------------------------------------------
      WIRE UP
   ----------------------------------------------------- */
   function init() {
+    buildLightbox();
     // Filter
     document.querySelectorAll('.cat-filter button').forEach((b) => {
       b.addEventListener('click', () => {

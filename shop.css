@@ -363,6 +363,84 @@ body::before {
   .pc-nav { opacity: 1; }
 }
 
+/* =====================================================
+   LIGHTBOX / ZOOM
+   ===================================================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.93);
+  backdrop-filter: blur(4px);
+}
+.lightbox.open { display: flex; }
+.lb-stage {
+  max-width: 92vw;
+  max-height: 86vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+.lb-img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  cursor: zoom-in;
+  transition: transform 0.18s var(--ease);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.lb-img.zoomed { cursor: zoom-out; }
+.lb-close,
+.lb-nav {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+.lb-close:hover,
+.lb-nav:hover { background: rgba(255, 255, 255, 0.24); }
+.lb-close { top: 1rem; right: 1.1rem; width: 44px; height: 44px; font-size: 1.7rem; }
+.lb-nav { top: 50%; transform: translateY(-50%); width: 48px; height: 48px; font-size: 1.9rem; }
+.lb-prev { left: 1rem; }
+.lb-next { right: 1rem; }
+.lb-counter {
+  position: absolute;
+  top: 1.3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--ff-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+}
+.lb-hint {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+@media (max-width: 600px) {
+  .lb-nav { width: 40px; height: 40px; font-size: 1.6rem; }
+}
+
 /* Passform-varning (t.ex. "liten i storleken") */
 .pc-fit {
   display: flex;
