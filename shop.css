@@ -353,6 +353,71 @@ body::before {
   .pc-nav { opacity: 1; }
 }
 
+/* Passform-varning (t.ex. "liten i storleken") */
+.pc-fit {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0.1rem 0 0.2rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #e7c26b;
+}
+
+/* Detaljer & storlek — utfällbart */
+.pc-details {
+  border-top: 1px solid var(--line);
+  padding-top: 0.7rem;
+  margin-top: 0.2rem;
+}
+.pc-details > summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--ff-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pc-details > summary::-webkit-details-marker { display: none; }
+.pc-details > summary::after {
+  content: '+';
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  transition: transform 0.2s var(--ease);
+}
+.pc-details[open] > summary::after { content: '−'; }
+.pc-details-body {
+  padding-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.pc-details-body p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.pc-specs {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.pc-specs li {
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--text);
+}
+.pc-fine {
+  font-size: 0.72rem !important;
+  color: var(--text-dim);
+  opacity: 0.75;
+}
+
 .garment-body {
   fill: var(--gc, #222);
   stroke: rgba(255,255,255,0.16);

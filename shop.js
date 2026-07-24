@@ -250,7 +250,23 @@
         'assets/products/hoodie-24fps-5.png',
         'assets/products/hoodie-24fps-6.png',
         'assets/products/hoodie-24fps-7.png'
-      ]
+      ],
+      fit: {
+        sv: 'Liten i storleken – välj gärna en storlek större än vanligt.',
+        en: 'Runs small – consider ordering one size up.'
+      },
+      details: {
+        sv: {
+          desc: 'Vissa plagg bär bara ett tryck – den här bär en känsla. 24FPS HOODIE är gjord för dig som lever och andas film, med en tung, mjuk bomullsfleece som känns lika bra som den ser ut. Rymlig passform, varm huva och en generös känguruficka gör den lika hemma på inspelningsplatsen som i soffan efter premiären.',
+          specs: ['100% bomull utsida', '65% ringspunnen bomull, 35% polyester', 'Känguruficka fram', 'Tygpatch på ryggen', 'Matchande plana dragsnören', 'Huva i 3 paneler'],
+          fine: 'För vuxna · EU-garanti: 2 år · Uppfyller krav för brandsäkerhet, bly, kadmium, bisfenoler och ftalater.'
+        },
+        en: {
+          desc: 'Some garments carry just a print – this one carries a feeling. The 24FPS HOODIE is made for those who live and breathe film: a heavy, soft cotton fleece that feels as good as it looks. Relaxed fit, warm hood and a roomy kangaroo pocket make it as at home on set as on the couch after the premiere.',
+          specs: ['100% cotton face', '65% ring-spun cotton, 35% polyester', 'Front pouch pocket', 'Self-fabric patch on the back', 'Matching flat drawstrings', '3-panel hood'],
+          fine: 'For adults · EU warranty: 2 years · Meets flammability, lead, cadmium, bisphenol and phthalate requirements.'
+        }
+      }
     },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
@@ -350,6 +366,7 @@
       heroText: 'Du blir garanterat lite mer kreativ med en Step1Film på dig. 🙂 Välj färg, storlek och lägg i vagnen.',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
+      detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
       add: 'Lägg i vagn', added: 'Tillagd ✓',
       cart: 'Vagn', cartTitle: 'Din vagn', empty: 'Din vagn är tom.',
       keepShopping: 'Fortsätt handla',
@@ -380,6 +397,7 @@
       heroText: "You're guaranteed to get a little more creative wearing a Step1Film. 🙂 Pick a colour, a size and add to cart.",
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
+      detailsLabel: 'Details & size', materialLabel: 'Material & details',
       add: 'Add to cart', added: 'Added ✓',
       cart: 'Cart', cartTitle: 'Your cart', empty: 'Your cart is empty.',
       keepShopping: 'Keep shopping',
@@ -522,8 +540,10 @@
       return;
     }
 
-    // Ingen auto-växling — kunden bläddrar själv med pilar/punkter.
+    // Ingen auto-växling. Basbild default; hover (dator) visar 01-bilden;
+    // swajp (mobil) och pilar/punkter bläddrar bland alla bilder.
     let idx = 0;
+    let userInteracted = false; // sant när kunden bläddrat själv
     const dotWrap = document.createElement('div');
     dotWrap.className = 'pc-dots';
     const dots = slideEls.map((_, i) => {
@@ -531,7 +551,7 @@
       d.type = 'button';
       d.className = 'pc-dot' + (i === 0 ? ' active' : '');
       d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
-      d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
+      d.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; go(i); });
       dotWrap.appendChild(d);
       return d;
     });
@@ -546,14 +566,33 @@
       b.className = 'pc-nav ' + cls;
       b.innerHTML = sym;
       b.setAttribute('aria-label', label);
-      b.addEventListener('click', (e) => { e.stopPropagation(); go(idx + dir); });
+      b.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; go(idx + dir); });
       return b;
     };
     visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
     visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
     visual.appendChild(dotWrap);
-    visual.onmouseenter = null;
-    visual.onmouseleave = null;
+
+    // Hover-peek (dator med mus): visa 01-bilden när musen är över,
+    // basbilden när den lämnar — tills kunden själv börjar bläddra.
+    const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+    if (canHover) {
+      visual.onmouseenter = () => { if (!userInteracted) go(1); };
+      visual.onmouseleave = () => { if (!userInteracted) go(0); };
+    } else {
+      visual.onmouseenter = null;
+      visual.onmouseleave = null;
+    }
+
+    // Swajp i sidled (mobil/touch) för att bläddra bilderna.
+    let touchX = null;
+    slidesWrap.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+    slidesWrap.addEventListener('touchend', (e) => {
+      if (touchX == null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 30) { userInteracted = true; go(idx + (dx < 0 ? 1 : -1)); }
+      touchX = null;
+    }, { passive: true });
   }
 
   /* -----------------------------------------------------
@@ -603,6 +642,14 @@
       desc.className = 'pc-desc';
       desc.textContent = p.desc[lang];
       body.appendChild(desc);
+
+      // Passform-varning (t.ex. "liten i storleken") — alltid synlig
+      if (p.fit) {
+        const fit = document.createElement('p');
+        fit.className = 'pc-fit';
+        fit.textContent = '↕ ' + (p.fit[lang] || p.fit.sv);
+        body.appendChild(fit);
+      }
 
       // Colours
       const colWrap = document.createElement('div');
@@ -656,6 +703,41 @@
         const one = document.createElement('div');
         one.innerHTML = `<span class="opt-label">${t('sizeLabel')}: <span class="opt-value">${t('oneSize')}</span></span>`;
         body.appendChild(one);
+      }
+
+      // Detaljer & storlek (utfällbart)
+      if (p.details) {
+        const dd = p.details[lang] || p.details.sv;
+        const det = document.createElement('details');
+        det.className = 'pc-details';
+        const sum = document.createElement('summary');
+        sum.textContent = t('detailsLabel');
+        det.appendChild(sum);
+        const dbody = document.createElement('div');
+        dbody.className = 'pc-details-body';
+        if (dd.desc) {
+          const dp = document.createElement('p');
+          dp.textContent = dd.desc;
+          dbody.appendChild(dp);
+        }
+        if (dd.specs && dd.specs.length) {
+          const lbl = document.createElement('span');
+          lbl.className = 'opt-label';
+          lbl.textContent = t('materialLabel');
+          dbody.appendChild(lbl);
+          const ul = document.createElement('ul');
+          ul.className = 'pc-specs';
+          dd.specs.forEach((s) => { const li = document.createElement('li'); li.textContent = s; ul.appendChild(li); });
+          dbody.appendChild(ul);
+        }
+        if (dd.fine) {
+          const fine = document.createElement('p');
+          fine.className = 'pc-fine';
+          fine.textContent = dd.fine;
+          dbody.appendChild(fine);
+        }
+        det.appendChild(dbody);
+        body.appendChild(det);
       }
 
       // Add to cart
