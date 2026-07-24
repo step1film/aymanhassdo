@@ -225,7 +225,7 @@
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1FILM STORE',
       heroText: 'Du blir garanterat lite mer kreativ med en Step1Film på dig. 🙂 Välj färg, storlek och lägg i vagnen.',
-      all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar',
+      all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       add: 'Lägg i vagn', added: 'Tillagd ✓',
       cart: 'Vagn', cartTitle: 'Din vagn', empty: 'Din vagn är tom.',
@@ -255,7 +255,7 @@
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1FILM STORE',
       heroText: "You're guaranteed to get a little more creative wearing a Step1Film. 🙂 Pick a colour, a size and add to cart.",
-      all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs',
+      all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       add: 'Add to cart', added: 'Added ✓',
       cart: 'Cart', cartTitle: 'Your cart', empty: 'Your cart is empty.',
@@ -294,6 +294,8 @@
 
   const t = (k) => (I18N[lang][k] || k);
   const cname = (key) => COLORS[key][lang];
+  // Pris för en produkt givet vald storlek (stöder olika pris per storlek)
+  const priceFor = (p, size) => (p.sizePrices && size && p.sizePrices[size] != null) ? p.sizePrices[size] : p.price;
 
   function loadCart() {
     try { return JSON.parse(localStorage.getItem('s1f_cart')) || []; }
@@ -361,7 +363,7 @@
       // Visual
       const visual = document.createElement('div');
       visual.className = 'pc-visual';
-      const badgeText = p.cat === 'clothing' ? t('clothing') : p.cat === 'caps' ? t('caps') : t('mugs');
+      const badgeText = t(p.cat);
       const badge = document.createElement('span');
       badge.className = 'pc-badge';
       badge.textContent = badgeText;
@@ -450,7 +452,7 @@
       const head = document.createElement('div');
       head.className = 'pc-head';
       head.innerHTML = `<h3 class="pc-name">${p.name[lang]}</h3>
-        <span class="pc-price">${p.price} ${CONFIG.currency}</span>`;
+        <span class="pc-price" data-price>${priceFor(p, sel.size)} ${CONFIG.currency}</span>`;
       body.appendChild(head);
 
       const desc = document.createElement('p');
@@ -500,6 +502,9 @@
             sel.size = sz;
             sizes.querySelectorAll('.size').forEach((el) => el.classList.remove('active'));
             b.classList.add('active');
+            // Uppdatera priset om produkten har olika pris per storlek
+            const priceEl = head.querySelector('[data-price]');
+            if (priceEl) priceEl.textContent = `${priceFor(p, sz)} ${CONFIG.currency}`;
           });
           sizes.appendChild(b);
         });
@@ -547,7 +552,7 @@
         : null;
       cart.push({
         key, id: p.id, type: p.type, print: p.print,
-        name: p.name, price: p.price,
+        name: p.name, price: priceFor(p, sel.size),
         color: sel.color, size: sel.size, qty: 1,
         variant_id: variantId
       });
