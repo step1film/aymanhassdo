@@ -341,8 +341,11 @@
      PRODUCT GRID
   ----------------------------------------------------- */
   const grid = document.getElementById('grid');
+  let slideTimers = []; // aktiva bildspels-timers (rensas vid omritning)
 
   function renderGrid() {
+    slideTimers.forEach((id) => clearInterval(id));
+    slideTimers = [];
     grid.innerHTML = '';
     const list = PRODUCTS.filter((p) => filter === 'all' || p.cat === filter);
 
@@ -363,31 +366,81 @@
       badge.className = 'pc-badge';
       badge.textContent = badgeText;
       visual.appendChild(badge);
-      visual.appendChild(garmentMarkup(p, sel.color));
 
-      // Bildgalleri — klickbara miniatyrer (byter huvudbilden)
-      if (p.gallery && p.gallery.length > 1) {
-        const thumbs = document.createElement('div');
-        thumbs.className = 'pc-thumbs';
-        p.gallery.forEach((src, idx) => {
-          const tb = document.createElement('button');
-          tb.type = 'button';
-          tb.className = 'pc-thumb' + (idx === 0 ? ' active' : '');
-          tb.setAttribute('aria-label', `${p.name[lang]} — ${idx + 1}`);
-          const timg = document.createElement('img');
-          timg.src = src;
-          timg.loading = 'lazy';
-          timg.alt = '';
-          tb.appendChild(timg);
-          tb.addEventListener('click', () => {
-            const main = visual.querySelector('.garment-photo');
-            if (main) main.src = src;
-            thumbs.querySelectorAll('.pc-thumb').forEach((el) => el.classList.remove('active'));
-            tb.classList.add('active');
+      // Bildspel — galleri om det finns, annars en enda bild/SVG-mockup
+      const slidesWrap = document.createElement('div');
+      slidesWrap.className = 'pc-slides';
+      const slideEls = [];
+      const sources = (p.gallery && p.gallery.length) ? p.gallery : null;
+      if (sources) {
+        sources.forEach((src, i) => {
+          const s = document.createElement('div');
+          s.className = 'pc-slide' + (i === 0 ? ' active' : '');
+          const img = document.createElement('img');
+          img.className = 'garment garment-photo';
+          img.src = src;
+          img.alt = p.name[lang];
+          img.loading = i === 0 ? 'eager' : 'lazy';
+          // Om bilden saknas — fall tillbaka till SVG-mockupen
+          img.addEventListener('error', () => {
+            s.innerHTML = SVG[p.type] ? SVG[p.type](p.print) : '';
           });
-          thumbs.appendChild(tb);
+          s.appendChild(img);
+          slidesWrap.appendChild(s);
+          slideEls.push(s);
         });
-        visual.appendChild(thumbs);
+      } else {
+        const s = document.createElement('div');
+        s.className = 'pc-slide active';
+        s.appendChild(garmentMarkup(p, sel.color));
+        slidesWrap.appendChild(s);
+        slideEls.push(s);
+      }
+      visual.appendChild(slidesWrap);
+
+      // Kontroller (pilar + punkter + auto-växling) när fler än en bild
+      if (slideEls.length > 1) {
+        let idx = 0;
+        let timer = null;
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const dotWrap = document.createElement('div');
+        dotWrap.className = 'pc-dots';
+        const dots = slideEls.map((_, i) => {
+          const d = document.createElement('button');
+          d.type = 'button';
+          d.className = 'pc-dot' + (i === 0 ? ' active' : '');
+          d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
+          d.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(i); });
+          dotWrap.appendChild(d);
+          return d;
+        });
+        const go = (n) => {
+          idx = (n + slideEls.length) % slideEls.length;
+          slideEls.forEach((s, i) => s.classList.toggle('active', i === idx));
+          dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        };
+        const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+        const start = () => {
+          if (reduce) return;
+          stop();
+          timer = setInterval(() => go(idx + 1), 4000);
+          slideTimers.push(timer);
+        };
+        const mkNav = (cls, sym, dir, label) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pc-nav ' + cls;
+          b.innerHTML = sym;
+          b.setAttribute('aria-label', label);
+          b.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(idx + dir); });
+          return b;
+        };
+        visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
+        visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
+        visual.appendChild(dotWrap);
+        visual.addEventListener('mouseenter', stop);
+        visual.addEventListener('mouseleave', start);
+        start();
       }
 
       // Body
@@ -422,9 +475,11 @@
           swatches.querySelectorAll('.swatch').forEach((el) => el.classList.remove('active'));
           sw.classList.add('active');
           colWrap.querySelector('[data-cval]').textContent = cname(ck);
-          // update preview
-          visual.querySelector('.garment') && visual.removeChild(visual.lastChild);
-          visual.appendChild(garmentMarkup(p, ck));
+          // update preview (endast produkter utan bildgalleri använder färgbyte)
+          if (!(p.gallery && p.gallery.length)) {
+            const slide = visual.querySelector('.pc-slide');
+            if (slide) { slide.innerHTML = ''; slide.appendChild(garmentMarkup(p, ck)); }
+          }
         });
         swatches.appendChild(sw);
       });

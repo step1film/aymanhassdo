@@ -277,36 +277,81 @@ body::before {
   display: block;
 }
 
-/* Bildgalleri — miniatyrer nere i produktrutan */
-.pc-thumbs {
+/* Bildspel — alla bilder staplade, en synlig i taget */
+.pc-slides {
+  position: absolute;
+  inset: 0;
+}
+.pc-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+  pointer-events: none;
+}
+.pc-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Pilar */
+.pc-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(12, 12, 12, 0.55);
+  color: var(--white, #f2f2f2);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease), background 0.2s var(--ease);
+}
+.pc-visual:hover .pc-nav { opacity: 1; }
+.pc-nav:hover { background: rgba(0, 0, 0, 0.8); }
+.pc-nav:focus-visible { opacity: 1; outline: 2px solid var(--white, #f2f2f2); outline-offset: 2px; }
+.pc-prev { left: 0.6rem; }
+.pc-next { right: 0.6rem; }
+
+/* Punkter */
+.pc-dots {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0.6rem;
+  bottom: 0.7rem;
+  z-index: 3;
   display: flex;
   gap: 0.4rem;
   justify-content: center;
-  z-index: 2;
 }
-.pc-thumb {
-  width: 40px;
-  height: 40px;
+.pc-dot {
+  width: 8px;
+  height: 8px;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  overflow: hidden;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  transition: background 0.2s var(--ease), transform 0.2s var(--ease);
 }
-.pc-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.pc-dot:hover { transform: scale(1.2); }
+.pc-dot.active { background: var(--white, #f2f2f2); }
+
+/* Touch-enheter: visa pilarna alltid (ingen hover) */
+@media (hover: none) {
+  .pc-nav { opacity: 1; }
 }
-.pc-thumb:hover { transform: translateY(-2px); }
-.pc-thumb.active { border-color: var(--white, #f2f2f2); }
 
 .garment-body {
   fill: var(--gc, #222);
