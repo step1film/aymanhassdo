@@ -232,6 +232,26 @@
       }
     },
 
+    {
+      id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
+      name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
+      desc: { sv: 'Svart unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck. Fri frakt.', en: 'Black unisex hoodie: "Living life at 24fps" back print + sleeve print. Free shipping.' },
+      price: 699,
+      freeShipping: true,
+      colors: ['black'],
+      sizes: SIZES, defaultSize: 'M',
+      image: 'assets/products/hoodie-24fps.png',
+      gallery: [
+        'assets/products/hoodie-24fps.png',
+        'assets/products/hoodie-24fps-1.png',
+        'assets/products/hoodie-24fps-2.png',
+        'assets/products/hoodie-24fps-3.png',
+        'assets/products/hoodie-24fps-5.png',
+        'assets/products/hoodie-24fps-6.png',
+        'assets/products/hoodie-24fps-7.png'
+      ]
+    },
+
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
     {
       id: 'tee-classic', cat: 'clothing', type: 'tee', print: 'S1F',
