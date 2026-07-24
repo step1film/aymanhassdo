@@ -26,6 +26,9 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | TAKE ONE SLEEVE | `take-one-sleeve.png` + `-1`, `-2`, `-4` |
 | ROLLING BACKPACK (rosa) | `backpack-pink.png` + `-1`, `-3`…`-9` |
 | ROLLING BACKPACK (marinblå) | `backpack-navy.png` + `-1`…`-9` |
+| SPOILER HOODIE (naturvit) | `hoodie-natural.png` + `-1`…`-4` |
+| SPOILER HOODIE (ljusrosa) | `hoodie-pink.png` + `-1`, `-3`, `-4` |
+| SPOILER HOODIE (vit) | `hoodie-white.png` + `-1`, `-2`, `-3`, `-5` |
 
 > **Saknas just nu:** `take-one-sleeve-3.png` och `backpack-pink-2.png`
 > (ladda upp dem så läggs de automatiskt till i respektive bildspel).

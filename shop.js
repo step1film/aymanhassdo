@@ -52,6 +52,8 @@
     stone:    { hex: '#b9b3a7', sv: 'Sten',     en: 'Stone',    light: true  },
     red:      { hex: '#c11a1a', sv: 'Röd',      en: 'Red',      light: false },
     pink:     { hex: '#e85ba0', sv: 'Rosa',     en: 'Pink',     light: false },
+    lightpink:{ hex: '#f2cfe0', sv: 'Ljusrosa', en: 'Light pink', light: true },
+    natural:  { hex: '#e9e0c9', sv: 'Naturvit', en: 'Natural',  light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -188,6 +190,44 @@
           'assets/products/backpack-navy-7.png',
           'assets/products/backpack-navy-8.png',
           'assets/products/backpack-navy-9.png'
+        ]
+      }
+    },
+
+    {
+      id: 'spoiler-hoodie', cat: 'clothing', type: 'hoodie', print: 'S1F',
+      name: { sv: 'SPOILER HOODIE', en: 'SPOILER HOODIE' },
+      desc: { sv: 'Unisex-hoodie: "Jag är expert på att spoila filmer". Borstad insida. Välj färg. Fri frakt.', en: 'Unisex hoodie: "Expert at spoiling films". Brushed inside. Pick a colour. Free shipping.' },
+      price: 629,
+      freeShipping: true,
+      colors: ['natural', 'lightpink', 'white'],
+      sizes: SIZES, defaultSize: 'M',
+      image: 'assets/products/hoodie-natural.png',
+      images: {
+        natural: 'assets/products/hoodie-natural.png',
+        lightpink: 'assets/products/hoodie-pink.png',
+        white: 'assets/products/hoodie-white.png'
+      },
+      galleries: {
+        natural: [
+          'assets/products/hoodie-natural.png',
+          'assets/products/hoodie-natural-1.png',
+          'assets/products/hoodie-natural-2.png',
+          'assets/products/hoodie-natural-3.png',
+          'assets/products/hoodie-natural-4.png'
+        ],
+        lightpink: [
+          'assets/products/hoodie-pink.png',
+          'assets/products/hoodie-pink-1.png',
+          'assets/products/hoodie-pink-3.png',
+          'assets/products/hoodie-pink-4.png'
+        ],
+        white: [
+          'assets/products/hoodie-white.png',
+          'assets/products/hoodie-white-1.png',
+          'assets/products/hoodie-white-2.png',
+          'assets/products/hoodie-white-3.png',
+          'assets/products/hoodie-white-5.png'
         ]
       }
     },
