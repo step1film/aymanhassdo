@@ -59,6 +59,7 @@
     pink:     { hex: '#e85ba0', sv: 'Rosa',     en: 'Pink',     light: false },
     lightpink:{ hex: '#f2cfe0', sv: 'Ljusrosa', en: 'Light pink', light: true },
     natural:  { hex: '#e9e0c9', sv: 'Naturvit', en: 'Natural',  light: true  },
+    silver:   { hex: '#b3b7ba', sv: 'Silver',   en: 'Silver',   light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -276,19 +277,32 @@
     {
       id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
       name: { sv: 'REEL TRUCKER CAP', en: 'REEL TRUCKER CAP' },
-      desc: { sv: 'Trucker-keps, marinblå front med vit mesh. Broderad STEP1 Film-logga. Justerbar spänne. One size.', en: 'Trucker cap, navy front with white mesh. Embroidered STEP1 Film logo. Adjustable snap. One size.' },
+      desc: { sv: 'Trucker-keps med vit mesh. Broderad STEP1 Film-logga. Justerbar spänne. Välj färg. One size.', en: 'Trucker cap with white mesh. Embroidered STEP1 Film logo. Adjustable snap. Pick a colour. One size.' },
       price: 349,
-      colors: ['navy'],
+      colors: ['navy', 'silver'],
       sizes: null,
-      image: 'assets/products/trucker-cap.png',
-      gallery: [
-        'assets/products/trucker-cap.png',
-        'assets/products/trucker-cap-1.png',
-        'assets/products/trucker-cap-2.png',
-        'assets/products/trucker-cap-3.png',
-        'assets/products/trucker-cap-4.png',
-        'assets/products/trucker-cap-5.png'
-      ]
+      image: 'assets/products/trucker-cap-navy.png',
+      images: {
+        navy: 'assets/products/trucker-cap-navy.png',
+        silver: 'assets/products/trucker-cap-silver.png'
+      },
+      galleries: {
+        navy: [
+          'assets/products/trucker-cap-navy.png',
+          'assets/products/trucker-cap-navy-1.png',
+          'assets/products/trucker-cap-navy-2.png',
+          'assets/products/trucker-cap-navy-3.png',
+          'assets/products/trucker-cap-navy-5.png'
+        ],
+        silver: [
+          'assets/products/trucker-cap-silver.png',
+          'assets/products/trucker-cap-silver-1.png',
+          'assets/products/trucker-cap-silver-2.png',
+          'assets/products/trucker-cap-silver-3.png',
+          'assets/products/trucker-cap-silver-4.png',
+          'assets/products/trucker-cap-silver-5.png'
+        ]
+      }
     },
     {
       id: 'icon-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',

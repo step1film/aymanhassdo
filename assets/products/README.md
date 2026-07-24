@@ -31,7 +31,8 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | SPOILER HOODIE (vit) | `hoodie-white.png` + `-1`, `-2`, `-3`, `-5` |
 | 24FPS HOODIE (svart) | `hoodie-24fps.png` + `-1`, `-2`, `-3`, `-5`, `-6`, `-7` |
 | ICON STICKERS | `icon-stickers.png` + `-1`, `-2` |
-| REEL TRUCKER CAP | `trucker-cap.png` + `-1`…`-5` |
+| REEL TRUCKER CAP (marinblå) | `trucker-cap-navy.png` + `-1`, `-2`, `-3`, `-5` |
+| REEL TRUCKER CAP (silver) | `trucker-cap-silver.png` + `-1`…`-5` |
 
 > **Saknas just nu:** `take-one-sleeve-3.png` och `backpack-pink-2.png`
 > (ladda upp dem så läggs de automatiskt till i respektive bildspel).
