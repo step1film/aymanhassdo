@@ -241,20 +241,39 @@
     {
       id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
-      desc: { sv: 'Svart unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck.', en: 'Black unisex hoodie: "Living life at 24fps" back print + sleeve print.' },
+      desc: { sv: 'Unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck. Välj färg.', en: 'Unisex hoodie: "Living life at 24fps" back print + sleeve print. Pick a colour.' },
       price: 699,
-      colors: ['black'],
+      colors: ['black', 'lightpink'],
       sizes: SIZES, defaultSize: 'M',
-      image: 'assets/products/hoodie-24fps.png',
-      gallery: [
-        'assets/products/hoodie-24fps.png',
-        'assets/products/hoodie-24fps-1.png',
-        'assets/products/hoodie-24fps-2.png',
-        'assets/products/hoodie-24fps-3.png',
-        'assets/products/hoodie-24fps-5.png',
-        'assets/products/hoodie-24fps-6.png',
-        'assets/products/hoodie-24fps-7.png'
-      ],
+      image: 'assets/products/hoodie-24fps-black.png',
+      images: {
+        black: 'assets/products/hoodie-24fps-black.png',
+        lightpink: 'assets/products/hoodie-24fps-lightpink.png'
+      },
+      galleries: {
+        black: [
+          'assets/products/hoodie-24fps-black.png',
+          'assets/products/hoodie-24fps-black-1.png',
+          'assets/products/hoodie-24fps-black-2.png',
+          'assets/products/hoodie-24fps-black-3.png',
+          'assets/products/hoodie-24fps-black-4.png',
+          'assets/products/hoodie-24fps-black-5.png',
+          'assets/products/hoodie-24fps-black-6.png',
+          'assets/products/hoodie-24fps-black-8.png',
+          'assets/products/hoodie-24fps-black-9.png',
+          'assets/products/hoodie-24fps-black-10.png'
+        ],
+        lightpink: [
+          'assets/products/hoodie-24fps-lightpink.png',
+          'assets/products/hoodie-24fps-lightpink-1.png',
+          'assets/products/hoodie-24fps-lightpink-2.png',
+          'assets/products/hoodie-24fps-lightpink-3.png',
+          'assets/products/hoodie-24fps-lightpink-4.png',
+          'assets/products/hoodie-24fps-lightpink-5.png',
+          'assets/products/hoodie-24fps-lightpink-6.png',
+          'assets/products/hoodie-24fps-lightpink-7.png'
+        ]
+      },
       fit: {
         sv: 'Liten i storleken – välj gärna en storlek större än vanligt.',
         en: 'Runs small – consider ordering one size up.'
