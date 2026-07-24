@@ -274,6 +274,23 @@
       }
     },
     {
+      id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
+      name: { sv: 'REEL TRUCKER CAP', en: 'REEL TRUCKER CAP' },
+      desc: { sv: 'Trucker-keps, marinblå front med vit mesh. Broderad STEP1 Film-logga. Justerbar spänne. One size.', en: 'Trucker cap, navy front with white mesh. Embroidered STEP1 Film logo. Adjustable snap. One size.' },
+      price: 349,
+      colors: ['navy'],
+      sizes: null,
+      image: 'assets/products/trucker-cap.png',
+      gallery: [
+        'assets/products/trucker-cap.png',
+        'assets/products/trucker-cap-1.png',
+        'assets/products/trucker-cap-2.png',
+        'assets/products/trucker-cap-3.png',
+        'assets/products/trucker-cap-4.png',
+        'assets/products/trucker-cap-5.png'
+      ]
+    },
+    {
       id: 'icon-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
       name: { sv: 'ICON STICKERS', en: 'ICON STICKERS' },
       desc: { sv: 'Kiss-cut stickers med film-motiv i rosa. Tåliga och vattenavvisande.', en: 'Kiss-cut film-motif stickers in pink. Durable and water-resistant.' },
