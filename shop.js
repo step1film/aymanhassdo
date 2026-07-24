@@ -257,12 +257,18 @@
       },
       details: {
         sv: {
-          desc: 'Vissa plagg bär bara ett tryck – den här bär en känsla. 24FPS HOODIE är gjord för dig som lever och andas film, med en tung, mjuk bomullsfleece som känns lika bra som den ser ut. Rymlig passform, varm huva och en generös känguruficka gör den lika hemma på inspelningsplatsen som i soffan efter premiären.',
+          desc: [
+            'Vissa plagg bär bara ett tryck — den här bär en känsla. 24FPS HOODIE är gjord för dig som lever och andas film, med en tung, mjuk bomullsfleece som känns lika bra som den ser ut.',
+            'Rymlig passform, varm huva och en generös känguruficka gör den lika hemma på inspelningsplatsen som i soffan efter premiären. Detta är inte bara en hoodie. Det är en del av STEP1-universumet — designad i studion, byggd för din vardag.'
+          ],
           specs: ['100% bomull utsida', '65% ringspunnen bomull, 35% polyester', 'Känguruficka fram', 'Tygpatch på ryggen', 'Matchande plana dragsnören', 'Huva i 3 paneler'],
           fine: 'För vuxna · EU-garanti: 2 år · Uppfyller krav för brandsäkerhet, bly, kadmium, bisfenoler och ftalater.'
         },
         en: {
-          desc: 'Some garments carry just a print – this one carries a feeling. The 24FPS HOODIE is made for those who live and breathe film: a heavy, soft cotton fleece that feels as good as it looks. Relaxed fit, warm hood and a roomy kangaroo pocket make it as at home on set as on the couch after the premiere.',
+          desc: [
+            'Some garments carry just a print — this one carries a feeling. The 24FPS HOODIE is made for those who live and breathe film: a heavy, soft cotton fleece that feels as good as it looks.',
+            "Relaxed fit, warm hood and a roomy kangaroo pocket make it as at home on set as on the couch after the premiere. This isn't just a hoodie. It's part of the STEP1 universe — designed in the studio, built for your everyday."
+          ],
           specs: ['100% cotton face', '65% ring-spun cotton, 35% polyester', 'Front pouch pocket', 'Self-fabric patch on the back', 'Matching flat drawstrings', '3-panel hood'],
           fine: 'For adults · EU warranty: 2 years · Meets flammability, lead, cadmium, bisphenol and phthalate requirements.'
         }
@@ -716,9 +722,12 @@
         const dbody = document.createElement('div');
         dbody.className = 'pc-details-body';
         if (dd.desc) {
-          const dp = document.createElement('p');
-          dp.textContent = dd.desc;
-          dbody.appendChild(dp);
+          const paras = Array.isArray(dd.desc) ? dd.desc : [dd.desc];
+          paras.forEach((txt) => {
+            const dp = document.createElement('p');
+            dp.textContent = txt;
+            dbody.appendChild(dp);
+          });
         }
         if (dd.specs && dd.specs.length) {
           const lbl = document.createElement('span');
