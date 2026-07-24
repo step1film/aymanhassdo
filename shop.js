@@ -21,6 +21,11 @@
     // Leave empty to hide until you have a business number.
     swishNumber: '',
 
+    // Frakt: fast avgift per order (kr). Sätt freeOver för att ge
+    // fri frakt över ett visst ordervärde (0 = alltid frakt).
+    shippingFee: 59,
+    shippingFreeOver: 0,
+
     /* ---------------------------------------------------
        PRINTFUL (print-on-demand) — se PRINTFUL_SETUP.md
        ---------------------------------------------------
@@ -105,9 +110,8 @@
     {
       id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
       name: { sv: 'REEL MUGG', en: 'REEL MUG' },
-      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck. Fri frakt.', en: 'Black glossy mug, 15 oz. Pink film-reel print. Free shipping.' },
+      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck.', en: 'Black glossy mug, 15 oz. Pink film-reel print.' },
       price: 229,
-      freeShipping: true,
       colors: ['black'],
       sizes: null,
       image: 'assets/products/reel-mugg.png',
@@ -120,9 +124,8 @@
     {
       id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
       name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
-      desc: { sv: 'Vit glansig mugg. Rosa pixel-tryck "I\'m Awesome". Fri frakt.', en: 'White glossy mug. Pink pixel print "I\'m Awesome". Free shipping.' },
+      desc: { sv: 'Vit glansig mugg. Rosa pixel-tryck "I\'m Awesome".', en: 'White glossy mug. Pink pixel print "I\'m Awesome".' },
       price: 229,
-      freeShipping: true,
       colors: ['white'],
       sizes: null,
       image: 'assets/products/awesome-mugg-stacked.png',
@@ -139,10 +142,9 @@
     {
       id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
-      desc: { sv: 'Laptop-fodral i pastellregnbåge, "Take One". Vadderat med dragkedja. Fri frakt.', en: 'Pastel-rainbow laptop sleeve, "Take One". Padded, zippered. Free shipping.' },
+      desc: { sv: 'Laptop-fodral i pastellregnbåge, "Take One". Vadderat med dragkedja.', en: 'Pastel-rainbow laptop sleeve, "Take One". Padded, zippered.' },
       price: 499,
       sizePrices: { '13"': 499, '15"': 599 },
-      freeShipping: true,
       colors: ['pastel'],
       sizes: ['13"', '15"'], defaultSize: '13"',
       image: 'assets/products/take-one-sleeve.png',
@@ -156,9 +158,8 @@
     {
       id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
-      desc: { sv: 'Ryggsäck med kamera-tryck "Rolling". Vadderad laptopficka. Välj färg. Fri frakt.', en: 'Backpack with camera print "Rolling". Padded laptop pocket. Pick a colour. Free shipping.' },
+      desc: { sv: 'Ryggsäck med kamera-tryck "Rolling". Vadderad laptopficka. Välj färg.', en: 'Backpack with camera print "Rolling". Padded laptop pocket. Pick a colour.' },
       price: 699,
-      freeShipping: true,
       colors: ['pink', 'navy'],
       sizes: null,
       image: 'assets/products/backpack-pink.png',
@@ -198,9 +199,8 @@
     {
       id: 'spoiler-hoodie', cat: 'clothing', type: 'hoodie', print: 'S1F',
       name: { sv: 'SPOILER HOODIE', en: 'SPOILER HOODIE' },
-      desc: { sv: 'Unisex-hoodie: "Jag är expert på att spoila filmer". Borstad insida. Välj färg. Fri frakt.', en: 'Unisex hoodie: "Expert at spoiling films". Brushed inside. Pick a colour. Free shipping.' },
+      desc: { sv: 'Unisex-hoodie: "Jag är expert på att spoila filmer". Borstad insida. Välj färg.', en: 'Unisex hoodie: "Expert at spoiling films". Brushed inside. Pick a colour.' },
       price: 629,
-      freeShipping: true,
       colors: ['natural', 'lightpink', 'white'],
       sizes: SIZES, defaultSize: 'M',
       image: 'assets/products/hoodie-natural.png',
@@ -236,9 +236,8 @@
     {
       id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
-      desc: { sv: 'Svart unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck. Fri frakt.', en: 'Black unisex hoodie: "Living life at 24fps" back print + sleeve print. Free shipping.' },
+      desc: { sv: 'Svart unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck.', en: 'Black unisex hoodie: "Living life at 24fps" back print + sleeve print.' },
       price: 699,
-      freeShipping: true,
       colors: ['black'],
       sizes: SIZES, defaultSize: 'M',
       image: 'assets/products/hoodie-24fps.png',
@@ -273,6 +272,20 @@
           fine: 'For adults · EU warranty: 2 years · Meets flammability, lead, cadmium, bisphenol and phthalate requirements.'
         }
       }
+    },
+    {
+      id: 'icon-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
+      name: { sv: 'ICON STICKERS', en: 'ICON STICKERS' },
+      desc: { sv: 'Kiss-cut stickers med film-motiv i rosa. Tåliga och vattenavvisande.', en: 'Kiss-cut film-motif stickers in pink. Durable and water-resistant.' },
+      price: 85,
+      colors: ['pink'],
+      sizes: null,
+      image: 'assets/products/icon-stickers.png',
+      gallery: [
+        'assets/products/icon-stickers.png',
+        'assets/products/icon-stickers-1.png',
+        'assets/products/icon-stickers-2.png'
+      ]
     },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
@@ -804,6 +817,13 @@
   }
 
   function cartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
+  // Fraktavgift för nuvarande vagn (0 vid tom vagn eller över freeOver-gränsen)
+  function shippingCost() {
+    if (cart.length === 0) return 0;
+    if (CONFIG.shippingFreeOver > 0 && cartTotal() >= CONFIG.shippingFreeOver) return 0;
+    return CONFIG.shippingFee || 0;
+  }
+  function grandTotal() { return cartTotal() + shippingCost(); }
 
   function renderCart() {
     const body = document.getElementById('cartBody');
@@ -922,14 +942,12 @@
         <span>${item.price * item.qty} ${CONFIG.currency}</span>
       </div>`;
     });
-    const allFree = cart.length > 0 && cart.every((i) => {
-      const p = PRODUCTS.find((x) => x.id === i.id);
-      return p && p.freeShipping;
-    });
-    const shipVal = allFree ? t('freeShipping') : t('shippingCalc');
+    const ship = shippingCost();
+    const shipVal = ship > 0 ? `${ship} ${CONFIG.currency}` : t('freeShipping');
     sum.innerHTML = rows +
-      `<div class="os-row"><span>${t('shipping')}</span><span>${shipVal}</span></div>
-       <div class="os-row total"><span>${t('total')}</span><span>${cartTotal()} ${CONFIG.currency}</span></div>`;
+      `<div class="os-row"><span>${t('subtotal')}</span><span>${cartTotal()} ${CONFIG.currency}</span></div>
+       <div class="os-row"><span>${t('shipping')}</span><span>${shipVal}</span></div>
+       <div class="os-row total"><span>${t('total')}</span><span>${grandTotal()} ${CONFIG.currency}</span></div>`;
   }
 
   function placeOrder() {
@@ -955,9 +973,11 @@ ${t('notes')}: ${get('coNotes')}
 ${lang === 'sv' ? 'Order' : 'Order'}:
 ${lines}
 
-${t('total')}: ${cartTotal()} ${CONFIG.currency}`;
+${t('subtotal')}: ${cartTotal()} ${CONFIG.currency}
+${t('shipping')}: ${shippingCost() > 0 ? `${shippingCost()} ${CONFIG.currency}` : t('freeShipping')}
+${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
 
-    const subject = encodeURIComponent(`STEP1FILM Order — ${name} (${cartTotal()} ${CONFIG.currency})`);
+    const subject = encodeURIComponent(`STEP1FILM Order — ${name} (${grandTotal()} ${CONFIG.currency})`);
     const mailto = `mailto:${CONFIG.contactEmail}?subject=${subject}&body=${encodeURIComponent(bodyText)}`;
 
     // Open the user's mail client with the pre-filled order

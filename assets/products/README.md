@@ -30,6 +30,7 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | SPOILER HOODIE (ljusrosa) | `hoodie-pink.png` + `-1`, `-3`, `-4` |
 | SPOILER HOODIE (vit) | `hoodie-white.png` + `-1`, `-2`, `-3`, `-5` |
 | 24FPS HOODIE (svart) | `hoodie-24fps.png` + `-1`, `-2`, `-3`, `-5`, `-6`, `-7` |
+| ICON STICKERS | `icon-stickers.png` + `-1`, `-2` |
 
 > **Saknas just nu:** `take-one-sleeve-3.png` och `backpack-pink-2.png`
 > (ladda upp dem så läggs de automatiskt till i respektive bildspel).
