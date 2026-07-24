@@ -23,6 +23,12 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | AWESOME MUGG (modell) | `awesome-mugg-model.png` |
 | AWESOME MUGG (staplade) | `awesome-mugg-stacked.png` |
 | AWESOME MUGG (förpackning) | `awesome-mugg-box.png` |
+| TAKE ONE SLEEVE | `take-one-sleeve.png` + `-1`, `-2`, `-4` |
+| ROLLING BACKPACK (rosa) | `backpack-pink.png` + `-1`, `-3`…`-9` |
+| ROLLING BACKPACK (marinblå) | `backpack-navy.png` + `-1`…`-9` |
+
+> **Saknas just nu:** `take-one-sleeve-3.png` och `backpack-pink-2.png`
+> (ladda upp dem så läggs de automatiskt till i respektive bildspel).
 
 *(Fyll på listan i takt med att fler produkter läggs till.)*
 

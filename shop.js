@@ -50,7 +50,11 @@
     charcoal: { hex: '#3a3a3a', sv: 'Koladgrå', en: 'Charcoal', light: false },
     bone:     { hex: '#e7e2d6', sv: 'Ben',      en: 'Bone',     light: true  },
     stone:    { hex: '#b9b3a7', sv: 'Sten',     en: 'Stone',    light: true  },
-    red:      { hex: '#c11a1a', sv: 'Röd',      en: 'Red',      light: false }
+    red:      { hex: '#c11a1a', sv: 'Röd',      en: 'Red',      light: false },
+    pink:     { hex: '#e85ba0', sv: 'Rosa',     en: 'Pink',     light: false },
+    navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
+    // Flerfärgad pastell — swatchen visas som en gradient
+    pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
   };
 
   /* -----------------------------------------------------
@@ -128,6 +132,64 @@
         'assets/products/awesome-mugg-stacked.png',
         'assets/products/awesome-mugg-box.png'
       ]
+    },
+    {
+      id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
+      name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
+      desc: { sv: 'Laptop-fodral i pastellregnbåge, "Take One". Vadderat med dragkedja. Fri frakt.', en: 'Pastel-rainbow laptop sleeve, "Take One". Padded, zippered. Free shipping.' },
+      price: 499,
+      sizePrices: { '13"': 499, '15"': 599 },
+      freeShipping: true,
+      colors: ['pastel'],
+      sizes: ['13"', '15"'], defaultSize: '13"',
+      image: 'assets/products/take-one-sleeve.png',
+      gallery: [
+        'assets/products/take-one-sleeve.png',
+        'assets/products/take-one-sleeve-1.png',
+        'assets/products/take-one-sleeve-2.png',
+        'assets/products/take-one-sleeve-4.png'
+      ]
+    },
+    {
+      id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
+      name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
+      desc: { sv: 'Ryggsäck med kamera-tryck "Rolling". Vadderad laptopficka. Välj färg. Fri frakt.', en: 'Backpack with camera print "Rolling". Padded laptop pocket. Pick a colour. Free shipping.' },
+      price: 699,
+      freeShipping: true,
+      colors: ['pink', 'navy'],
+      sizes: null,
+      image: 'assets/products/backpack-pink.png',
+      // Egen bild per färg i kundvagnen
+      images: {
+        pink: 'assets/products/backpack-pink.png',
+        navy: 'assets/products/backpack-navy.png'
+      },
+      // Eget bildspel per färg på produktkortet
+      galleries: {
+        pink: [
+          'assets/products/backpack-pink.png',
+          'assets/products/backpack-pink-1.png',
+          'assets/products/backpack-pink-3.png',
+          'assets/products/backpack-pink-4.png',
+          'assets/products/backpack-pink-5.png',
+          'assets/products/backpack-pink-6.png',
+          'assets/products/backpack-pink-7.png',
+          'assets/products/backpack-pink-8.png',
+          'assets/products/backpack-pink-9.png'
+        ],
+        navy: [
+          'assets/products/backpack-navy.png',
+          'assets/products/backpack-navy-1.png',
+          'assets/products/backpack-navy-2.png',
+          'assets/products/backpack-navy-3.png',
+          'assets/products/backpack-navy-4.png',
+          'assets/products/backpack-navy-5.png',
+          'assets/products/backpack-navy-6.png',
+          'assets/products/backpack-navy-7.png',
+          'assets/products/backpack-navy-8.png',
+          'assets/products/backpack-navy-9.png'
+        ]
+      }
     },
 
     /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
@@ -340,6 +402,108 @@
   }
 
   /* -----------------------------------------------------
+     BILDSPEL (slideshow) — återanvänds per produkt/färg
+  ----------------------------------------------------- */
+  // Vilka bilder gäller för en produkt givet vald färg?
+  // - galleries: { colorKey: [bilder] }  (olika bilder per färg)
+  // - gallery:   [bilder]                (samma oavsett färg)
+  function imagesFor(p, colorKey) {
+    if (p.galleries) return p.galleries[colorKey] || [];
+    if (p.gallery) return p.gallery;
+    return null;
+  }
+
+  function clearVisualTimer(visual) {
+    if (visual._slideTimer) {
+      clearInterval(visual._slideTimer);
+      const i = slideTimers.indexOf(visual._slideTimer);
+      if (i > -1) slideTimers.splice(i, 1);
+      visual._slideTimer = null;
+    }
+  }
+
+  // Bygg (eller bygg om) bildspelet i en produktrutas visual-element.
+  function buildSlideshow(visual, p, colorKey) {
+    clearVisualTimer(visual);
+    visual.querySelectorAll('.pc-slides, .pc-nav, .pc-dots').forEach((el) => el.remove());
+
+    const slidesWrap = document.createElement('div');
+    slidesWrap.className = 'pc-slides';
+    const slideEls = [];
+    const imgs = imagesFor(p, colorKey);
+
+    if (imgs && imgs.length) {
+      imgs.forEach((src, i) => {
+        const s = document.createElement('div');
+        s.className = 'pc-slide' + (i === 0 ? ' active' : '');
+        const img = document.createElement('img');
+        img.className = 'garment garment-photo';
+        img.src = src;
+        img.alt = p.name[lang];
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        img.addEventListener('error', () => { s.innerHTML = SVG[p.type] ? SVG[p.type](p.print) : ''; });
+        s.appendChild(img);
+        slidesWrap.appendChild(s);
+        slideEls.push(s);
+      });
+    } else {
+      const s = document.createElement('div');
+      s.className = 'pc-slide active';
+      s.appendChild(garmentMarkup(p, colorKey));
+      slidesWrap.appendChild(s);
+      slideEls.push(s);
+    }
+    visual.appendChild(slidesWrap);
+
+    if (slideEls.length <= 1) {
+      visual.onmouseenter = null;
+      visual.onmouseleave = null;
+      return;
+    }
+
+    let idx = 0;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dotWrap = document.createElement('div');
+    dotWrap.className = 'pc-dots';
+    const dots = slideEls.map((_, i) => {
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'pc-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
+      d.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(i); });
+      dotWrap.appendChild(d);
+      return d;
+    });
+    const go = (n) => {
+      idx = (n + slideEls.length) % slideEls.length;
+      slideEls.forEach((s, i) => s.classList.toggle('active', i === idx));
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    };
+    const stop = () => clearVisualTimer(visual);
+    const start = () => {
+      if (reduce) return;
+      stop();
+      visual._slideTimer = setInterval(() => go(idx + 1), 4000);
+      slideTimers.push(visual._slideTimer);
+    };
+    const mkNav = (cls, sym, dir, label) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pc-nav ' + cls;
+      b.innerHTML = sym;
+      b.setAttribute('aria-label', label);
+      b.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(idx + dir); });
+      return b;
+    };
+    visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
+    visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
+    visual.appendChild(dotWrap);
+    visual.onmouseenter = stop;
+    visual.onmouseleave = start;
+    start();
+  }
+
+  /* -----------------------------------------------------
      PRODUCT GRID
   ----------------------------------------------------- */
   const grid = document.getElementById('grid');
@@ -369,81 +533,8 @@
       badge.textContent = badgeText;
       visual.appendChild(badge);
 
-      // Bildspel — galleri om det finns, annars en enda bild/SVG-mockup
-      const slidesWrap = document.createElement('div');
-      slidesWrap.className = 'pc-slides';
-      const slideEls = [];
-      const sources = (p.gallery && p.gallery.length) ? p.gallery : null;
-      if (sources) {
-        sources.forEach((src, i) => {
-          const s = document.createElement('div');
-          s.className = 'pc-slide' + (i === 0 ? ' active' : '');
-          const img = document.createElement('img');
-          img.className = 'garment garment-photo';
-          img.src = src;
-          img.alt = p.name[lang];
-          img.loading = i === 0 ? 'eager' : 'lazy';
-          // Om bilden saknas — fall tillbaka till SVG-mockupen
-          img.addEventListener('error', () => {
-            s.innerHTML = SVG[p.type] ? SVG[p.type](p.print) : '';
-          });
-          s.appendChild(img);
-          slidesWrap.appendChild(s);
-          slideEls.push(s);
-        });
-      } else {
-        const s = document.createElement('div');
-        s.className = 'pc-slide active';
-        s.appendChild(garmentMarkup(p, sel.color));
-        slidesWrap.appendChild(s);
-        slideEls.push(s);
-      }
-      visual.appendChild(slidesWrap);
-
-      // Kontroller (pilar + punkter + auto-växling) när fler än en bild
-      if (slideEls.length > 1) {
-        let idx = 0;
-        let timer = null;
-        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const dotWrap = document.createElement('div');
-        dotWrap.className = 'pc-dots';
-        const dots = slideEls.map((_, i) => {
-          const d = document.createElement('button');
-          d.type = 'button';
-          d.className = 'pc-dot' + (i === 0 ? ' active' : '');
-          d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
-          d.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(i); });
-          dotWrap.appendChild(d);
-          return d;
-        });
-        const go = (n) => {
-          idx = (n + slideEls.length) % slideEls.length;
-          slideEls.forEach((s, i) => s.classList.toggle('active', i === idx));
-          dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        };
-        const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
-        const start = () => {
-          if (reduce) return;
-          stop();
-          timer = setInterval(() => go(idx + 1), 4000);
-          slideTimers.push(timer);
-        };
-        const mkNav = (cls, sym, dir, label) => {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'pc-nav ' + cls;
-          b.innerHTML = sym;
-          b.setAttribute('aria-label', label);
-          b.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(idx + dir); });
-          return b;
-        };
-        visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
-        visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
-        visual.appendChild(dotWrap);
-        visual.addEventListener('mouseenter', stop);
-        visual.addEventListener('mouseleave', start);
-        start();
-      }
+      // Bildspel (galleri/per färg om det finns, annars SVG-mockup)
+      buildSlideshow(visual, p, sel.color);
 
       // Body
       const body = document.createElement('div');
@@ -477,11 +568,9 @@
           swatches.querySelectorAll('.swatch').forEach((el) => el.classList.remove('active'));
           sw.classList.add('active');
           colWrap.querySelector('[data-cval]').textContent = cname(ck);
-          // update preview (endast produkter utan bildgalleri använder färgbyte)
-          if (!(p.gallery && p.gallery.length)) {
-            const slide = visual.querySelector('.pc-slide');
-            if (slide) { slide.innerHTML = ''; slide.appendChild(garmentMarkup(p, ck)); }
-          }
+          // Bygg om bildspelet för den valda färgen
+          // (per-färg-bilder för t.ex. backpacken, annars omfärgad mockup)
+          buildSlideshow(visual, p, ck);
         });
         swatches.appendChild(sw);
       });
