@@ -125,13 +125,14 @@
       freeShipping: true,
       colors: ['white'],
       sizes: null,
-      image: 'assets/products/awesome-mugg.png',
+      image: 'assets/products/awesome-mugg-stacked.png',
+      // Basbild (utan siffra) först, sedan 01, 02, 03, 04, 05
       gallery: [
-        'assets/products/awesome-mugg.png',
-        'assets/products/awesome-mugg-holiday.png',
-        'assets/products/awesome-mugg-hands.png',
-        'assets/products/awesome-mugg-model.png',
         'assets/products/awesome-mugg-stacked.png',
+        'assets/products/awesome-mugg-hands.png',
+        'assets/products/awesome-mugg.png',
+        'assets/products/awesome-mugg-model.png',
+        'assets/products/awesome-mugg-holiday.png',
         'assets/products/awesome-mugg-box.png'
       ]
     },
@@ -521,8 +522,8 @@
       return;
     }
 
+    // Ingen auto-växling — kunden bläddrar själv med pilar/punkter.
     let idx = 0;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dotWrap = document.createElement('div');
     dotWrap.className = 'pc-dots';
     const dots = slideEls.map((_, i) => {
@@ -530,7 +531,7 @@
       d.type = 'button';
       d.className = 'pc-dot' + (i === 0 ? ' active' : '');
       d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
-      d.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(i); });
+      d.addEventListener('click', (e) => { e.stopPropagation(); go(i); });
       dotWrap.appendChild(d);
       return d;
     });
@@ -539,28 +540,20 @@
       slideEls.forEach((s, i) => s.classList.toggle('active', i === idx));
       dots.forEach((d, i) => d.classList.toggle('active', i === idx));
     };
-    const stop = () => clearVisualTimer(visual);
-    const start = () => {
-      if (reduce) return;
-      stop();
-      visual._slideTimer = setInterval(() => go(idx + 1), 4000);
-      slideTimers.push(visual._slideTimer);
-    };
     const mkNav = (cls, sym, dir, label) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pc-nav ' + cls;
       b.innerHTML = sym;
       b.setAttribute('aria-label', label);
-      b.addEventListener('click', (e) => { e.stopPropagation(); stop(); go(idx + dir); });
+      b.addEventListener('click', (e) => { e.stopPropagation(); go(idx + dir); });
       return b;
     };
     visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
     visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
     visual.appendChild(dotWrap);
-    visual.onmouseenter = stop;
-    visual.onmouseleave = start;
-    start();
+    visual.onmouseenter = null;
+    visual.onmouseleave = null;
   }
 
   /* -----------------------------------------------------
