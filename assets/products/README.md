@@ -35,6 +35,7 @@ Så länge en bild saknas visar butiken en enkel SVG-mockup istället — inget 
 | REEL TRUCKER CAP (silver) | `trucker-cap-silver.png` + `-1`…`-5` |
 | REEL TRUCKER CAP (svart) | `trucker-cap-black.png` + `-1`…`-5` |
 | DIRECTOR'S BEANIE | `beanie-<black/brown/navy/olive>.png` + numrerade |
+| AD1 BEANIE | `ad1-beanie-<pink/orange/white>.png` + numrerade |
 | STATIC REEL SLEEVE | `static-sleeve.png` + `-1`, `-2` |
 | LIL' DIRECTOR TEE | `lil-tee-<pink/lightblue/white>.png` + numrerade |
 

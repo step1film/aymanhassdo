@@ -64,6 +64,7 @@
     lightblue:{ hex: '#a9cce3', sv: 'Ljusblå',  en: 'Light blue', light: true },
     brown:    { hex: '#5a4632', sv: 'Brun',     en: 'Brown',    light: false },
     olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
+    orange:   { hex: '#d9772e', sv: 'Orange',   en: 'Orange',   light: false },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -355,7 +356,7 @@
       id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
       desc: { sv: 'Ribbstickad mössa med broderat "Reserved for Vision". Vikt kant. Välj färg. One size.', en: 'Ribbed knit beanie, embroidered "Reserved for Vision". Cuffed. Pick a colour. One size.' },
-      price: 329,
+      price: 285,
       colors: ['black', 'brown', 'navy', 'olive'],
       sizes: null,
       image: 'assets/products/beanie-black.png',
@@ -370,6 +371,25 @@
         brown: ['assets/products/beanie-brown.png', 'assets/products/beanie-brown-1.png', 'assets/products/beanie-brown-2.png', 'assets/products/beanie-brown-3.png', 'assets/products/beanie-brown-4.png'],
         navy: ['assets/products/beanie-navy.png', 'assets/products/beanie-navy-1.png', 'assets/products/beanie-navy-2.png', 'assets/products/beanie-navy-3.png'],
         olive: ['assets/products/beanie-olive.png', 'assets/products/beanie-olive-1.png', 'assets/products/beanie-olive-2.png', 'assets/products/beanie-olive-3.png', 'assets/products/beanie-olive-4.png']
+      }
+    },
+    {
+      id: 'ad1-beanie', cat: 'caps', type: 'cap', print: 'AD1',
+      name: { sv: 'AD1 BEANIE', en: 'AD1 BEANIE' },
+      desc: { sv: 'Ribbstickad mössa med broderat "Reserved for Vision". Vikt kant. Välj färg. One size.', en: 'Ribbed knit beanie, embroidered "Reserved for Vision". Cuffed. Pick a colour. One size.' },
+      price: 285,
+      colors: ['candy', 'orange', 'white'],
+      sizes: null,
+      image: 'assets/products/ad1-beanie-pink.png',
+      images: {
+        candy: 'assets/products/ad1-beanie-pink.png',
+        orange: 'assets/products/ad1-beanie-orange.png',
+        white: 'assets/products/ad1-beanie-white.png'
+      },
+      galleries: {
+        candy: ['assets/products/ad1-beanie-pink.png', 'assets/products/ad1-beanie-pink-1.png', 'assets/products/ad1-beanie-pink-2.png', 'assets/products/ad1-beanie-pink-3.png'],
+        orange: ['assets/products/ad1-beanie-orange.png', 'assets/products/ad1-beanie-orange-1.png', 'assets/products/ad1-beanie-orange-2.png'],
+        white: ['assets/products/ad1-beanie-white.png', 'assets/products/ad1-beanie-white-1.png', 'assets/products/ad1-beanie-white-2.png', 'assets/products/ad1-beanie-white-3.png']
       }
     },
     {
