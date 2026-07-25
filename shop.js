@@ -378,7 +378,7 @@
     {
       id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
-      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. One size.' },
+      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. "Inspirerad av Smålands skogar" One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. "Inspired by the forests of Småland." One size.' },
       price: 285,
       colors: ['olive', 'black', 'brown', 'navy'],
       sizes: null,
