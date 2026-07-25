@@ -378,7 +378,7 @@
     {
       id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
-      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. One size.' },
+      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. "Inspirerad av Smålands skogar" One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. "Inspired by the forests of Småland." One size.' },
       price: 285,
       colors: ['olive', 'black', 'brown', 'navy'],
       sizes: null,
@@ -564,8 +564,8 @@
     sv: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroManifest: 'Skapad av filmare — för dig som skapar berättelser.',
-      heroLead: 'Det här är inte bara merch. Det är filmkultur att bära, dela och leva.',
+      heroManifest: 'Skapad av filmare — för dig som älskar berättelser.',
+      heroLead: 'Det är filmkultur att bära, dela och leva.',
       heroCta: 'Utforska kollektionen',
       trustShip: 'Fri frakt från 899 kr',
       trustReturn: '14 dagars ångerrätt',
@@ -613,7 +613,7 @@
     en: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroManifest: 'Designed by filmmakers — for people who create stories.',
+      heroManifest: 'Designed by filmmakers — for people who love stories.',
       heroLead: "It's film culture to wear, share and live.",
       heroCta: 'Explore the collection',
       trustShip: 'Free shipping from 899 kr',
