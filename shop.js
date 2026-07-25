@@ -65,6 +65,7 @@
     brown:    { hex: '#5a4632', sv: 'Brun',     en: 'Brown',    light: false },
     olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
     orange:   { hex: '#d9772e', sv: 'Orange',   en: 'Orange',   light: false },
+    khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -461,12 +462,25 @@
       sizes: null
     },
     {
-      id: 'cap-dad', cat: 'caps', type: 'cap', print: 'ACT',
-      name: { sv: 'Action Dad Cap', en: 'Action Dad Cap' },
-      desc: { sv: 'Mjuk oformad kupa, buren look. One size.', en: 'Soft unstructured crown, worn-in look. One size.' },
-      price: 279,
-      colors: ['charcoal', 'sand', 'black'],
-      sizes: null
+      id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
+      name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
+      desc: { sv: 'Mjuk trucker/dad cap med mesh. Broderad STEP1 Film-logga. Justerbar spänne. Välj färg. One size.', en: 'Soft trucker/dad cap with mesh. Embroidered STEP1 Film logo. Adjustable snap. Pick a colour. One size.' },
+      price: 349,
+      colors: ['brown', 'khaki', 'orange', 'white'],
+      sizes: null,
+      image: 'assets/products/dad-cap-brown.png',
+      images: {
+        brown: 'assets/products/dad-cap-brown.png',
+        khaki: 'assets/products/dad-cap-khaki.png',
+        orange: 'assets/products/dad-cap-orange.png',
+        white: 'assets/products/dad-cap-white.png'
+      },
+      galleries: {
+        brown: ['assets/products/dad-cap-brown.png', 'assets/products/dad-cap-brown-1.png', 'assets/products/dad-cap-brown-2.png', 'assets/products/dad-cap-brown-3.png', 'assets/products/dad-cap-brown-4.png'],
+        khaki: ['assets/products/dad-cap-khaki.png', 'assets/products/dad-cap-khaki-1.png', 'assets/products/dad-cap-khaki-2.png', 'assets/products/dad-cap-khaki-3.png', 'assets/products/dad-cap-khaki-4.png'],
+        orange: ['assets/products/dad-cap-orange.png', 'assets/products/dad-cap-orange-1.png', 'assets/products/dad-cap-orange-2.png', 'assets/products/dad-cap-orange-3.png', 'assets/products/dad-cap-orange-4.png'],
+        white: ['assets/products/dad-cap-white.png', 'assets/products/dad-cap-white-1.png', 'assets/products/dad-cap-white-2.png', 'assets/products/dad-cap-white-3.png', 'assets/products/dad-cap-white-4.png', 'assets/products/dad-cap-white-5.png']
+      }
     },
     {
       id: 'mug-cut', cat: 'mugs', type: 'mug', print: 'CUT',
