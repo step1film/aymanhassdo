@@ -187,7 +187,7 @@ body::before {
 /* Hero */
 .shop-hero .hero-manifest {
   max-width: 22ch;
-  margin: 0 auto 1.6rem;
+  margin: 1.7rem auto 0;
   font-family: var(--ff-display);
   font-size: clamp(1.4rem, 4.2vw, 2.4rem);
   line-height: 1.08;
@@ -248,7 +248,7 @@ body::before {
 }
 .shop-hero .hero-lead {
   max-width: 40ch;
-  margin: 1.5rem auto 0;
+  margin: 0 auto 1.5rem;
   color: var(--text);
   font-size: 1.02rem;
   line-height: 1.55;
