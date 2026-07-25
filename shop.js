@@ -24,7 +24,7 @@
     // Frakt: fast avgift per order (kr). Sätt freeOver för att ge
     // fri frakt över ett visst ordervärde (0 = alltid frakt).
     shippingFee: 59,
-    shippingFreeOver: 0,
+    shippingFreeOver: 899,
 
     /* ---------------------------------------------------
        PRINTFUL (print-on-demand) — se PRINTFUL_SETUP.md
@@ -118,8 +118,8 @@
        vi kopplar leverans. */
     {
       id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
-      name: { sv: 'REEL MUGG', en: 'REEL MUG' },
-      desc: { sv: 'Svart glansig mugg, 15 oz. Rosa filmrulle-tryck.', en: 'Black glossy mug, 15 oz. Pink film-reel print.' },
+      name: { sv: "Director's Morning", en: "Director's Morning" },
+      desc: { sv: 'Där varje historia börjar — en kopp kaffe och en idé. Svart glansig mugg, 15 oz.', en: 'Where every story begins — a cup of coffee and an idea. Black glossy mug, 15 oz.' },
       price: 229,
       colors: ['black'],
       sizes: null,
@@ -133,7 +133,8 @@
     {
       id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
       name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
-      desc: { sv: 'Vit glansig mugg. Rosa pixel-tryck "I\'m Awesome".', en: 'White glossy mug. Pink pixel print "I\'m Awesome".' },
+      desc: { sv: 'Första kaffet, första tagningen — påminnelsen om att du redan är awesome. Vit glansig mugg.', en: 'First coffee, first take — a reminder that you\'re already awesome. White glossy mug.' },
+      badge: { icon: '❤️', sv: 'Mest populär', en: 'Most popular' },
       price: 229,
       colors: ['white'],
       sizes: null,
@@ -151,7 +152,7 @@
     {
       id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
-      desc: { sv: 'Laptop-fodral i pastellregnbåge, "Take One". Vadderat med dragkedja.', en: 'Pastel-rainbow laptop sleeve, "Take One". Padded, zippered.' },
+      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din utrustning som ett filmteam.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your gear like a film crew.' },
       price: 499,
       sizePrices: { '13"': 499, '15"': 599 },
       colors: ['pastel'],
@@ -167,7 +168,8 @@
     {
       id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
-      desc: { sv: 'Ryggsäck med kamera-tryck "Rolling". Vadderad laptopficka. Välj färg.', en: 'Backpack with camera print "Rolling". Padded laptop pocket. Pick a colour.' },
+      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Kamera-tryck, vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Camera print, padded laptop pocket.' },
+      badge: { icon: '⭐', sv: 'Bestseller', en: 'Bestseller' },
       price: 699,
       colors: ['pink', 'navy'],
       sizes: null,
@@ -208,7 +210,7 @@
     {
       id: 'spoiler-hoodie', cat: 'clothing', type: 'hoodie', print: 'S1F',
       name: { sv: 'SPOILER HOODIE', en: 'SPOILER HOODIE' },
-      desc: { sv: 'Unisex-hoodie: "Jag är expert på att spoila filmer". Borstad insida. Välj färg.', en: 'Unisex hoodie: "Expert at spoiling films". Brushed inside. Pick a colour.' },
+      desc: { sv: 'Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.', en: 'You always know how the film ends — own it. A cosy hoodie for those who\'ve seen it all.' },
       price: 629,
       colors: ['natural', 'lightpink', 'white'],
       sizes: SIZES, defaultSize: 'M',
@@ -245,7 +247,8 @@
     {
       id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
-      desc: { sv: 'Unisex-hoodie: "Living life at 24fps" (ryggtryck) + ärmtryck. Välj färg.', en: 'Unisex hoodie: "Living life at 24fps" back print + sleeve print. Pick a colour.' },
+      desc: { sv: 'Livet levs i 24 bilder per sekund. Bär känslan av film — ryggtryck + ärmtryck.', en: 'Life runs at 24 frames per second. Wear the feeling of film — back + sleeve print.' },
+      badge: { icon: '🎬', sv: 'Filmfavorit', en: 'Film favourite' },
       price: 699,
       colors: ['black', 'lightpink'],
       sizes: SIZES, defaultSize: 'M',
@@ -303,8 +306,8 @@
     },
     {
       id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
-      name: { sv: 'REEL TRUCKER CAP', en: 'REEL TRUCKER CAP' },
-      desc: { sv: 'Trucker-keps med vit mesh. Broderad STEP1 Film-logga. Justerbar spänne. Välj färg. One size.', en: 'Trucker cap with white mesh. Embroidered STEP1 Film logo. Adjustable snap. Pick a colour. One size.' },
+      name: { sv: 'On-Set Trucker', en: 'On-Set Trucker' },
+      desc: { sv: 'För dagarna på inspelning — filmrullen snurrar vidare. Broderad logga, vit mesh, justerbar. One size.', en: 'For the days on set — the reel keeps rolling. Embroidered logo, white mesh, adjustable. One size.' },
       price: 349,
       colors: ['navy', 'silver', 'black'],
       sizes: null,
@@ -343,7 +346,7 @@
     {
       id: 'icon-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
       name: { sv: 'ICON STICKERS', en: 'ICON STICKERS' },
-      desc: { sv: 'Kiss-cut stickers med film-motiv i rosa. Tåliga och vattenavvisande.', en: 'Kiss-cut film-motif stickers in pink. Durable and water-resistant.' },
+      desc: { sv: 'Små ikoner, stora historier. Dekorera din värld med filmkärlek — kiss-cut stickers i rosa.', en: 'Small icons, big stories. Decorate your world with film love — kiss-cut stickers in pink.' },
       price: 85,
       colors: ['pink'],
       sizes: null,
@@ -358,7 +361,7 @@
     {
       id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
-      desc: { sv: 'Ribbstickad mössa med broderat "Reserved for Vision". Vikt kant. Välj färg. One size.', en: 'Ribbed knit beanie, embroidered "Reserved for Vision". Cuffed. Pick a colour. One size.' },
+      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. One size.' },
       price: 285,
       colors: ['black', 'brown', 'navy', 'olive'],
       sizes: null,
@@ -379,7 +382,7 @@
     {
       id: 'ad1-beanie', cat: 'caps', type: 'cap', print: 'AD1',
       name: { sv: 'AD1 BEANIE', en: 'AD1 BEANIE' },
-      desc: { sv: 'Ribbstickad mössa med broderat "Reserved for Vision". Vikt kant. Välj färg. One size.', en: 'Ribbed knit beanie, embroidered "Reserved for Vision". Cuffed. Pick a colour. One size.' },
+      desc: { sv: '"Reserved for vision." För tankarna som blir till film. Ribbstickad mössa med vikt kant. One size.', en: '"Reserved for vision." For the thoughts that become films. Ribbed knit beanie, cuffed. One size.' },
       price: 285,
       colors: ['candy', 'orange', 'white'],
       sizes: null,
@@ -398,7 +401,7 @@
     {
       id: 'static-reel-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'STATIC REEL SLEEVE', en: 'STATIC REEL SLEEVE' },
-      desc: { sv: 'Laptop-fodral med "static"-mönster i grått, rosa logga. Vadderat med dragkedja.', en: 'Laptop sleeve with grey "static" pattern and pink logo. Padded, zippered.' },
+      desc: { sv: 'Mellan tagningarna finns bruset. Skydda din maskin med film-static i grått. Vadderat med dragkedja.', en: 'Between takes there\'s the static. Protect your machine with grey film-static. Padded, zippered.' },
       price: 429,
       sizePrices: { '13"': 429, '15"': 499 },
       colors: ['silver'],
@@ -413,7 +416,8 @@
     {
       id: 'lil-director-tee', cat: 'clothing', type: 'tee', print: 'LIL',
       name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
-      desc: { sv: 'Baby-t-shirt "Get ready for some movies". Mjuk bomull. Välj färg. Storlek 6–24 mån.', en: 'Baby tee "Get ready for some movies". Soft cotton. Pick a colour. Sizes 6–24 months.' },
+      desc: { sv: 'En ny liten regissör är född. "Get ready for some movies" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies" — soft baby tee. Sizes 6–24 months.' },
+      badge: { icon: '🔥', sv: 'Nyhet', en: 'New' },
       price: 249,
       colors: ['candy', 'lightblue', 'white'],
       sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
@@ -433,7 +437,7 @@
     {
       id: 'crew-tee', cat: 'clothing', type: 'tee', print: 'CREW',
       name: { sv: 'CREW TEE', en: 'CREW TEE' },
-      desc: { sv: 'Unisex-tee med ärmtryck. Mjuk bomull. Välj färg.', en: 'Unisex tee with sleeve print. Soft cotton. Pick a colour.' },
+      desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget på bröstet — unisex-tee med ärmtryck.', en: 'No film happens without its crew. Wear the team on your chest — unisex tee with sleeve print.' },
       price: 275,
       colors: ['yellow', 'black', 'heather'],
       sizes: SIZES, defaultSize: 'M',
@@ -452,7 +456,8 @@
     {
       id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
       name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
-      desc: { sv: 'Mjuk trucker/dad cap med mesh. Broderad STEP1 Film-logga. Justerbar spänne. Välj färg. One size.', en: 'Soft trucker/dad cap with mesh. Embroidered STEP1 Film logo. Adjustable snap. Pick a colour. One size.' },
+      desc: { sv: 'För regissören i vardagen — sätt på kepsen och ropa "action" på livet. Mjuk mesh, justerbar. One size.', en: 'For the everyday director — put it on and call "action" on life. Soft mesh, adjustable. One size.' },
+      badge: { icon: '🔥', sv: 'Nyhet', en: 'New' },
       price: 349,
       colors: ['brown', 'khaki', 'orange', 'white'],
       sizes: null,
@@ -473,7 +478,7 @@
     {
       id: 'gear-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
       name: { sv: 'GEAR STICKERS', en: 'GEAR STICKERS' },
-      desc: { sv: 'Kiss-cut stickers med vintage-kameror. Tåliga och vattenavvisande.', en: 'Kiss-cut vintage-camera stickers. Durable and water-resistant.' },
+      desc: { sv: 'En hyllning till kamerorna som format filmhistorien. Kiss-cut stickers, tåliga och vattenavvisande.', en: 'A tribute to the cameras that shaped film history. Kiss-cut stickers, durable and water-resistant.' },
       price: 85,
       colors: ['forest'],
       sizes: null,
@@ -539,7 +544,10 @@
     sv: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroLead: 'Unik merch, framtagen med olika kläddesigners — bara för Step1 Store. Välj färg och storlek, och lägg i vagnen.',
+      heroManifest: 'Skapad av filmare — för dig som skapar berättelser.',
+      heroLead: 'Det här är inte bara merch. Det är filmkultur att bära, dela och leva.',
+      heroCta: 'Utforska kollektionen',
+      announce: '🚚 Fri frakt över 899 kr  ·  ↩ 14 dagars ångerrätt  ·  🎬 Filmkultur att bära',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
@@ -571,7 +579,10 @@
     en: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroLead: 'Unique merch, made with different clothing designers — only for Step1 Store. Pick a colour and size, and add to cart.',
+      heroManifest: 'Designed by filmmakers — for people who create stories.',
+      heroLead: "This isn't just merch. It's film culture to wear, share and live.",
+      heroCta: 'Explore the collection',
+      announce: '🚚 Free shipping over 899 kr  ·  ↩ 14-day right of return  ·  🎬 Film culture to wear',
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       detailsLabel: 'Details & size', materialLabel: 'Material & details',
@@ -805,6 +816,14 @@
       badge.className = 'pc-badge';
       badge.textContent = badgeText;
       visual.appendChild(badge);
+
+      // Kampanj-etikett (t.ex. Bestseller / Nyhet) — uppe till höger
+      if (p.badge) {
+        const pb = document.createElement('span');
+        pb.className = 'pc-promo';
+        pb.textContent = (p.badge.icon ? p.badge.icon + ' ' : '') + (p.badge[lang] || p.badge.sv);
+        visual.appendChild(pb);
+      }
 
       // Bildspel (galleri/per färg om det finns, annars SVG-mockup)
       buildSlideshow(visual, p, sel.color);
