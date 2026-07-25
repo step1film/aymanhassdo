@@ -876,6 +876,55 @@ body::before {
 .pay-method .pm-label { font-family: var(--ff-display); letter-spacing: 0.1em; font-size: 1rem; color: var(--white); }
 .pay-method .pm-desc { font-size: 0.76rem; color: var(--text-dim); }
 
+/* Betalsätt-val i kassan */
+.pay-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.2rem 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.pay-option:hover { border-color: var(--line-s); }
+.pay-option:has(input:checked) { border-color: var(--accent); background: rgba(224, 28, 28, 0.06); }
+.pay-option input { grid-row: span 2; accent-color: var(--accent); width: 18px; height: 18px; }
+.pay-option .pay-name { font-family: var(--ff-display); letter-spacing: 0.08em; font-size: 1rem; color: var(--white); }
+.pay-option .pay-desc { font-size: 0.76rem; color: var(--text-dim); }
+
+/* Swish-väntläge */
+.swish-pending {
+  text-align: center;
+  padding: 1.1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.swish-pending img {
+  display: none;
+  width: 190px;
+  max-width: 70%;
+  margin: 0 auto 0.9rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px;
+}
+.swish-pending p { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.swish-pending .btn-secondary {
+  display: inline-block;
+  margin-top: 0.9rem;
+  padding: 0.7rem 1.6rem;
+  border: 1px solid var(--line-s);
+  border-radius: 40px;
+  color: var(--white);
+  text-decoration: none;
+  font-family: var(--ff-display);
+  letter-spacing: 0.06em;
+}
+.btn-primary:disabled { opacity: 0.6; cursor: default; }
+
 .order-summary {
   border: 1px solid var(--line);
   border-radius: var(--radius);

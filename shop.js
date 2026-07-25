@@ -38,6 +38,19 @@
     printful: {
       apiBase: '',
       enabled: false
+    },
+
+    /* ---------------------------------------------------
+       BETALNING — se PAYMENTS_SETUP.md
+       ---------------------------------------------------
+       apiBase = din funktions-URL (Netlify: '/.netlify/functions').
+       Sätt card/swish till true när respektive konto är klart.
+       Är båda false körs mejlbeställning som tidigare.
+    --------------------------------------------------- */
+    payments: {
+      apiBase: '',
+      card: false,   // Stripe: kort + Klarna
+      swish: false   // Swish Handel
     }
   };
 
@@ -566,6 +579,16 @@
       payTitle: 'Betalsätt',
       swishName: 'Swish', swishDesc: 'Läggs till snart',
       invoiceName: 'Beställningsförfrågan', invoiceDesc: 'Vi mejlar dig en betalningslänk',
+      payCard: 'Kort / Klarna', payCardDesc: 'Betala säkert via Stripe',
+      paySwish: 'Swish', paySwishDesc: 'Betala med Swish-appen',
+      payNow: 'Betala', paying: 'Öppnar betalning…',
+      swishWaiting: 'Öppna Swish-appen och godkänn betalningen…',
+      swishOpenApp: 'Öppna Swish',
+      swishScan: 'Skanna QR-koden med Swish-appen',
+      swishDeclined: 'Betalningen avbröts eller nekades.',
+      swishTimeout: 'Betalningen tog för lång tid. Försök igen.',
+      payError: 'Något gick fel med betalningen. Försök igen.',
+      thanksPaid: 'Tack! Din betalning är genomförd och ordern skickas till tryck.',
       placeOrder: 'Skicka beställning',
       orderSummary: 'Sammanfattning',
       shipping: 'Frakt', shippingCalc: 'Räknas vid utcheckning',
@@ -603,6 +626,16 @@
       payTitle: 'Payment',
       swishName: 'Swish', swishDesc: 'Coming soon',
       invoiceName: 'Order request', invoiceDesc: "We'll email you a payment link",
+      payCard: 'Card / Klarna', payCardDesc: 'Pay securely via Stripe',
+      paySwish: 'Swish', paySwishDesc: 'Pay with the Swish app',
+      payNow: 'Pay', paying: 'Opening payment…',
+      swishWaiting: 'Open the Swish app and approve the payment…',
+      swishOpenApp: 'Open Swish',
+      swishScan: 'Scan the QR code with the Swish app',
+      swishDeclined: 'The payment was cancelled or declined.',
+      swishTimeout: 'The payment timed out. Please try again.',
+      payError: 'Something went wrong with the payment. Please try again.',
+      thanksPaid: 'Thank you! Your payment went through and the order is going to print.',
       placeOrder: 'Place order',
       orderSummary: 'Summary',
       shipping: 'Shipping', shippingCalc: 'Calculated at checkout',
@@ -1112,6 +1145,29 @@
     thanksView.style.display = 'none';
     checkoutView.style.display = 'block';
     renderCheckout();
+    renderPayMethods();
+  }
+
+  /** Visar betalvalen om betalning är aktiverad (annars mejlbeställning). */
+  function renderPayMethods() {
+    const wrap = document.getElementById('payMethods');
+    if (!wrap) return;
+    const on = payEnabled();
+    wrap.style.display = on ? 'flex' : 'none';
+    if (!on) return;
+
+    const cardOpt = wrap.querySelector('[data-pay="card"]');
+    const swishOpt = wrap.querySelector('[data-pay="swish"]');
+    cardOpt.style.display = CONFIG.payments.card ? '' : 'none';
+    swishOpt.style.display = CONFIG.payments.swish ? '' : 'none';
+
+    // Se till att ett tillgängligt alternativ är valt
+    const checked = wrap.querySelector('input[name="payMethod"]:checked');
+    if (!checked || checked.closest('.pay-option').style.display === 'none') {
+      const first = wrap.querySelector('.pay-option:not([style*="none"]) input');
+      if (first) first.checked = true;
+    }
+    document.getElementById('placeOrder').textContent = t('payNow');
   }
 
   /* -----------------------------------------------------
@@ -1135,11 +1191,156 @@
        <div class="os-row total"><span>${t('total')}</span><span>${grandTotal()} ${CONFIG.currency}</span></div>`;
   }
 
+  /* -----------------------------------------------------
+     BETALNING — Stripe (kort/Klarna) och Swish
+  ----------------------------------------------------- */
+  const payApi = () => (CONFIG.payments.apiBase || '').replace(/\/$/, '');
+  const payEnabled = () => Boolean(payApi() && (CONFIG.payments.card || CONFIG.payments.swish));
+
+  // Kundvagn i det format servern förväntar sig (utan priser — de räknas på servern)
+  function cartPayload() {
+    return cart.map((i) => ({ id: i.id, color: i.color, size: i.size, qty: i.qty }));
+  }
+
+  function recipientPayload() {
+    const get = (id) => (document.getElementById(id).value || '').trim();
+    return {
+      name: get('coName'),
+      email: get('coEmail'),
+      phone: get('coPhone'),
+      address1: get('coAddress'),
+      zip: get('coZip'),
+      city: get('coCity'),
+      country_code: 'SE',
+      notes: get('coNotes')
+    };
+  }
+
+  function selectedPayMethod() {
+    const el = document.querySelector('input[name="payMethod"]:checked');
+    return el ? el.value : 'card';
+  }
+
+  function setPayBusy(busy, label) {
+    const btn = document.getElementById('placeOrder');
+    btn.disabled = busy;
+    btn.textContent = busy ? (label || t('paying')) : (payEnabled() ? t('payNow') : t('placeOrder'));
+  }
+
+  async function payWithCard(recipient) {
+    setPayBusy(true);
+    try {
+      const res = await fetch(`${payApi()}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartPayload(), recipient, lang })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) throw new Error(data.error || t('payError'));
+      // Töm vagnen först när Stripe bekräftat i webhooken — men lämna sidan nu
+      window.location.href = data.url;
+    } catch (err) {
+      setPayBusy(false);
+      showToast(String(err.message || err));
+    }
+  }
+
+  async function payWithSwish(recipient) {
+    const pending = document.getElementById('swishPending');
+    const qrEl = document.getElementById('swishQr');
+    const msgEl = document.getElementById('swishMsg');
+    const openEl = document.getElementById('swishOpen');
+    setPayBusy(true);
+
+    try {
+      const res = await fetch(`${payApi()}/swish-create-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartPayload(), recipient, phone: recipient.phone })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.id) throw new Error(data.error || t('payError'));
+
+      pending.style.display = 'block';
+      msgEl.textContent = t('swishWaiting');
+
+      // Mobil: öppna Swish-appen direkt. Dator: visa QR-kod.
+      const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+      if (isMobile && data.token) {
+        const back = encodeURIComponent(window.location.href);
+        openEl.href = `swish://paymentrequest?token=${data.token}&callbackurl=${back}`;
+        openEl.style.display = 'inline-block';
+        openEl.click();
+      } else if (data.qr) {
+        qrEl.src = data.qr;
+        qrEl.style.display = 'block';
+        msgEl.textContent = t('swishScan');
+      }
+
+      // Polla status tills betalt / nekat / timeout (~3 min)
+      const deadline = Date.now() + 180000;
+      const poll = async () => {
+        if (Date.now() > deadline) {
+          pending.style.display = 'none';
+          setPayBusy(false);
+          showToast(t('swishTimeout'));
+          return;
+        }
+        let s = {};
+        try {
+          const r = await fetch(`${payApi()}/swish-complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: data.id, items: cartPayload(), recipient })
+          });
+          s = await r.json().catch(() => ({}));
+        } catch { /* nätverksglapp — försök igen */ }
+
+        if (s.status === 'PAID') {
+          pending.style.display = 'none';
+          setPayBusy(false);
+          finishPaidOrder();
+        } else if (s.status === 'DECLINED' || s.status === 'CANCELLED' || s.status === 'ERROR') {
+          pending.style.display = 'none';
+          setPayBusy(false);
+          showToast(t('swishDeclined'));
+        } else {
+          setTimeout(poll, 2000);
+        }
+      };
+      setTimeout(poll, 2500);
+    } catch (err) {
+      pending.style.display = 'none';
+      setPayBusy(false);
+      showToast(String(err.message || err));
+    }
+  }
+
+  /** Efter bekräftad betalning: töm vagn och visa tack-vyn. */
+  function finishPaidOrder() {
+    cart = [];
+    saveCart();
+    updateCartCount();
+    const txt = document.querySelector('#thanksView [data-i18n="thanksText"]');
+    if (txt) txt.textContent = t('thanksPaid');
+    showThanks();
+  }
+
   function placeOrder() {
     const get = (id) => (document.getElementById(id).value || '').trim();
     const name = get('coName');
     const email = get('coEmail');
     if (!name || !email) { showToast(t('required')); return; }
+
+    // Riktig betalning om den är aktiverad, annars mejlbeställning
+    if (payEnabled()) {
+      const recipient = recipientPayload();
+      if (!recipient.address1 || !recipient.zip || !recipient.city) { showToast(t('required')); return; }
+      const method = selectedPayMethod();
+      if (method === 'swish' && CONFIG.payments.swish) return payWithSwish(recipient);
+      if (CONFIG.payments.card) return payWithCard(recipient);
+      return payWithSwish(recipient);
+    }
 
     const lines = cart.map((item) => {
       const variantTxt = cname(item.color) + (item.size ? ' / ' + item.size : '');
@@ -1364,6 +1565,26 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
     renderGrid();
     renderCart();
     updateCartCount();
+    handlePaymentReturn();
+  }
+
+  /** Kunden kommer tillbaka från Stripe: ?order=ok | ?order=cancelled */
+  function handlePaymentReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('order');
+    if (!status) return;
+
+    // Städa URL:en så statusen inte ligger kvar vid omladdning
+    window.history.replaceState({}, '', window.location.pathname);
+
+    if (status === 'ok') {
+      finishPaidOrder();
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    } else if (status === 'cancelled') {
+      showToast(t('swishDeclined'));
+    }
   }
 
   if (document.readyState === 'loading') {

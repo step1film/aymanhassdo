@@ -178,6 +178,28 @@
           <textarea id="coNotes" rows="2"></textarea>
         </div>
 
+        <!-- Betalsätt (visas bara när betalning är aktiverad) -->
+        <div id="payMethods" class="pay-methods" style="display:none">
+          <span class="opt-label" data-i18n="payTitle">Betalsätt</span>
+          <label class="pay-option" data-pay="card">
+            <input type="radio" name="payMethod" value="card" checked />
+            <span class="pay-name" data-i18n="payCard">Kort / Klarna</span>
+            <span class="pay-desc" data-i18n="payCardDesc">Betala säkert via Stripe</span>
+          </label>
+          <label class="pay-option" data-pay="swish">
+            <input type="radio" name="payMethod" value="swish" />
+            <span class="pay-name" data-i18n="paySwish">Swish</span>
+            <span class="pay-desc" data-i18n="paySwishDesc">Betala med Swish-appen</span>
+          </label>
+        </div>
+
+        <!-- Swish-väntläge -->
+        <div id="swishPending" class="swish-pending" style="display:none">
+          <img id="swishQr" alt="" />
+          <p id="swishMsg" data-i18n="swishWaiting">Öppna Swish-appen och godkänn betalningen…</p>
+          <a id="swishOpen" class="btn-secondary" href="#" style="display:none" data-i18n="swishOpenApp">Öppna Swish</a>
+        </div>
+
         <button class="btn-primary" id="placeOrder" type="button" data-i18n="placeOrder">Skicka beställning</button>
       </div>
     </div>

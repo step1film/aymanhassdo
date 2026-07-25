@@ -18,6 +18,7 @@ Personal portfolio for filmmaker Ayman Hassdo (STEP1FILM).
 | `netlify.toml` | Deploy config (static site + functions) |
 | `.env.example` | Template for the secret keys (Printful / Stripe) |
 | `PRINTFUL_SETUP.md` | Step-by-step guide to wire the store to Printful (print-on-demand) |
+| `PAYMENTS_SETUP.md` | Step-by-step guide for payments: Swish + Klarna/card (Stripe) |
 | `bg-stage.jpg` | Background behind the clapperboard |
 | `cursor.png` | Custom cursor |
 | `robots.txt` | Search engine directive |

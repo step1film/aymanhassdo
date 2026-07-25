@@ -1,0 +1,12 @@
+{
+  "name": "step1-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "STEP1 STORE — serverless payment & fulfilment functions (Stripe/Klarna, Swish, Printful)",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^16.12.0"
+  }
+}
