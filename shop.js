@@ -16,7 +16,7 @@
   ----------------------------------------------------- */
   const CONFIG = {
     currency: 'kr',
-    contactEmail: 'step1film@gmail.com',
+    contactEmail: 'shop@step1film.se',
     // Swish number is shown at checkout as info only for now.
     // Leave empty to hide until you have a business number.
     swishNumber: '',
@@ -133,6 +133,7 @@
       id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
       name: { sv: "Director's Morning", en: "Director's Morning" },
       desc: { sv: 'Där varje historia börjar — en kopp kaffe och en idé. Svart glansig mugg, 15 oz.', en: 'Where every story begins — a cup of coffee and an idea. Black glossy mug, 15 oz.' },
+      material: { sv: ['Keramik, svart glansig', 'Volym: 15 oz (ca 440 ml)'], en: ['Ceramic, black glossy', 'Volume: 15 oz (approx. 440 ml)'] },
       price: 229,
       colors: ['black'],
       sizes: null,
@@ -148,6 +149,7 @@
       name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
       desc: { sv: 'Efter en lång dag på inspelning sitter en varm choklad fint — och en påminnelse om att du redan är awesome. Vit glansig mugg, 11 oz.', en: 'After a long day on set, hot chocolate is a must — and a reminder that you\'re already awesome. White glossy mug, 11 oz.' },
       badge: { sv: 'Mest populär', en: 'Most popular' },
+      material: { sv: ['Keramik, vit glansig', 'Volym: 11 oz (ca 330 ml)'], en: ['Ceramic, white glossy', 'Volume: 11 oz (approx. 330 ml)'] },
       price: 229,
       colors: ['white'],
       sizes: null,
@@ -165,7 +167,8 @@
     {
       id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
-      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din rigg som ett filmteam.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your rig like a film crew.' },
+      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din utrustning som crewet.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your gear like the crew.' },
+      material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
       price: 499,
       sizePrices: { '13"': 499, '15"': 599 },
       colors: ['pastel'],
@@ -183,6 +186,7 @@
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
       desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Fårö. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Fårö. Padded laptop pocket.' },
       badge: { sv: 'Bestseller', en: 'Bestseller' },
+      material: { sv: ['Vadderad laptopficka', 'Justerbara axelremmar'], en: ['Padded laptop pocket', 'Adjustable shoulder straps'] },
       price: 699,
       colors: ['navy', 'pink'],
       sizes: null,
@@ -415,6 +419,7 @@
       id: 'static-reel-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'GLITCH SLEEVE', en: 'GLITCH SLEEVE' },
       desc: { sv: 'Inspirerad av glitchen mellan tagningarna. Skydda din maskin med en design som är helt unik. Vadderat med dragkedja.', en: 'Inspired by the glitch between takes. Protect your machine with a design that\'s one of a kind. Padded, zippered.' },
+      material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
       price: 429,
       sizePrices: { '13"': 429, '15"': 499 },
       colors: ['silver'],
@@ -431,6 +436,7 @@
       name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
       desc: { sv: 'En ny liten regissör är född. "Get ready for some movies, with a bottle of popcorn" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies, with a bottle of popcorn" — soft baby tee. Sizes 6–24 months.' },
       badge: { sv: 'Nyhet', en: 'New' },
+      material: { sv: ['Mjuk bomull', 'Storlek 6–24 månader'], en: ['Soft cotton', 'Sizes 6–24 months'] },
       price: 249,
       colors: ['candy', 'lightblue', 'white'],
       sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
@@ -471,6 +477,7 @@
       name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
       desc: { sv: 'För vardagens pappa — inspirerad av egyptiska vibbar. Sätt på den och ropa "action" på livet. 100 % bomullsmanchester. One size.', en: 'For the everyday dad — inspired by Egypt vibes. Put it on and call "action" on life. 100% cotton corduroy. One size.' },
       badge: { sv: 'Nyhet', en: 'New' },
+      material: { sv: ['100 % bomullsmanchester', 'Justerbar spänne', 'One size'], en: ['100% cotton corduroy', 'Adjustable snap', 'One size'] },
       price: 349,
       colors: ['brown', 'khaki', 'orange', 'white'],
       sizes: null,
@@ -560,14 +567,16 @@
       heroManifest: 'Skapad av filmare — för dig som skapar berättelser.',
       heroLead: 'Det här är inte bara merch. Det är filmkultur att bära, dela och leva.',
       heroCta: 'Utforska kollektionen',
-      trustShip: 'Fri frakt över 899 kr',
+      trustShip: 'Fri frakt från 899 kr',
       trustReturn: '14 dagars ångerrätt',
       trustPrint: 'Tryckt på beställning',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
+      careLabel: 'Skötselråd', deliveryLabel: 'Leverans',
+      deliveryTime: 'Tryckt på beställning · leverans 5–10 arbetsdagar',
       zoomHint: 'Klicka för att zooma', zoomTip: 'Klicka på bilden för att zooma · dra för att panorera',
-      add: 'Lägg i vagn', added: 'Tillagd ✓',
+      add: 'Lägg i vagnen', added: 'Tillagd ✓',
       cart: 'Vagn', cartTitle: 'Din vagn', empty: 'Din vagn är tom.',
       keepShopping: 'Fortsätt handla',
       subtotal: 'Summa', checkout: 'Till kassan',
@@ -599,7 +608,7 @@
       done: 'Klar',
       required: 'Fyll i namn och e-post.',
       copy: 'Kopiera', copied: 'Kopierad',
-      addedToast: 'Tillagd i vagnen'
+      addedToast: 'Tillagd i vagnen — nu börjar berättelsen.'
     },
     en: {
       tagline: 'MERCH & PRINT',
@@ -607,12 +616,14 @@
       heroManifest: 'Designed by filmmakers — for people who create stories.',
       heroLead: "This isn't just merch. It's film culture to wear, share and live.",
       heroCta: 'Explore the collection',
-      trustShip: 'Free shipping over 899 kr',
+      trustShip: 'Free shipping from 899 kr',
       trustReturn: '14-day right of return',
       trustPrint: 'Printed on demand',
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       detailsLabel: 'Details & size', materialLabel: 'Material & details',
+      careLabel: 'Care', deliveryLabel: 'Delivery',
+      deliveryTime: 'Printed on demand · delivery in 5–10 business days',
       zoomHint: 'Click to zoom', zoomTip: 'Click the image to zoom · drag to pan',
       add: 'Add to cart', added: 'Added ✓',
       cart: 'Cart', cartTitle: 'Your cart', empty: 'Your cart is empty.',
@@ -646,7 +657,7 @@
       done: 'Done',
       required: 'Please fill in name and email.',
       copy: 'Copy', copied: 'Copied',
-      addedToast: 'Added to cart'
+      addedToast: 'Added to cart — and let the story begin.'
     }
   };
 
@@ -705,6 +716,41 @@
     }
     return wrap;
   }
+
+  /* -----------------------------------------------------
+     SKÖTSELRÅD per produkttyp
+     ⚠️ Stäm av mot Printfuls produktsida för varje artikel.
+  ----------------------------------------------------- */
+  const CARE = {
+    tee: {
+      sv: 'Tvätta ut och in i högst 30 °C med liknande färger. Torktumla inte. Stryk inte direkt på trycket.',
+      en: 'Machine wash inside out at max 30 °C with like colours. Do not tumble dry. Do not iron directly on the print.'
+    },
+    hoodie: {
+      sv: 'Tvätta ut och in i högst 30 °C med liknande färger. Torktumla inte. Stryk inte direkt på trycket.',
+      en: 'Machine wash inside out at max 30 °C with like colours. Do not tumble dry. Do not iron directly on the print.'
+    },
+    cap: {
+      sv: 'Handtvätta i ljummet vatten med mild tvål. Låt lufttorka. Torktumla inte.',
+      en: 'Hand wash in lukewarm water with mild soap. Air dry. Do not tumble dry.'
+    },
+    mug: {
+      sv: 'Tål maskindisk och mikrovågsugn.',
+      en: 'Dishwasher and microwave safe.'
+    },
+    sleeve: {
+      sv: 'Torka av med en fuktig trasa. Maskintvätta inte.',
+      en: 'Wipe clean with a damp cloth. Do not machine wash.'
+    },
+    backpack: {
+      sv: 'Torka av med en fuktig trasa. Maskintvätta inte.',
+      en: 'Wipe clean with a damp cloth. Do not machine wash.'
+    },
+    sticker: {
+      sv: 'Tål väta och sol. Fäster bäst på rena, släta ytor. Tål inte maskindisk.',
+      en: 'Water and sun resistant. Sticks best to clean, smooth surfaces. Not dishwasher safe.'
+    }
+  };
 
   /* -----------------------------------------------------
      BILDSPEL (slideshow) — återanvänds per produkt/färg
@@ -942,9 +988,9 @@
         body.appendChild(one);
       }
 
-      // Detaljer & storlek (utfällbart)
-      if (p.details) {
-        const dd = p.details[lang] || p.details.sv;
+      // Detaljer & storlek (utfällbart) — visas på alla produkter
+      {
+        const dd = p.details ? (p.details[lang] || p.details.sv) : null;
         const det = document.createElement('details');
         det.className = 'pc-details';
         const sum = document.createElement('summary');
@@ -952,7 +998,16 @@
         det.appendChild(sum);
         const dbody = document.createElement('div');
         dbody.className = 'pc-details-body';
-        if (dd.desc) {
+
+        const addLabel = (txt) => {
+          const lbl = document.createElement('span');
+          lbl.className = 'opt-label';
+          lbl.textContent = txt;
+          dbody.appendChild(lbl);
+        };
+
+        // Säljande beskrivning (om produkten har en)
+        if (dd && dd.desc) {
           const paras = Array.isArray(dd.desc) ? dd.desc : [dd.desc];
           paras.forEach((txt) => {
             const dp = document.createElement('p');
@@ -960,17 +1015,33 @@
             dbody.appendChild(dp);
           });
         }
-        if (dd.specs && dd.specs.length) {
-          const lbl = document.createElement('span');
-          lbl.className = 'opt-label';
-          lbl.textContent = t('materialLabel');
-          dbody.appendChild(lbl);
+
+        // Material & detaljer
+        const specs = (dd && dd.specs) || (p.material && (p.material[lang] || p.material.sv));
+        if (specs && specs.length) {
+          addLabel(t('materialLabel'));
           const ul = document.createElement('ul');
           ul.className = 'pc-specs';
-          dd.specs.forEach((s) => { const li = document.createElement('li'); li.textContent = s; ul.appendChild(li); });
+          specs.forEach((s) => { const li = document.createElement('li'); li.textContent = s; ul.appendChild(li); });
           dbody.appendChild(ul);
         }
-        if (dd.fine) {
+
+        // Skötselråd (per produkttyp)
+        const care = CARE[p.type];
+        if (care) {
+          addLabel(t('careLabel'));
+          const cp = document.createElement('p');
+          cp.textContent = care[lang] || care.sv;
+          dbody.appendChild(cp);
+        }
+
+        // Leveranstid — samma för alla
+        addLabel(t('deliveryLabel'));
+        const dl = document.createElement('p');
+        dl.textContent = t('deliveryTime');
+        dbody.appendChild(dl);
+
+        if (dd && dd.fine) {
           const fine = document.createElement('p');
           fine.className = 'pc-fine';
           fine.textContent = dd.fine;
