@@ -224,7 +224,7 @@ body.clapper-visible #hero { visibility: hidden; }
   }
 
 .nb-zone-inner {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--ff-body);
   font-size: clamp(0.60rem, 1.0vw, 0.78rem);
   line-height: 2;
   color: rgba(230, 225, 210, 0.72);
