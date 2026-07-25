@@ -565,7 +565,7 @@
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
       heroManifest: 'Skapad av filmare — för dig som älskar berättelser.',
-      heroLead: 'Det här är inte bara merch. Det är filmkultur att bära, dela och leva.',
+      heroLead: 'Det är filmkultur att bära, dela och leva.',
       heroCta: 'Utforska kollektionen',
       trustShip: 'Fri frakt från 899 kr',
       trustReturn: '14 dagars ångerrätt',
