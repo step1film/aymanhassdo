@@ -516,6 +516,23 @@
   ];
 
   /* -----------------------------------------------------
+     VISNINGSORDNING — ids i den ordning de ska visas.
+     Produkter som saknas i listan hamnar sist (i array-ordning).
+  ----------------------------------------------------- */
+  const PRODUCT_ORDER = [
+    'action-dad-cap', 'take-one-sleeve', '24fps-hoodie', 'awesome-mugg',
+    'rolling-backpack', 'lil-director-tee', 'icon-stickers', 'crew-tee',
+    // resten — blandat för variation
+    'spoiler-hoodie', 'reel-trucker-cap', 'reel-mugg', 'ad1-beanie',
+    'static-reel-sleeve', 'directors-beanie', 'gear-stickers'
+  ];
+  PRODUCTS.sort((a, b) => {
+    const ia = PRODUCT_ORDER.indexOf(a.id);
+    const ib = PRODUCT_ORDER.indexOf(b.id);
+    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+  });
+
+  /* -----------------------------------------------------
      i18n
   ----------------------------------------------------- */
   const I18N = {
