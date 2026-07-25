@@ -145,6 +145,30 @@ Betalningen påverkas inte.
 
 ---
 
+## Organisationsnummer — enskild firma
+
+För en **enskild firma är organisationsnumret detsamma som ditt personnummer**.
+E-handelslagen och distansavtalslagen kräver att numret visas i butiken, men
+det är samtidigt en personuppgift. Det är en verklig målkonflikt — frågan har
+till och med tagits upp i riksdagen.
+
+Alternativen, med för- och nackdelar:
+
+| Val | Följer lagen | Integritet | Kommentar |
+|---|---|---|---|
+| **Publicera hela numret** | ✅ Ja | ⚠️ Lägst | Vanligast för enskild firma. Personnummer är offentlig uppgift i Sverige, men publicering gör det lättare att skrapa. |
+| **Visa bara YYMMDD-XXXX** | ⚠️ Osäkert | 🟡 Bättre | Vissa gör så. Inte tydligt förenligt med kravet. |
+| **"Lämnas på begäran"** | ❌ Nej | ✅ Bäst | Uppfyller inte informationskravet. |
+| **Starta aktiebolag** | ✅ Ja | ✅ Bäst | AB får ett eget org.nr (556…/559…) — personnumret hålls utanför. Kräver 25 000 kr i aktiekapital och mer administration. |
+
+**Rekommendation:** börjar du i liten skala är det vanligaste att publicera
+numret. Känns det obekvämt är ett AB den enda lösningen som både följer lagen
+och skyddar personnumret.
+
+Fyll i valet i `company.js` → `orgNr`.
+
+---
+
 ## Att göra innan skarp drift
 
 - [ ] **Testa med testnycklar först** (Stripe `sk_test_…`, Swish `SWISH_ENV=test`).

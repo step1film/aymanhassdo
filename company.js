@@ -13,21 +13,26 @@
   'use strict';
 
   const COMPANY = {
-    // ⬇️ FYLL I: exakt firmanamn som det står hos Bolagsverket/Skatteverket
-    legalName: 'FYLL I FÖRETAGSNAMN',
-    // ⬇️ FYLL I: 10 siffror, format XXXXXX-XXXX
+    legalName: 'Ayman Hassdo',
+    /* ⬇️ ORGANISATIONSNUMMER — ENDA FÄLTET SOM ÅTERSTÅR
+       För enskild firma är org.nr detsamma som ditt personnummer.
+       E-handelslagen kräver att det visas, men det är också en
+       personuppgift. Se PAYMENTS_SETUP.md → "Organisationsnummer"
+       för alternativen innan du fyller i. */
     orgNr: 'FYLL I ORG.NR',
-    // ⬇️ FYLL I: gatuadress + postnummer (postbox räcker inte enligt lagen)
-    street: 'FYLL I GATUADRESS',
-    zip: 'FYLL I POSTNR',
-    city: 'Jönköping',
+    street: 'Östra Vasagatan 1A',
+    zip: '568 32',
+    city: 'Skillingaryd',
     country: 'Sverige',
     // ⬇️ FYLL I när momsregistreringen är klar (SE + org.nr utan bindestreck + 01)
     vatNr: '',
 
     brand: 'STEP1FILM',
     owner: 'Ayman Hassdo',
+    // Butikens adress — order, retur, frakt, reklamation
     email: 'shop@step1film.se',
+    // Allmän företagskontakt (ej köpärenden)
+    infoEmail: 'info@step1film.se',
     phone: '',            // valfritt, men rekommenderas
     domain: 'step1film.se',
     year: 2026
