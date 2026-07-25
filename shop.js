@@ -66,6 +66,8 @@
     olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
     orange:   { hex: '#d9772e', sv: 'Orange',   en: 'Orange',   light: false },
     khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
+    yellow:   { hex: '#f2d24e', sv: 'Gul',      en: 'Yellow',   light: true  },
+    heather:  { hex: '#b8b5ad', sv: 'Heather',  en: 'Heather',  light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -428,38 +430,24 @@
       }
     },
 
-    /* ===== MOCKUPER (byts ut mot riktiga produkter efterhand) ===== */
     {
-      id: 'tee-classic', cat: 'clothing', type: 'tee', print: 'S1F',
-      name: { sv: 'STEP1FILM Tee', en: 'STEP1FILM Tee' },
-      desc: { sv: 'Tung 220g ekologisk bomull. Screentryckt logga.', en: 'Heavy 220g organic cotton. Screen-printed logo.' },
-      price: 249,
-      colors: ['black', 'white', 'sand', 'forest'],
-      sizes: SIZES, defaultSize: 'M'
-    },
-    {
-      id: 'hoodie-director', cat: 'clothing', type: 'hoodie', print: 'DIR',
-      name: { sv: 'Director-Hoodie', en: "Director's Hoodie" },
-      desc: { sv: 'Borstad insida, dubbellager huva, känguruficka.', en: 'Brushed inside, double-layer hood, kangaroo pocket.' },
-      price: 549,
-      colors: ['black', 'charcoal', 'bone'],
-      sizes: SIZES, defaultSize: 'M'
-    },
-    {
-      id: 'tee-crew', cat: 'clothing', type: 'tee', print: 'CREW',
-      name: { sv: 'Crew Tee', en: 'Crew Tee' },
-      desc: { sv: 'Ryggtryck "CREW". Perfekt på inspelning.', en: 'Back print "CREW". Perfect on set.' },
-      price: 259,
-      colors: ['black', 'forest', 'sand'],
-      sizes: SIZES, defaultSize: 'L'
-    },
-    {
-      id: 'cap-clapper', cat: 'caps', type: 'cap', print: 'S1F',
-      name: { sv: 'Clapperboard-Keps', en: 'Clapperboard Cap' },
-      desc: { sv: 'Broderad logga, justerbar spänne. One size.', en: 'Embroidered logo, adjustable strap. One size.' },
-      price: 299,
-      colors: ['black', 'stone', 'red'],
-      sizes: null
+      id: 'crew-tee', cat: 'clothing', type: 'tee', print: 'CREW',
+      name: { sv: 'CREW TEE', en: 'CREW TEE' },
+      desc: { sv: 'Unisex-tee med ärmtryck. Mjuk bomull. Välj färg.', en: 'Unisex tee with sleeve print. Soft cotton. Pick a colour.' },
+      price: 275,
+      colors: ['yellow', 'black', 'heather'],
+      sizes: SIZES, defaultSize: 'M',
+      image: 'assets/products/crew-tee-yellow.png',
+      images: {
+        yellow: 'assets/products/crew-tee-yellow.png',
+        black: 'assets/products/crew-tee-black.png',
+        heather: 'assets/products/crew-tee-heather.png'
+      },
+      galleries: {
+        yellow: ['assets/products/crew-tee-yellow.png', 'assets/products/crew-tee-yellow-1.png', 'assets/products/crew-tee-yellow-2.png', 'assets/products/crew-tee-yellow-3.png'],
+        black: ['assets/products/crew-tee-black.png', 'assets/products/crew-tee-black-1.png', 'assets/products/crew-tee-black-2.png', 'assets/products/crew-tee-black-3.png', 'assets/products/crew-tee-black-4.png'],
+        heather: ['assets/products/crew-tee-heather.png', 'assets/products/crew-tee-heather-1.png', 'assets/products/crew-tee-heather-2.png', 'assets/products/crew-tee-heather-3.png', 'assets/products/crew-tee-heather-4.png']
+      }
     },
     {
       id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
@@ -483,20 +471,19 @@
       }
     },
     {
-      id: 'mug-cut', cat: 'mugs', type: 'mug', print: 'CUT',
-      name: { sv: 'Coffee & Cut Mugg', en: 'Coffee & Cut Mug' },
-      desc: { sv: '350 ml keramik. Tål maskindisk.', en: '350 ml ceramic. Dishwasher safe.' },
-      price: 149,
-      colors: ['black', 'white'],
-      sizes: null
-    },
-    {
-      id: 'mug-roll', cat: 'mugs', type: 'mug', print: 'S1F',
-      name: { sv: 'Roll Sound Mugg', en: 'Roll Sound Mug' },
-      desc: { sv: 'Emalj-look, 300 ml. Robust för fältbruk.', en: 'Enamel look, 300 ml. Rugged for field use.' },
-      price: 169,
-      colors: ['white', 'red', 'black'],
-      sizes: null
+      id: 'gear-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
+      name: { sv: 'GEAR STICKERS', en: 'GEAR STICKERS' },
+      desc: { sv: 'Kiss-cut stickers med vintage-kameror. Tåliga och vattenavvisande.', en: 'Kiss-cut vintage-camera stickers. Durable and water-resistant.' },
+      price: 85,
+      colors: ['forest'],
+      sizes: null,
+      image: 'assets/products/gear-stickers.png',
+      gallery: [
+        'assets/products/gear-stickers.png',
+        'assets/products/gear-stickers-1.png',
+        'assets/products/gear-stickers-2.png',
+        'assets/products/gear-stickers-3.png'
+      ]
     }
 
     /* ---------------------------------------------------
