@@ -146,7 +146,7 @@
     {
       id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
       name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
-      desc: { sv: 'Första kaffet, första tagningen — påminnelsen om att du redan är awesome. Vit glansig mugg.', en: 'First coffee, first take — a reminder that you\'re already awesome. White glossy mug.' },
+      desc: { sv: 'Efter en lång dag på inspelning sitter en varm choklad fint — och en påminnelse om att du redan är awesome. Vit glansig mugg, 11 oz.', en: 'After a long day on set, hot chocolate is a must — and a reminder that you\'re already awesome. White glossy mug, 11 oz.' },
       badge: { sv: 'Mest populär', en: 'Most popular' },
       price: 229,
       colors: ['white'],
@@ -165,7 +165,7 @@
     {
       id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
       name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
-      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din utrustning som ett filmteam.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your gear like a film crew.' },
+      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din rigg som ett filmteam.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your rig like a film crew.' },
       price: 499,
       sizePrices: { '13"': 499, '15"': 599 },
       colors: ['pastel'],
@@ -181,7 +181,7 @@
     {
       id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
-      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Kamera-tryck, vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Camera print, padded laptop pocket.' },
+      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Förå. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Förå. Padded laptop pocket.' },
       badge: { sv: 'Bestseller', en: 'Bestseller' },
       price: 699,
       colors: ['navy', 'pink'],
@@ -260,7 +260,7 @@
     {
       id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
-      desc: { sv: 'Livet levs i 24 bilder per sekund. Bär känslan av film — ryggtryck + ärmtryck.', en: 'Life runs at 24 frames per second. Wear the feeling of film — back + sleeve print.' },
+      desc: { sv: 'Livet levs i 24 bilder per sekund — inspirerad av filmälskare. Bär känslan av film. Mjuk 100 % bomull med fleecefodrad insida som håller värmen.', en: 'Life runs at 24 frames per second — inspired by film lovers. Wear the feeling of film. Made with smooth 100% cotton and a soft fleece-lined interior for warmth.' },
       badge: { sv: 'Filmfavorit', en: 'Film favourite' },
       price: 699,
       colors: ['black', 'lightpink'],
@@ -413,8 +413,8 @@
     },
     {
       id: 'static-reel-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
-      name: { sv: 'STATIC REEL SLEEVE', en: 'STATIC REEL SLEEVE' },
-      desc: { sv: 'Mellan tagningarna finns bruset. Skydda din maskin med film-static i grått. Vadderat med dragkedja.', en: 'Between takes there\'s the static. Protect your machine with grey film-static. Padded, zippered.' },
+      name: { sv: 'GLITCH SLEEVE', en: 'GLITCH SLEEVE' },
+      desc: { sv: 'Inspirerad av glitchen mellan tagningarna. Skydda din maskin med en design som är helt unik. Vadderat med dragkedja.', en: 'Inspired by the glitch between takes. Protect your machine with a design that\'s one of a kind. Padded, zippered.' },
       price: 429,
       sizePrices: { '13"': 429, '15"': 499 },
       colors: ['silver'],
@@ -429,7 +429,7 @@
     {
       id: 'lil-director-tee', cat: 'clothing', type: 'tee', print: 'LIL',
       name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
-      desc: { sv: 'En ny liten regissör är född. "Get ready for some movies" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies" — soft baby tee. Sizes 6–24 months.' },
+      desc: { sv: 'En ny liten regissör är född. "Get ready for some movies, with a bottle of popcorn" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies, with a bottle of popcorn" — soft baby tee. Sizes 6–24 months.' },
       badge: { sv: 'Nyhet', en: 'New' },
       price: 249,
       colors: ['candy', 'lightblue', 'white'],
@@ -450,7 +450,7 @@
     {
       id: 'crew-tee', cat: 'clothing', type: 'tee', print: 'CREW',
       name: { sv: 'CREW TEE', en: 'CREW TEE' },
-      desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget på bröstet — unisex-tee med ärmtryck.', en: 'No film happens without its crew. Wear the team on your chest — unisex tee with sleeve print.' },
+      desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget — en unisex-tee som är skön och klädsam på alla.', en: "No film happens without its crew. Wear the team — a unisex tee that's comfortable and flattering on everyone." },
       price: 275,
       colors: ['heather', 'yellow', 'black'],
       sizes: SIZES, defaultSize: 'M',
@@ -469,7 +469,7 @@
     {
       id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
       name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
-      desc: { sv: 'För regissören i vardagen — sätt på kepsen och ropa "action" på livet. Mjuk mesh, justerbar. One size.', en: 'For the everyday director — put it on and call "action" on life. Soft mesh, adjustable. One size.' },
+      desc: { sv: 'För vardagens pappa — inspirerad av egyptiska vibbar. Sätt på den och ropa "action" på livet. 100 % bomullsmanchester. One size.', en: 'For the everyday dad — inspired by Egypt vibes. Put it on and call "action" on life. 100% cotton corduroy. One size.' },
       badge: { sv: 'Nyhet', en: 'New' },
       price: 349,
       colors: ['brown', 'khaki', 'orange', 'white'],

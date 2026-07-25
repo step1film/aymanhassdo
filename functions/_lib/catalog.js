@@ -23,7 +23,7 @@ const CATALOG = {
   'reel-mugg':          { name: "Director's Morning", price: 229 },
   'awesome-mugg':       { name: 'AWESOME MUGG',       price: 229 },
   'take-one-sleeve':    { name: 'TAKE ONE SLEEVE',    price: 499, sizePrices: { '13"': 499, '15"': 599 } },
-  'static-reel-sleeve': { name: 'STATIC REEL SLEEVE', price: 429, sizePrices: { '13"': 429, '15"': 499 } },
+  'static-reel-sleeve': { name: 'GLITCH SLEEVE',      price: 429, sizePrices: { '13"': 429, '15"': 499 } },
   'rolling-backpack':   { name: 'ROLLING BACKPACK',   price: 699 },
   'spoiler-hoodie':     { name: 'SPOILER HOODIE',     price: 629 },
   '24fps-hoodie':       { name: '24FPS HOODIE',       price: 699 },
