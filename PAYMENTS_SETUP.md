@@ -45,13 +45,13 @@ GitHub Pages kan bara visa statiska filer. Betalning kräver serverkod.
 1. Skapa konto på [netlify.com](https://www.netlify.com) och koppla ditt GitHub-repo.
 2. Netlify läser `netlify.toml` automatiskt: publicerar sidan och kör
    mappen `functions/` som serverless-endpoints.
-3. Peka domänen **step1film.com** mot Netlify (Domain settings → Add domain).
+3. Peka domänen **step1film.se** mot Netlify (Domain settings → Add domain).
 4. Lägg in miljövariabler under **Site settings → Environment variables**
    (se `.env.example` för hela listan).
 
 Sätt först:
 ```
-SITE_URL = https://step1film.com
+SITE_URL = https://step1film.se
 ```
 
 ---
@@ -63,7 +63,7 @@ SITE_URL = https://step1film.com
    (Kort är på som standard. Klarna kräver att kontot är godkänt.)
 3. Hämta din hemliga nyckel: *Developers → API keys* → **Secret key**.
 4. Skapa webhook: *Developers → Webhooks → Add endpoint*
-   - **URL:** `https://step1film.com/.netlify/functions/stripe-webhook`
+   - **URL:** `https://step1film.se/.netlify/functions/stripe-webhook`
    - **Event:** `checkout.session.completed`
    - Kopiera **Signing secret** (`whsec_…`).
 5. Lägg in i Netlify:

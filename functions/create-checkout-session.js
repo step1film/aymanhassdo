@@ -7,21 +7,21 @@
 
    Miljövariabler:
      STRIPE_SECRET_KEY   – sk_live_… / sk_test_…
-     SITE_URL            – t.ex. https://step1film.com
+     SITE_URL            – t.ex. https://step1film.se
    ===================================================== */
 'use strict';
+
+const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const Stripe = require('stripe');
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json'
-};
 
 exports.handler = async (event) => {
+  const cors = corsHeaders(event, 'POST, OPTIONS');
+  if (isForeignOrigin(event)) {
+    return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Otillåtet ursprung.' }) };
+  }
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors, body: '' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -91,6 +91,8 @@ exports.handler = async (event) => {
 
     return { statusCode: 200, headers: cors, body: JSON.stringify({ url: session.url, reference }) };
   } catch (err) {
-    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte skapa betalning', detail: String(err.message || err) }) };
+    // Logga detaljen på servern — visa aldrig interna fel för kunden
+    console.error('[create-checkout-session]', String(err && err.message || err));
+    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte skapa betalning. Försök igen.' }) };
   }
 };

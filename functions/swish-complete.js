@@ -8,16 +8,12 @@
    ===================================================== */
 'use strict';
 
+const { corsHeaders, isForeignOrigin } = require('./_lib/http');
+
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 const { getPaymentRequest } = require('./_lib/swish');
 const { fulfilOrder } = require('./_lib/fulfil');
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json'
-};
 
 /* Enkel skydd mot dubbla ordrar inom samma funktionsinstans.
    ⚠️ För skarp drift bör detta ligga i en databas/KV-store —
@@ -25,6 +21,10 @@ const cors = {
 const handled = new Set();
 
 exports.handler = async (event) => {
+  const cors = corsHeaders(event, 'POST, OPTIONS');
+  if (isForeignOrigin(event)) {
+    return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Otillåtet ursprung.' }) };
+  }
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors, body: '' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: 'Method not allowed' }) };

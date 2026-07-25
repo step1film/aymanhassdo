@@ -23,10 +23,10 @@
     zip: '568 32',
     city: 'Skillingaryd',
     country: 'Sverige',
-    /* ⬇️ FYLL I när momsregistreringen hos Skatteverket är klar.
-       Format: SE + org.nr utan bindestreck + 01 → 'SE880319061301'
-       Lämna tomt tills dess — raden döljs då automatiskt. */
-    vatNr: '',
+    // Momsregistrerad hos Skatteverket. Format: SE + org.nr utan bindestreck + 01
+    vatNr: 'SE880319061301',
+    // Godkänd för F-skatt
+    fTax: true,
 
     brand: 'STEP1FILM',
     owner: 'Ayman Hassdo',

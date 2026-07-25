@@ -8,17 +8,17 @@
    ===================================================== */
 'use strict';
 
+const { corsHeaders, isForeignOrigin } = require('./_lib/http');
+
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 const { createPaymentRequest, normalisePhone } = require('./_lib/swish');
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json'
-};
 
 exports.handler = async (event) => {
+  const cors = corsHeaders(event, 'POST, OPTIONS');
+  if (isForeignOrigin(event)) {
+    return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Otillåtet ursprung.' }) };
+  }
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors, body: '' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: 'Method not allowed' }) };

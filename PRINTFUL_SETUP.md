@@ -1,6 +1,6 @@
 # STEP1FILM Store × Printful — uppkoppling
 
-Den här guiden beskriver hur du kopplar din egen butik på **step1film.com** till
+Den här guiden beskriver hur du kopplar din egen butik på **step1film.se** till
 **Printful** (print-on-demand) — så att dina egna designer trycks och skickas
 automatiskt när någon köper.
 
@@ -18,7 +18,7 @@ automatiskt när någon köper.
 ## Översikt — hur det hänger ihop
 
 ```
-  Kund på step1film.com
+  Kund på step1film.se
           │  väljer produkt, färg, storlek → betalar
           ▼
   Kassa (Stripe / Snipcart)         ← tar betalt
@@ -92,7 +92,7 @@ Printful-order behöver du en plats som kan köra serverkod. Två gratisalternat
 1. Skapa konto på <https://www.netlify.com> och koppla ditt GitHub-repo.
 2. Netlify läser `netlify.toml` automatiskt och publicerar mappen som statisk
    sida + funktionerna i `functions/` som serverless-endpoints.
-3. Peka din domän **step1film.com** mot Netlify (Domain settings → Add domain).
+3. Peka din domän **step1film.se** mot Netlify (Domain settings → Add domain).
 
 ### 4b. Lägg in dina hemliga nycklar som miljövariabler
 I Netlify: **Site settings → Environment variables**. Lägg till:

@@ -666,19 +666,57 @@
   ----------------------------------------------------- */
   let lang = localStorage.getItem('s1f_lang') || 'sv';
   let filter = 'all';
-  let cart = loadCart();
+  // Fylls längre ned, när priceFor/variantKey finns definierade
+  let cart = [];
   // Per-card selected variant (colour + size), keyed by product id
   const selection = {};
 
   const t = (k) => (I18N[lang][k] || k);
-  const cname = (key) => COLORS[key][lang];
+  // Färgnamn — tål okända nycklar (t.ex. gammal vagn efter sortimentsändring)
+  const cname = (key) => {
+    const c = COLORS[key];
+    return (c && c[lang]) || String(key || '');
+  };
+  // Produktnamn — tål trasiga/gamla poster
+  const pname = (obj) => (obj && obj.name && (obj.name[lang] || obj.name.sv)) || '';
   // Pris för en produkt givet vald storlek (stöder olika pris per storlek)
   const priceFor = (p, size) => (p.sizePrices && size && p.sizePrices[size] != null) ? p.sizePrices[size] : p.price;
 
+  /**
+   * Läser kundvagnen och saneras mot dagens sortiment.
+   * Poster vars produkt inte längre finns tas bort (servern skulle ändå
+   * avvisa dem), och priserna räknas om så att visat pris aldrig är gammalt.
+   */
   function loadCart() {
-    try { return JSON.parse(localStorage.getItem('s1f_cart')) || []; }
+    let raw;
+    try { raw = JSON.parse(localStorage.getItem('s1f_cart')); }
     catch (e) { return []; }
+    if (!Array.isArray(raw)) return [];
+
+    const cleaned = [];
+    raw.forEach((item) => {
+      if (!item || typeof item !== 'object') return;
+      const p = PRODUCTS.find((x) => x.id === item.id);
+      if (!p) return;                                   // produkten finns inte längre
+
+      const color = p.colors.includes(item.color) ? item.color : p.colors[0];
+      const size = p.sizes ? (p.sizes.includes(item.size) ? item.size : p.defaultSize) : null;
+      const qty = Math.min(20, Math.max(1, parseInt(item.qty, 10) || 1));
+
+      cleaned.push({
+        key: variantKey(p.id, color, size),
+        id: p.id, type: p.type, print: p.print,
+        name: p.name,                                   // alltid dagens namn
+        price: priceFor(p, size),                       // alltid dagens pris
+        color, size, qty,
+        variant_id: (p.variants && p.variants[`${color}|${size || 'one'}`]) || null
+      });
+    });
+    return cleaned;
   }
+
+  // Nu finns alla hjälpfunktioner — läs in och sanera vagnen.
+  cart = loadCart();
   function saveCart() { localStorage.setItem('s1f_cart', JSON.stringify(cart)); }
 
   /* -----------------------------------------------------
@@ -1138,7 +1176,7 @@
       const info = document.createElement('div');
       info.className = 'ci-info';
       const variantTxt = cname(item.color) + (item.size ? ' · ' + item.size : '');
-      info.innerHTML = `<div class="ci-name">${item.name[lang]}</div>
+      info.innerHTML = `<div class="ci-name">${pname(item)}</div>
         <div class="ci-variant">${variantTxt}</div>
         <div class="ci-price">${item.price} ${CONFIG.currency}</div>`;
 
@@ -1250,7 +1288,7 @@
     cart.forEach((item) => {
       const variantTxt = cname(item.color) + (item.size ? ' · ' + item.size : '');
       rows += `<div class="os-row">
-        <span class="os-item-name">${item.qty}× ${item.name[lang]} <small>(${variantTxt})</small></span>
+        <span class="os-item-name">${item.qty}× ${pname(item)} <small>(${variantTxt})</small></span>
         <span>${item.price * item.qty} ${CONFIG.currency}</span>
       </div>`;
     });
@@ -1415,7 +1453,7 @@
 
     const lines = cart.map((item) => {
       const variantTxt = cname(item.color) + (item.size ? ' / ' + item.size : '');
-      return `- ${item.qty}x ${item.name[lang]} (${variantTxt}) = ${item.price * item.qty} ${CONFIG.currency}`;
+      return `- ${item.qty}x ${pname(item)} (${variantTxt}) = ${item.price * item.qty} ${CONFIG.currency}`;
     }).join('\n');
 
     const bodyText =

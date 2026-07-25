@@ -83,4 +83,4 @@ walkthrough. Short version:
 
 ## Domain / SEO
 
-When you point a custom domain at the GitHub Pages deploy, update these URLs in `index.html` (search for `step1film.com`) and in `sitemap.xml`.
+When you point a custom domain at the GitHub Pages deploy, update these URLs in `index.html` (search for `step1film.se`) and in `sitemap.xml`.

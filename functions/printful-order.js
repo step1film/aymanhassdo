@@ -33,16 +33,16 @@
    ===================================================== */
 'use strict';
 
+const { corsHeaders, isForeignOrigin } = require('./_lib/http');
+
 const PRINTFUL_API = 'https://api.printful.com';
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json'
-};
 
 exports.handler = async (event) => {
+  const cors = corsHeaders(event, 'POST, OPTIONS');
+  if (isForeignOrigin(event)) {
+    return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Otillåtet ursprung.' }) };
+  }
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: cors, body: '' };
   }
@@ -103,7 +103,8 @@ exports.handler = async (event) => {
     const data = await res.json();
 
     if (!res.ok) {
-      return { statusCode: res.status, headers: cors, body: JSON.stringify({ error: 'Printful order failed', detail: data }) };
+      console.error('[printful-order]', JSON.stringify(data).slice(0, 500));
+      return { statusCode: res.status, headers: cors, body: JSON.stringify({ error: 'Ordern kunde inte skapas.' }) };
     }
 
     return {
@@ -117,6 +118,7 @@ exports.handler = async (event) => {
       })
     };
   } catch (err) {
-    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte nå Printful', detail: String(err) }) };
+    console.error('[printful-order]', String(err));
+    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte nå tryckeriet.' }) };
   }
 };

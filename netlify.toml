@@ -22,3 +22,29 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# =====================================================
+# SÄKERHETSHEADERS
+# =====================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Hindra att sidan bäddas in i en iframe (clickjacking)
+    X-Frame-Options = "DENY"
+    # Hindra webbläsaren från att gissa filtyper
+    X-Content-Type-Options = "nosniff"
+    # Läck inte adressen till andra sajter
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Stäng av API:er sidan inte använder
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    # Tvinga HTTPS i två år (inkl. underdomäner)
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # Innehållspolicy: bara egna resurser + Google Fonts + betalningarnas domäner
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://files.cdn.printful.com; connect-src 'self' https://api.stripe.com; form-action 'self' https://checkout.stripe.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+
+# Betalnings-endpoints ska aldrig cachas
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0"
+    X-Content-Type-Options = "nosniff"
