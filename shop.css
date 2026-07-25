@@ -184,29 +184,39 @@ body::before {
   color: var(--accent);
   margin-bottom: 1rem;
 }
-.shop-hero h1 {
+.shop-hero .hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05em;
   font-family: var(--ff-display);
   font-weight: 400;
-  font-size: clamp(2.8rem, 10vw, 6rem);
-  letter-spacing: 0.04em;
-  line-height: 0.92;
+  line-height: 0.84;
   color: var(--white);
+}
+.shop-hero .ht-step {
+  font-size: clamp(1.5rem, 4.2vw, 2.6rem);
+  letter-spacing: 0.24em;
+  padding-left: 0.24em; /* optiskt centrera trots letter-spacing */
+  color: var(--text);
+}
+.shop-hero .ht-step .ht-accent { color: var(--accent); }
+.shop-hero .ht-store {
+  font-size: clamp(3.8rem, 13.5vw, 8.5rem);
+  letter-spacing: 0.03em;
+}
+.shop-hero .hero-lead {
+  max-width: 40ch;
+  margin: 1.5rem auto 0;
+  color: var(--text);
+  font-size: 1.02rem;
+  line-height: 1.55;
 }
 .shop-hero p {
   max-width: 40ch;
   margin: 1.2rem auto 0;
   color: var(--text-dim);
   font-size: 0.98rem;
-}
-.shop-hero .hero-note {
-  max-width: 46ch;
-  margin: 1.4rem auto 0;
-  color: var(--white);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  border: 1px solid var(--line);
-  border-radius: 40px;
-  padding: 0.6rem 1.2rem;
 }
 
 /* Category filter */

@@ -501,8 +501,7 @@
     sv: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroNote: 'Alla artiklar är framtagna i samarbete med olika kläddesigners – varje produkt är unik för Step1 Store.',
-      heroText: 'Du blir garanterat lite mer kreativ med en Step1 på dig. 🙂 Välj färg, storlek och lägg i vagnen.',
+      heroLead: 'Unik merch, framtagen med olika kläddesigners — bara för Step1 Store. Välj färg och storlek, och lägg i vagnen.',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
@@ -534,8 +533,7 @@
     en: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroNote: 'Every item is created in collaboration with different clothing designers – each product is unique to Step1 Store.',
-      heroText: "You're guaranteed to get a little more creative wearing a Step1. 🙂 Pick a colour, a size and add to cart.",
+      heroLead: 'Unique merch, made with different clothing designers — only for Step1 Store. Pick a colour and size, and add to cart.',
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       detailsLabel: 'Details & size', materialLabel: 'Material & details',
