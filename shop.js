@@ -545,12 +545,39 @@
      VISNINGSORDNING — ids i den ordning de ska visas.
      Produkter som saknas i listan hamnar sist (i array-ordning).
   ----------------------------------------------------- */
+  /* Ordningen nedan följer några klassiska köppsykologiska principer:
+     · Ankring — de dyraste plaggen först, allt därefter känns rimligare.
+     · Social bevisning — de flaggade produkterna (Filmfavorit, Bestseller,
+       Trend, Mest populär) ligger i första skärmen.
+     · Kontrasteffekt — priset växlar upp och ner istället för att falla
+       jämnt, så varje ny produkt läses som ett eget beslut.
+     · Von Restorff — inga två grannar delar kategori (två hoodies, två
+       mössor, två fodral ligger aldrig bredvid varandra).
+     · Litet första ja — 229 kr-muggen tidigt sänker tröskeln till första köpet.
+     · Serieposition — starkast först och billig impuls sist, där kunden
+       ändå överväger att fylla på till fri frakt (899 kr).
+
+     TIDIGARE ORDNING (för att backa detta steg):
+       action-dad-cap, take-one-sleeve, 24fps-hoodie, awesome-mugg,
+       rolling-backpack, lil-director-tee, icon-stickers, crew-tee,
+       spoiler-hoodie, reel-trucker-cap, reel-mugg, ad1-beanie,
+       static-reel-sleeve, directors-beanie, gear-stickers            */
   const PRODUCT_ORDER = [
-    'action-dad-cap', 'take-one-sleeve', '24fps-hoodie', 'awesome-mugg',
-    'rolling-backpack', 'lil-director-tee', 'icon-stickers', 'crew-tee',
-    // resten — blandat för variation
-    'spoiler-hoodie', 'reel-trucker-cap', 'reel-mugg', 'ad1-beanie',
-    'static-reel-sleeve', 'directors-beanie', 'gear-stickers'
+    '24fps-hoodie',        // 699 · Filmfavorit — ankare + starkaste berättelsen
+    'rolling-backpack',    // 699 · Bestseller — håller ankaret uppe
+    'take-one-sleeve',     // 499 · Trend — första prissänkningen känns som en lättnad
+    'awesome-mugg',        // 229 · Mest populär — det lilla första ja:et
+    'action-dad-cap',      // 349 · Nyhet
+    'spoiler-hoodie',      // 629 · kontrast tillbaka uppåt
+    'crew-tee',            // 275
+    'static-reel-sleeve',  // 429 · skilt från TAKE ONE så de inte äter varandra
+    'reel-trucker-cap',    // 349
+    'lil-director-tee',    // 249 · Nyhet — presenten, känslan
+    'icon-stickers',       //  85 · impuls
+    'directors-beanie',    // 285
+    'reel-mugg',           // 229
+    'ad1-beanie',          // 285
+    'gear-stickers'        //  85 · sista lilla ja:et upp mot fri frakt
   ];
   PRODUCTS.sort((a, b) => {
     const ia = PRODUCT_ORDER.indexOf(a.id);
