@@ -171,9 +171,9 @@
       desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Kamera-tryck, vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Camera print, padded laptop pocket.' },
       badge: { sv: 'Bestseller', en: 'Bestseller' },
       price: 699,
-      colors: ['pink', 'navy'],
+      colors: ['navy', 'pink'],
       sizes: null,
-      image: 'assets/products/backpack-pink.png',
+      image: 'assets/products/backpack-navy.png',
       // Egen bild per färg i kundvagnen
       images: {
         pink: 'assets/products/backpack-pink.png',
@@ -363,9 +363,9 @@
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
       desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. One size.' },
       price: 285,
-      colors: ['black', 'brown', 'navy', 'olive'],
+      colors: ['olive', 'black', 'brown', 'navy'],
       sizes: null,
-      image: 'assets/products/beanie-black.png',
+      image: 'assets/products/beanie-olive.png',
       images: {
         black: 'assets/products/beanie-black.png',
         brown: 'assets/products/beanie-brown.png',
@@ -439,9 +439,9 @@
       name: { sv: 'CREW TEE', en: 'CREW TEE' },
       desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget på bröstet — unisex-tee med ärmtryck.', en: 'No film happens without its crew. Wear the team on your chest — unisex tee with sleeve print.' },
       price: 275,
-      colors: ['yellow', 'black', 'heather'],
+      colors: ['heather', 'yellow', 'black'],
       sizes: SIZES, defaultSize: 'M',
-      image: 'assets/products/crew-tee-yellow.png',
+      image: 'assets/products/crew-tee-heather.png',
       images: {
         yellow: 'assets/products/crew-tee-yellow.png',
         black: 'assets/products/crew-tee-black.png',
