@@ -134,7 +134,7 @@
       id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
       name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
       desc: { sv: 'Första kaffet, första tagningen — påminnelsen om att du redan är awesome. Vit glansig mugg.', en: 'First coffee, first take — a reminder that you\'re already awesome. White glossy mug.' },
-      badge: { icon: '❤️', sv: 'Mest populär', en: 'Most popular' },
+      badge: { sv: 'Mest populär', en: 'Most popular' },
       price: 229,
       colors: ['white'],
       sizes: null,
@@ -169,7 +169,7 @@
       id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
       desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Kamera-tryck, vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Camera print, padded laptop pocket.' },
-      badge: { icon: '⭐', sv: 'Bestseller', en: 'Bestseller' },
+      badge: { sv: 'Bestseller', en: 'Bestseller' },
       price: 699,
       colors: ['pink', 'navy'],
       sizes: null,
@@ -248,7 +248,7 @@
       id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
       desc: { sv: 'Livet levs i 24 bilder per sekund. Bär känslan av film — ryggtryck + ärmtryck.', en: 'Life runs at 24 frames per second. Wear the feeling of film — back + sleeve print.' },
-      badge: { icon: '🎬', sv: 'Filmfavorit', en: 'Film favourite' },
+      badge: { sv: 'Filmfavorit', en: 'Film favourite' },
       price: 699,
       colors: ['black', 'lightpink'],
       sizes: SIZES, defaultSize: 'M',
@@ -417,7 +417,7 @@
       id: 'lil-director-tee', cat: 'clothing', type: 'tee', print: 'LIL',
       name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
       desc: { sv: 'En ny liten regissör är född. "Get ready for some movies" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies" — soft baby tee. Sizes 6–24 months.' },
-      badge: { icon: '🔥', sv: 'Nyhet', en: 'New' },
+      badge: { sv: 'Nyhet', en: 'New' },
       price: 249,
       colors: ['candy', 'lightblue', 'white'],
       sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
@@ -457,7 +457,7 @@
       id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
       name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
       desc: { sv: 'För regissören i vardagen — sätt på kepsen och ropa "action" på livet. Mjuk mesh, justerbar. One size.', en: 'For the everyday director — put it on and call "action" on life. Soft mesh, adjustable. One size.' },
-      badge: { icon: '🔥', sv: 'Nyhet', en: 'New' },
+      badge: { sv: 'Nyhet', en: 'New' },
       price: 349,
       colors: ['brown', 'khaki', 'orange', 'white'],
       sizes: null,
@@ -547,7 +547,7 @@
       heroManifest: 'Skapad av filmare — för dig som skapar berättelser.',
       heroLead: 'Det här är inte bara merch. Det är filmkultur att bära, dela och leva.',
       heroCta: 'Utforska kollektionen',
-      announce: '🚚 Fri frakt över 899 kr  ·  ↩ 14 dagars ångerrätt  ·  🎬 Filmkultur att bära',
+      announce: 'Fri frakt över 899 kr  ·  14 dagars ångerrätt  ·  Filmkultur att bära',
       all: 'Allt', clothing: 'Kläder', caps: 'Kepsar', mugs: 'Muggar', accessories: 'Tillbehör',
       colorLabel: 'Färg', sizeLabel: 'Storlek', oneSize: 'One size',
       detailsLabel: 'Detaljer & storlek', materialLabel: 'Material & detaljer',
@@ -582,7 +582,7 @@
       heroManifest: 'Designed by filmmakers — for people who create stories.',
       heroLead: "This isn't just merch. It's film culture to wear, share and live.",
       heroCta: 'Explore the collection',
-      announce: '🚚 Free shipping over 899 kr  ·  ↩ 14-day right of return  ·  🎬 Film culture to wear',
+      announce: 'Free shipping over 899 kr  ·  14-day right of return  ·  Film culture to wear',
       all: 'All', clothing: 'Clothing', caps: 'Caps', mugs: 'Mugs', accessories: 'Accessories',
       colorLabel: 'Colour', sizeLabel: 'Size', oneSize: 'One size',
       detailsLabel: 'Details & size', materialLabel: 'Material & details',
@@ -821,7 +821,7 @@
       if (p.badge) {
         const pb = document.createElement('span');
         pb.className = 'pc-promo';
-        pb.textContent = (p.badge.icon ? p.badge.icon + ' ' : '') + (p.badge[lang] || p.badge.sv);
+        pb.textContent = (p.badge[lang] || p.badge.sv);
         visual.appendChild(pb);
       }
 

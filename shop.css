@@ -617,20 +617,34 @@ body::before {
   border-radius: 40px;
   padding: 0.2rem 0.6rem;
 }
-/* Kampanj-etikett (Bestseller / Nyhet / …) uppe till höger */
+/* Kampanj-etikett (Bestseller / Nyhet / …) uppe till höger — diskret & premium */
 .pc-promo {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
   z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: var(--ff-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: #fff;
-  background: rgba(224, 28, 28, 0.92);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: rgba(12, 12, 12, 0.5);
+  border: 1px solid var(--line);
   border-radius: 40px;
-  padding: 0.25rem 0.7rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  padding: 0.28rem 0.7rem 0.28rem 0.62rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.pc-promo::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
 }
 
 /* Body of card */
