@@ -181,7 +181,7 @@
     {
       id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
       name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
-      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Förå. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Förå. Padded laptop pocket.' },
+      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Fårö. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Fårö. Padded laptop pocket.' },
       badge: { sv: 'Bestseller', en: 'Bestseller' },
       price: 699,
       colors: ['navy', 'pink'],
