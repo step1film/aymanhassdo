@@ -613,7 +613,7 @@
     en: {
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
-      heroManifest: 'Designed by filmmakers — for people who create stories.',
+      heroManifest: 'Designed by filmmakers — for people who love stories.',
       heroLead: "It's film culture to wear, share and live.",
       heroCta: 'Explore the collection',
       trustShip: 'Free shipping from 899 kr',
