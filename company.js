@@ -14,17 +14,18 @@
 
   const COMPANY = {
     legalName: 'Ayman Hassdo',
-    /* ⬇️ ORGANISATIONSNUMMER — ENDA FÄLTET SOM ÅTERSTÅR
-       För enskild firma är org.nr detsamma som ditt personnummer.
-       E-handelslagen kräver att det visas, men det är också en
-       personuppgift. Se PAYMENTS_SETUP.md → "Organisationsnummer"
-       för alternativen innan du fyller i. */
-    orgNr: 'FYLL I ORG.NR',
+    /* Organisationsnummer (enskild firma = personnummer).
+       Visas enbart på Köpvillkor-sidan — inte i sidfoten på varje
+       sida — för att uppfylla informationskravet med minsta möjliga
+       exponering. Se PAYMENTS_SETUP.md → "Organisationsnummer". */
+    orgNr: '880319-0613',
     street: 'Östra Vasagatan 1A',
     zip: '568 32',
     city: 'Skillingaryd',
     country: 'Sverige',
-    // ⬇️ FYLL I när momsregistreringen är klar (SE + org.nr utan bindestreck + 01)
+    /* ⬇️ FYLL I när momsregistreringen hos Skatteverket är klar.
+       Format: SE + org.nr utan bindestreck + 01 → 'SE880319061301'
+       Lämna tomt tills dess — raden döljs då automatiskt. */
     vatNr: '',
 
     brand: 'STEP1FILM',
