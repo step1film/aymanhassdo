@@ -605,7 +605,7 @@
       tagline: 'MERCH & PRINT',
       heroTitle: 'STEP1 STORE',
       heroManifest: 'Designed by filmmakers — for people who create stories.',
-      heroLead: "This isn't just merch. It's film culture to wear, share and live.",
+      heroLead: "It's film culture to wear, share and live.",
       heroCta: 'Explore the collection',
       trustShip: 'Free shipping over 899 kr',
       trustReturn: '14-day right of return',
