@@ -79,6 +79,7 @@
     olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
     orange:   { hex: '#d9772e', sv: 'Orange',   en: 'Orange',   light: false },
     khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
+    honey:    { hex: '#ab7742', sv: 'Honung',   en: 'Honey',    light: false },
     yellow:   { hex: '#f2d24e', sv: 'Gul',      en: 'Yellow',   light: true  },
     heather:  { hex: '#b8b5ad', sv: 'Heather',  en: 'Heather',  light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
@@ -480,20 +481,16 @@
       badge: { sv: 'Nyhet', en: 'New' },
       material: { sv: ['100 % bomullsmanchester', 'Justerbar spänne', 'One size'], en: ['100% cotton corduroy', 'Adjustable snap', 'One size'] },
       price: 349,
-      colors: ['brown', 'khaki', 'orange', 'white'],
+      colors: ['honey', 'black'],
       sizes: null,
-      image: 'assets/products/dad-cap-brown.png',
+      image: 'assets/products/dad-cap-honey.png',
       images: {
-        brown: 'assets/products/dad-cap-brown.png',
-        khaki: 'assets/products/dad-cap-khaki.png',
-        orange: 'assets/products/dad-cap-orange.png',
-        white: 'assets/products/dad-cap-white.png'
+        honey: 'assets/products/dad-cap-honey.png',
+        black: 'assets/products/dad-cap-black.png'
       },
       galleries: {
-        brown: ['assets/products/dad-cap-brown.png', 'assets/products/dad-cap-brown-1.png', 'assets/products/dad-cap-brown-2.png', 'assets/products/dad-cap-brown-3.png', 'assets/products/dad-cap-brown-4.png'],
-        khaki: ['assets/products/dad-cap-khaki.png', 'assets/products/dad-cap-khaki-1.png', 'assets/products/dad-cap-khaki-2.png', 'assets/products/dad-cap-khaki-3.png', 'assets/products/dad-cap-khaki-4.png'],
-        orange: ['assets/products/dad-cap-orange.png', 'assets/products/dad-cap-orange-1.png', 'assets/products/dad-cap-orange-2.png', 'assets/products/dad-cap-orange-3.png', 'assets/products/dad-cap-orange-4.png'],
-        white: ['assets/products/dad-cap-white.png', 'assets/products/dad-cap-white-1.png', 'assets/products/dad-cap-white-2.png', 'assets/products/dad-cap-white-3.png', 'assets/products/dad-cap-white-4.png', 'assets/products/dad-cap-white-5.png']
+        honey: ['assets/products/dad-cap-honey.png', 'assets/products/dad-cap-honey-1.png', 'assets/products/dad-cap-honey-2.png', 'assets/products/dad-cap-honey-3.png'],
+        black: ['assets/products/dad-cap-black.png', 'assets/products/dad-cap-black-1.png', 'assets/products/dad-cap-black-2.png', 'assets/products/dad-cap-black-3.png']
       }
     },
     {
