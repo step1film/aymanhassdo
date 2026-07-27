@@ -27,34 +27,22 @@
     shippingFreeOver: 899,
 
     /* ---------------------------------------------------
-       PRINTFUL (print-on-demand) — se PRINTFUL_SETUP.md
-       ---------------------------------------------------
-       Så länge apiBase är tomt / enabled = false körs butiken
-       precis som idag (SVG-mockuper + mejlbeställning).
-       Sätt apiBase till din funktions-URL och enabled: true
-       när dina Printful-produkter och backend är på plats.
-         Netlify:          '/.netlify/functions'  (eller '/api')
-    --------------------------------------------------- */
-    printful: {
-      apiBase: '',
-      enabled: false
-    },
-
-    /* ---------------------------------------------------
        BETALNING — se PAYMENTS_SETUP.md
        ---------------------------------------------------
-       apiBase = din funktions-URL (Netlify: '/.netlify/functions').
-       Sätt card/swish till true när respektive konto är klart.
-       Är båda false körs mejlbeställning som tidigare.
+       apiBase pekar på Netlify, eftersom sidorna ligger på
+       GitHub Pages men funktionerna körs hos Netlify. Full
+       adress krävs — en relativ sökväg hade letat på fel värd.
+
+       card/swish slås på när respektive konto är klart.
+       Är båda false faller butiken tillbaka på mejlbeställning.
     --------------------------------------------------- */
     payments: {
-      apiBase: '',
-      card: false,   // Stripe: kort + Klarna
-      swish: false   // Swish Handel
+      apiBase: 'https://step1film.netlify.app/.netlify/functions',
+      card: true,    // Stripe: kort + Klarna
+      swish: false   // Swish Handel — väntar på avtal med banken
     }
   };
 
-  // Exponera konfigurationen så printful.js kan läsa den.
   window.S1F_CONFIG = CONFIG;
 
   /* -----------------------------------------------------
