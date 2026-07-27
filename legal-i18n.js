@@ -93,7 +93,7 @@
     fl4: 'Standard shipping',
     fl5: 'SEK 59',
     fl6: 'Free shipping',
-    fl7: 'On orders from SEK 899',
+    fl7: 'On orders from SEK 1,200',
     fl8: 'The shipping cost is always shown at checkout before you pay. The free-shipping threshold is calculated on the total price of the items, before shipping.',
     fl9: 'Delivery time',
     fl10: 'All products are <strong>printed to order</strong> — nothing sits in a warehouse. That means every garment is made just for you, but also that it takes a few extra days.',
