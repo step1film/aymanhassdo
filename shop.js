@@ -232,7 +232,8 @@
       desc: { sv: 'Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.', en: 'You always know how the film ends — own it. A cosy hoodie for those who\'ve seen it all.' },
       price: 629,
       colors: ['natural', 'lightpink', 'white'],
-      sizes: SIZES, defaultSize: 'M',
+      // Printful gör bara S–XL på den här modellen
+      sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
       image: 'assets/products/hoodie-natural.webp',
       images: {
         natural: 'assets/products/hoodie-natural.webp',
@@ -270,7 +271,8 @@
       badge: { sv: 'Filmfavorit', en: 'Film favourite' },
       price: 699,
       colors: ['black', 'lightpink'],
-      sizes: SIZES, defaultSize: 'M',
+      // Printful har inte XS på den här modellen, och kallar XXL för 2XL
+      sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'], defaultSize: 'M',
       image: 'assets/products/hoodie-24fps-black.webp',
       images: {
         black: 'assets/products/hoodie-24fps-black.webp',
@@ -461,7 +463,8 @@
       desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget — en unisex-tee som är skön och klädsam på alla.', en: "No film happens without its crew. Wear the team — a unisex tee that's comfortable and flattering on everyone." },
       price: 275,
       colors: ['heather', 'yellow', 'black'],
-      sizes: SIZES, defaultSize: 'M',
+      // Printful gör bara S–XL på den här modellen
+      sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
       image: 'assets/products/crew-tee-heather.webp',
       images: {
         yellow: 'assets/products/crew-tee-yellow.webp',
