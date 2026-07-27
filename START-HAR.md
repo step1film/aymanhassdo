@@ -69,13 +69,13 @@ Domänen går till **GitHub**, inte Netlify.
 
 ## Del 3 · Städa innan pengar är inblandade
 
-- [ ] **3.1** 🙋 **Återkalla Printful-token som du klistrade in i chatten.** Printful → *Settings → Developers* → ta bort den gamla, skapa en ny. Den gamla har legat i en chattlogg och ska inte användas skarpt.
+- [x] **3.1** ✅ **Klart** — den gamla Printful-token är raderad.
 - [ ] **3.2** 🙋 Lägg den nya token som miljövariabel i Netlify: `PRINTFUL_API_TOKEN`. **Aldrig i koden.**
 - [ ] **3.3** 🙋 Sätt miljövariabeln `ADMIN_KEY` i Netlify till en lång slumpsträng (`openssl rand -hex 32`, eller vilken lång rad tecken som helst). Den skyddar funktionen som listar din butik.
 - [ ] **3.4** 🙋 Hämta dina Printful-variant-id:n. Antingen manuellt i Printful (varje variant har ett id), eller så här:
       `curl -H "X-Admin-Key: DIN-NYCKEL" https://step1film.netlify.app/.netlify/functions/printful-products`
 - [ ] **3.5** 🤖 Jag skriver in dem i `functions/_lib/catalog.js` så rätt plagg i rätt färg och storlek beställs.
-- [ ] **3.6** 🙋 Låt `PRINTFUL_CONFIRM_ORDERS` vara **tom**. Då skapas ordrar som utkast och du blir inte debiterad medan vi testar.
+- [ ] **3.6** 🙋 `PRINTFUL_CONFIRM_ORDERS` — **skapa den inte.** Koden läser den som `=== 'true'`, alltså exakt ordet `true` och inget annat. Finns variabeln inte, blir varje order ett **utkast** i Printful som inte debiteras. Det är först i steg 5.3 du lägger till den.
 
 ---
 
