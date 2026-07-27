@@ -432,13 +432,16 @@
       btn.addEventListener('click', () => {
         if (box.classList.contains('is-playing')) return;
         const provider = cfg.provider === 'vimeo' ? 'vimeo' : 'youtube';
+        // Vimeo: olistade filmer kräver sekretessnyckeln (h=) för att spelas
+        const hash = String(cfg.hash || '').trim();
         const src = provider === 'vimeo'
-          ? `https://player.vimeo.com/video/${encodeURIComponent(id)}?autoplay=1`
+          ? `https://player.vimeo.com/video/${encodeURIComponent(id)}?autoplay=1&playsinline=1`
+            + (hash ? `&h=${encodeURIComponent(hash)}` : '')
           : `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
         const frame = document.createElement('iframe');
         frame.src = src;
         frame.title = cfg.title || 'Trailer';
-        frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        frame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
         frame.setAttribute('allowfullscreen', '');
         frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
         frame.setAttribute('loading', 'lazy');
