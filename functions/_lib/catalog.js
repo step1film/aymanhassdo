@@ -7,6 +7,11 @@
 
    ⚠️ HÅLL I SYNK med PRODUCTS i shop.js. Ändrar du ett pris
    där måste du ändra det här också.
+
+   PRISREGEL: priset här och i shop.js är det kunden betalar.
+   Printfuls "retail price" är bara en anteckning inne i Printful
+   och debiterar ingen. Skiljer de sig åt gäller det HÖGRE priset
+   — och det skrivs in här och i shop.js, inte tvärtom.
    ===================================================== */
 'use strict';
 
