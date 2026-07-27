@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -90,7 +90,7 @@
 <body class="is-loading" data-motion="full">
 
   <!-- Skip link for keyboard users -->
-  <a class="skip-link" href="#films">Skip to content</a>
+  <a class="skip-link" href="#films" data-i18n="skip">Hoppa till innehållet</a>
 
   <!-- =====================================================
        FILM GRAIN
@@ -115,10 +115,10 @@
         </svg>
         <span class="ld-num" id="ldNum">5</span>
       </div>
-      <p class="ld-label">ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION</p>
+      <p class="ld-label" data-i18n-html="loaderLabel">ROLL &nbsp;·&nbsp; LJUD &nbsp;·&nbsp; TAGNING</p>
     </div>
-    <button id="ldSkip" class="ld-skip" type="button" aria-label="Skip intro and enter site">
-      <span>SKIP INTRO</span>
+    <button id="ldSkip" class="ld-skip" type="button" data-i18n-aria="skipIntroAria" aria-label="Hoppa över introt och gå till sidan">
+      <span data-i18n="skipIntro">HOPPA ÖVER INTRO</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
         <polyline points="9,6 15,12 9,18"></polyline>
       </svg>
@@ -133,10 +133,13 @@
 
     <!-- Logo mark — floating, no nav bar -->
     <div id="logo-mark">
-      <a href="#hero" class="logo-text" aria-label="STEP1FILM — home">STEP<span>1</span>FILM</a>
-      <a href="shop.html" class="logo-text" aria-label="STEP1FILM Store"
-         style="margin-left:auto;pointer-events:auto;font-size:0.85rem;letter-spacing:0.24em;color:var(--text-dim);transition:color .25s ease;"
-         onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--text-dim)'">STORE</a>
+      <a href="#hero" class="logo-text" data-i18n-aria="homeAria" aria-label="STEP1FILM — startsida">STEP<span>1</span>FILM</a>
+      <div class="lang-toggle" role="group" aria-label="Language / Språk">
+        <button type="button" data-lang="sv">SV</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="shop.html" class="logo-text logo-store" data-i18n-aria="storeLinkAria" aria-label="STEP1FILM Store"
+         data-i18n="storeLink">BUTIK</a>
     </div>
 
     <!-- HERO — fullscreen video, lazily loaded -->
@@ -144,19 +147,19 @@
       <div class="hero-video-wrap" id="heroVideoWrap">
         <!-- Poster shown until the user (or autoload) triggers the iframe -->
         <div class="hero-poster" id="heroPoster" aria-hidden="true"></div>
-        <button class="hero-play" id="heroPlay" type="button" aria-label="Play showreel">
+        <button class="hero-play" id="heroPlay" type="button" data-i18n-aria="playShowreel" aria-label="Spela showreel">
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
             <circle cx="32" cy="32" r="30"></circle>
             <polygon points="26,22 26,42 44,32" fill="currentColor" stroke="none"></polygon>
           </svg>
-          <span>PLAY SHOWREEL</span>
+          <span data-i18n="playShowreel">SPELA SHOWREEL</span>
         </button>
         <div class="hero-overlay" aria-hidden="true"></div>
       </div>
       <div class="hero-content">
         <h1 class="hero-name">AYMAN HASSDO</h1>
-        <p class="hero-sub">Showreel</p>
-        <a href="#films" class="hero-down" aria-label="Enter site">
+        <p class="hero-sub" data-i18n="showreel">Showreel</p>
+        <a href="#films" class="hero-down" data-i18n-aria="enterSite" aria-label="Gå in på sidan">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
             <line x1="12" y1="4" x2="12" y2="20"></line>
             <polyline points="6,14 12,20 18,14"></polyline>
@@ -174,75 +177,94 @@
             <div class="panel-inner panel-inner--films">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">01</span>
-                <h2 class="panel-title" id="films-title">Selected<br>Works</h2>
-                <span class="panel-meta">Filmography · Commercial · Documentary · Art</span>
+                <h2 class="panel-title" id="films-title" data-i18n-html="p1Title">Utvalda<br>arbeten</h2>
+                <span class="panel-meta" data-i18n="p1Meta">Filmografi · Reklam · Dokumentär · Konst</span>
               </div>
               <div class="films-list">
 
                 <article class="film-item" tabindex="0">
-                  <!-- Birds of Passage still: upload assets/films/film-001.jpg to the repo
-                       and the slot picks it up automatically — no other change needed. -->
-                  <image-slot class="film-thumb" id="film-001" shape="rect" placeholder="Drop still" src="assets/films/film-001.jpg"></image-slot>
+                  <!-- Trailer: video-id sätts i STEP1FILM_EMBEDS längst ner på sidan -->
+                  <div class="film-thumb film-embed" data-embed="film-001">
+                    <button class="fe-play" type="button" data-i18n-aria="playTrailer" aria-label="Spela trailer">
+                      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                        <circle cx="24" cy="24" r="22"></circle>
+                        <polygon points="19,16 19,32 33,24" fill="currentColor" stroke="none"></polygon>
+                      </svg>
+                    </button>
+                    <span class="fe-soon" data-i18n="trailerSoon">Trailer kommer</span>
+                  </div>
                   <div class="film-body">
                     <div class="film-num">001</div>
                     <div class="film-meta">
                       <span class="film-year">2026-2027</span>
-                      <span class="film-type">Documentary . UNDER PROGRESS</span>
+                      <span class="film-type" data-i18n="f1Type">Dokumentär . Pågående</span>
                     </div>
                     <h3 class="film-title">BIRDS OF PASSAGE</h3>
-                    <p class="film-syn">A feature-length documentary . Runtime: 85 min</p>
+                    <p class="film-syn" data-i18n="f1Syn">Långfilmsdokumentär . Speltid: 85 min</p>
                   </div>
                 </article>
 
                 <article class="film-item" tabindex="0">
-                  <image-slot class="film-thumb" id="film-002" shape="rect" placeholder="Drop still" src="assets/films/film-002.jpg"></image-slot>
+                  <!-- Samarbetslogotyper: lägg SVG/PNG i assets/clients/ och lista dem här -->
+                  <div class="film-thumb film-logos" data-logos>
+                    <span class="fl-empty" data-i18n="logosSoon">Samarbeten</span>
+                  </div>
                   <div class="film-body">
                     <div class="film-num">002</div>
                     <div class="film-meta">
                       <span class="film-year">2019-2026</span>
-                      <span class="film-type">Commercial</span>
+                      <span class="film-type" data-i18n="f2Type">Reklam</span>
                     </div>
-                    <h3 class="film-title">Reklamfilm — i Småland</h3>
-                    <p class="film-syn">Commercial direction and cinematography for a Swedish brand.</p>
+                    <h3 class="film-title" data-i18n="f2Title">Reklamfilm — i Småland</h3>
+                    <p class="film-syn" data-i18n="f2Syn">Regi och foto för svenska varumärken.</p>
                   </div>
                 </article>
 
                 <article class="film-item" tabindex="0">
-                  <image-slot class="film-thumb" id="film-003" shape="rect" placeholder="Drop still" src="assets/films/film-003.jpg"></image-slot>
+                  <!-- Affischbildspel: filerna listas i STEP1FILM_POSTERS längst ner -->
+                  <div class="film-thumb film-slides" data-slides="shorts">
+                    <span class="fs-empty" data-i18n="postersSoon">Affischer</span>
+                  </div>
                   <div class="film-body">
                     <div class="film-num">003</div>
                     <div class="film-meta">
                       <span class="film-year">2014-2023</span>
-                      <span class="film-type">Shorts . Documentary</span>
+                      <span class="film-type" data-i18n="f3Type">Kortfilm . Dokumentär</span>
                     </div>
-                    <h3 class="film-title">SHORT FILMS</h3>
-                    <p class="film-syn">Nya ord — my first film, on the challenges of learning a new language as a refugee . The Mind's Eye . Otyg . Together We Create Harmony.</p>
+                    <h3 class="film-title" data-i18n="f3Title">KORTFILMER</h3>
+                    <p class="film-syn" data-i18n="f3Syn">Nya ord — min första film, om utmaningen att lära sig ett nytt språk som flykting . The Mind's Eye . Otyg . Together We Create Harmony.</p>
                   </div>
                 </article>
 
                 <article class="film-item" tabindex="0">
-                  <image-slot class="film-thumb" id="film-004" shape="rect" placeholder="Drop still" src="assets/films/film-004.jpg"></image-slot>
+                  <div class="film-thumb film-sign" aria-hidden="true">
+                    <span class="fsign-mark">STEP<em>1</em></span>
+                    <span class="fsign-word" data-i18n="cornerSign">HÖRNA</span>
+                  </div>
                   <div class="film-body">
                     <div class="film-num">004</div>
                     <div class="film-meta">
                       <span class="film-year">2018</span>
-                      <span class="film-type">Art</span>
+                      <span class="film-type" data-i18n="f4Type">Konst</span>
                     </div>
-                    <h3 class="film-title">MY SPACE</h3>
-                    <p class="film-syn">From music to digital art, and Web development</p>
+                    <h3 class="film-title" data-i18n="f4Title">STEP1 HÖRNA</h3>
+                    <p class="film-syn" data-i18n="f4Syn">Från musik till digital konst — och webbutveckling.</p>
                   </div>
                 </article>
 
-                <a class="film-item film-item--store" href="shop.html" aria-label="STEP1FILM Store — merch, caps and mugs">
-                  <image-slot class="film-thumb" id="film-005" shape="rect" placeholder="Drop merch" src="assets/films/film-005.jpg"></image-slot>
+                <a class="film-item film-item--store" href="shop.html" data-i18n-aria="storeAria" aria-label="STEP1 Store — merch, kepsar och muggar">
+                  <div class="film-thumb film-sign film-sign--store" aria-hidden="true">
+                    <span class="fsign-mark">STEP<em>1</em></span>
+                    <span class="fsign-word">STORE</span>
+                  </div>
                   <div class="film-body">
                     <div class="film-num">005</div>
                     <div class="film-meta">
-                      <span class="film-year">Store</span>
-                      <span class="film-type">Merch &middot; Print</span>
+                      <span class="film-year" data-i18n="f5Year">Butik</span>
+                      <span class="film-type" data-i18n="f5Type">Merch &middot; Tryck</span>
                     </div>
-                    <h3 class="film-title">STORE</h3>
-                    <p class="film-syn">Official STEP1FILM merch — tees, hoodies, caps &amp; mugs. Choose colour and size. Shop now &rarr;</p>
+                    <h3 class="film-title">STEP1 STORE</h3>
+                    <p class="film-syn" data-i18n="f5Syn">Officiell STEP1FILM-merch — t-shirts, hoodies, kepsar &amp; muggar. Välj färg och storlek. Handla nu &rarr;</p>
                   </div>
                 </a>
 
@@ -255,34 +277,28 @@
             <div class="panel-inner panel-inner--about">
               <div class="about-portrait">
                 <image-slot id="portrait" shape="rect" placeholder="Drop portrait" class="portrait-slot"></image-slot>
-                <p class="portrait-cap">Ayman Hassdo &nbsp;·&nbsp; Småland</p>
+                <p class="portrait-cap" data-i18n-html="portraitCap">Ayman Hassdo &nbsp;·&nbsp; Småland</p>
               </div>
               <div class="about-content">
                 <div class="panel-head">
                   <span class="panel-num" aria-hidden="true">02</span>
-                  <h2 class="panel-title" id="about-title">The<br>Filmmaker</h2>
+                  <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">Filmaren</h2>
                 </div>
-                <p class="about-lead">
-                  Ayman Hassdo is a multi-disciplinary filmmaker working as a director, cinematographer, screenwriter, sound designer, producer and composer.
-                </p>
-                <p class="about-body">
-                  Born in Al-Hassake, Syria, and raised in the countryside. Moved to Damascus in 2007 to pursue music; taught himself film when access to it was scarce. Arrived in Sweden as a refugee in 2013 — learned Swedish, then directed a first documentary on what it means to learn a new language. Studied film on Öland in 2017, where he completed a biography-poetry documentary. Today he works freelance from a small village outside Jönköping, in Småland.
-                </p>
-                <p class="about-body about-body--quiet">
-                  The work is shaped by two countries and one belief — that film can hold space for humanity, climate and culture without raising its voice.
-                </p>
-                <div class="about-nums" aria-label="Practice">
+                <p class="about-lead" data-i18n="aboutLead"></p>
+                <p class="about-body" data-i18n="aboutBody"></p>
+                <p class="about-body about-body--quiet" data-i18n="aboutQuiet"></p>
+                <div class="about-nums" data-i18n-aria="aboutNumsAria" aria-label="Verksamhet">
                   <div class="about-num-item">
                     <span class="annum">2013</span>
-                    <span class="anlabel">Arrived in Sweden</span>
+                    <span class="anlabel" data-i18n="an1">Kom till Sverige</span>
                   </div>
                   <div class="about-num-item">
                     <span class="annum">2017&ndash;2018</span>
-                    <span class="anlabel">Film school, Öland</span>
+                    <span class="anlabel" data-i18n="an2">Filmskola, Öland</span>
                   </div>
                   <div class="about-num-item">
                     <span class="annum">6</span>
-                    <span class="anlabel">Disciplines</span>
+                    <span class="anlabel" data-i18n="an3">Discipliner</span>
                   </div>
                 </div>
               </div>
@@ -294,42 +310,40 @@
             <div class="panel-inner">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">03</span>
-                <h2 class="panel-title" id="awards-title">What I Like To Do</h2>
-                <span class="panel-meta">Disciplines &amp; deliverables</span>
+                <h2 class="panel-title" id="awards-title" data-i18n-html="p3Title">Det jag helst gör</h2>
+                <span class="panel-meta" data-i18n="p3Meta">Discipliner &amp; leveranser</span>
               </div>
-              <p class="panel-intro">
-                I like inventing solutions — through film, technology and code. And just as much, I love passing on what I've learned: pedagogical work with children and grown-ups alike.
-              </p>
+              <p class="panel-intro" data-i18n="p3Intro"></p>
               <div class="awards-list" role="list">
                 <div class="award-row" role="listitem">
                   <span class="aw-year">01</span>
-                  <span class="aw-name">Direction</span>
-                  <span class="aw-detail">Feature, short, documentary, commercial. From script to delivery.</span>
+                  <span class="aw-name" data-i18n="aw1">Regi</span>
+                  <span class="aw-detail" data-i18n="aw1d"></span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">02</span>
-                  <span class="aw-name">Cinematography</span>
-                  <span class="aw-detail">Camera and lighting design for narrative and commercial work.</span>
+                  <span class="aw-name" data-i18n="aw2">Foto</span>
+                  <span class="aw-detail" data-i18n="aw2d"></span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">03</span>
-                  <span class="aw-name">Sound &amp; Music</span>
-                  <span class="aw-detail">Sound design, mixing and original score.</span>
+                  <span class="aw-name" data-i18n="aw3">Ljud &amp; musik</span>
+                  <span class="aw-detail" data-i18n="aw3d"></span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">04</span>
-                  <span class="aw-name">Editing &amp; Colour</span>
-                  <span class="aw-detail">Picture edit, grade and finish for festival and online delivery.</span>
+                  <span class="aw-name" data-i18n="aw4">Klipp &amp; färg</span>
+                  <span class="aw-detail" data-i18n="aw4d"></span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">05</span>
-                  <span class="aw-name">Photography</span>
-                  <span class="aw-detail">Stills, portrait and editorial — quiet, available-light work.</span>
+                  <span class="aw-name" data-i18n="aw5">Foto (stillbild)</span>
+                  <span class="aw-detail" data-i18n="aw5d"></span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">06</span>
-                  <span class="aw-name">Företagsfilm</span>
-                  <span class="aw-detail">Reklamfilm and corporate film, produced from Småland.</span>
+                  <span class="aw-name" data-i18n="aw6">Företagsfilm</span>
+                  <span class="aw-detail" data-i18n="aw6d"></span>
                 </div>
               </div>
             </div>
@@ -340,29 +354,29 @@
             <div class="panel-inner panel-inner--press">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">04</span>
-                <h2 class="panel-title" id="press-title">In&nbsp;their<br>words</h2>
-                <span class="panel-meta">Press &amp; client notes</span>
+                <h2 class="panel-title" id="press-title" data-i18n-html="p4Title">Med&nbsp;deras<br>ord</h2>
+                <span class="panel-meta" data-i18n="p4Meta">Press &amp; kundomdömen</span>
               </div>
               <div class="press-grid">
                 <figure class="press-quote">
-                  <blockquote>Vi ser stor potential i filmen som visar en unik sida av den sv&aring;ra processen att fly krig och anpassa sig till ett nytt samh&auml;lle.</blockquote>
+                  <blockquote data-i18n="pq1"></blockquote>
                   <figcaption>
-                    <span class="pq-author">GAZE &mdash; Region J&ouml;nk&ouml;pings L&auml;n</span>
-                    <span class="pq-meta">Talangprogrammet GAZE</span>
+                    <span class="pq-author" data-i18n="pq1a"></span>
+                    <span class="pq-meta" data-i18n="pq1m"></span>
                   </figcaption>
                 </figure>
                 <figure class="press-quote">
-                  <blockquote>Jag har aldrig tidigare tr&auml;ffat en person som varit s&aring; driven som han tidigare.</blockquote>
+                  <blockquote data-i18n="pq2"></blockquote>
                   <figcaption>
-                    <span class="pq-author">Kjell Frick &mdash; medial&auml;rare</span>
-                    <span class="pq-meta">SVT Nyheter J&ouml;nk&ouml;ping</span>
+                    <span class="pq-author" data-i18n="pq2a"></span>
+                    <span class="pq-meta" data-i18n="pq2m"></span>
                   </figcaption>
                 </figure>
                 <figure class="press-quote">
-                  <blockquote>En dokumentärfilm om hur det är att lära sig ett nytt språk.</blockquote>
+                  <blockquote data-i18n="pq3"></blockquote>
                   <figcaption>
                     <span class="pq-author">Ayman Hassdo</span>
-                    <span class="pq-meta">Sveriges Radio P4</span>
+                    <span class="pq-meta" data-i18n="pq3m"></span>
                   </figcaption>
                 </figure>
               </div>
@@ -375,27 +389,25 @@
             <div class="panel-inner panel-inner--contact">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">05</span>
-                <h2 class="panel-title" id="contact-title">Let's<br>Work</h2>
+                <h2 class="panel-title" id="contact-title" data-i18n-html="p5Title">Nu<br>kör vi</h2>
               </div>
-              <p class="contact-intro">
-                Available for direction, cinematography and commercial work — based in Småland, working anywhere. Festival programmers and production companies welcome.
-              </p>
+              <p class="contact-intro" data-i18n="contactIntro"></p>
               <div class="contact-list">
                 <a href="mailto:step1film@gmail.com" class="contact-row">
-                  <span class="cr-label">Email</span>
+                  <span class="cr-label" data-i18n="crEmail">E-post</span>
                   <span class="cr-val">step1film@gmail.com</span>
                 </a>
                 <a href="https://aymanhassdo.myportfolio.com/" class="contact-row" target="_blank" rel="noopener noreferrer">
-                  <span class="cr-label">Portfolio</span>
+                  <span class="cr-label" data-i18n="crPortfolio">Portfolio</span>
                   <span class="cr-val">aymanhassdo.myportfolio.com</span>
                 </a>
                 <a href="https://aymanhassdo.myportfolio.com/services-and-prices" class="contact-row" target="_blank" rel="noopener noreferrer">
-                  <span class="cr-label">Services &amp; rates</span>
-                  <span class="cr-val">On request</span>
+                  <span class="cr-label" data-i18n="crRates">Tjänster &amp; priser</span>
+                  <span class="cr-val" data-i18n="crRatesVal">På förfrågan</span>
                 </a>
                 <div class="contact-row contact-row--static">
-                  <span class="cr-label">Based in</span>
-                  <span class="cr-val">Jönköping, Småland</span>
+                  <span class="cr-label" data-i18n="crBased">Baserad i</span>
+                  <span class="cr-val" data-i18n="crBasedVal">Jönköping, Småland</span>
                 </div>
               </div>
             </div>
@@ -403,29 +415,29 @@
 
         </div><!-- #h-track -->
 
-        <nav id="h-nav" aria-label="Section navigation">
+        <nav id="h-nav" data-i18n-aria="navAria" aria-label="Sektionsnavigering">
           <div class="h-nav-counter" aria-hidden="true">
             <span id="hCur">01</span>
             <span class="h-nav-sep">/</span>
             <span>05</span>
           </div>
           <div class="h-nav-dots">
-            <button class="h-dot active" data-i="0" aria-label="Films" aria-current="true" type="button"></button>
-            <button class="h-dot" data-i="1" aria-label="About" type="button"></button>
-            <button class="h-dot" data-i="2" aria-label="Practice" type="button"></button>
-            <button class="h-dot" data-i="3" aria-label="Press" type="button"></button>
-            <button class="h-dot" data-i="4" aria-label="Contact" type="button"></button>
+            <button class="h-dot active" data-i="0" data-i18n-aria="navFilms" aria-label="Filmer" aria-current="true" type="button"></button>
+            <button class="h-dot" data-i="1" data-i18n-aria="navAbout" aria-label="Om" type="button"></button>
+            <button class="h-dot" data-i="2" data-i18n-aria="navPractice" aria-label="Verksamhet" type="button"></button>
+            <button class="h-dot" data-i="3" data-i18n-aria="navPress" aria-label="Press" type="button"></button>
+            <button class="h-dot" data-i="4" data-i18n-aria="navContact" aria-label="Kontakt" type="button"></button>
           </div>
-          <span class="h-nav-label" id="hLabel" aria-hidden="true">Films</span>
+          <span class="h-nav-label" id="hLabel" aria-hidden="true">Filmer</span>
         </nav>
 
         <div class="h-arrows">
-          <button class="h-arrow h-arrow--prev" id="hPrev" type="button" aria-label="Previous section">
+          <button class="h-arrow h-arrow--prev" id="hPrev" type="button" data-i18n-aria="prevSection" aria-label="Föregående sektion">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
               <polyline points="15,18 9,12 15,6"></polyline>
             </svg>
           </button>
-          <button class="h-arrow h-arrow--next" id="hNext" type="button" aria-label="Next section">
+          <button class="h-arrow h-arrow--next" id="hNext" type="button" data-i18n-aria="nextSection" aria-label="Nästa sektion">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
               <polyline points="9,6 15,12 9,18"></polyline>
             </svg>
@@ -439,7 +451,7 @@
       <div class="foot-inner">
         <div class="foot-col">
           <span class="foot-brand">STEP<em>1</em>FILM</span>
-          <span class="foot-copy">© 2026 Ayman Hassdo · Jönköping, Sweden</span>
+          <span class="foot-copy" data-i18n="footCopy">© 2026 Ayman Hassdo · Jönköping, Sverige</span>
         </div>
         <div class="foot-col foot-col--right">
           <a class="foot-link" href="mailto:step1film@gmail.com">step1film@gmail.com</a>
@@ -450,14 +462,43 @@
 
   </main>
 
-  <!-- Hero video config — paste your YouTube ID here -->
+  <!-- =====================================================
+       INNEHÅLL SOM FYLLS PÅ — allt på ett ställe
+  ====================================================== -->
   <script>
-    // Real YouTube/Vimeo ID — paste between the quotes when ready.
-    // Leave empty to keep showing the poster + play button.
+    /* Showreel i hero */
     window.STEP1FILM_VIDEO = { provider: 'youtube', id: 'bW9R0R8KKw8' };
+
+    /* 001 BIRDS OF PASSAGE — trailer.
+       Klistra in video-id:t mellan citattecknen. För YouTube är det den
+       del av adressen som står efter v= (t.ex. bW9R0R8KKw8), för Vimeo
+       är det siffrorna sist i adressen.
+       Lämna tomt så står det "Trailer kommer" i stället. */
+    window.STEP1FILM_EMBEDS = {
+      'film-001': { provider: 'youtube', id: '', title: 'Birds of Passage — trailer' }
+    };
+
+    /* 002 REKLAMFILM — samarbetslogotyper.
+       Lägg filerna i assets/clients/ (SVG är bäst, annars PNG med
+       genomskinlig bakgrund) och lista dem här. Max 6 visas.
+       Logotyperna görs automatiskt vita så raden blir enhetlig. */
+    window.STEP1FILM_CLIENTS = [
+      // { src: 'assets/clients/kundnamn.svg', name: 'Kundnamn' },
+    ];
+
+    /* 003 KORTFILMER — affischbildspel.
+       Lägg affischerna i assets/films/posters/ och lista dem här.
+       Första bilden visas alltid först; nästa vid hover eller klick. */
+    window.STEP1FILM_POSTERS = {
+      shorts: [
+        // 'assets/films/posters/nya-ord.jpg',
+        // 'assets/films/posters/the-minds-eye.jpg',
+      ]
+    };
   </script>
 
   <script src="image-slot.js" defer></script>
+  <script src="i18n.js" defer></script>
   <script src="main.js" defer></script>
 </body>
 </html>

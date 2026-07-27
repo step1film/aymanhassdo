@@ -215,6 +215,46 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .logo-text span { color: var(--accent); }
 
+/* Butikslänk + språkväxlare till höger i toppen */
+.logo-store {
+  margin-left: 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.24em;
+  color: var(--text-dim);
+  transition: color 0.25s ease;
+}
+.logo-store:hover, .logo-store:focus-visible { color: var(--white); }
+
+.lang-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  border: 1px solid var(--line-s);
+  border-radius: 40px;
+  overflow: hidden;
+  font-family: var(--ff-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  background: rgba(12, 12, 12, 0.35);
+}
+.lang-toggle button {
+  padding: 0.25rem 0.6rem;
+  color: var(--text-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.lang-toggle button:hover { color: var(--white); }
+.lang-toggle button.active { color: #fff; background: var(--accent); }
+
+@media (max-width: 560px) {
+  .logo-store { letter-spacing: 0.14em; margin-left: 0.6rem; }
+  .lang-toggle { font-size: 0.66rem; }
+  .lang-toggle button { padding: 0.22rem 0.5rem; }
+}
+
 /* ---- Hero ---- */
 #hero {
   position: relative;
@@ -547,6 +587,123 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   z-index: 1;
   pointer-events: none;
 }
+
+/* -----------------------------------------------------
+   FILMRUTOR — fyra varianter av .film-thumb
+----------------------------------------------------- */
+
+/* 001 — inbäddad trailer */
+.film-embed { display: grid; place-items: center; }
+.film-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.fe-play {
+  color: var(--white);
+  opacity: 0.75;
+  transition: opacity 0.25s, transform 0.35s var(--ease);
+}
+.fe-play svg { width: clamp(28px, 3.4vw, 42px); height: clamp(28px, 3.4vw, 42px); display: block; }
+.film-item:hover .fe-play { opacity: 1; transform: scale(1.06); }
+.film-embed.is-playing .fe-play,
+.film-embed.is-playing .fe-soon { display: none; }
+/* Utan video-id: visa "trailer kommer" i stället för en död knapp */
+.film-embed.no-video .fe-play { display: none; }
+.fe-soon {
+  display: none;
+  font-family: var(--ff-display);
+  font-size: clamp(0.5rem, 0.72vw, 0.62rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.film-embed.no-video .fe-soon { display: block; }
+
+/* 002 — samarbetslogotyper */
+.film-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: clamp(0.4rem, 0.9vw, 0.9rem);
+  padding: 0.6rem;
+}
+.film-logos img {
+  max-width: 40%;
+  max-height: 38%;
+  object-fit: contain;
+  /* Logotyperna kommer i alla färger — gör dem enhetligt ljusa */
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.55;
+  transition: opacity 0.3s;
+}
+.film-item:hover .film-logos img { opacity: 0.9; }
+.fl-empty, .fs-empty {
+  font-family: var(--ff-display);
+  font-size: clamp(0.5rem, 0.72vw, 0.62rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.film-logos:not(.is-empty) .fl-empty { display: none; }
+
+/* 003 — affischbildspel */
+.film-slides { display: grid; place-items: center; }
+.film-slides img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.film-slides img.is-on { opacity: 1; }
+.film-slides:not(.is-empty) .fs-empty { display: none; }
+.fs-dots {
+  position: absolute;
+  bottom: 5px; left: 0; right: 0;
+  display: flex; justify-content: center; gap: 4px;
+  z-index: 2;
+}
+.fs-dots span {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: background 0.3s;
+}
+.fs-dots span.is-on { background: var(--accent); }
+
+/* 004 + 005 — skylt i stället för stillbild */
+.film-sign {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,0.06), transparent 70%),
+    #131313;
+  transition: border-color 0.3s, background 0.4s;
+}
+.film-sign::before, .film-sign::after { border-color: var(--accent-soft); }
+.fsign-mark {
+  font-family: var(--ff-display);
+  font-size: clamp(1.05rem, 2.1vw, 1.7rem);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--white);
+}
+/* Ettan i rött — samma lockup som i hero, footern och butiken */
+.fsign-mark em { color: var(--accent); font-style: normal; }
+.fsign-word {
+  font-family: var(--ff-display);
+  font-size: clamp(0.46rem, 0.82vw, 0.66rem);
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--text-dim);
+  transition: color 0.3s;
+}
+.film-item:hover .film-sign,
+.film-item:focus-within .film-sign { background: #171717; }
+.film-item:hover .fsign-word,
+.film-item:focus-within .fsign-word { color: var(--text); }
+.film-item--store:hover .fsign-word { color: var(--accent); }
 
 .film-body { min-width: 0; }
 .film-num {

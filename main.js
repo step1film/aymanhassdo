@@ -186,11 +186,16 @@
     const nextBtn = document.getElementById('hNext');
     if (!hWrapper || !panels.length) return;
 
-    const LABELS = ['Films', 'About', 'Practice', 'Press', 'Contact'];
+    const LABELS = () => window.STEP1FILM_NAV_LABELS || ['Films', 'About', 'Practice', 'Press', 'Contact'];
     const TOTAL = panels.length;
     const fmt = n => String(n + 1).padStart(2, '0');
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
+
+    // Byt språk → skriv om den synliga sektionsetiketten direkt
+    document.addEventListener('s1f:langchange', () => {
+      if (labelEl && lastPanelIdx >= 0) labelEl.textContent = LABELS()[lastPanelIdx] || '';
+    });
 
     function setActive(panelIdx) {
       if (panelIdx === lastPanelIdx) return;
@@ -201,7 +206,7 @@
         d.setAttribute('aria-current', on ? 'true' : 'false');
       });
       if (curEl) curEl.textContent = fmt(panelIdx);
-      if (labelEl) labelEl.textContent = LABELS[panelIdx] || '';
+      if (labelEl) labelEl.textContent = LABELS()[panelIdx] || '';
     }
 
     /* --- Desktop: clip-path wipe driven by scrollY --- */
@@ -407,6 +412,112 @@
   }
 
   /* --------------------------------------------------
+     FILMRUTOR — trailer-embed, logotyprad, affischbildspel
+     Allt innehåll konfigureras längst ner i index.html:
+       window.STEP1FILM_EMBEDS   { 'film-001': { provider, id } }
+       window.STEP1FILM_CLIENTS  [ { src, name } ]
+       window.STEP1FILM_POSTERS  { shorts: [ 'sökväg.jpg', … ] }
+     Saknas innehållet visas ett neutralt tomläge — aldrig en trasig ruta.
+  -------------------------------------------------- */
+  function initFilmMedia() {
+    /* --- 001: trailer som laddas först vid klick --- */
+    const embeds = window.STEP1FILM_EMBEDS || {};
+    document.querySelectorAll('[data-embed]').forEach(box => {
+      const cfg = embeds[box.dataset.embed] || {};
+      const id = String(cfg.id || '').trim();
+      if (!id) { box.classList.add('no-video'); return; }
+
+      const btn = box.querySelector('.fe-play');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (box.classList.contains('is-playing')) return;
+        const provider = cfg.provider === 'vimeo' ? 'vimeo' : 'youtube';
+        const src = provider === 'vimeo'
+          ? `https://player.vimeo.com/video/${encodeURIComponent(id)}?autoplay=1`
+          : `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+        const frame = document.createElement('iframe');
+        frame.src = src;
+        frame.title = cfg.title || 'Trailer';
+        frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        frame.setAttribute('allowfullscreen', '');
+        frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        frame.setAttribute('loading', 'lazy');
+        box.appendChild(frame);
+        box.classList.add('is-playing');
+      });
+    });
+
+    /* --- 002: samarbetslogotyper --- */
+    const clients = window.STEP1FILM_CLIENTS || [];
+    document.querySelectorAll('[data-logos]').forEach(box => {
+      if (!clients.length) { box.classList.add('is-empty'); return; }
+      clients.slice(0, 6).forEach(c => {
+        const img = document.createElement('img');
+        img.src = c.src;
+        img.alt = c.name || '';
+        img.loading = 'lazy';
+        // En logotyp som inte laddar ska försvinna, inte lämna en trasig ikon
+        img.addEventListener('error', () => img.remove());
+        box.appendChild(img);
+      });
+    });
+
+    /* --- 003: affischbildspel, byter bild vid hover och klick --- */
+    const posters = window.STEP1FILM_POSTERS || {};
+    document.querySelectorAll('[data-slides]').forEach(box => {
+      const list = posters[box.dataset.slides] || [];
+      if (!list.length) { box.classList.add('is-empty'); return; }
+
+      const imgs = list.map((src, i) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        if (i === 0) img.classList.add('is-on');
+        box.appendChild(img);
+        return img;
+      });
+
+      let dots = null;
+      if (list.length > 1) {
+        dots = document.createElement('div');
+        dots.className = 'fs-dots';
+        list.forEach((_, i) => {
+          const d = document.createElement('span');
+          if (i === 0) d.classList.add('is-on');
+          dots.appendChild(d);
+        });
+        box.appendChild(dots);
+      }
+
+      let idx = 0;
+      function show(n) {
+        idx = (n + imgs.length) % imgs.length;
+        imgs.forEach((im, i) => im.classList.toggle('is-on', i === idx));
+        if (dots) Array.from(dots.children).forEach((d, i) => d.classList.toggle('is-on', i === idx));
+      }
+
+      // Ingen automatisk uppspelning — besökaren styr, precis som i butiken
+      const item = box.closest('.film-item');
+      if (item) {
+        item.addEventListener('mouseenter', () => { if (imgs.length > 1) show(1); });
+        item.addEventListener('mouseleave', () => show(0));
+      }
+      box.addEventListener('click', () => show(idx + 1));
+
+      // Svep på pekskärm
+      let x0 = null;
+      box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener('touchend', e => {
+        if (x0 === null) return;
+        const dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 30) show(idx + (dx < 0 ? 1 : -1));
+        x0 = null;
+      }, { passive: true });
+    });
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -414,6 +525,7 @@
     initCursor();
     initTweaks();
     initHeroVideo();
+    initFilmMedia();
     initLoader(() => {
       document.body.classList.remove('is-loading');
       initScrollDriver();
