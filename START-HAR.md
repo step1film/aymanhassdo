@@ -38,11 +38,11 @@ kvart att byta.
 Netlify bygger hela repot, men vi använder bara `functions/`-delen.
 Butiken står kvar i demoläge, inga betalningar är påslagna.
 
-- [ ] **1.1** 🙋 Skapa konto på [netlify.com](https://netlify.com) — logga in med GitHub, då hittar Netlify repot direkt.
-- [ ] **1.2** 🙋 *Add new site* → *Import an existing project* → GitHub → välj `step1film/aymanhassdo`.
-- [ ] **1.3** 🙋 Branch: `main`. Build command och publish directory lämnar du **tomma** — `netlify.toml` i repot säger redan vad som gäller. Tryck *Deploy*.
-- [ ] **1.4** 🙋 Du får en adress som `step1film.netlify.app`. Öppna `https://DIN-ADRESS/.netlify/functions/printful-products` — det ska svara med ett **felmeddelande om att token saknas**. Det låter fel, men är precis rätt: funktionen körs, den har bara inga nycklar än.
-- [ ] **1.5** 🙋 **Skicka mig adressen.** 🤖 Jag skriver in den i `shop.js` så butiken vet vart den ska ringa.
+- [x] **1.1** ✅ Skapa konto på [netlify.com](https://netlify.com) — logga in med GitHub, då hittar Netlify repot direkt.
+- [x] **1.2** ✅ *Add new site* → *Import an existing project* → GitHub → välj `step1film/aymanhassdo`.
+- [x] **1.3** ✅ Branch: `main`. Build command och publish directory lämnar du **tomma** — `netlify.toml` i repot säger redan vad som gäller. Tryck *Deploy*.
+- [x] **1.4** ✅ Adressen är `step1film.netlify.app`. Funktionen svarar `{"error":"Not found"}` — rätt. Ursprungligen som `step1film.netlify.app`. Öppna `https://DIN-ADRESS/.netlify/functions/printful-products` — det ska svara med ett **felmeddelande om att token saknas**. Det låter fel, men är precis rätt: funktionen körs, den har bara inga nycklar än.
+- [x] **1.5** ✅ Adressen är `step1film.netlify.app`, redan inskriven i dokumentationen. 🤖 Jag skriver in den i `shop.js` så butiken vet vart den ska ringa.
 
 > Sajten som Netlify också visar på den adressen är bara en biprodukt.
 > Den du och kunderna använder är step1film.se på GitHub Pages.
@@ -70,8 +70,8 @@ Domänen går till **GitHub**, inte Netlify.
 ## Del 3 · Städa innan pengar är inblandade
 
 - [x] **3.1** ✅ **Klart** — den gamla Printful-token är raderad.
-- [ ] **3.2** 🙋 Lägg den nya token som miljövariabel i Netlify: `PRINTFUL_API_TOKEN`. **Aldrig i koden.**
-- [ ] **3.3** 🙋 Sätt miljövariabeln `ADMIN_KEY` i Netlify till en lång slumpsträng (`openssl rand -hex 32`, eller vilken lång rad tecken som helst). Den skyddar funktionen som listar din butik.
+- [x] **3.2** ✅ **Klart** — lagd som hemlig miljövariabel. Ursprunglig text: Lägg den nya token som miljövariabel i Netlify: `PRINTFUL_API_TOKEN`. **Aldrig i koden.**
+- [x] **3.3** ✅ **Klart** — `ADMIN_KEY` satt och verifierad (404 utan nyckel). Ursprunglig text: Sätt miljövariabeln `ADMIN_KEY` i Netlify till en lång slumpsträng (`openssl rand -hex 32`, eller vilken lång rad tecken som helst). Den skyddar funktionen som listar din butik.
 - [ ] **3.4** 🙋 Hämta dina Printful-variant-id:n. Antingen manuellt i Printful (varje variant har ett id), eller så här:
       `curl -H "X-Admin-Key: DIN-NYCKEL" https://step1film.netlify.app/.netlify/functions/printful-products`
 - [ ] **3.5** 🤖 Jag skriver in dem i `functions/_lib/catalog.js` så rätt plagg i rätt färg och storlek beställs.
