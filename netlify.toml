@@ -17,6 +17,13 @@
   publish = "."
   functions = "functions"
 
+# _archive/ är sparad kod, inte sidor — servera den aldrig.
+# (GitHub Pages hoppar redan över mappar som börjar med _.)
+[[redirects]]
+  from = "/_archive/*"
+  to = "/index.html"
+  status = 404
+
 # Snygg genväg: /api/* → funktionerna (valfritt, gör apiBase = '/api')
 [[redirects]]
   from = "/api/*"

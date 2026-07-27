@@ -85,19 +85,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
 
-  <link rel="preload" as="image" href="bg-stage.jpg" fetchpriority="high" />
-
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="is-loading" data-motion="full">
 
   <!-- Skip link for keyboard users -->
   <a class="skip-link" href="#films">Skip to content</a>
-
-  <!-- Static stage background — sits behind the clapper -->
-  <div id="stage-bg" aria-hidden="true">
-    <div id="nb-canvas" aria-hidden="true"></div>
-  </div>
 
   <!-- =====================================================
        FILM GRAIN
@@ -132,104 +125,6 @@
     </button>
   </div>
 
-  <!-- =====================================================
-       02. CLAPPERBOARD
-  ====================================================== -->
-  <div id="clapper" aria-hidden="true">
-    <div class="cl-scene">
-
-      <!-- Stage spotlights from above -->
-      <div class="cl-lights" aria-hidden="true">
-        <div class="cl-spot cl-spot--1"></div>
-        <div class="cl-spot cl-spot--2"></div>
-        <div class="cl-spot cl-spot--3"></div>
-        <div class="cl-spot cl-spot--4"></div>
-        <div class="cl-spot cl-spot--5"></div>
-      </div>
-
-      <!-- Warm floor glow -->
-      <div class="cl-floor-glow" aria-hidden="true"></div>
-
-      <!-- Animated haze / smoke -->
-      <div class="cl-haze" aria-hidden="true">
-        <div class="cl-smoke cl-smoke--1"></div>
-        <div class="cl-smoke cl-smoke--2"></div>
-        <div class="cl-smoke cl-smoke--3"></div>
-        <div class="cl-smoke cl-smoke--4"></div>
-      </div>
-
-      <!-- Clapperboard prop (centered) -->
-      <div class="cl-prop">
-
-        <!-- Arm — pivots at bottom-left (hinge) -->
-        <div class="cl-arm" id="clapperArm">
-          <div class="cl-arm-stripes" aria-hidden="true"></div>
-          <div class="cl-arm-info">
-            <span>STEP1FILM</span>
-            <span>AYMAN HASSDO</span>
-          </div>
-        </div>
-
-        <!-- Hinge -->
-        <div class="cl-hinge" aria-hidden="true">
-          <span class="cl-hinge-dot left"  aria-hidden="true"></span>
-          <span class="cl-hinge-dot right" aria-hidden="true"></span>
-        </div>
-
-        <!-- Board body -->
-        <div class="cl-board">
-          <div class="cl-brand">STEP<em>1</em>FILM</div>
-
-          <div class="cl-grid">
-            <div class="cl-cell wide">
-              <span class="cl-key">PRODUCTION</span>
-              <span class="cl-val">STEP1FILM</span>
-            </div>
-            <div class="cl-cell wide">
-              <span class="cl-key">DAY / NIGHT</span>
-              <span class="cl-val" data-day-night>NIGHT</span>
-            </div>
-
-            <div class="cl-cell wide">
-              <span class="cl-key">DIRECTOR</span>
-              <span class="cl-val">AYMAN HASSDO</span>
-            </div>
-            <div class="cl-cell wide">
-              <span class="cl-key">TIMECODE</span>
-              <span class="cl-val cl-timecode" id="clTimecode">00:00:00:00</span>
-            </div>
-
-            <div class="cl-cell">
-              <span class="cl-key">SCENE</span>
-              <span class="cl-val" data-scene>01</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">TAKE</span>
-              <span class="cl-val" data-take>01</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">DATE</span>
-              <span class="cl-val" data-date>2026</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">ROLL</span>
-              <span class="cl-val" data-roll>01</span>
-            </div>
-          </div>
-
-          <div class="cl-hint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-              <line x1="12" y1="4" x2="12" y2="20"></line>
-              <polyline points="6,14 12,20 18,14"></polyline>
-            </svg>
-            SCROLL TO BEGIN
-          </div>
-        </div><!-- .cl-board -->
-
-      </div><!-- .cl-prop -->
-
-    </div><!-- .cl-scene -->
-  </div><!-- #clapper -->
 
   <!-- =====================================================
        03. SITE PAGE
@@ -243,9 +138,6 @@
          style="margin-left:auto;pointer-events:auto;font-size:0.85rem;letter-spacing:0.24em;color:var(--text-dim);transition:color .25s ease;"
          onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--text-dim)'">STORE</a>
     </div>
-
-    <!-- Clapper scroll zone — 100vh spacer that drives the clapperboard -->
-    <div id="clapper-zone" aria-hidden="true"></div>
 
     <!-- HERO — fullscreen video, lazily loaded -->
     <section id="hero" aria-label="Showreel">

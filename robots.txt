@@ -1,5 +1,7 @@
 # STEP1FILM — Ayman Hassdo
 User-agent: *
 Allow: /
+# Arkiverad kod — inte en del av sajten
+Disallow: /_archive/
 
 Sitemap: https://step1film.se/sitemap.xml

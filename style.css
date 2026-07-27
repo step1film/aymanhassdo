@@ -191,317 +191,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .ld-skip:hover { border-color: var(--white); color: var(--white); background: rgba(255,255,255,0.03); }
 .ld-skip svg { width: 12px; height: 12px; }
-
-/* =====================================================
-   STAGE BACKGROUND — fixed, sits behind the clapper.
-   Darkened with a layered overlay so the clapper reads cleanly.
-   ===================================================== */
-#stage-bg {
-  position: fixed; inset: 0;
-  z-index: 7999;
-  background:
-    linear-gradient(180deg, rgba(8,8,10,.97), rgba(8,8,10,.97)),
-    url('bg-stage.jpg') center / cover no-repeat;
-}
-
-/* Hide hero while clapper is active so it can never bleed through */
-body.clapper-visible #hero { visibility: hidden; }
-
-/* =====================================================
-   NOTEBOOK ZONES — scattered across stage-bg backdrop
-   ===================================================== */
-#nb-canvas {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.nb-zone {
-  position: absolute;
-  max-width: min(34ch, 26vw);
-  pointer-events: none;
-  opacity: 1;
-  }
-
-.nb-zone-inner {
-  font-family: var(--ff-body);
-  font-size: clamp(0.60rem, 1.0vw, 0.78rem);
-  line-height: 2;
-  color: rgba(230, 225, 210, 0.72);
-  text-shadow: 0 1px 14px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,0.8);
-}
-.nb-zone-inner p { margin: 0; }
-
-.nb-h {
-  font-family: var(--ff-display);
-  font-size: clamp(0.50rem, 0.88vw, 0.65rem);
-  letter-spacing: 0.38em;
-  color: rgba(230, 225, 210, 0.44);
-  line-height: 2.5;
-}
-.nb-b { line-height: 2; }
-.nb-syr {
-  direction: rtl;
-  font-family: 'Estrangelo Edessa', 'Serto Jerusalem', 'Noto Sans Syriac', serif;
-  font-size: clamp(0.70rem, 1.15vw, 0.88rem);
-  letter-spacing: 0.02em;
-  line-height: 2.2;
-}
-.nb-rtl {
-  direction: rtl;
-  font-family: 'Segoe UI', 'Noto Naskh Arabic', Arial, sans-serif;
-  font-size: clamp(0.70rem, 1.2vw, 0.88rem);
-  letter-spacing: 0;
-  line-height: 2.2;
-}
-
-.nb-h.nb-typing::after,
-.nb-b.nb-typing::after {
-  content: '';
-  display: inline-block;
-  width: 1.5px;
-  height: 0.82em;
-  background: rgba(230, 225, 210, 0.75);
-  vertical-align: text-bottom;
-  margin-left: 2px;
-  animation: nb-blink 0.88s step-end infinite;
-}
-@keyframes nb-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-@media (max-width: 900px) {
-  .nb-zone { max-width: min(28ch, 80vw); }
-  .nb-zone-inner { font-size: clamp(0.58rem, 2vw, 0.72rem); }
-}
-
-/* =====================================================
-   CLAPPERBOARD
-   ===================================================== */
-#clapper {
-  position: fixed; inset: 0;
-  z-index: 8000;
-  background: transparent;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  perspective: 1400px;
-  perspective-origin: 50% 40%;
-}
-
-.cl-scene {
-  position: absolute; inset: 0;
-  transform-style: preserve-3d;
-  /* No constant floating — the clapper stays still and dominant. */
-}
-
-.cl-lights { display: none; }
-.cl-spot { position: absolute; top: 0; width: 7%; height: 90%; transform-origin: 50% 0%; }
-.cl-floor-glow { display: none; }
-.cl-haze { display: none; }
-
-/* ---- Clapperboard prop ----
-   First-version look (cream board + colorful arm). The BOARD is locked
-   to 16:9; arm sits on top, prop has natural total height. */
-.cl-prop {
-  --arm-h: clamp(50px, 8vw, 150px);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -48%) scale(0.42) rotateY(-15deg) rotateX(7deg);
-  width: clamp(360px, 82vw, 1500px);
-  z-index: 5;
-  filter: none;
-  transform-style: preserve-3d;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-#clapper.is-active .cl-prop {
-  opacity: 1;
-}
-
-.cl-arm {
-  transition: transform 0.08s linear;
-}
-
-/* Hide the SCROLL TO BEGIN hint once the user has started closing the arm */
-.cl-prop.is-closing .cl-hint,
-.cl-prop.is-closed .cl-hint {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.cl-arm {
-  position: relative;
-  height: var(--arm-h);
-  width: 100%;
-  background: #111;
-  transform-origin: 0% 100%;
-  transform: rotate(-16deg);
-  will-change: transform;
-  z-index: 2;
-  overflow: hidden;
-  border-radius: 3px 3px 0 0;
-}
-
-.cl-arm-stripes {
-  position: absolute;
-  top: 12%; left: 3%; right: 3%; bottom: 12%;
-  display: flex;
-  overflow: hidden;
-  gap: 3px;
-  border: 1px solid rgba(255,255,255,0.06);
-}
-
-.cl-arm-stripes::before {
-  content: '';
-  position: absolute;
-  inset: -30% -10%;
-  background: linear-gradient(
-    -65deg,
-    #111111  0%,      #111111  14.28%,
-    #888888  14.28%,  #888888  28.57%,
-    #111111  28.57%,  #111111  42.85%,
-    #888888  42.85%,  #888888  57.14%,
-    #111111  57.14%,  #111111  71.42%,
-    #888888  71.42%,  #888888  85.71%,
-    #111111  85.71%,  #111111  100%
-  );
-}
-
-.cl-arm-info {
-  display: none;
-}
-
-.cl-hinge {
-  position: relative;
-  width: 100%;
-  height: 7px;
-  background: linear-gradient(180deg, #666 0%, #2a2a2a 50%, #555 100%);
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 6px;
-}
-.cl-hinge-dot { display: none; }
-
-/* ---- Board body (DARK variant) — 16:9 aspect ---- */
-.cl-board {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  padding: clamp(0.7rem, 1.8vh, 1.5rem) clamp(0.8rem, 2.2vw, 1.8rem) clamp(1rem, 2.5vh, 2rem);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.6rem, 1.5vh, 1.2rem);
-  background: linear-gradient(158deg, #1f1f1f 0%, #161616 55%, #0e0e0e 100%);
-  border: 1px solid #2a2a2a;
-  border-top: none;
-  overflow: hidden;
-}
-
-.cl-board::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -1px; right: -1px;
-  height: 11px;
-  background: linear-gradient(180deg, #4a4a4a 0%, #1a1a1a 100%);
-  z-index: 1;
-}
-
-.cl-board::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(148deg, rgba(255,255,255,0.06) 0%, transparent 45%);
-  pointer-events: none;
-}
-
-.cl-brand {
-  font-family: var(--ff-display);
-  font-size: clamp(2rem, 4.5vw, 4.2rem);
-  letter-spacing: 0.08em;
-  color: var(--white);
-  border-bottom: 1px solid #3a3a3a;
-  padding-bottom: clamp(0.3rem, 0.8vh, 0.6rem);
-  padding-top: 0.55rem;
-}
-.cl-brand em { color: var(--accent); font-style: normal; }
-
-.cl-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 1fr;
-  flex: 1;
-  gap: 1px;
-  background: #2a2a2a;
-  border: 1px solid #2a2a2a;
-  min-height: 0;
-}
-.cl-cell {
-  background: linear-gradient(158deg, #1c1c1c, #141414);
-  padding: clamp(0.35rem, 1vh, 0.75rem) clamp(0.4rem, 1vw, 0.9rem);
-  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; text-align: center;
-  min-height: 0;
-}
-.cl-cell.wide { grid-column: span 2; }
-.cl-cell--full { grid-column: span 4; }
-
-.cl-key {
-  font-size: clamp(0.62rem, 1.1vw, 0.82rem);
-  letter-spacing: 0.22em;
-  color: #6e6e6e;
-  text-transform: uppercase;
-  font-family: var(--ff-body);
-}
-.cl-val {
-  font-family: var(--ff-display);
-  font-size: clamp(1.2rem, 2.8vw, 2.2rem);
-  letter-spacing: 0.05em;
-  color: var(--white);
-  line-height: 1;
-}
-
-/* Timecode display — 7-segment LCD style */
-.cl-timecode {
-  font-family: 'DSEG7Classic', monospace;
-  font-size: clamp(1.4rem, 3vw, 2.6rem);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  line-height: 1;
-  text-shadow: 0 0 14px rgba(224,28,28,0.65), 0 0 3px rgba(224,28,28,0.95);
-  background: #0a0a0a;
-  border: 1.5px solid rgba(224,28,28,0.45);
-  border-radius: 4px;
-  padding: 0.3em 0.6em;
-  box-shadow: 0 0 10px rgba(224,28,28,0.15), inset 0 0 8px rgba(0,0,0,0.8);
-}
-
-.cl-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.2rem;
-  font-size: 0.52rem;
-  letter-spacing: 0.38em;
-  color: #888;
-  text-transform: uppercase;
-  animation: clHint 2s ease-in-out infinite;
-}
-.cl-hint svg { width: 18px; height: 18px; opacity: 0.85; color: var(--red); }
-@keyframes clHint { 0%,100%{opacity:0.5;transform:translateY(0)} 50%{opacity:1;transform:translateY(4px)} }
-
 /* =====================================================
    PAGE
    ===================================================== */
 #page { position: relative; z-index: 1; display: block; }
-
-#clapper-zone {
-  height: 100vh;
-  visibility: hidden;
-  pointer-events: none;
-}
 
 /* Floating logo */
 #logo-mark {
@@ -1172,26 +865,6 @@ body.clapper-visible #hero { visibility: hidden; }
   .foot-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .foot-col--right { align-items: flex-start; }
 
-  /* Clapperboard: keep 16:9 proportions, fill screen width, no 3D tilt */
-  .cl-prop {
-    width: 92vw;
-    filter: none;
-    transform: translate(-50%, -50%) scale(1);
-    top: 50%;
-  }
-  /* Keep 4-col grid so SCENE|TAKE|DATE|DAY/NIGHT all sit in one row */
-  .cl-grid {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 1fr;
-  }
-  .cl-cell.wide  { grid-column: span 2; }
-  .cl-cell--full { grid-column: span 4; }
-  /* Scale all text proportionally to the 92vw board */
-  .cl-brand    { font-size: 3.8vw; }
-  .cl-key      { font-size: 1.4vw; }
-  .cl-val      { font-size: 3vw; }
-  .cl-timecode { font-size: 3vw; }
-  .cl-hint     { display: none; }
 
   /* Hero: pull play button up so it doesn't collide with the dock */
   .hero-play { transform: translate(-50%, calc(-50% + 9vh)); }
@@ -1210,12 +883,6 @@ body.clapper-visible #hero { visibility: hidden; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
 
-  /* Very small phones — 4 cols still, just tighter text */
-  .cl-brand    { font-size: 4.2vw; }
-  .cl-key      { font-size: 1.5vw; }
-  .cl-val      { font-size: 3.2vw; }
-  .cl-timecode { font-size: 3.2vw; }
-  .cl-hint     { display: none; }
 }
 
 /* Hover-capable / pointer guard for mobile (no custom cursor on touch) */
@@ -1235,20 +902,15 @@ body.clapper-visible #hero { visibility: hidden; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .ld-scan, .ld-num, .cl-scene, .hero-down, .cl-hint, #grain { animation: none !important; }
+  .ld-scan, .ld-num, .hero-down, #grain { animation: none !important; }
   #grain { display: none; }
   /* On reduced motion we also bypass the boot sequence entirely */
-  body.reduced-motion #loader,
-  body.reduced-motion #clapper,
-  body.reduced-motion #clapper-zone { display: none !important; }
+  body.reduced-motion #loader { display: none !important; }
   body.reduced-motion { overflow: auto !important; }
 }
 
 /* Body-level reduced-motion flag (set in JS — covers user choice via tweak too) */
 body.reduced-motion #grain { display: none; }
-body.reduced-motion .cl-scene,
-body.reduced-motion .cl-prop,
 body.reduced-motion .hero-down,
-body.reduced-motion .cl-hint,
 body.reduced-motion .ld-scan,
 body.reduced-motion .ld-num { animation: none !important; }
