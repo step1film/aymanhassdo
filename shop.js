@@ -23,7 +23,7 @@
 
     // Frakt: fast avgift per order (kr). Sätt freeOver för att ge
     // fri frakt över ett visst ordervärde (0 = alltid frakt).
-    shippingFee: 59,
+    shippingFee: 79,
     shippingFreeOver: 1200,
 
     /* ---------------------------------------------------

@@ -91,7 +91,7 @@
     fl2: 'Delivery times, shipping cost and how we send your orders.',
     fl3: 'Shipping cost',
     fl4: 'Standard shipping',
-    fl5: 'SEK 59',
+    fl5: 'SEK 79',
     fl6: 'Free shipping',
     fl7: 'On orders from SEK 1,200',
     fl8: 'The shipping cost is always shown at checkout before you pay. The free-shipping threshold is calculated on the total price of the items, before shipping.',

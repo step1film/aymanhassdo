@@ -18,7 +18,7 @@
 const CURRENCY = 'sek';
 
 // Frakt (kr) — spegla CONFIG.shippingFee / shippingFreeOver i shop.js
-const SHIPPING_FEE = 59;
+const SHIPPING_FEE = 79;
 const SHIPPING_FREE_OVER = 1200;
 
 /* id → { name, price, sizePrices?, variants? }
