@@ -272,7 +272,7 @@
       price: 699,
       colors: ['black', 'lightpink'],
       // Printful har inte XS på den här modellen, och kallar XXL för 2XL
-      sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'], defaultSize: 'M',
+      sizes: ['S', 'M', 'L', 'XL', '2XL'], defaultSize: 'M',
       image: 'assets/products/hoodie-24fps-black.webp',
       images: {
         black: 'assets/products/hoodie-24fps-black.webp',

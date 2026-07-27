@@ -54,9 +54,9 @@ const CATALOG = {
     name: '24FPS HOODIE', price: 699,
     variants: {
       'black|S': 5415343283, 'black|M': 5415343284, 'black|L': 5415343285,
-      'black|XL': 5415343286, 'black|2XL': 5415343287, 'black|3XL': 5415343288,
+      'black|XL': 5415343286, 'black|2XL': 5415343287,
       'lightpink|S': 5415343289, 'lightpink|M': 5415343290, 'lightpink|L': 5415343291,
-      'lightpink|XL': 5415343292, 'lightpink|2XL': 5415343293, 'lightpink|3XL': 5415343294
+      'lightpink|XL': 5415343292, 'lightpink|2XL': 5415343293
     }
   },
   'reel-trucker-cap': {
