@@ -36,8 +36,10 @@ window.STEP1FILM_CLIENTS = [
    Lägg affischerna i assets/films/posters/ och lista dem här.
    Första bilden visas alltid först; nästa vid hover eller klick. */
 window.STEP1FILM_POSTERS = {
+  // Samma ordning som filmerna nämns i texten
   shorts: [
-    // 'assets/films/posters/nya-ord.jpg',
-    // 'assets/films/posters/the-minds-eye.jpg',
+    'assets/films/posters/nya-ord.jpg',
+    'assets/films/posters/minds-eye.jpg',
+    'assets/films/posters/otyg.jpg'
   ]
 };
