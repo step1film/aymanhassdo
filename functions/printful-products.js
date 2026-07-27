@@ -8,8 +8,18 @@
    Format: Netlify Functions (exports.handler).
    - Cloudflare Pages / Vercel: se not längst ner.
 
+   ⚠️ ENDAST FÖR DIG — INTE FÖR BESÖKARE.
+   Funktionen listar hela din Printful-butik med priser och
+   variant-ID:n. Den kräver därför en admin-nyckel. Utan den
+   svarar den 404, precis som om den inte fanns.
+
+   Anropa den så här när du ska hämta variant-ID:n:
+     curl -H "X-Admin-Key: DIN-NYCKEL" \
+       https://DIN-SAJT/.netlify/functions/printful-products
+
    Miljövariabler som krävs (se .env.example):
      PRINTFUL_API_TOKEN   – din Printful-token (hemlig)
+     ADMIN_KEY            – valfri lång slumpsträng, bara du känner till
      PRINTFUL_STORE_ID    – valfritt, om du har flera stores
 
    Anropa från frontend via printful.js:  GET /printful-products
@@ -33,6 +43,15 @@ exports.handler = async (event) => {
   }
   if (event.httpMethod !== 'GET') {
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  /* Admin-spärr. Utan rätt nyckel låtsas vi att endpointen inte finns —
+     ett 404 avslöjar mindre än ett 401. Saknas ADMIN_KEY i miljön är
+     funktionen helt avstängd, så den aldrig råkar ligga öppen. */
+  const adminKey = process.env.ADMIN_KEY;
+  const given = (event.headers && (event.headers['x-admin-key'] || event.headers['X-Admin-Key'])) || '';
+  if (!adminKey || given !== adminKey) {
+    return { statusCode: 404, headers: cors, body: JSON.stringify({ error: 'Not found' }) };
   }
 
   const token = process.env.PRINTFUL_API_TOKEN;
