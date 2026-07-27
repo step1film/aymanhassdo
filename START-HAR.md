@@ -72,9 +72,8 @@ Domänen går till **GitHub**, inte Netlify.
 - [x] **3.1** ✅ **Klart** — den gamla Printful-token är raderad.
 - [x] **3.2** ✅ **Klart** — lagd som hemlig miljövariabel. Ursprunglig text: Lägg den nya token som miljövariabel i Netlify: `PRINTFUL_API_TOKEN`. **Aldrig i koden.**
 - [x] **3.3** ✅ **Klart** — `ADMIN_KEY` satt och verifierad (404 utan nyckel). Ursprunglig text: Sätt miljövariabeln `ADMIN_KEY` i Netlify till en lång slumpsträng (`openssl rand -hex 32`, eller vilken lång rad tecken som helst). Den skyddar funktionen som listar din butik.
-- [ ] **3.4** 🙋 Hämta dina Printful-variant-id:n. Antingen manuellt i Printful (varje variant har ett id), eller så här:
-      `curl -H "X-Admin-Key: DIN-NYCKEL" https://step1film.netlify.app/.netlify/functions/printful-products`
-- [ ] **3.5** 🤖 Jag skriver in dem i `functions/_lib/catalog.js` så rätt plagg i rätt färg och storlek beställs.
+- [x] **3.4** ✅ **Klart** — variant-id:n hämtade via `printful-products`.
+- [x] **3.5** ✅ **Klart** — alla 68 kombinationer mappade i `catalog.js` och korskontrollerade mot butiken.
 - [ ] **3.6** 🙋 `PRINTFUL_CONFIRM_ORDERS` — **skapa den inte.** Koden läser den som `=== 'true'`, alltså exakt ordet `true` och inget annat. Finns variabeln inte, blir varje order ett **utkast** i Printful som inte debiteras. Det är först i steg 5.3 du lägger till den.
 
 ---
