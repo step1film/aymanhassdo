@@ -13,8 +13,16 @@
 function allowedOrigins() {
   const list = [];
   if (process.env.SITE_URL) list.push(process.env.SITE_URL.replace(/\/$/, ''));
+  // Netlify sätter URL automatiskt till sajtens egen adress. Utan den
+  // nekas anrop från .netlify.app — där samma butik också visas.
+  if (process.env.URL) list.push(process.env.URL.replace(/\/$/, ''));
   // Behåll GitHub Pages-adressen så länge butiken ligger kvar där
-  list.push('https://step1film.se', 'https://www.step1film.se', 'https://step1film.github.io');
+  list.push(
+    'https://step1film.se',
+    'https://www.step1film.se',
+    'https://step1film.github.io',
+    'https://step1film.netlify.app'
+  );
   if (process.env.NETLIFY_DEV === 'true' || process.env.NODE_ENV === 'development') {
     list.push('http://localhost:8888', 'http://127.0.0.1:8888');
   }
