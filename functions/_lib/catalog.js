@@ -27,7 +27,7 @@ const CATALOG = {
   'rolling-backpack':   { name: 'ROLLING BACKPACK',   price: 699 },
   'spoiler-hoodie':     { name: 'SPOILER HOODIE',     price: 629 },
   '24fps-hoodie':       { name: '24FPS HOODIE',       price: 699 },
-  'reel-trucker-cap':   { name: 'On-Set Trucker',     price: 349 },
+  'reel-trucker-cap':   { name: 'STEP1 FAN',          price: 349 },
   'action-dad-cap':     { name: 'ACTION DAD CAP',     price: 349 },
   'directors-beanie':   { name: "DIRECTOR'S BEANIE",  price: 285 },
   'ad1-beanie':         { name: 'AD1 BEANIE',         price: 285 },
@@ -35,6 +35,10 @@ const CATALOG = {
   'crew-tee':           { name: 'CREW TEE',           price: 275 },
   'icon-stickers':      { name: 'ICON STICKERS',      price: 85 },
   'gear-stickers':      { name: 'GEAR STICKERS',      price: 85 }
+  // PÅ VÄG IN — avkommentera samtidigt som produkten aktiveras i shop.js.
+  // Utan rad här går produkten INTE att köpa: servern avvisar okända id:n.
+  // ,'step1-jersey':      { name: 'STEP1 JERSEY',       price: 429 }
+  // ,'on-set-cap':        { name: 'ON SET CAP',         price: 349 }
 };
 
 /** Pris för en produkt givet vald storlek. */

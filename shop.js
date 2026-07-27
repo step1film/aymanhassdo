@@ -79,7 +79,7 @@
     olive:    { hex: '#5c5d3a', sv: 'Oliv',     en: 'Olive',    light: false },
     orange:   { hex: '#d9772e', sv: 'Orange',   en: 'Orange',   light: false },
     khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
-    honey:    { hex: '#ab7742', sv: 'Honung',   en: 'Honey',    light: false },
+    camel:    { hex: '#ab7742', sv: 'Kamel',    en: 'Camel',    light: false },
     yellow:   { hex: '#f2d24e', sv: 'Gul',      en: 'Yellow',   light: true  },
     heather:  { hex: '#b8b5ad', sv: 'Heather',  en: 'Heather',  light: true  },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
@@ -325,8 +325,8 @@
     },
     {
       id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
-      name: { sv: 'On-Set Trucker', en: 'On-Set Trucker' },
-      desc: { sv: 'För dagarna på inspelning — filmrullen snurrar vidare. Broderad logga, vit mesh, justerbar. One size.', en: 'For the days on set — the reel keeps rolling. Embroidered logo, white mesh, adjustable. One size.' },
+      name: { sv: 'STEP1 FAN', en: 'STEP1 FAN' },
+      desc: { sv: 'Sätt på dig Step1-kepsen och något händer — idéerna börjar rulla. Bär den och du bär med dig Step1. Broderad logga, vit mesh, justerbar. One size.', en: 'Put on the Step1 cap and something happens — the ideas start rolling. Wear it and you carry Step1 with you. Embroidered logo, white mesh, adjustable. One size.' },
       price: 349,
       colors: ['navy', 'silver', 'black'],
       sizes: null,
@@ -477,19 +477,19 @@
     {
       id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
       name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
-      desc: { sv: 'För vardagens pappa — inspirerad av egyptiska vibbar. Sätt på den och ropa "action" på livet. 100 % bomullsmanchester. One size.', en: 'For the everyday dad — inspired by Egypt vibes. Put it on and call "action" on life. 100% cotton corduroy. One size.' },
+      desc: { sv: 'Klappan slår ihop och allt börjar. "And action" — de två orden som startar varje scen. Bär dem varje dag. 100 % bomullsmanchester. One size.', en: 'The slate claps and everything begins. "And action" — the two words that start every scene. Wear them every day. 100% cotton corduroy. One size.' },
       badge: { sv: 'Nyhet', en: 'New' },
       material: { sv: ['100 % bomullsmanchester', 'Justerbar spänne', 'One size'], en: ['100% cotton corduroy', 'Adjustable snap', 'One size'] },
       price: 349,
-      colors: ['honey', 'black'],
+      colors: ['camel', 'black'],
       sizes: null,
-      image: 'assets/products/dad-cap-honey.png',
+      image: 'assets/products/dad-cap-camel.png',
       images: {
-        honey: 'assets/products/dad-cap-honey.png',
+        camel: 'assets/products/dad-cap-camel.png',
         black: 'assets/products/dad-cap-black.png'
       },
       galleries: {
-        honey: ['assets/products/dad-cap-honey.png', 'assets/products/dad-cap-honey-1.png', 'assets/products/dad-cap-honey-2.png', 'assets/products/dad-cap-honey-3.png'],
+        camel: ['assets/products/dad-cap-camel.png', 'assets/products/dad-cap-camel-1.png', 'assets/products/dad-cap-camel-2.png', 'assets/products/dad-cap-camel-3.png'],
         black: ['assets/products/dad-cap-black.png', 'assets/products/dad-cap-black-1.png', 'assets/products/dad-cap-black-2.png', 'assets/products/dad-cap-black-3.png']
       }
     },
@@ -508,6 +508,64 @@
         'assets/products/gear-stickers-3.png'
       ]
     }
+
+    /* ===================================================
+       PÅ VÄG IN — färdigskrivna, väntar bara på bilderna
+       ===================================================
+       Så här aktiverar du dem när bilderna är uppladdade:
+         1. Ta bort raden ovanför blocket ( `/*` ) och raden
+            under ( slut-tecknet ), så koden börjar gälla.
+         2. Lägg till id:t i PRODUCT_ORDER längre ner.
+         3. Lägg till pris i functions/_lib/catalog.js
+            (raderna ligger redan där, utkommenterade).
+
+       BILDER SOM BEHÖVS (exakta filnamn, i assets/products/):
+         Step1 Jersey — samma bild för alla storlekar:
+           step1-jersey.png          ← visas först
+           step1-jersey-1.png        ← visas vid hover
+           step1-jersey-2.png, -3.png …  (så många du har)
+
+         On Set Cap — en uppsättning per färg:
+           on-set-cap-navy.png,     on-set-cap-navy-1.png, -2.png …
+           on-set-cap-charcoal.png, on-set-cap-charcoal-1.png, -2.png …
+           on-set-cap-white.png,    on-set-cap-white-1.png, -2.png …
+
+    , {
+      id: 'step1-jersey', cat: 'clothing', type: 'jersey', print: 'S1F',
+      name: { sv: 'STEP1 JERSEY', en: 'STEP1 JERSEY' },
+      desc: { sv: 'Nummer 23 på bröstet och hela pastellspektrumet på ryggen. Ett lag som inte spelar boll — vi gör film. Allover-tryck, återvunnen polyester.', en: 'Number 23 on the chest and the whole pastel spectrum down the back. A team that doesn\'t play ball — we make films. All-over print, recycled polyester.' },
+      material: { sv: ['Allover-tryck, återvunnen polyester', 'Ledig passform', 'Ärmlös'], en: ['All-over print, recycled polyester', 'Relaxed fit', 'Sleeveless'] },
+      price: 429,
+      colors: ['pastel'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL'], defaultSize: 'M',
+      image: 'assets/products/step1-jersey.png',
+      gallery: [
+        'assets/products/step1-jersey.png',
+        'assets/products/step1-jersey-1.png',
+        'assets/products/step1-jersey-2.png'
+      ]
+    }
+    , {
+      id: 'on-set-cap', cat: 'caps', type: 'cap', print: 'S1F',
+      name: { sv: 'ON SET CAP', en: 'ON SET CAP' },
+      desc: { sv: 'För dagarna på inspelning. Lampan tänds, ljuset går upp — och allt annat får vänta. Broderad framtill, justerbar. One size.', en: 'For the days on set. The lamp switches on, the light comes up — and everything else can wait. Embroidered front, adjustable. One size.' },
+      material: { sv: ['100 % bomull', 'Broderi framtill', 'Justerbar spänne', 'One size'], en: ['100% cotton', 'Front embroidery', 'Adjustable buckle', 'One size'] },
+      price: 349,
+      colors: ['navy', 'charcoal', 'white'],
+      sizes: null,
+      image: 'assets/products/on-set-cap-navy.png',
+      images: {
+        navy: 'assets/products/on-set-cap-navy.png',
+        charcoal: 'assets/products/on-set-cap-charcoal.png',
+        white: 'assets/products/on-set-cap-white.png'
+      },
+      galleries: {
+        navy: ['assets/products/on-set-cap-navy.png', 'assets/products/on-set-cap-navy-1.png', 'assets/products/on-set-cap-navy-2.png'],
+        charcoal: ['assets/products/on-set-cap-charcoal.png', 'assets/products/on-set-cap-charcoal-1.png', 'assets/products/on-set-cap-charcoal-2.png'],
+        white: ['assets/products/on-set-cap-white.png', 'assets/products/on-set-cap-white-1.png', 'assets/products/on-set-cap-white-2.png']
+      }
+    }
+    =================================================== */
 
     /* ---------------------------------------------------
        EXEMPEL — riktig Printful-produkt (kopiera & fyll i)
@@ -575,6 +633,9 @@
     'reel-mugg',           // 229
     'ad1-beanie',          // 285
     'gear-stickers'        //  85 · sista lilla ja:et upp mot fri frakt
+    // PÅ VÄG IN — lägg in dessa när bilderna finns:
+    // 'step1-jersey'  (429) passar direkt efter 'take-one-sleeve'
+    // 'on-set-cap'    (349) passar direkt efter 'action-dad-cap'
   ];
   PRODUCTS.sort((a, b) => {
     const ia = PRODUCT_ORDER.indexOf(a.id);
