@@ -138,11 +138,11 @@
       price: 229,
       colors: ['black'],
       sizes: null,
-      image: 'assets/products/reel-mugg.png',
+      image: 'assets/products/reel-mugg.webp',
       gallery: [
-        'assets/products/reel-mugg.png',
-        'assets/products/reel-mugg-2.png',
-        'assets/products/reel-mugg-lifestyle.png'
+        'assets/products/reel-mugg.webp',
+        'assets/products/reel-mugg-2.webp',
+        'assets/products/reel-mugg-lifestyle.webp'
       ]
     },
     {
@@ -154,15 +154,15 @@
       price: 229,
       colors: ['white'],
       sizes: null,
-      image: 'assets/products/awesome-mugg-stacked.png',
+      image: 'assets/products/awesome-mugg-stacked.webp',
       // Basbild (utan siffra) först, sedan 01, 02, 03, 04, 05
       gallery: [
-        'assets/products/awesome-mugg-stacked.png',
-        'assets/products/awesome-mugg-hands.png',
-        'assets/products/awesome-mugg.png',
-        'assets/products/awesome-mugg-model.png',
-        'assets/products/awesome-mugg-holiday.png',
-        'assets/products/awesome-mugg-box.png'
+        'assets/products/awesome-mugg-stacked.webp',
+        'assets/products/awesome-mugg-hands.webp',
+        'assets/products/awesome-mugg.webp',
+        'assets/products/awesome-mugg-model.webp',
+        'assets/products/awesome-mugg-holiday.webp',
+        'assets/products/awesome-mugg-box.webp'
       ]
     },
     {
@@ -175,12 +175,12 @@
       sizePrices: { '13"': 499, '15"': 599 },
       colors: ['pastel'],
       sizes: ['13"', '15"'], defaultSize: '13"',
-      image: 'assets/products/take-one-sleeve.png',
+      image: 'assets/products/take-one-sleeve.webp',
       gallery: [
-        'assets/products/take-one-sleeve.png',
-        'assets/products/take-one-sleeve-1.png',
-        'assets/products/take-one-sleeve-2.png',
-        'assets/products/take-one-sleeve-4.png'
+        'assets/products/take-one-sleeve.webp',
+        'assets/products/take-one-sleeve-1.webp',
+        'assets/products/take-one-sleeve-2.webp',
+        'assets/products/take-one-sleeve-4.webp'
       ]
     },
     {
@@ -192,36 +192,36 @@
       price: 699,
       colors: ['navy', 'pink'],
       sizes: null,
-      image: 'assets/products/backpack-navy.png',
+      image: 'assets/products/backpack-navy.webp',
       // Egen bild per färg i kundvagnen
       images: {
-        pink: 'assets/products/backpack-pink.png',
-        navy: 'assets/products/backpack-navy.png'
+        pink: 'assets/products/backpack-pink.webp',
+        navy: 'assets/products/backpack-navy.webp'
       },
       // Eget bildspel per färg på produktkortet
       galleries: {
         pink: [
-          'assets/products/backpack-pink.png',
-          'assets/products/backpack-pink-1.png',
-          'assets/products/backpack-pink-3.png',
-          'assets/products/backpack-pink-4.png',
-          'assets/products/backpack-pink-5.png',
-          'assets/products/backpack-pink-6.png',
-          'assets/products/backpack-pink-7.png',
-          'assets/products/backpack-pink-8.png',
-          'assets/products/backpack-pink-9.png'
+          'assets/products/backpack-pink.webp',
+          'assets/products/backpack-pink-1.webp',
+          'assets/products/backpack-pink-3.webp',
+          'assets/products/backpack-pink-4.webp',
+          'assets/products/backpack-pink-5.webp',
+          'assets/products/backpack-pink-6.webp',
+          'assets/products/backpack-pink-7.webp',
+          'assets/products/backpack-pink-8.webp',
+          'assets/products/backpack-pink-9.webp'
         ],
         navy: [
-          'assets/products/backpack-navy.png',
-          'assets/products/backpack-navy-1.png',
-          'assets/products/backpack-navy-2.png',
-          'assets/products/backpack-navy-3.png',
-          'assets/products/backpack-navy-4.png',
-          'assets/products/backpack-navy-5.png',
-          'assets/products/backpack-navy-6.png',
-          'assets/products/backpack-navy-7.png',
-          'assets/products/backpack-navy-8.png',
-          'assets/products/backpack-navy-9.png'
+          'assets/products/backpack-navy.webp',
+          'assets/products/backpack-navy-1.webp',
+          'assets/products/backpack-navy-2.webp',
+          'assets/products/backpack-navy-3.webp',
+          'assets/products/backpack-navy-4.webp',
+          'assets/products/backpack-navy-5.webp',
+          'assets/products/backpack-navy-6.webp',
+          'assets/products/backpack-navy-7.webp',
+          'assets/products/backpack-navy-8.webp',
+          'assets/products/backpack-navy-9.webp'
         ]
       }
     },
@@ -233,32 +233,32 @@
       price: 629,
       colors: ['natural', 'lightpink', 'white'],
       sizes: SIZES, defaultSize: 'M',
-      image: 'assets/products/hoodie-natural.png',
+      image: 'assets/products/hoodie-natural.webp',
       images: {
-        natural: 'assets/products/hoodie-natural.png',
-        lightpink: 'assets/products/hoodie-pink.png',
-        white: 'assets/products/hoodie-white.png'
+        natural: 'assets/products/hoodie-natural.webp',
+        lightpink: 'assets/products/hoodie-pink.webp',
+        white: 'assets/products/hoodie-white.webp'
       },
       galleries: {
         natural: [
-          'assets/products/hoodie-natural.png',
-          'assets/products/hoodie-natural-1.png',
-          'assets/products/hoodie-natural-2.png',
-          'assets/products/hoodie-natural-3.png',
-          'assets/products/hoodie-natural-4.png'
+          'assets/products/hoodie-natural.webp',
+          'assets/products/hoodie-natural-1.webp',
+          'assets/products/hoodie-natural-2.webp',
+          'assets/products/hoodie-natural-3.webp',
+          'assets/products/hoodie-natural-4.webp'
         ],
         lightpink: [
-          'assets/products/hoodie-pink.png',
-          'assets/products/hoodie-pink-1.png',
-          'assets/products/hoodie-pink-3.png',
-          'assets/products/hoodie-pink-4.png'
+          'assets/products/hoodie-pink.webp',
+          'assets/products/hoodie-pink-1.webp',
+          'assets/products/hoodie-pink-3.webp',
+          'assets/products/hoodie-pink-4.webp'
         ],
         white: [
-          'assets/products/hoodie-white.png',
-          'assets/products/hoodie-white-1.png',
-          'assets/products/hoodie-white-2.png',
-          'assets/products/hoodie-white-3.png',
-          'assets/products/hoodie-white-5.png'
+          'assets/products/hoodie-white.webp',
+          'assets/products/hoodie-white-1.webp',
+          'assets/products/hoodie-white-2.webp',
+          'assets/products/hoodie-white-3.webp',
+          'assets/products/hoodie-white-5.webp'
         ]
       }
     },
@@ -271,33 +271,33 @@
       price: 699,
       colors: ['black', 'lightpink'],
       sizes: SIZES, defaultSize: 'M',
-      image: 'assets/products/hoodie-24fps-black.png',
+      image: 'assets/products/hoodie-24fps-black.webp',
       images: {
-        black: 'assets/products/hoodie-24fps-black.png',
-        lightpink: 'assets/products/hoodie-24fps-lightpink.png'
+        black: 'assets/products/hoodie-24fps-black.webp',
+        lightpink: 'assets/products/hoodie-24fps-lightpink.webp'
       },
       galleries: {
         black: [
-          'assets/products/hoodie-24fps-black.png',
-          'assets/products/hoodie-24fps-black-1.png',
-          'assets/products/hoodie-24fps-black-2.png',
-          'assets/products/hoodie-24fps-black-3.png',
-          'assets/products/hoodie-24fps-black-4.png',
-          'assets/products/hoodie-24fps-black-5.png',
-          'assets/products/hoodie-24fps-black-6.png',
-          'assets/products/hoodie-24fps-black-8.png',
-          'assets/products/hoodie-24fps-black-9.png',
-          'assets/products/hoodie-24fps-black-10.png'
+          'assets/products/hoodie-24fps-black.webp',
+          'assets/products/hoodie-24fps-black-1.webp',
+          'assets/products/hoodie-24fps-black-2.webp',
+          'assets/products/hoodie-24fps-black-3.webp',
+          'assets/products/hoodie-24fps-black-4.webp',
+          'assets/products/hoodie-24fps-black-5.webp',
+          'assets/products/hoodie-24fps-black-6.webp',
+          'assets/products/hoodie-24fps-black-8.webp',
+          'assets/products/hoodie-24fps-black-9.webp',
+          'assets/products/hoodie-24fps-black-10.webp'
         ],
         lightpink: [
-          'assets/products/hoodie-24fps-lightpink.png',
-          'assets/products/hoodie-24fps-lightpink-1.png',
-          'assets/products/hoodie-24fps-lightpink-2.png',
-          'assets/products/hoodie-24fps-lightpink-3.png',
-          'assets/products/hoodie-24fps-lightpink-4.png',
-          'assets/products/hoodie-24fps-lightpink-5.png',
-          'assets/products/hoodie-24fps-lightpink-6.png',
-          'assets/products/hoodie-24fps-lightpink-7.png'
+          'assets/products/hoodie-24fps-lightpink.webp',
+          'assets/products/hoodie-24fps-lightpink-1.webp',
+          'assets/products/hoodie-24fps-lightpink-2.webp',
+          'assets/products/hoodie-24fps-lightpink-3.webp',
+          'assets/products/hoodie-24fps-lightpink-4.webp',
+          'assets/products/hoodie-24fps-lightpink-5.webp',
+          'assets/products/hoodie-24fps-lightpink-6.webp',
+          'assets/products/hoodie-24fps-lightpink-7.webp'
         ]
       },
       fit: {
@@ -330,35 +330,35 @@
       price: 349,
       colors: ['navy', 'silver', 'black'],
       sizes: null,
-      image: 'assets/products/trucker-cap-navy.png',
+      image: 'assets/products/trucker-cap-navy.webp',
       images: {
-        navy: 'assets/products/trucker-cap-navy.png',
-        silver: 'assets/products/trucker-cap-silver.png',
-        black: 'assets/products/trucker-cap-black.png'
+        navy: 'assets/products/trucker-cap-navy.webp',
+        silver: 'assets/products/trucker-cap-silver.webp',
+        black: 'assets/products/trucker-cap-black.webp'
       },
       galleries: {
         navy: [
-          'assets/products/trucker-cap-navy.png',
-          'assets/products/trucker-cap-navy-1.png',
-          'assets/products/trucker-cap-navy-2.png',
-          'assets/products/trucker-cap-navy-3.png',
-          'assets/products/trucker-cap-navy-5.png'
+          'assets/products/trucker-cap-navy.webp',
+          'assets/products/trucker-cap-navy-1.webp',
+          'assets/products/trucker-cap-navy-2.webp',
+          'assets/products/trucker-cap-navy-3.webp',
+          'assets/products/trucker-cap-navy-5.webp'
         ],
         silver: [
-          'assets/products/trucker-cap-silver.png',
-          'assets/products/trucker-cap-silver-1.png',
-          'assets/products/trucker-cap-silver-2.png',
-          'assets/products/trucker-cap-silver-3.png',
-          'assets/products/trucker-cap-silver-4.png',
-          'assets/products/trucker-cap-silver-5.png'
+          'assets/products/trucker-cap-silver.webp',
+          'assets/products/trucker-cap-silver-1.webp',
+          'assets/products/trucker-cap-silver-2.webp',
+          'assets/products/trucker-cap-silver-3.webp',
+          'assets/products/trucker-cap-silver-4.webp',
+          'assets/products/trucker-cap-silver-5.webp'
         ],
         black: [
-          'assets/products/trucker-cap-black.png',
-          'assets/products/trucker-cap-black-1.png',
-          'assets/products/trucker-cap-black-2.png',
-          'assets/products/trucker-cap-black-3.png',
-          'assets/products/trucker-cap-black-4.png',
-          'assets/products/trucker-cap-black-5.png'
+          'assets/products/trucker-cap-black.webp',
+          'assets/products/trucker-cap-black-1.webp',
+          'assets/products/trucker-cap-black-2.webp',
+          'assets/products/trucker-cap-black-3.webp',
+          'assets/products/trucker-cap-black-4.webp',
+          'assets/products/trucker-cap-black-5.webp'
         ]
       }
     },
@@ -369,11 +369,11 @@
       price: 85,
       colors: ['pink'],
       sizes: null,
-      image: 'assets/products/icon-stickers.png',
+      image: 'assets/products/icon-stickers.webp',
       gallery: [
-        'assets/products/icon-stickers.png',
-        'assets/products/icon-stickers-1.png',
-        'assets/products/icon-stickers-2.png'
+        'assets/products/icon-stickers.webp',
+        'assets/products/icon-stickers-1.webp',
+        'assets/products/icon-stickers-2.webp'
       ]
     },
 
@@ -384,18 +384,18 @@
       price: 285,
       colors: ['olive', 'black', 'brown', 'navy'],
       sizes: null,
-      image: 'assets/products/beanie-olive.png',
+      image: 'assets/products/beanie-olive.webp',
       images: {
-        black: 'assets/products/beanie-black.png',
-        brown: 'assets/products/beanie-brown.png',
-        navy: 'assets/products/beanie-navy.png',
-        olive: 'assets/products/beanie-olive.png'
+        black: 'assets/products/beanie-black.webp',
+        brown: 'assets/products/beanie-brown.webp',
+        navy: 'assets/products/beanie-navy.webp',
+        olive: 'assets/products/beanie-olive.webp'
       },
       galleries: {
-        black: ['assets/products/beanie-black.png', 'assets/products/beanie-black-1.png', 'assets/products/beanie-black-2.png', 'assets/products/beanie-black-3.png', 'assets/products/beanie-black-5.png'],
-        brown: ['assets/products/beanie-brown.png', 'assets/products/beanie-brown-1.png', 'assets/products/beanie-brown-2.png', 'assets/products/beanie-brown-3.png', 'assets/products/beanie-brown-4.png'],
-        navy: ['assets/products/beanie-navy.png', 'assets/products/beanie-navy-1.png', 'assets/products/beanie-navy-2.png', 'assets/products/beanie-navy-3.png'],
-        olive: ['assets/products/beanie-olive.png', 'assets/products/beanie-olive-1.png', 'assets/products/beanie-olive-2.png', 'assets/products/beanie-olive-3.png', 'assets/products/beanie-olive-4.png']
+        black: ['assets/products/beanie-black.webp', 'assets/products/beanie-black-1.webp', 'assets/products/beanie-black-2.webp', 'assets/products/beanie-black-3.webp', 'assets/products/beanie-black-5.webp'],
+        brown: ['assets/products/beanie-brown.webp', 'assets/products/beanie-brown-1.webp', 'assets/products/beanie-brown-2.webp', 'assets/products/beanie-brown-3.webp', 'assets/products/beanie-brown-4.webp'],
+        navy: ['assets/products/beanie-navy.webp', 'assets/products/beanie-navy-1.webp', 'assets/products/beanie-navy-2.webp', 'assets/products/beanie-navy-3.webp'],
+        olive: ['assets/products/beanie-olive.webp', 'assets/products/beanie-olive-1.webp', 'assets/products/beanie-olive-2.webp', 'assets/products/beanie-olive-3.webp', 'assets/products/beanie-olive-4.webp']
       }
     },
     {
@@ -405,16 +405,16 @@
       price: 285,
       colors: ['candy', 'orange', 'white'],
       sizes: null,
-      image: 'assets/products/ad1-beanie-pink.png',
+      image: 'assets/products/ad1-beanie-pink.webp',
       images: {
-        candy: 'assets/products/ad1-beanie-pink.png',
-        orange: 'assets/products/ad1-beanie-orange.png',
-        white: 'assets/products/ad1-beanie-white.png'
+        candy: 'assets/products/ad1-beanie-pink.webp',
+        orange: 'assets/products/ad1-beanie-orange.webp',
+        white: 'assets/products/ad1-beanie-white.webp'
       },
       galleries: {
-        candy: ['assets/products/ad1-beanie-pink.png', 'assets/products/ad1-beanie-pink-1.png', 'assets/products/ad1-beanie-pink-2.png', 'assets/products/ad1-beanie-pink-3.png'],
-        orange: ['assets/products/ad1-beanie-orange.png', 'assets/products/ad1-beanie-orange-1.png', 'assets/products/ad1-beanie-orange-2.png'],
-        white: ['assets/products/ad1-beanie-white.png', 'assets/products/ad1-beanie-white-1.png', 'assets/products/ad1-beanie-white-2.png', 'assets/products/ad1-beanie-white-3.png']
+        candy: ['assets/products/ad1-beanie-pink.webp', 'assets/products/ad1-beanie-pink-1.webp', 'assets/products/ad1-beanie-pink-2.webp', 'assets/products/ad1-beanie-pink-3.webp'],
+        orange: ['assets/products/ad1-beanie-orange.webp', 'assets/products/ad1-beanie-orange-1.webp', 'assets/products/ad1-beanie-orange-2.webp'],
+        white: ['assets/products/ad1-beanie-white.webp', 'assets/products/ad1-beanie-white-1.webp', 'assets/products/ad1-beanie-white-2.webp', 'assets/products/ad1-beanie-white-3.webp']
       }
     },
     {
@@ -426,11 +426,11 @@
       sizePrices: { '13"': 429, '15"': 499 },
       colors: ['silver'],
       sizes: ['13"', '15"'], defaultSize: '13"',
-      image: 'assets/products/static-sleeve.png',
+      image: 'assets/products/static-sleeve.webp',
       gallery: [
-        'assets/products/static-sleeve.png',
-        'assets/products/static-sleeve-1.png',
-        'assets/products/static-sleeve-2.png'
+        'assets/products/static-sleeve.webp',
+        'assets/products/static-sleeve-1.webp',
+        'assets/products/static-sleeve-2.webp'
       ]
     },
     {
@@ -442,16 +442,16 @@
       price: 249,
       colors: ['candy', 'lightblue', 'white'],
       sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
-      image: 'assets/products/lil-tee-pink.png',
+      image: 'assets/products/lil-tee-pink.webp',
       images: {
-        candy: 'assets/products/lil-tee-pink.png',
-        lightblue: 'assets/products/lil-tee-lightblue.png',
-        white: 'assets/products/lil-tee-white.png'
+        candy: 'assets/products/lil-tee-pink.webp',
+        lightblue: 'assets/products/lil-tee-lightblue.webp',
+        white: 'assets/products/lil-tee-white.webp'
       },
       galleries: {
-        candy: ['assets/products/lil-tee-pink.png', 'assets/products/lil-tee-pink-1.png', 'assets/products/lil-tee-pink-2.png', 'assets/products/lil-tee-pink-3.png'],
-        lightblue: ['assets/products/lil-tee-lightblue.png', 'assets/products/lil-tee-lightblue-1.png', 'assets/products/lil-tee-lightblue-2.png', 'assets/products/lil-tee-lightblue-3.png', 'assets/products/lil-tee-lightblue-4.png'],
-        white: ['assets/products/lil-tee-white.png', 'assets/products/lil-tee-white-1.png', 'assets/products/lil-tee-white-2.png', 'assets/products/lil-tee-white-3.png']
+        candy: ['assets/products/lil-tee-pink.webp', 'assets/products/lil-tee-pink-1.webp', 'assets/products/lil-tee-pink-2.webp', 'assets/products/lil-tee-pink-3.webp'],
+        lightblue: ['assets/products/lil-tee-lightblue.webp', 'assets/products/lil-tee-lightblue-1.webp', 'assets/products/lil-tee-lightblue-2.webp', 'assets/products/lil-tee-lightblue-3.webp', 'assets/products/lil-tee-lightblue-4.webp'],
+        white: ['assets/products/lil-tee-white.webp', 'assets/products/lil-tee-white-1.webp', 'assets/products/lil-tee-white-2.webp', 'assets/products/lil-tee-white-3.webp']
       }
     },
 
@@ -462,16 +462,16 @@
       price: 275,
       colors: ['heather', 'yellow', 'black'],
       sizes: SIZES, defaultSize: 'M',
-      image: 'assets/products/crew-tee-heather.png',
+      image: 'assets/products/crew-tee-heather.webp',
       images: {
-        yellow: 'assets/products/crew-tee-yellow.png',
-        black: 'assets/products/crew-tee-black.png',
-        heather: 'assets/products/crew-tee-heather.png'
+        yellow: 'assets/products/crew-tee-yellow.webp',
+        black: 'assets/products/crew-tee-black.webp',
+        heather: 'assets/products/crew-tee-heather.webp'
       },
       galleries: {
-        yellow: ['assets/products/crew-tee-yellow.png', 'assets/products/crew-tee-yellow-1.png', 'assets/products/crew-tee-yellow-2.png', 'assets/products/crew-tee-yellow-3.png'],
-        black: ['assets/products/crew-tee-black.png', 'assets/products/crew-tee-black-1.png', 'assets/products/crew-tee-black-2.png', 'assets/products/crew-tee-black-3.png', 'assets/products/crew-tee-black-4.png'],
-        heather: ['assets/products/crew-tee-heather.png', 'assets/products/crew-tee-heather-1.png', 'assets/products/crew-tee-heather-2.png', 'assets/products/crew-tee-heather-3.png', 'assets/products/crew-tee-heather-4.png']
+        yellow: ['assets/products/crew-tee-yellow.webp', 'assets/products/crew-tee-yellow-1.webp', 'assets/products/crew-tee-yellow-2.webp', 'assets/products/crew-tee-yellow-3.webp'],
+        black: ['assets/products/crew-tee-black.webp', 'assets/products/crew-tee-black-1.webp', 'assets/products/crew-tee-black-2.webp', 'assets/products/crew-tee-black-3.webp', 'assets/products/crew-tee-black-4.webp'],
+        heather: ['assets/products/crew-tee-heather.webp', 'assets/products/crew-tee-heather-1.webp', 'assets/products/crew-tee-heather-2.webp', 'assets/products/crew-tee-heather-3.webp', 'assets/products/crew-tee-heather-4.webp']
       }
     },
     {
@@ -483,14 +483,14 @@
       price: 349,
       colors: ['camel', 'black'],
       sizes: null,
-      image: 'assets/products/dad-cap-camel.png',
+      image: 'assets/products/dad-cap-camel.webp',
       images: {
-        camel: 'assets/products/dad-cap-camel.png',
-        black: 'assets/products/dad-cap-black.png'
+        camel: 'assets/products/dad-cap-camel.webp',
+        black: 'assets/products/dad-cap-black.webp'
       },
       galleries: {
-        camel: ['assets/products/dad-cap-camel.png', 'assets/products/dad-cap-camel-1.png', 'assets/products/dad-cap-camel-2.png', 'assets/products/dad-cap-camel-3.png'],
-        black: ['assets/products/dad-cap-black.png', 'assets/products/dad-cap-black-1.png', 'assets/products/dad-cap-black-2.png', 'assets/products/dad-cap-black-3.png']
+        camel: ['assets/products/dad-cap-camel.webp', 'assets/products/dad-cap-camel-1.webp', 'assets/products/dad-cap-camel-2.webp', 'assets/products/dad-cap-camel-3.webp'],
+        black: ['assets/products/dad-cap-black.webp', 'assets/products/dad-cap-black-1.webp', 'assets/products/dad-cap-black-2.webp', 'assets/products/dad-cap-black-3.webp']
       }
     },
     {
@@ -500,12 +500,12 @@
       price: 85,
       colors: ['forest'],
       sizes: null,
-      image: 'assets/products/gear-stickers.png',
+      image: 'assets/products/gear-stickers.webp',
       gallery: [
-        'assets/products/gear-stickers.png',
-        'assets/products/gear-stickers-1.png',
-        'assets/products/gear-stickers-2.png',
-        'assets/products/gear-stickers-3.png'
+        'assets/products/gear-stickers.webp',
+        'assets/products/gear-stickers-1.webp',
+        'assets/products/gear-stickers-2.webp',
+        'assets/products/gear-stickers-3.webp'
       ]
     }
 
@@ -538,11 +538,11 @@
       price: 429,
       colors: ['pastel'],
       sizes: ['XS', 'S', 'M', 'L', 'XL'], defaultSize: 'M',
-      image: 'assets/products/step1-jersey.png',
+      image: 'assets/products/step1-jersey.webp',
       gallery: [
-        'assets/products/step1-jersey.png',
-        'assets/products/step1-jersey-1.png',
-        'assets/products/step1-jersey-2.png'
+        'assets/products/step1-jersey.webp',
+        'assets/products/step1-jersey-1.webp',
+        'assets/products/step1-jersey-2.webp'
       ]
     }
     , {
@@ -553,16 +553,16 @@
       price: 349,
       colors: ['navy', 'charcoal', 'white'],
       sizes: null,
-      image: 'assets/products/on-set-cap-navy.png',
+      image: 'assets/products/on-set-cap-navy.webp',
       images: {
-        navy: 'assets/products/on-set-cap-navy.png',
-        charcoal: 'assets/products/on-set-cap-charcoal.png',
-        white: 'assets/products/on-set-cap-white.png'
+        navy: 'assets/products/on-set-cap-navy.webp',
+        charcoal: 'assets/products/on-set-cap-charcoal.webp',
+        white: 'assets/products/on-set-cap-white.webp'
       },
       galleries: {
-        navy: ['assets/products/on-set-cap-navy.png', 'assets/products/on-set-cap-navy-1.png', 'assets/products/on-set-cap-navy-2.png'],
-        charcoal: ['assets/products/on-set-cap-charcoal.png', 'assets/products/on-set-cap-charcoal-1.png', 'assets/products/on-set-cap-charcoal-2.png'],
-        white: ['assets/products/on-set-cap-white.png', 'assets/products/on-set-cap-white-1.png', 'assets/products/on-set-cap-white-2.png']
+        navy: ['assets/products/on-set-cap-navy.webp', 'assets/products/on-set-cap-navy-1.webp', 'assets/products/on-set-cap-navy-2.webp'],
+        charcoal: ['assets/products/on-set-cap-charcoal.webp', 'assets/products/on-set-cap-charcoal-1.webp', 'assets/products/on-set-cap-charcoal-2.webp'],
+        white: ['assets/products/on-set-cap-white.webp', 'assets/products/on-set-cap-white-1.webp', 'assets/products/on-set-cap-white-2.webp']
       }
     }
     =================================================== */
