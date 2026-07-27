@@ -11,7 +11,11 @@
      SWISH_CERT_P12      – .p12-certifikatet, base64-kodat
      SWISH_CERT_PASSWORD – lösenord till .p12
      SWISH_ENV           – 'test' (MSS) eller 'production'
-     SITE_URL            – används för callback-URL
+     API_URL             – där funktionerna körs (Netlify). Swish ringer
+                           tillbaka hit. Sätts bara när sajten ligger på
+                           en annan värd än funktionerna.
+     SITE_URL            – sajtens adress. Används som reserv om API_URL
+                           inte är satt (allt på samma värd).
 
    Se PAYMENTS_SETUP.md för hur du får tag på allt detta.
    ===================================================== */
@@ -81,13 +85,17 @@ async function createPaymentRequest(p) {
   if (!payee) throw new Error('SWISH_PAYEE_ALIAS saknas i serverns miljövariabler.');
 
   const instructionId = randomUUID().replace(/-/g, '').toUpperCase();
-  const site = (process.env.SITE_URL || '').replace(/\/$/, '');
+  // Callbacken måste peka dit FUNKTIONERNA ligger — inte dit sajten ligger.
+  // Ligger butiken på GitHub Pages och funktionerna på Netlify är det två
+  // olika adresser, och då är API_URL den som gäller.
+  const api = (process.env.API_URL || process.env.SITE_URL || '').replace(/\/$/, '');
+  if (!api) throw new Error('API_URL (eller SITE_URL) saknas i serverns miljövariabler.');
 
   const body = {
     payeeAlias: payee,
     amount: p.amount.toFixed(2),
     currency: 'SEK',
-    callbackUrl: `${site}/.netlify/functions/swish-callback`,
+    callbackUrl: `${api}/.netlify/functions/swish-callback`,
     payeePaymentReference: p.reference.replace(/[^A-Za-z0-9]/g, '').slice(0, 35),
     message: (p.message || 'STEP1 STORE').slice(0, 50)
   };

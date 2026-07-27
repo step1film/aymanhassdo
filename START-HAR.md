@@ -7,37 +7,63 @@ sajten är i gång hela tiden, ingenting slocknar mellan stegen.
 
 ---
 
-## Del 1 · Få upp sajten på Netlify (ca 20 min)
+## Upplägget: sajten stannar där den är
 
-Här flyttar vi bara var sajten visas. Butiken står kvar i demoläge,
-inga betalningar är påslagna. Domänen rör vi inte än.
+Hela webbplatsen ligger kvar på **GitHub Pages** under din egen domän.
+Netlify får bara ett jobb: att köra de sju funktionerna som tar emot
+betalningar och lägger tryckordern. Ingen sida flyttar.
+
+```
+  step1film.se              →  GitHub Pages
+    index.html, shop.html, villkorssidorna, bilderna
+
+  step1film.netlify.app     →  Netlify
+    functions/  ·  Stripe, Swish, Printful
+```
+
+Butiken anropar funktionerna över nätet när någon betalar. Det är därför
+`functions/_lib/http.js` bara släpper igenom anrop från step1film.se —
+ingen annan sajt kan skapa betalningar i ditt namn.
+
+**En sak att veta:** säkerhetsheadrarna i `netlify.toml` (CSP, HSTS,
+X-Frame-Options) gäller bara det Netlify serverar. GitHub Pages kan inte
+sätta egna headers, så de skyddar funktionerna men inte sidorna. Vill du
+ha dem på hela sajten måste allt ligga på Netlify — säg till, det är en
+kvart att byta.
+
+---
+
+## Del 1 · Få upp funktionerna på Netlify (ca 20 min)
+
+Netlify bygger hela repot, men vi använder bara `functions/`-delen.
+Butiken står kvar i demoläge, inga betalningar är påslagna.
 
 - [ ] **1.1** 🙋 Skapa konto på [netlify.com](https://netlify.com) — logga in med GitHub, då hittar Netlify repot direkt.
 - [ ] **1.2** 🙋 *Add new site* → *Import an existing project* → GitHub → välj `step1film/aymanhassdo`.
 - [ ] **1.3** 🙋 Branch: `main`. Build command och publish directory lämnar du **tomma** — `netlify.toml` i repot säger redan vad som gäller. Tryck *Deploy*.
-- [ ] **1.4** 🙋 Du får en adress i stil med `random-namn-123.netlify.app`. Öppna den och kolla:
-  - startsidan laddar, introt räknar ner
-  - trailern på 001 spelar när du klickar
-  - SV/EN-knappen byter språk
-  - butiken visar alla 15 produkter
-- [ ] **1.5** 🙋 **Skicka mig adressen** om något ser fel ut. 🤖 Jag felsöker mot den riktiga miljön.
+- [ ] **1.4** 🙋 Du får en adress som `step1film.netlify.app`. Öppna `https://DIN-ADRESS/.netlify/functions/printful-products` — det ska svara med ett **felmeddelande om att token saknas**. Det låter fel, men är precis rätt: funktionen körs, den har bara inga nycklar än.
+- [ ] **1.5** 🙋 **Skicka mig adressen.** 🤖 Jag skriver in den i `shop.js` så butiken vet vart den ska ringa.
 
-> **Varför Netlify och inte GitHub Pages med din domän?** GitHub Pages kan
-> bara servera filer. De sju funktionerna som tar emot Swish, skapar
-> Stripe-betalningar och lägger Printful-ordern måste köras på en server.
-> Pekar du domänen mot GitHub Pages nu får du göra om DNS-flytten sedan.
+> Sajten som Netlify också visar på den adressen är bara en biprodukt.
+> Den du och kunderna använder är step1film.se på GitHub Pages.
 
 ---
 
-## Del 2 · Peka step1film.se dit (ca 30 min + väntan)
+## Del 2 · Peka step1film.se mot GitHub Pages (ca 30 min + väntan)
 
-- [ ] **2.1** 🙋 Netlify → *Domain management* → *Add a domain* → `step1film.se`.
-- [ ] **2.2** 🙋 Netlify visar vad du ska ändra hos den som du köpte domänen av. Två vägar:
-  - **Enklast:** byt namnservrar till Netlifys (de sköter allt sedan)
-  - **Om du har mejl på domänen:** behåll namnservrarna och lägg bara in de A-/CNAME-poster Netlify anger — annars kan mejlen sluta fungera
-- [ ] **2.3** ⏳ Vänta. DNS tar allt från 10 minuter till ett dygn. Netlify visar när det slagit igenom.
-- [ ] **2.4** 🙋 Kontrollera att `https://step1film.se` funkar **med hänglås**. Netlify ordnar certifikatet automatiskt, men det kommer först när DNS är klart.
-- [ ] **2.5** 🙋 Sätt miljövariabeln `SITE_URL` = `https://step1film.se` i Netlify (*Site settings → Environment variables*). Den används för retur-adresser efter betalning.
+Domänen går till **GitHub**, inte Netlify.
+
+- [ ] **2.1** 🙋 Hos den du köpte domänen av: lägg fyra A-poster för `step1film.se` mot GitHubs adresser `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` — och en CNAME för `www` mot `step1film.github.io`.
+- [ ] **2.2** 🙋 GitHub → repot → *Settings → Pages → Custom domain* → `step1film.se`. Kryssa i **Enforce HTTPS** när kryssrutan blir klickbar.
+- [ ] **2.3** ⏳ Vänta. DNS tar 10 minuter till ett dygn. Certifikatet kommer först när DNS slagit igenom.
+- [ ] **2.4** 🙋 Kontrollera att `https://step1film.se` funkar **med hänglås**.
+- [ ] **2.5** 🙋 I **Netlify**, sätt två miljövariabler (*Site settings → Environment variables*):
+  - `SITE_URL` = `https://step1film.se` — dit kunden skickas efter betalning
+  - `API_URL` = `https://step1film.netlify.app` — dit Swish ringer tillbaka
+
+> Båda behövs eftersom sajten och funktionerna ligger på olika värdar.
+> Blandar du ihop dem hamnar kunden fel efter betalning, eller så når
+> Swish-kvittot aldrig fram.
 
 ---
 
@@ -60,7 +86,8 @@ köra igång det ena först.
 - [ ] **4.1** 🙋 Skapa Stripe-konto, aktivera Klarna under *Payment methods*.
 - [ ] **4.2** 🙋 Miljövariabel `STRIPE_SECRET_KEY` = din **`sk_test_…`** (testnyckeln, inte den skarpa).
 - [ ] **4.3** 🙋 Stripe → *Developers → Webhooks* → lägg till endpoint:
-      `https://step1film.se/.netlify/functions/stripe-webhook`, händelse `checkout.session.completed`.
+      `https://step1film.netlify.app/.netlify/functions/stripe-webhook`, händelse `checkout.session.completed`.
+      **Netlify-adressen, inte step1film.se** — det är där funktionen bor.
 - [ ] **4.4** 🙋 Kopiera *Signing secret* → miljövariabel `STRIPE_WEBHOOK_SECRET`.
 
 **Swish**
@@ -69,7 +96,7 @@ köra igång det ena först.
 - [ ] **4.7** 🙋 Miljövariabler: `SWISH_PAYEE_ALIAS`, `SWISH_CERT_P12`, `SWISH_CERT_PASSWORD`, och `SWISH_ENV` = `test`.
 
 **Slå på**
-- [ ] **4.8** 🤖 Jag sätter `apiBase: '/.netlify/functions'` och `card: true` / `swish: true` i `shop.js`.
+- [ ] **4.8** 🤖 Jag sätter `apiBase: 'https://step1film.netlify.app/.netlify/functions'` och `card: true` / `swish: true` i `shop.js`.
 - [ ] **4.9** 🙋 Gör en testbeställning med Stripes testkort `4242 4242 4242 4242`. Kontrollera att ordern dyker upp som **utkast** i Printful med rätt produkt, färg och storlek.
 
 ---
@@ -101,6 +128,8 @@ Gör bara detta när ett helt testköp gått igenom felfritt.
 | Symptom | Trolig orsak |
 |---|---|
 | Sajten är vit på `.netlify.app` | Fel publish directory — ska vara `.` (eller tomt) |
+| Butiken: "Kunde inte nå servern" | `apiBase` pekar fel, eller så saknas step1film.se i tillåtna ursprung |
+| Swish betald men ingen order | `API_URL` saknas — kvittot gick till GitHub Pages i stället för Netlify |
 | Trailern är svart | Vimeo-nyckeln `h=` har bytts — skicka ny embed-kod |
 | "Betalning kunde inte skapas" | Miljövariabel saknas eller är felstavad i Netlify |
 | Order betald men inget i Printful | Webhookens signing secret stämmer inte |
