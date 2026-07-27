@@ -21,12 +21,16 @@
       <small>STORE</small>
     </a>
     <div class="header-spacer"></div>
+    <div class="lang-toggle" role="group" aria-label="Language / Språk">
+      <button type="button" data-lang="sv">SV</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
     <a class="header-link" href="shop.html">Till butiken</a>
   </header>
 
   <main class="legal">
-    <h1>Frakt & leverans</h1>
-    <p class="legal-intro">Leveranstider, fraktkostnad och hur vi skickar dina beställningar.</p>
+    <h1 data-t="fl1">Frakt & leverans</h1>
+    <p class="legal-intro" data-t="fl2">Leveranstider, fraktkostnad och hur vi skickar dina beställningar.</p>
 
     <nav class="legal-nav" aria-label="Villkorssidor">
       <a href="kopvillkor.html">Köpvillkor</a>
@@ -36,40 +40,40 @@
     </nav>
 
     <section class="legal-block">
-      <h2>Fraktkostnad</h2>
+      <h2 data-t="fl3">Fraktkostnad</h2>
       <dl class="legal-dl">
-        <div><dt>Standardfrakt</dt><dd>59 kr</dd></div>
-        <div><dt>Fri frakt</dt><dd>Vid ordervärde från 899 kr</dd></div>
+        <div><dt data-t="fl4">Standardfrakt</dt><dd data-t="fl5">59 kr</dd></div>
+        <div><dt data-t="fl6">Fri frakt</dt><dd data-t="fl7">Vid ordervärde från 899 kr</dd></div>
       </dl>
-      <p>Fraktkostnaden visas alltid i kassan innan du betalar. Gränsen för fri frakt räknas på varornas totala pris, före frakt.</p>
+      <p data-t="fl8">Fraktkostnaden visas alltid i kassan innan du betalar. Gränsen för fri frakt räknas på varornas totala pris, före frakt.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Leveranstid</h2>
-      <p>Alla produkter <strong>trycks på beställning</strong> — inget ligger på lager. Det gör att varje plagg tillverkas just för dig, men också att det tar några dagar extra.</p>
+      <h2 data-t="fl9">Leveranstid</h2>
+      <p data-t="fl10">Alla produkter <strong>trycks på beställning</strong> — inget ligger på lager. Det gör att varje plagg tillverkas just för dig, men också att det tar några dagar extra.</p>
       <dl class="legal-dl">
-        <div><dt>Produktion</dt><dd>2–5 arbetsdagar</dd></div>
-        <div><dt>Transport</dt><dd>3–5 arbetsdagar</dd></div>
-        <div><dt>Normalt totalt</dt><dd><strong>5–10 arbetsdagar</strong></dd></div>
+        <div><dt data-t="fl11">Produktion</dt><dd data-t="fl12">2–5 arbetsdagar</dd></div>
+        <div><dt data-t="fl13">Transport</dt><dd data-t="fl14">3–5 arbetsdagar</dd></div>
+        <div><dt data-t="fl15">Normalt totalt</dt><dd data-t="fl16"><strong>5–10 arbetsdagar</strong></dd></div>
       </dl>
-      <p>Under högsäsong (t.ex. november–december) kan det ta längre tid. Blir leveransen väsentligt försenad har du rätt att häva köpet.</p>
+      <p data-t="fl17">Under högsäsong (t.ex. november–december) kan det ta längre tid. Blir leveransen väsentligt försenad har du rätt att häva köpet.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Leveransområde</h2>
-      <p>Vi levererar till adresser i <strong>Sverige</strong>. Vill du beställa till ett annat land, mejla <a href="mailto:shop@step1film.se">shop@step1film.se</a> så återkommer vi med pris och leveranstid.</p>
-      <p>Produkterna tillverkas och skickas av vår produktionspartner Printful från deras anläggningar inom EU. Vid leverans inom EU tillkommer inga tullavgifter.</p>
+      <h2 data-t="fl18">Leveransområde</h2>
+      <p data-t="fl19">Vi levererar till adresser i <strong>Sverige</strong>. Vill du beställa till ett annat land, mejla <a href="mailto:shop@step1film.se">shop@step1film.se</a> så återkommer vi med pris och leveranstid.</p>
+      <p data-t="fl20">Produkterna tillverkas och skickas av vår produktionspartner Printful från deras anläggningar inom EU. Vid leverans inom EU tillkommer inga tullavgifter.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Spårning</h2>
-      <p>När din order lämnat tryckeriet får du ett mejl med spårningsinformation. Har du inte fått något inom 10 arbetsdagar — hör av dig, så reder vi ut det.</p>
+      <h2 data-t="fl21">Spårning</h2>
+      <p data-t="fl22">När din order lämnat tryckeriet får du ett mejl med spårningsinformation. Har du inte fått något inom 10 arbetsdagar — hör av dig, så reder vi ut det.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Skadad eller borttappad försändelse</h2>
-      <p>Är paketet skadat vid leverans, anmäl det till transportören direkt och kontakta oss. Kommer paketet bort under transporten skickar vi en ny vara eller betalar tillbaka hela beloppet.</p>
-      <p>Ej uthämtade paket som returneras till oss debiteras den faktiska frakt- och returkostnaden.</p>
+      <h2 data-t="fl23">Skadad eller borttappad försändelse</h2>
+      <p data-t="fl24">Är paketet skadat vid leverans, anmäl det till transportören direkt och kontakta oss. Kommer paketet bort under transporten skickar vi en ny vara eller betalar tillbaka hela beloppet.</p>
+      <p data-t="fl25">Ej uthämtade paket som returneras till oss debiteras den faktiska frakt- och returkostnaden.</p>
     </section>
 
     <p class="legal-updated">Senast uppdaterad: <span data-company="year">2026</span>-07-25</p>
@@ -92,5 +96,6 @@
   </footer>
 
   <script src="company.js"></script>
+  <script src="legal-i18n.js"></script>
 </body>
 </html>

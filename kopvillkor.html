@@ -21,12 +21,16 @@
       <small>STORE</small>
     </a>
     <div class="header-spacer"></div>
+    <div class="lang-toggle" role="group" aria-label="Language / Språk">
+      <button type="button" data-lang="sv">SV</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
     <a class="header-link" href="shop.html">Till butiken</a>
   </header>
 
   <main class="legal">
-    <h1>Köpvillkor</h1>
-    <p class="legal-intro">Villkoren nedan gäller när du som konsument handlar i STEP1 STORE.</p>
+    <h1 data-t="kv1">Köpvillkor</h1>
+    <p class="legal-intro" data-t="kv2">Villkoren nedan gäller när du som konsument handlar i STEP1 STORE.</p>
 
     <nav class="legal-nav" aria-label="Villkorssidor">
       <a href="kopvillkor.html" class="current" aria-current="page">Köpvillkor</a>
@@ -36,69 +40,69 @@
     </nav>
 
     <section class="legal-block">
-      <h2>Säljare</h2>
+      <h2 data-t="kv3">Säljare</h2>
       <dl class="legal-dl">
-        <div><dt>Företag</dt><dd data-company="legalName"></dd></div>
-        <div><dt>Organisationsnummer</dt><dd data-company="orgNr"></dd></div>
-        <div data-company-row><dt>Momsreg.nr</dt><dd data-company="vatNr"></dd></div>
-        <div><dt>Skatt</dt><dd>Godkänd för F-skatt</dd></div>
-        <div><dt>Adress</dt><dd data-company="addressLine"></dd></div>
-        <div><dt>E-post</dt><dd><a href="mailto:info@step1film.se">info@step1film.se</a></dd></div>
-        <div><dt>Webbplats</dt><dd data-company="domain"></dd></div>
+        <div><dt data-t="kv4">Företag</dt><dd data-company="legalName"></dd></div>
+        <div><dt data-t="kv5">Organisationsnummer</dt><dd data-company="orgNr"></dd></div>
+        <div data-company-row><dt data-t="kv6">Momsreg.nr</dt><dd data-company="vatNr"></dd></div>
+        <div><dt data-t="kv7">Skatt</dt><dd data-t="kv8">Godkänd för F-skatt</dd></div>
+        <div><dt data-t="kv9">Adress</dt><dd data-company="addressLine"></dd></div>
+        <div><dt data-t="kv10">E-post</dt><dd data-t="kv11"><a href="mailto:info@step1film.se">info@step1film.se</a></dd></div>
+        <div><dt data-t="kv12">Webbplats</dt><dd data-company="domain"></dd></div>
       </dl>
     </section>
 
     <section class="legal-block">
-      <h2>Priser och moms</h2>
-      <p>Alla priser anges i svenska kronor (SEK) och <strong>inklusive moms</strong>. Fraktkostnad tillkommer och visas alltid innan du slutför köpet. Det totala beloppet du betalar framgår tydligt i kassan.</p>
+      <h2 data-t="kv13">Priser och moms</h2>
+      <p data-t="kv14">Alla priser anges i svenska kronor (SEK) och <strong>inklusive moms</strong>. Fraktkostnad tillkommer och visas alltid innan du slutför köpet. Det totala beloppet du betalar framgår tydligt i kassan.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Beställning och avtal</h2>
-      <p>Avtalet blir bindande när vi bekräftat din beställning. Du får en orderbekräftelse via e-post till den adress du angett. Kontrollera att uppgifterna stämmer — hör av dig direkt till <a href="mailto:shop@step1film.se">shop@step1film.se</a> om något blivit fel.</p>
-      <p>Vi förbehåller oss rätten att neka eller annullera en beställning vid uppenbara pris- eller skrivfel, om en produkt utgått, eller om vi inte kan verifiera de uppgifter du lämnat. Har betalning då redan skett återbetalas hela beloppet.</p>
+      <h2 data-t="kv15">Beställning och avtal</h2>
+      <p data-t="kv16">Avtalet blir bindande när vi bekräftat din beställning. Du får en orderbekräftelse via e-post till den adress du angett. Kontrollera att uppgifterna stämmer — hör av dig direkt till <a href="mailto:shop@step1film.se">shop@step1film.se</a> om något blivit fel.</p>
+      <p data-t="kv17">Vi förbehåller oss rätten att neka eller annullera en beställning vid uppenbara pris- eller skrivfel, om en produkt utgått, eller om vi inte kan verifiera de uppgifter du lämnat. Har betalning då redan skett återbetalas hela beloppet.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Betalning</h2>
-      <p>Du kan betala med:</p>
+      <h2 data-t="kv18">Betalning</h2>
+      <p data-t="kv19">Du kan betala med:</p>
       <ul>
-        <li><strong>Swish</strong></li>
-        <li><strong>Kort</strong> (Visa, Mastercard)</li>
-        <li><strong>Klarna</strong></li>
+        <li data-t="kv20"><strong>Swish</strong></li>
+        <li data-t="kv21"><strong>Kort</strong> (Visa, Mastercard)</li>
+        <li data-t="kv22"><strong>Klarna</strong></li>
       </ul>
-      <p>Kort- och Klarna-betalningar hanteras av Stripe. Vi lagrar aldrig dina kortuppgifter. Vid betalning med Klarna gäller även Klarnas egna villkor.</p>
+      <p data-t="kv23">Kort- och Klarna-betalningar hanteras av Stripe. Vi lagrar aldrig dina kortuppgifter. Vid betalning med Klarna gäller även Klarnas egna villkor.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Leverans</h2>
-      <p>Produkterna trycks på beställning. Normal leveranstid är <strong>5–10 arbetsdagar</strong>. Se <a href="frakt-leverans.html">Frakt &amp; leverans</a> för fullständig information.</p>
+      <h2 data-t="kv24">Leverans</h2>
+      <p data-t="kv25">Produkterna trycks på beställning. Normal leveranstid är <strong>5–10 arbetsdagar</strong>. Se <a href="frakt-leverans.html">Frakt &amp; leverans</a> för fullständig information.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Ångerrätt</h2>
-      <p>Du har som konsument <strong>14 dagars ångerrätt</strong> enligt lagen om distansavtal och avtal utanför affärslokaler (2005:59). Läs mer på <a href="retur-angerratt.html">Retur &amp; ångerrätt</a>.</p>
+      <h2 data-t="kv26">Ångerrätt</h2>
+      <p data-t="kv27">Du har som konsument <strong>14 dagars ångerrätt</strong> enligt lagen om distansavtal och avtal utanför affärslokaler (2005:59). Läs mer på <a href="retur-angerratt.html">Retur &amp; ångerrätt</a>.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Reklamation</h2>
-      <p>Är varan felaktig eller skadad har du rätt att reklamera i upp till <strong>tre år</strong> enligt konsumentköplagen (2022:260). Reklamation ska göras inom skälig tid från att du upptäckt felet — inom två månader anses alltid vara i tid.</p>
-      <p>Kontakta oss på <a href="mailto:shop@step1film.se">shop@step1film.se</a> och bifoga gärna en bild på felet samt ditt ordernummer. Vid godkänd reklamation står vi för returfrakten och du får varan ersatt eller pengarna tillbaka.</p>
+      <h2 data-t="kv28">Reklamation</h2>
+      <p data-t="kv29">Är varan felaktig eller skadad har du rätt att reklamera i upp till <strong>tre år</strong> enligt konsumentköplagen (2022:260). Reklamation ska göras inom skälig tid från att du upptäckt felet — inom två månader anses alltid vara i tid.</p>
+      <p data-t="kv30">Kontakta oss på <a href="mailto:shop@step1film.se">shop@step1film.se</a> och bifoga gärna en bild på felet samt ditt ordernummer. Vid godkänd reklamation står vi för returfrakten och du får varan ersatt eller pengarna tillbaka.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Om vi inte kommer överens</h2>
-      <p>Vi följer Allmänna reklamationsnämndens (ARN) rekommendationer. Är du inte nöjd med hur vi hanterat ditt ärende kan du vända dig till:</p>
+      <h2 data-t="kv31">Om vi inte kommer överens</h2>
+      <p data-t="kv32">Vi följer Allmänna reklamationsnämndens (ARN) rekommendationer. Är du inte nöjd med hur vi hanterat ditt ärende kan du vända dig till:</p>
       <ul>
-        <li><strong>Allmänna reklamationsnämnden (ARN)</strong> — Box 174, 101 23 Stockholm, <a href="https://www.arn.se" target="_blank" rel="noopener">arn.se</a></li>
-        <li><strong>EU-kommissionens plattform för tvistlösning online</strong> — <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></li>
+        <li data-t="kv33"><strong>Allmänna reklamationsnämnden (ARN)</strong> — Box 174, 101 23 Stockholm, <a href="https://www.arn.se" target="_blank" rel="noopener">arn.se</a></li>
+        <li data-t="kv34"><strong>EU-kommissionens plattform för tvistlösning online</strong> — <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></li>
       </ul>
-      <p>Svensk lag tillämpas på avtalet.</p>
+      <p data-t="kv35">Svensk lag tillämpas på avtalet.</p>
     </section>
 
     <section class="legal-block">
-      <h2>Force majeure</h2>
-      <p>Vi ansvarar inte för förseningar som orsakas av omständigheter utanför vår kontroll, till exempel arbetskonflikt, myndighetsbeslut, störningar hos leverantör eller transportör, eller naturhändelser.</p>
+      <h2 data-t="kv36">Force majeure</h2>
+      <p data-t="kv37">Vi ansvarar inte för förseningar som orsakas av omständigheter utanför vår kontroll, till exempel arbetskonflikt, myndighetsbeslut, störningar hos leverantör eller transportör, eller naturhändelser.</p>
     </section>
 
     <p class="legal-updated">Senast uppdaterad: <span data-company="year">2026</span>-07-25</p>
@@ -121,5 +125,6 @@
   </footer>
 
   <script src="company.js"></script>
+  <script src="legal-i18n.js"></script>
 </body>
 </html>

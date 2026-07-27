@@ -133,6 +133,16 @@ body::before {
   background: var(--accent);
 }
 
+/* Notis om att den engelska versionen är en översättning */
+.legal-langnote {
+  margin: -0.4rem 0 1.6rem;
+  padding: 0.6rem 0.9rem;
+  border-left: 2px solid var(--accent);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
 /* Cart button */
 .cart-btn {
   position: relative;
