@@ -1504,7 +1504,7 @@
           const r = await fetch(`${payApi()}/swish-complete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: data.id, items: cartPayload(), recipient })
+            body: JSON.stringify({ id: data.id, items: cartPayload(), recipient, lang })
           });
           s = await r.json().catch(() => ({}));
         } catch { /* nätverksglapp — försök igen */ }

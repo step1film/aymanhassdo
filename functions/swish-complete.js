@@ -75,6 +75,7 @@ exports.handler = async (event) => {
       lines: cart.lines,
       shipping: cart.shipping,
       total: cart.total,
+      lang: payload.lang === 'en' ? 'en' : 'sv',
       paymentMethod: 'Swish'
     });
   } catch (err) {

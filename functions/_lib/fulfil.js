@@ -7,8 +7,14 @@
    Om variant-ID:n saknas (inte ifyllda i catalog.js) skapas
    ingen Printful-order — istället loggas ordern så att du
    kan lägga den manuellt. Betalningen påverkas inte.
+
+   Kunden får alltid sin orderbekräftelse, även om Printful
+   krånglar — mejlet är kundens kvitto, inte en statusrapport
+   från tryckeriet.
    ===================================================== */
 'use strict';
+
+const { sendOrderConfirmation } = require('./email');
 
 const PRINTFUL_API = 'https://api.printful.com';
 
@@ -99,7 +105,21 @@ async function fulfilOrder(order) {
     // Syns i Netlify-loggen — lägg ordern manuellt i Printful.
     console.warn(`[fulfil] ⚠️ MANUELL HANTERING KRÄVS (${result.reason})\n${summary}`);
   }
-  return result;
+
+  // Bekräftelsen skickas oavsett hur det gick hos Printful.
+  let mail;
+  try {
+    mail = await sendOrderConfirmation(order);
+  } catch (err) {
+    mail = { ok: false, reason: String(err) };
+  }
+  if (mail.ok) {
+    console.log(`[fulfil] Bekräftelse skickad till ${order.recipient && order.recipient.email} (${mail.id})`);
+  } else if (!mail.skipped) {
+    console.warn(`[fulfil] ⚠️ Bekräftelsemejlet gick inte fram (${mail.reason}) — order ${order.reference}`);
+  }
+
+  return { ...result, mail };
 }
 
 module.exports = { createPrintfulOrder, fulfilOrder, summarise };

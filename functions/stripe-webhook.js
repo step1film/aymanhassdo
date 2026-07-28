@@ -71,6 +71,7 @@ exports.handler = async (event) => {
       lines: cart.lines,
       shipping: cart.shipping,
       total: cart.total,
+      lang: md.lang === 'en' ? 'en' : 'sv',
       paymentMethod: 'Stripe (kort/Klarna)'
     });
   } catch (err) {

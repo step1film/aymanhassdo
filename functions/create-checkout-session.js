@@ -83,7 +83,9 @@ exports.handler = async (event) => {
         recipient: JSON.stringify(recipient).slice(0, 480),
         lines: JSON.stringify(cart.lines.map((l) => [l.id, l.color, l.size, l.qty])).slice(0, 480),
         shipping: String(cart.shipping),
-        total: String(cart.total)
+        total: String(cart.total),
+        // Så att bekräftelsemejlet kommer på samma språk som butiken stod på
+        lang: payload.lang === 'en' ? 'en' : 'sv'
       },
       success_url: `${site}/shop.html?order=ok&ref=${reference}`,
       cancel_url: `${site}/shop.html?order=cancelled`

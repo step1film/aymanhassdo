@@ -92,6 +92,22 @@ köra igång det ena först.
 - [ ] **4.6** 🙋 Banken ger dig ett certifikat (`.p12`). Koda det: `base64 -i swish.p12 | tr -d '\n'`
 - [ ] **4.7** 🙋 Miljövariabler: `SWISH_PAYEE_ALIAS`, `SWISH_CERT_P12`, `SWISH_CERT_PASSWORD`, och `SWISH_ENV` = `test`.
 
+**Orderbekräftelse till kunden**
+
+Mejlet är färdigskrivet på svenska och engelska — det följer med språket
+kunden hade i butiken. Det innehåller ordernummer, raderna, frakt, totalt,
+leveransadress, vad som händer härnäst, ångerrätten och länkar till
+villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
+
+- [ ] **4.10** 🙋 Skapa konto på [resend.com](https://resend.com) (gratis upp till 3 000 mejl/mån).
+- [ ] **4.11** 🙋 *Domains* → lägg till `step1film.se`. Resend ger dig tre DNS-poster (SPF, DKIM, DMARC) att lägga in hos one.com. **Rör inte MX-posterna** — de styr din inkommande post.
+- [ ] **4.12** 🙋 *API Keys* → skapa en nyckel. Lägg i Netlify som hemlig variabel `RESEND_API_KEY`.
+- [ ] **4.13** 🙋 Lägg också `EMAIL_FROM` = `STEP1FILM STORE <shop@step1film.se>` (vanlig variabel, inte hemlig). Vill du ha en dold kopia själv: `EMAIL_BCC` = `shop@step1film.se`.
+
+> Hoppar du över det här slutar ingenting att fungera — betalningen går
+> igenom, ordern hamnar hos Printful, och mejlet loggas i Netlify så du
+> kan skriva till kunden för hand. Men kunden får inget kvitto.
+
 **Slå på**
 - [x] **4.8** ✅ `apiBase` satt och `card: true` i `shop.js`. Swish står kvar avstängd tills bankavtalet finns.
 - [x] **4.9** ✅ Två testköp gjorda. Utkast i Printful med rätt produkt, färg, storlek och adress.
@@ -130,6 +146,7 @@ Gör bara detta när ett helt testköp gått igenom felfritt.
 | Trailern är svart | Vimeo-nyckeln `h=` har bytts — skicka ny embed-kod |
 | "Betalning kunde inte skapas" | Miljövariabel saknas eller är felstavad i Netlify |
 | Order betald men inget i Printful | Webhookens signing secret stämmer inte |
+| Kunden får ingen bekräftelse | `RESEND_API_KEY`/`EMAIL_FROM` saknas, eller domänen är inte verifierad hos Resend |
 | Mejlen slutade fungera efter DNS | Namnservrarna byttes utan att MX-posterna följde med |
 
 Fastnar du: skicka felmeddelandet och vilket steg du står på, så tar vi det därifrån.

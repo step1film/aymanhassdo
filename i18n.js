@@ -34,7 +34,7 @@
 
       /* --- Panel 01: Filmer --- */
       p1Title: 'Utvalda<br>arbeten',
-      p1Meta: 'Filmografi · Reklam · Dokumentär · Konst',
+      p1Meta: 'Dokumentär · Filmografi · Workshops · Reklam',
       trailerSoon: 'Trailer kommer',
       playTrailer: 'Spela trailer',
       logosSoon: 'Samarbeten',
@@ -134,7 +134,7 @@
       enterSite: 'Enter site',
 
       p1Title: 'Selected<br>Works',
-      p1Meta: 'Filmography · Commercial · Documentary · Art',
+      p1Meta: 'Documentary · Filmography · Workshops · Commercial',
       trailerSoon: 'Trailer coming',
       playTrailer: 'Play trailer',
       logosSoon: 'Collaborations',
