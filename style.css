@@ -228,26 +228,32 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .lang-toggle {
   margin-left: auto;
   display: inline-flex;
-  border: 1px solid var(--line-s);
-  border-radius: 40px;
-  overflow: hidden;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--ff-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
   pointer-events: auto;
-  backdrop-filter: blur(6px);
-  background: rgba(12, 12, 12, 0.35);
 }
 .lang-toggle button {
-  padding: 0.25rem 0.6rem;
-  color: var(--text-dim);
+  padding: 0;
   background: none;
   border: 0;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  color: var(--text-dim);
+  transition: color 0.2s;
 }
-.lang-toggle button:hover { color: var(--white); }
-.lang-toggle button.active { color: #fff; background: var(--accent); }
+.lang-toggle button:hover { color: var(--text); }
+.lang-toggle button.active { color: var(--white); }
+/* Tunn avdelare mellan språken i stället för en ram runt hela */
+.lang-toggle button + button::before {
+  content: '';
+  display: inline-block;
+  width: 1px; height: 0.75em;
+  margin-right: 0.55rem;
+  background: var(--line-s);
+  vertical-align: -0.05em;
+}
 
 @media (max-width: 560px) {
   .logo-store { letter-spacing: 0.14em; margin-left: 0.6rem; }
@@ -532,8 +538,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  /* Får inte vara hidden: på låga skärmar (t.ex. 1280x800 och liggande
+     surfplatta) rymdes inte STORE-raden och försvann helt. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-s) transparent;
 }
+.films-list::-webkit-scrollbar { width: 4px; }
+.films-list::-webkit-scrollbar-thumb { background: var(--line-s); border-radius: 4px; }
+.films-list::-webkit-scrollbar-track { background: transparent; }
+
 
 .film-item {
   display: grid;
@@ -599,7 +614,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--white);
   opacity: 0.75;
   transition: opacity 0.25s, transform 0.35s var(--ease);
+  /* Trailern spelar automatiskt — knappen visas bara vid reducerad rörelse */
+  display: none;
 }
+@media (prefers-reduced-motion: reduce) { .fe-play { display: block; } }
 .fe-play svg { width: clamp(28px, 3.4vw, 42px); height: clamp(28px, 3.4vw, 42px); display: block; }
 .film-item:hover .fe-play { opacity: 1; transform: scale(1.06); }
 .film-embed.is-playing .fe-play,
@@ -899,7 +917,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 20px; height: 20px;
+  width: 13px; height: 13px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
@@ -909,7 +927,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background: url('cursor.png') center / contain no-repeat;
   filter: invert(1);
 }
-#film-cursor.visible { opacity: 1; }
+/* Genomskinlig — markören ska antyda, inte skymma */
+#film-cursor.visible { opacity: 0.45; }
 
 /* =====================================================
    TWEAKS PANEL (accent color)
@@ -1077,3 +1096,27 @@ body.reduced-motion #grain { display: none; }
 body.reduced-motion .hero-down,
 body.reduced-motion .ld-scan,
 body.reduced-motion .ld-num { animation: none !important; }
+
+/* =====================================================
+   LÅG SKÄRM — filmlistan ska rymmas utan att scrolla
+   =====================================================
+   På t.ex. 1280x800 och liggande surfplatta fick de fem
+   raderna inte plats, och STORE-raden längst ner föll
+   utanför. Ligger sist i filen för att vinna över
+   grundreglerna ovan.
+   ===================================================== */
+@media (max-height: 880px) {
+  .film-item {
+    padding: 0.3rem 0;
+    grid-template-columns: clamp(74px, 8vw, 104px) 1fr;
+  }
+  .film-thumb { aspect-ratio: 16 / 9; }
+  .film-syn { display: none; }
+  .film-title { font-size: clamp(0.95rem, 1.5vw, 1.35rem); }
+  .panel-inner--films .panel-head { margin-bottom: 0.35rem; }
+  .panel-inner--films .panel-title { font-size: clamp(1.8rem, 4vw, 3rem); }
+  /* Tomlägesetiketterna måste rymmas i den smalare rutan */
+  .fl-empty, .fs-empty, .fe-soon { font-size: 0.42rem; letter-spacing: 0.12em; }
+  .fsign-mark { font-size: clamp(0.85rem, 1.6vw, 1.2rem); }
+  .fsign-word { font-size: 0.42rem; letter-spacing: 0.22em; text-indent: 0.22em; }
+}

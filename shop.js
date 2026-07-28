@@ -608,7 +608,12 @@
        rolling-backpack, lil-director-tee, icon-stickers, crew-tee,
        spoiler-hoodie, reel-trucker-cap, reel-mugg, ad1-beanie,
        static-reel-sleeve, directors-beanie, gear-stickers            */
-  const PRODUCT_ORDER = [
+  /* Tillfälligt dolda — slut hos Printful. Ta bort id:t ur listan för
+     att visa produkten igen; allt annat (bilder, priser, variant-id)
+     ligger kvar orört. */
+  const HIDDEN = ['crew-tee', 'ad1-beanie'];
+  
+    const PRODUCT_ORDER = [
     '24fps-hoodie',        // 699 · Filmfavorit — ankare + starkaste berättelsen
     'rolling-backpack',    // 699 · Bestseller — håller ankaret uppe
     'take-one-sleeve',     // 499 · Trend — första prissänkningen känns som en lättnad
@@ -628,6 +633,11 @@
     // 'step1-jersey'  (429) passar direkt efter 'take-one-sleeve'
     // 'on-set-cap'    (349) passar direkt efter 'action-dad-cap'
   ];
+  // Filtrera bort dolda produkter innan något renderas eller prissätts
+  for (let i = PRODUCTS.length - 1; i >= 0; i--) {
+    if (HIDDEN.includes(PRODUCTS[i].id)) PRODUCTS.splice(i, 1);
+  }
+
   PRODUCTS.sort((a, b) => {
     const ia = PRODUCT_ORDER.indexOf(a.id);
     const ib = PRODUCT_ORDER.indexOf(b.id);
@@ -930,10 +940,11 @@
       return;
     }
 
-    // Ingen auto-växling. Basbild default; hover (dator) visar 01-bilden;
-    // swajp (mobil) och pilar/punkter bläddrar bland alla bilder.
+    // Bildspelet rullar av sig självt och loopar. Pausar när kunden
+    // för musen över kortet eller själv bläddrar, så man hinner titta.
     let idx = 0;
     let userInteracted = false; // sant när kunden bläddrat själv
+    let stopAuto = () => {};    // sätts när autospelningen startats nedan
     const dotWrap = document.createElement('div');
     dotWrap.className = 'pc-dots';
     const dots = slideEls.map((_, i) => {
@@ -941,7 +952,7 @@
       d.type = 'button';
       d.className = 'pc-dot' + (i === 0 ? ' active' : '');
       d.setAttribute('aria-label', `${p.name[lang]} — ${i + 1}`);
-      d.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; go(i); });
+      d.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; stopAuto(); go(i); });
       dotWrap.appendChild(d);
       return d;
     });
@@ -956,19 +967,35 @@
       b.className = 'pc-nav ' + cls;
       b.innerHTML = sym;
       b.setAttribute('aria-label', label);
-      b.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; go(idx + dir); });
+      b.addEventListener('click', (e) => { e.stopPropagation(); userInteracted = true; stopAuto(); go(idx + dir); });
       return b;
     };
     visual.appendChild(mkNav('pc-prev', '&#8249;', -1, 'Föregående bild'));
     visual.appendChild(mkNav('pc-next', '&#8250;', 1, 'Nästa bild'));
     visual.appendChild(dotWrap);
 
-    // Hover-peek (dator med mus): visa 01-bilden när musen är över,
-    // basbilden när den lämnar — tills kunden själv börjar bläddra.
+    /* Automatisk växling. Respekterar prefers-reduced-motion, och stannar
+       medan musen vilar på kortet eller efter att kunden bläddrat själv. */
+    const stillMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer = null;
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+    stopAuto = stop;
+    const play = () => {
+      if (stillMotion || userInteracted || timer) return;
+      timer = setInterval(() => go(idx + 1), 3200);
+    };
+    // Rulla bara medan kortet syns — sparar batteri och data
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => (e.isIntersecting ? play() : stop()));
+      }, { threshold: 0.35 }).observe(visual);
+    } else {
+      play();
+    }
     const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
     if (canHover) {
-      visual.onmouseenter = () => { if (!userInteracted) go(1); };
-      visual.onmouseleave = () => { if (!userInteracted) go(0); };
+      visual.onmouseenter = stop;
+      visual.onmouseleave = () => { if (!userInteracted) play(); };
     } else {
       visual.onmouseenter = null;
       visual.onmouseleave = null;

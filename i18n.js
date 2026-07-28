@@ -73,8 +73,8 @@
       p3Intro: 'Jag gillar att hitta lösningar — genom film, teknik och kod. Och lika mycket att föra vidare det jag lärt mig: pedagogiskt arbete med både barn och vuxna.',
       aw1: 'Regi',
       aw1d: 'Långfilm, kortfilm, dokumentär, reklam. Från manus till leverans.',
-      aw2: 'Foto',
-      aw2d: 'Kamera och ljussättning för både berättande och reklam.',
+      aw2: 'Skrivande',
+      aw2d: 'Allt börjar på pappret. Jag måste se scenen stå still innan kameran får röra sig.',
       aw3: 'Ljud & musik',
       aw3d: 'Ljuddesign, mixning och originalmusik.',
       aw4: 'Klipp & färg',
@@ -171,8 +171,8 @@
       p3Intro: 'I like inventing solutions — through film, technology and code. And just as much, I love passing on what I’ve learned: pedagogical work with children and grown-ups alike.',
       aw1: 'Direction',
       aw1d: 'Feature, short, documentary, commercial. From script to delivery.',
-      aw2: 'Cinematography',
-      aw2d: 'Camera and lighting design for narrative and commercial work.',
+      aw2: 'Writing',
+      aw2d: 'It all starts on paper. I need to see the scene hold still before the camera is allowed to move.',
       aw3: 'Sound & Music',
       aw3d: 'Sound design, mixing and original score.',
       aw4: 'Editing & Colour',
@@ -215,10 +215,12 @@
     }
   };
 
-  // Svenska är standard — samma som butiken, så språket aldrig hoppar
-  // mellan startsidan och shop.html.
+  /* Engelska är huvudspråk på filmsidan — den vänder sig till festivaler
+     och produktionsbolag utanför Sverige. Butiken har svenska som
+     standard, eftersom den säljer till svenska kunder. Väljer besökaren
+     språk själv sparas det och gäller överallt. */
   let lang = localStorage.getItem('s1f_lang');
-  if (lang !== 'sv' && lang !== 'en') lang = 'sv';
+  if (lang !== 'sv' && lang !== 'en') lang = 'en';
 
   const t = key => {
     const dict = STRINGS[lang] || STRINGS.sv;

@@ -133,7 +133,7 @@
       iframe = document.createElement('iframe');
       let src = '';
       if (provider === 'vimeo') {
-        src = `https://player.vimeo.com/video/${encodeURIComponent(id)}?background=1&autoplay=1&muted=1&loop=1`;
+        src = `https://player.vimeo.com/video/${encodeURIComponent(id)}?background=1&autoplay=1&muted=1&loop=1&autopause=0`;
       } else {
         src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&loop=1&playlist=${encodeURIComponent(id)}&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1&enablejsapi=1`;
       }
@@ -427,17 +427,20 @@
       const id = String(cfg.id || '').trim();
       if (!id) { box.classList.add('no-video'); return; }
 
-      const btn = box.querySelector('.fe-play');
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        if (box.classList.contains('is-playing')) return;
-        const provider = cfg.provider === 'vimeo' ? 'vimeo' : 'youtube';
-        // Vimeo: olistade filmer kräver sekretessnyckeln (h=) för att spelas
-        const hash = String(cfg.hash || '').trim();
-        const src = provider === 'vimeo'
-          ? `https://player.vimeo.com/video/${encodeURIComponent(id)}?autoplay=1&playsinline=1`
-            + (hash ? `&h=${encodeURIComponent(hash)}` : '')
-          : `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      const provider = cfg.provider === 'vimeo' ? 'vimeo' : 'youtube';
+      // Vimeo: olistade filmer kräver sekretessnyckeln (h=) för att spelas
+      const hash = String(cfg.hash || '').trim();
+      const src = provider === 'vimeo'
+        ? `https://player.vimeo.com/video/${encodeURIComponent(id)}?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1`
+          + (hash ? `&h=${encodeURIComponent(hash)}` : '')
+        : `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&loop=1&playlist=${encodeURIComponent(id)}&controls=0&rel=0&modestbranding=1&playsinline=1`;
+
+      /* Trailern rullar tyst och loopat, som showreelen. Laddas först när
+         rutan syns — annars drar den data på mobil utan att någon ser den. */
+      let loaded = false;
+      const load = () => {
+        if (loaded) return;
+        loaded = true;
         const frame = document.createElement('iframe');
         frame.src = src;
         frame.title = cfg.title || 'Trailer';
@@ -447,7 +450,17 @@
         frame.setAttribute('loading', 'lazy');
         box.appendChild(frame);
         box.classList.add('is-playing');
-      });
+      };
+
+      if (prefersReducedMotion) { box.classList.add('no-video'); return; }
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { load(); io.disconnect(); } });
+        }, { threshold: 0.3 });
+        io.observe(box);
+      } else {
+        load();
+      }
     });
 
     /* --- 002: samarbetslogotyper --- */
@@ -500,13 +513,27 @@
         if (dots) Array.from(dots.children).forEach((d, i) => d.classList.toggle('is-on', i === idx));
       }
 
-      // Ingen automatisk uppspelning — besökaren styr, precis som i butiken
+      /* Rullar automatiskt och loopar. Pausar vid hover så man hinner se,
+         och står stilla helt vid prefers-reduced-motion. */
+      let timer = null;
+      const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+      const play = () => {
+        if (prefersReducedMotion || timer || imgs.length < 2) return;
+        timer = setInterval(() => show(idx + 1), 3200);
+      };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((e) => (e.isIntersecting ? play() : stop()));
+        }, { threshold: 0.35 }).observe(box);
+      } else {
+        play();
+      }
       const item = box.closest('.film-item');
       if (item) {
-        item.addEventListener('mouseenter', () => { if (imgs.length > 1) show(1); });
-        item.addEventListener('mouseleave', () => show(0));
+        item.addEventListener('mouseenter', stop);
+        item.addEventListener('mouseleave', play);
       }
-      box.addEventListener('click', () => show(idx + 1));
+      box.addEventListener('click', () => { stop(); show(idx + 1); });
 
       // Svep på pekskärm
       let x0 = null;

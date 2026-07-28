@@ -116,31 +116,28 @@ body::before {
 /* Language toggle */
 .lang-toggle {
   display: inline-flex;
-  border: 1px solid var(--line-s);
-  border-radius: 40px;
-  overflow: hidden;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--ff-display);
   font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
 }
 .lang-toggle button {
-  padding: 0.35rem 0.7rem;
+  padding: 0;
+  background: none;
+  border: 0;
   color: var(--text-dim);
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.2s;
 }
-.lang-toggle button.active {
-  color: #fff;
-  background: var(--accent);
-}
-
-/* Notis om att den engelska versionen är en översättning */
-.legal-langnote {
-  margin: -0.4rem 0 1.6rem;
-  padding: 0.6rem 0.9rem;
-  border-left: 2px solid var(--accent);
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 0.82rem;
-  color: var(--text-dim);
+.lang-toggle button:hover { color: var(--text); }
+.lang-toggle button.active { color: var(--white); }
+.lang-toggle button + button::before {
+  content: '';
+  display: inline-block;
+  width: 1px; height: 0.75em;
+  margin-right: 0.55rem;
+  background: var(--line-s);
+  vertical-align: -0.05em;
 }
 
 /* Cart button */

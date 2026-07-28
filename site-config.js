@@ -8,7 +8,7 @@
    i sidan hade blockerats.
    ===================================================== */
 /* Showreel i hero */
-window.STEP1FILM_VIDEO = { provider: 'youtube', id: 'bW9R0R8KKw8' };
+window.STEP1FILM_VIDEO = { provider: 'vimeo', id: '1213253177' };
 
 /* 001 BIRDS OF PASSAGE — trailer.
    Klistra in video-id:t mellan citattecknen. För YouTube är det den
