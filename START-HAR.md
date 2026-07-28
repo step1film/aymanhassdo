@@ -53,10 +53,10 @@ Butiken står kvar i demoläge, inga betalningar är påslagna.
 
 Domänen går till **GitHub**, inte Netlify.
 
-- [ ] **2.1** 🙋 Hos den du köpte domänen av: lägg fyra A-poster för `step1film.se` mot GitHubs adresser `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` — och en CNAME för `www` mot `step1film.github.io`.
-- [ ] **2.2** 🙋 GitHub → repot → *Settings → Pages → Custom domain* → `step1film.se`. Kryssa i **Enforce HTTPS** när kryssrutan blir klickbar.
-- [ ] **2.3** ⏳ Vänta. DNS tar 10 minuter till ett dygn. Certifikatet kommer först när DNS slagit igenom.
-- [ ] **2.4** 🙋 Kontrollera att `https://step1film.se` funkar **med hänglås**.
+- [x] **2.1** ✅ **Klart** — fyra A-poster mot GitHub. ⚠️ CNAME för `www` saknas fortfarande. Ursprungligen: hos den du köpte domänen av, lägg fyra A-poster för `step1film.se` mot GitHubs adresser `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` — och en CNAME för `www` mot `step1film.github.io`.
+- [x] **2.2** ✅ Domänen inlagd i GitHub Pages. Kvar: kryssa i **Enforce HTTPS** (certifikatet är utfärdat).
+- [x] **2.3** ✅ DNS slog igenom, certifikat utfärdat.
+- [x] **2.4** ✅ `https://step1film.se` fungerar med hänglås.
 - [ ] **2.5** 🙋 I **Netlify**, sätt två miljövariabler (*Site settings → Environment variables*):
   - `SITE_URL` = `https://step1film.se` — dit kunden skickas efter betalning
   - `API_URL` = `https://step1film.netlify.app` — dit Swish ringer tillbaka
