@@ -130,7 +130,8 @@ body::before {
   transition: color 0.2s;
 }
 .lang-toggle button:hover { color: var(--text); }
-.lang-toggle button.active { color: var(--white); }
+/* Valt språk får samma röda ton som ettan i STEP1FILM */
+.lang-toggle button.active { color: var(--accent); }
 .lang-toggle button + button::before {
   content: '';
   display: inline-block;

@@ -115,6 +115,7 @@
 
     let loaded = false;
     let iframe = null;
+    let playing = false;
 
     function sendCommand(cmd) {
       if (!iframe) return;
@@ -126,6 +127,42 @@
         }
       } catch (e) {}
     }
+
+    /* -------- Fyll rutan helt --------
+       Ramen är 16:9. Är filmen bredare lägger spelaren svarta kanter
+       över och under. Vi förstorar ramen tills själva filmen täcker
+       rutan, så kanterna hamnar utanför bild. */
+    const FRAME_AR = 16 / 9;
+    let videoAR = Number(cfg.aspect) > 0 ? Number(cfg.aspect) : FRAME_AR;
+    let videoW = 0, videoH = 0;
+
+    function fitFrame() {
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const w = videoAR >= FRAME_AR
+        ? Math.max(vw, videoAR * vh)              // brevlådekanter uppe/nere
+        : FRAME_AR * Math.max(vh, vw / videoAR);  // kanter på sidorna
+      wrap.style.setProperty('--hero-fw', Math.ceil(w) + 'px');
+    }
+
+    // Spelaren svarar på sina egna mått — då blir det exakt, oavsett
+    // vad som står i site-config.js.
+    window.addEventListener('message', (e) => {
+      if (!iframe) return;
+      let host = '';
+      try { host = new URL(e.origin).hostname; } catch { return; }
+      if (!/(^|\.)vimeo\.com$/.test(host)) return;
+      let d = e.data;
+      if (typeof d === 'string') { try { d = JSON.parse(d); } catch { return; } }
+      if (!d) return;
+      if (d.event === 'ready') { sendCommand('getVideoWidth'); sendCommand('getVideoHeight'); return; }
+      if (d.method === 'getVideoWidth') videoW = Number(d.value) || 0;
+      if (d.method === 'getVideoHeight') videoH = Number(d.value) || 0;
+      if (videoW > 0 && videoH > 0) { videoAR = videoW / videoH; fitFrame(); }
+    });
+
+    fitFrame();
+    let fitT;
+    window.addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitFrame, 120); });
 
     function loadVideo() {
       if (loaded) return;
@@ -146,30 +183,35 @@
       iframe.setAttribute('loading', 'lazy');
       wrap.insertBefore(iframe, wrap.firstChild);
       wrap.classList.add('playing');
+      playing = true; // src:en har autoplay=1
     }
 
-    // Load at 40% visibility, play/pause on scroll in/out.
-    const heroEl = document.getElementById('hero');
-    if (heroEl && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.intersectionRatio >= 0.6) {
-            if (!loaded) {
-              loadVideo();
-            } else {
-              sendCommand(provider === 'vimeo' ? 'play' : 'playVideo');
-            }
-          } else {
-            sendCommand(provider === 'vimeo' ? 'pause' : 'pauseVideo');
-          }
-        });
-      }, { threshold: [0, 0.1, 0.4, 0.6, 1.0] });
-      io.observe(heroEl);
-    } else {
-      loadVideo();
+    /* -------- Spela / pausa efter hur täckt showreelen är --------
+       Den rullar så länge minst 15 % av den syns. Är den 85 % täckt
+       av nästa sida pausar den, och startar igen när den kommer fram. */
+    const COVER_PAUSE = 0.85;
+
+    function setPlaying(on) {
+      if (on === playing) return;
+      playing = on;
+      sendCommand(on
+        ? (provider === 'vimeo' ? 'play' : 'playVideo')
+        : (provider === 'vimeo' ? 'pause' : 'pauseVideo'));
     }
 
-    playBtn.addEventListener('click', loadVideo);
+    document.addEventListener('s1f:herocover', (e) => {
+      const covered = e.detail;
+      if (covered < COVER_PAUSE) {
+        if (!loaded) loadVideo(); else setPlaying(true);
+      } else if (loaded) {
+        setPlaying(false);
+      }
+    });
+
+    // Ingen wipe att lyssna på (t.ex. utan JS-driven scroll) — ladda ändå.
+    loadVideo();
+
+    playBtn.addEventListener('click', () => { loadVideo(); setPlaying(true); });
   }
 
   /* --------------------------------------------------
@@ -209,22 +251,33 @@
       if (labelEl) labelEl.textContent = LABELS()[panelIdx] || '';
     }
 
-    /* --- Desktop: clip-path wipe driven by scrollY --- */
+    /* Hur stor del av showreelen som täcks av panel 01 (0–1).
+       Läses av hero-videon, som pausar när den är nästan helt dold. */
+    let heroCover = -1;
+    function reportCover(v) {
+      v = Math.max(0, Math.min(1, v));
+      if (Math.abs(v - heroCover) < 0.005) return;
+      heroCover = v;
+      document.dispatchEvent(new CustomEvent('s1f:herocover', { detail: v }));
+    }
+
+    /* --- Desktop: clip-path wipe driven by scrollY ---
+       Skärm 0 är showreelen; panel i sveper in under skärm i+1. */
     function onScrollDesktop() {
       const vh = window.innerHeight;
 
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
       panels.forEach((panel, i) => {
-        if (i === 0) return;
-        const progress = Math.max(0, Math.min(1, (scrolledIn - (i - 1) * vh) / vh));
+        const progress = Math.max(0, Math.min(1, (scrolledIn - i * vh) / vh));
         panel.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
+        if (i === 0) reportCover(progress);
       });
 
-      const panelIdx = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolledIn / vh)));
+      const panelIdx = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolledIn / vh) - 1));
       setActive(panelIdx);
 
-      if (prevBtn) prevBtn.disabled = panelIdx <= 0 && scrolledIn <= 0;
-      if (nextBtn) nextBtn.disabled = panelIdx >= TOTAL - 1 && scrolledIn >= (TOTAL - 1) * vh;
+      if (prevBtn) prevBtn.disabled = scrolledIn <= 0;
+      if (nextBtn) nextBtn.disabled = scrolledIn >= TOTAL * vh;
     }
 
     /* --- Mobile: sync nav dots via IntersectionObserver --- */
@@ -240,23 +293,64 @@
         });
       }, { threshold: [0.4, 0.6] });
       panels.forEach(p => io.observe(p));
+
+      // Här skjuts showreelen undan vertikalt — täckningen är hur stor
+      // del av rutan den lämnat ifrån sig.
+      const hero = document.getElementById('hero');
+      if (hero) {
+        const onScroll = () => {
+          const r = hero.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+          reportCover(1 - visible / vh);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
     }
 
+    /* idx -1 = showreelen, 0…TOTAL-1 = panelerna. */
     function goToPanel(idx) {
-      idx = Math.max(0, Math.min(TOTAL - 1, idx));
+      idx = Math.max(-1, Math.min(TOTAL - 1, idx));
       if (wideMode) {
-        window.scrollTo({ top: hWrapper.offsetTop + idx * window.innerHeight, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        window.scrollTo({ top: hWrapper.offsetTop + (idx + 1) * window.innerHeight, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      } else if (idx < 0) {
+        const hero = document.getElementById('hero');
+        if (hero) hero.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
       } else {
         const target = panels[idx];
         if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
       }
     }
+    /* Hero-pilen, skip-länken och logotypen pekar på #films / #hero,
+       som numera ligger absolut placerade i samma stack — webbläsarens
+       eget ankarhopp landar då på fel ställe. Vi sköter hoppet själva,
+       och flyttar tangentbordsfokus dit så skip-länken fortsatt fungerar. */
+    function jumpTo(idx, focusEl) {
+      goToPanel(idx);
+      if (!focusEl) return;
+      const had = focusEl.hasAttribute('tabindex');
+      if (!had) focusEl.setAttribute('tabindex', '-1');
+      focusEl.focus({ preventScroll: true });
+      if (!had) focusEl.addEventListener('blur', () => focusEl.removeAttribute('tabindex'), { once: true });
+    }
+    document.querySelectorAll('a[href="#films"]').forEach((a) => {
+      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(0, document.getElementById('films')); });
+    });
+    document.querySelectorAll('a[href="#hero"]').forEach((a) => {
+      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(-1, document.getElementById('hero')); });
+    });
 
     function currentIdx() {
       if (wideMode) {
-        return Math.min(TOTAL - 1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
+        return Math.min(TOTAL - 1, Math.max(-1, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight) - 1));
       }
-      // Mobile: find which panel is closest to viewport center
+      // Mobile: showreelen först, annars den panel som ligger närmast mitten
+      const hero = document.getElementById('hero');
+      if (hero) {
+        const hr = hero.getBoundingClientRect();
+        if (hr.bottom > window.innerHeight * 0.5) return -1;
+      }
       const mid = window.innerHeight / 2;
       let best = 0, bestDist = Infinity;
       panels.forEach((p, i) => {

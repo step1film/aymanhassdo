@@ -499,32 +499,10 @@
         'assets/products/gear-stickers-3.webp'
       ]
     }
-
-    /* ===================================================
-       PÅ VÄG IN — färdigskrivna, väntar bara på bilderna
-       ===================================================
-       Så här aktiverar du dem när bilderna är uppladdade:
-         1. Ta bort raden ovanför blocket ( `/*` ) och raden
-            under ( slut-tecknet ), så koden börjar gälla.
-         2. Lägg till id:t i PRODUCT_ORDER längre ner.
-         3. Lägg till pris i functions/_lib/catalog.js
-            (raderna ligger redan där, utkommenterade).
-
-       BILDER SOM BEHÖVS (exakta filnamn, i assets/products/):
-         Step1 Jersey — samma bild för alla storlekar:
-           step1-jersey.png          ← visas först
-           step1-jersey-1.png        ← visas vid hover
-           step1-jersey-2.png, -3.png …  (så många du har)
-
-         On Set Cap — en uppsättning per färg:
-           on-set-cap-navy.png,     on-set-cap-navy-1.png, -2.png …
-           on-set-cap-charcoal.png, on-set-cap-charcoal-1.png, -2.png …
-           on-set-cap-white.png,    on-set-cap-white-1.png, -2.png …
-
     , {
       id: 'step1-jersey', cat: 'clothing', type: 'jersey', print: 'S1F',
       name: { sv: 'STEP1 JERSEY', en: 'STEP1 JERSEY' },
-      desc: { sv: 'Nummer 23 på bröstet och hela pastellspektrumet på ryggen. Ett lag som inte spelar boll — vi gör film. Allover-tryck, återvunnen polyester.', en: 'Number 23 on the chest and the whole pastel spectrum down the back. A team that doesn\'t play ball — we make films. All-over print, recycled polyester.' },
+      desc: { sv: 'FILM CREW 23 på ryggen — ett lag som inte spelar boll, utan gör film. Pastellspektrumet löper hela vägen runt plagget. Allover-tryck, återvunnen polyester.', en: 'FILM CREW 23 across the back — a team that doesn\'t play ball, it makes films. The pastel spectrum runs the whole way around. All-over print, recycled polyester.' },
       material: { sv: ['Allover-tryck, återvunnen polyester', 'Ledig passform', 'Ärmlös'], en: ['All-over print, recycled polyester', 'Relaxed fit', 'Sleeveless'] },
       price: 459,
       colors: ['pastel'],
@@ -533,9 +511,30 @@
       gallery: [
         'assets/products/step1-jersey.webp',
         'assets/products/step1-jersey-1.webp',
-        'assets/products/step1-jersey-2.webp'
+        'assets/products/step1-jersey-2.webp',
+        'assets/products/step1-jersey-3.webp',
+        'assets/products/step1-jersey-4.webp',
+        'assets/products/step1-jersey-5.webp',
+        'assets/products/step1-jersey-6.webp'
       ]
     }
+
+    /* ===================================================
+       PÅ VÄG IN — färdigskriven, väntar bara på bilderna
+       ===================================================
+       Så här aktiverar du den när bilderna är uppladdade:
+         1. Ta bort raden ovanför blocket ( `/*` ) och raden
+            under ( slut-tecknet ), så koden börjar gälla.
+         2. Lägg till id:t i PRODUCT_ORDER längre ner.
+         3. Avkommentera priset i functions/_lib/catalog.js
+            (raderna ligger redan där, med variant-id:n ifyllda).
+
+       BILDER SOM BEHÖVS (exakta filnamn, i assets/products/):
+         On Set Cap — en uppsättning per färg:
+           on-set-cap-navy.png,     on-set-cap-navy-1.png, -2.png …
+           on-set-cap-charcoal.png, on-set-cap-charcoal-1.png, -2.png …
+           on-set-cap-white.png,    on-set-cap-white-1.png, -2.png …
+
     , {
       id: 'on-set-cap', cat: 'caps', type: 'cap', print: 'S1F',
       name: { sv: 'ON SET CAP', en: 'ON SET CAP' },
@@ -617,6 +616,7 @@
     '24fps-hoodie',        // 699 · Filmfavorit — ankare + starkaste berättelsen
     'rolling-backpack',    // 699 · Bestseller — håller ankaret uppe
     'take-one-sleeve',     // 499 · Trend — första prissänkningen känns som en lättnad
+    'step1-jersey',        // 459 · Nyhet — laget, håller kvar i det höga spannet
     'awesome-mugg',        // 229 · Mest populär — det lilla första ja:et
     'action-dad-cap',      // 349 · Nyhet
     'spoiler-hoodie',      // 629 · kontrast tillbaka uppåt
@@ -629,9 +629,8 @@
     'reel-mugg',           // 229
     'ad1-beanie',          // 285
     'gear-stickers'        //  85 · sista lilla ja:et upp mot fri frakt
-    // PÅ VÄG IN — lägg in dessa när bilderna finns:
-    // 'step1-jersey'  (429) passar direkt efter 'take-one-sleeve'
-    // 'on-set-cap'    (349) passar direkt efter 'action-dad-cap'
+    // PÅ VÄG IN — lägg in denna när bilderna finns:
+    // 'on-set-cap'    (369) passar direkt efter 'action-dad-cap'
   ];
   // Filtrera bort dolda produkter innan något renderas eller prissätts
   for (let i = PRODUCTS.length - 1; i >= 0; i--) {

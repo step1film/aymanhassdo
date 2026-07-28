@@ -244,7 +244,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   transition: color 0.2s;
 }
 .lang-toggle button:hover { color: var(--text); }
-.lang-toggle button.active { color: var(--white); }
+/* Valt språk får samma röda ton som ettan i STEP1FILM */
+.lang-toggle button.active { color: var(--accent); }
 /* Tunn avdelare mellan språken i stället för en ram runt hela */
 .lang-toggle button + button::before {
   content: '';
@@ -261,11 +262,14 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .lang-toggle button { padding: 0.22rem 0.5rem; }
 }
 
-/* ---- Hero ---- */
+/* ---- Hero ----
+   Ligger som understa lagret i samma wipe-stack som panelerna,
+   så att panel 01 sveper in horisontellt över showreelen i
+   stället för att skjuta upp den vertikalt. */
 #hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
   background: #000;
 }
@@ -275,11 +279,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   pointer-events: none;
   overflow: hidden;
 }
+
+/* Ramen är alltid 16:9, men filmen inuti är bredare än så och
+   Vimeo lägger då svarta kanter över och under. --hero-fw sätts
+   av main.js till den rambredd som gör att FILMEN täcker rutan,
+   inte bara ramen. Utan JS gäller min-värdena = gamla beteendet. */
 .hero-video-wrap iframe {
   position: absolute;
   top: 50%; left: 50%;
-  width: 100vw;
-  height: 56.25vw;
+  width: var(--hero-fw, 100vw);
+  height: calc(var(--hero-fw, 100vw) * 9 / 16);
   min-height: 100vh;
   min-width: 177.78vh;
   transform: translate(-50%, -50%);
@@ -374,7 +383,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* =====================================================
    WIPE PANEL SYSTEM (desktop)
    ===================================================== */
-#h-wrapper { height: calc(5 * 100vh); position: relative; }
+/* Sex skärmhöjder: en för showreelen + en per panel som sveper in. */
+#h-wrapper { height: calc(6 * 100vh); position: relative; }
 
 #h-sticky {
   position: sticky;
@@ -393,6 +403,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 #films   { z-index: 1; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild01') center / cover no-repeat; clip-path: inset(0 0 0 0%);   }
+/* På breda skärmar startar även panel 01 utanför bild och sveper in
+   över showreelen. Samma brytpunkt som isWideScreen() i main.js.
+   På smala skärmar stackas panelerna vertikalt och 01 ska synas direkt. */
+@media (min-width: 901px) { #films { clip-path: inset(0 0 0 100%); } }
 #about   { z-index: 2; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild02') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
 #awards  { z-index: 3; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild03') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
 #press   { z-index: 4; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild04') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
@@ -516,9 +530,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: flex;
   gap: 0.75rem;
   z-index: 10;
+  /* Behållaren ligger över showreelens nedåtpil och åt klicken.
+     Bara knapparna själva ska ta emot mus. */
+  pointer-events: none;
 }
 
 .h-arrow {
+  pointer-events: auto;
   width: 42px; height: 42px;
   border: 1px solid var(--line-s);
   display: flex; align-items: center; justify-content: center;
@@ -998,6 +1016,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   #h-sticky { position: static; height: auto; overflow: visible; }
   #h-track { height: auto; }
 
+  /* Showreelen tillbaka till ett vanligt block överst i flödet */
+  #hero { position: relative; inset: auto; height: 100svh; }
+
   .h-panel {
     position: relative;
     inset: auto;
@@ -1060,7 +1081,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 @media (max-width: 480px) {
-  .hero-name { font-size: clamp(2.4rem, 12vw, 6rem); }
+  /* 12vw sköt ut namnet utanför skärmkanten på 390 px — 9.5vw får plats */
+  .hero-name { font-size: clamp(1.9rem, 9.5vw, 6rem); }
   .hero-eyebrow, .hero-sub { letter-spacing: 0.3em; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
@@ -1119,4 +1141,27 @@ body.reduced-motion .ld-num { animation: none !important; }
   .fl-empty, .fs-empty, .fe-soon { font-size: 0.42rem; letter-spacing: 0.12em; }
   .fsign-mark { font-size: clamp(0.85rem, 1.6vw, 1.2rem); }
   .fsign-word { font-size: 0.42rem; letter-spacing: 0.22em; text-indent: 0.22em; }
+}
+
+/* Höjder strax över 880 px (t.ex. 1440×900): raderna är i fullstorlek
+   men listan har inte riktigt plats, och sista radens text kapades.
+   Lite mindre luft mellan raderna räcker — beskrivningarna får vara kvar. */
+@media (min-height: 881px) and (max-height: 960px) {
+  .film-item {
+    padding: 0.5rem 0;
+    grid-template-columns: clamp(90px, 9vw, 118px) 1fr;
+  }
+  .film-thumb { aspect-ratio: 16 / 9; }
+  .film-num, .film-meta { margin-bottom: 0.1rem; }
+  .film-syn { line-height: 1.45; }
+  .panel-inner--films .panel-head { margin-bottom: 0.4rem; }
+}
+
+/* Beskrivningarna göms ovan bara för att panelen är höjdbegränsad på
+   breda skärmar. På telefon och surfplatta ligger panelerna under
+   varandra och kan växa — där ska texten självklart synas. */
+@media (max-width: 900px) {
+  /* Smalare spalt betyder fler rader — ge texten plats i stället för
+     att kapa den mitt i meningen. */
+  .film-syn { display: -webkit-box; -webkit-line-clamp: 4; }
 }

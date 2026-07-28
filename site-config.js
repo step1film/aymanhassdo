@@ -7,8 +7,14 @@
    bara skript från den egna sajten, och ett <script> direkt
    i sidan hade blockerats.
    ===================================================== */
-/* Showreel i hero */
-window.STEP1FILM_VIDEO = { provider: 'vimeo', id: '1213253177' };
+/* Showreel i hero.
+   `aspect` = filmens egen bredd/höjd. Den används bara som startvärde:
+   så fort Vimeo-spelaren svarat med sina riktiga mått räknar sidan om
+   själv. Värdet finns här för att rutan ska vara rätt redan första
+   sekunden, innan spelaren hunnit svara.
+     2.39 = cinemascope   2.35 = widescreen
+     2.00 = univisium     1.78 = vanlig 16:9 */
+window.STEP1FILM_VIDEO = { provider: 'vimeo', id: '1213253177', aspect: 2.35 };
 
 /* 001 BIRDS OF PASSAGE — trailer.
    Klistra in video-id:t mellan citattecknen. För YouTube är det den

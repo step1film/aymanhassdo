@@ -109,16 +109,16 @@ const CATALOG = {
   'gear-stickers': {
     name: 'GEAR STICKERS', price: 99,
     variants: { 'forest|one': 5415372317 }
+  },
+  'step1-jersey': {
+    name: 'STEP1 JERSEY', price: 459,
+    variants: {
+      'pastel|XS': 5415333024, 'pastel|S': 5415333025, 'pastel|M': 5415333026,
+      'pastel|L': 5415333027, 'pastel|XL': 5415333028
+    }
   }
   // PÅ VÄG IN — avkommentera samtidigt som produkten aktiveras i shop.js.
   // Variant-id:n är redan hämtade och ifyllda.
-  // ,'step1-jersey': {
-  //   name: 'STEP1 JERSEY', price: 459,
-  //   variants: {
-  //     'pastel|XS': 5415333024, 'pastel|S': 5415333025, 'pastel|M': 5415333026,
-  //     'pastel|L': 5415333027, 'pastel|XL': 5415333028
-  //   }
-  // }
   // ,'on-set-cap': {
   //   name: 'ON SET CAP', price: 369,
   //   variants: { 'navy|one': 5415333757, 'charcoal|one': 5415333758, 'white|one': 5415333759 }
