@@ -559,7 +559,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Får inte vara hidden: på låga skärmar (t.ex. 1280x800 och liggande
      surfplatta) rymdes inte STORE-raden och försvann helt. */
   overflow-y: auto;
-  overscroll-behavior: contain;
+  /* INTE overscroll-behavior: contain — det stoppade rullningen helt så
+     fort listan var det minsta för hög: hjulet åts upp av listan och
+     sidan stod still. Med standardbeteendet rullar listan klart och
+     sidan tar vid. */
   scrollbar-width: thin;
   scrollbar-color: var(--line-s) transparent;
 }
@@ -681,35 +684,28 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .film-logos:not(.is-empty) .fl-empty { display: none; }
 
 /* 003 — affischbildspel */
+/* Alla affischerna bredvid varandra — inte en i taget.
+   Affischerna är stående, rutan liggande: mörk botten så de får stå hela. */
 .film-slides {
-  display: grid; place-items: center;
-  /* Affischer är stående — mörk botten så de får stå hela i den liggande rutan */
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 2px;
   background: #0e0e0e;
 }
 .film-slides img {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  /* contain, inte cover: en beskuren affisch säger ingenting */
-  object-fit: contain;
-  padding: 3px 3px 10px;
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  /* Tre affischer i en liten liggande ruta: cover fyller varje spalt,
+     contain hade lämnat dem som frimärken i luften. */
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.35s var(--ease);
 }
-.film-slides img.is-on { opacity: 1; }
+.film-item:hover .film-slides img,
+.film-item:focus-within .film-slides img { opacity: 1; }
 .film-slides:not(.is-empty) .fs-empty { display: none; }
-.fs-dots {
-  position: absolute;
-  bottom: 5px; left: 0; right: 0;
-  display: flex; justify-content: center; gap: 4px;
-  z-index: 2;
-}
-.fs-dots span {
-  width: 4px; height: 4px; border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  transition: background 0.3s;
-}
-.fs-dots span.is-on { background: var(--accent); }
 
 /* 004 + 005 — skylt i stället för stillbild */
 .film-sign {

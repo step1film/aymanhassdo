@@ -38,9 +38,10 @@ window.STEP1FILM_CLIENTS = [
   // { src: 'assets/clients/kundnamn.svg', name: 'Kundnamn' },
 ];
 
-/* 003 KORTFILMER — affischbildspel.
+/* 003 KORTFILMER — affischerna.
    Lägg affischerna i assets/films/posters/ och lista dem här.
-   Första bilden visas alltid först; nästa vid hover eller klick. */
+   Alla visas bredvid varandra i rutan, så tre är lagom — fler blir
+   smala. Lägger du till en fjärde, kolla att de fortfarande går att se. */
 window.STEP1FILM_POSTERS = {
   // Samma ordning som filmerna nämns i texten
   shorts: [

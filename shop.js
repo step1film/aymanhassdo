@@ -123,7 +123,7 @@
       name: { sv: "Director's Morning", en: "Director's Morning" },
       desc: { sv: 'Där varje historia börjar — en kopp kaffe och en idé. Svart glansig mugg, 15 oz.', en: 'Where every story begins — a cup of coffee and an idea. Black glossy mug, 15 oz.' },
       material: { sv: ['Keramik, svart glansig', 'Volym: 15 oz (ca 440 ml)'], en: ['Ceramic, black glossy', 'Volume: 15 oz (approx. 440 ml)'] },
-      price: 249,
+      price: 299,
       colors: ['black'],
       sizes: null,
       image: 'assets/products/reel-mugg.webp',
@@ -159,8 +159,8 @@
       desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din utrustning som crewet.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your gear like the crew.' },
       material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
       badge: { sv: 'Trend', en: 'Trending' },
-      price: 529,
-      sizePrices: { '13"': 529, '15"': 629 },
+      price: 599,
+      sizePrices: { '13"': 599, '15"': 699 },
       colors: ['pastel'],
       sizes: ['13"', '15"'], defaultSize: '13"',
       image: 'assets/products/take-one-sleeve.webp',
@@ -177,7 +177,7 @@
       desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Fårö. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Fårö. Padded laptop pocket.' },
       badge: { sv: 'Bestseller', en: 'Bestseller' },
       material: { sv: ['Vadderad laptopficka', 'Justerbara axelremmar'], en: ['Padded laptop pocket', 'Adjustable shoulder straps'] },
-      price: 739,
+      price: 779,
       colors: ['navy', 'pink'],
       sizes: null,
       image: 'assets/products/backpack-navy.webp',
@@ -218,7 +218,7 @@
       id: 'spoiler-hoodie', cat: 'clothing', type: 'hoodie', print: 'S1F',
       name: { sv: 'SPOILER HOODIE', en: 'SPOILER HOODIE' },
       desc: { sv: 'Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.', en: 'You always know how the film ends — own it. A cosy hoodie for those who\'ve seen it all.' },
-      price: 669,
+      price: 799,
       colors: ['natural', 'lightpink', 'white'],
       // Printful gör bara S–XL på den här modellen
       sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
@@ -257,7 +257,7 @@
       name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
       desc: { sv: 'Livet levs i 24 bilder per sekund — inspirerad av filmälskare. Bär känslan av film. Mjuk 100 % bomull med fleecefodrad insida som håller värmen.', en: 'Life runs at 24 frames per second — inspired by film lovers. Wear the feeling of film. Made with smooth 100% cotton and a soft fleece-lined interior for warmth.' },
       badge: { sv: 'Filmfavorit', en: 'Film favourite' },
-      price: 739,
+      price: 899,
       colors: ['black', 'lightpink'],
       // Printful har inte XS på den här modellen, och kallar XXL för 2XL
       sizes: ['S', 'M', 'L', 'XL', '2XL'], defaultSize: 'M',
@@ -317,7 +317,7 @@
       id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
       name: { sv: 'STEP1 FAN', en: 'STEP1 FAN' },
       desc: { sv: 'Sätt på dig Step1-kepsen och något händer — idéerna börjar rulla. Bär den och du bär med dig Step1. Broderad logga, vit mesh, justerbar. One size.', en: 'Put on the Step1 cap and something happens — the ideas start rolling. Wear it and you carry Step1 with you. Embroidered logo, white mesh, adjustable. One size.' },
-      price: 369,
+      price: 379,
       colors: ['navy', 'silver', 'black'],
       sizes: null,
       image: 'assets/products/trucker-cap-navy.webp',
@@ -371,7 +371,7 @@
       id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
       name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
       desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. "Inspirerad av Smålands skogar" One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. "Inspired by the forests of Småland." One size.' },
-      price: 309,
+      price: 429,
       colors: ['olive', 'black', 'brown', 'navy'],
       sizes: null,
       image: 'assets/products/beanie-olive.webp',
@@ -412,8 +412,8 @@
       name: { sv: 'GLITCH SLEEVE', en: 'GLITCH SLEEVE' },
       desc: { sv: 'Inspirerad av glitchen mellan tagningarna. Skydda din maskin med en design som är helt unik. Vadderat med dragkedja.', en: 'Inspired by the glitch between takes. Protect your machine with a design that\'s one of a kind. Padded, zippered.' },
       material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
-      price: 459,
-      sizePrices: { '13"': 459, '15"': 529 },
+      price: 549,
+      sizePrices: { '13"': 549, '15"': 649 },
       colors: ['silver'],
       sizes: ['13"', '15"'], defaultSize: '13"',
       image: 'assets/products/static-sleeve.webp',
@@ -429,7 +429,7 @@
       desc: { sv: 'En ny liten regissör är född. "Get ready for some movies, with a bottle of popcorn" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies, with a bottle of popcorn" — soft baby tee. Sizes 6–24 months.' },
       badge: { sv: 'Nyhet', en: 'New' },
       material: { sv: ['Mjuk bomull', 'Storlek 6–24 månader'], en: ['Soft cotton', 'Sizes 6–24 months'] },
-      price: 269,
+      price: 399,
       colors: ['candy', 'lightblue', 'white'],
       sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
       image: 'assets/products/lil-tee-pink.webp',
@@ -471,7 +471,7 @@
       desc: { sv: 'Klappan slår ihop och allt börjar. "And action" — de två orden som startar varje scen. Bär dem varje dag. 100 % bomullsmanchester. One size.', en: 'The slate claps and everything begins. "And action" — the two words that start every scene. Wear them every day. 100% cotton corduroy. One size.' },
       badge: { sv: 'Nyhet', en: 'New' },
       material: { sv: ['100 % bomullsmanchester', 'Justerbar spänne', 'One size'], en: ['100% cotton corduroy', 'Adjustable snap', 'One size'] },
-      price: 369,
+      price: 399,
       colors: ['camel', 'black'],
       sizes: null,
       image: 'assets/products/dad-cap-camel.webp',
@@ -613,22 +613,22 @@
   const HIDDEN = ['crew-tee', 'ad1-beanie'];
   
     const PRODUCT_ORDER = [
-    '24fps-hoodie',        // 699 · Filmfavorit — ankare + starkaste berättelsen
-    'rolling-backpack',    // 699 · Bestseller — håller ankaret uppe
-    'take-one-sleeve',     // 499 · Trend — första prissänkningen känns som en lättnad
+    '24fps-hoodie',        // 899 · Filmfavorit — ankare + starkaste berättelsen
+    'rolling-backpack',    // 779 · Bestseller — håller ankaret uppe
+    'take-one-sleeve',     // 599 · Trend — första prissänkningen känns som en lättnad
     'step1-jersey',        // 459 · Nyhet — laget, håller kvar i det höga spannet
-    'awesome-mugg',        // 229 · Mest populär — det lilla första ja:et
-    'action-dad-cap',      // 349 · Nyhet
-    'spoiler-hoodie',      // 629 · kontrast tillbaka uppåt
-    'crew-tee',            // 275
-    'static-reel-sleeve',  // 429 · skilt från TAKE ONE så de inte äter varandra
-    'reel-trucker-cap',    // 349
-    'lil-director-tee',    // 249 · Nyhet — presenten, känslan
-    'icon-stickers',       //  85 · impuls
-    'directors-beanie',    // 285
-    'reel-mugg',           // 229
-    'ad1-beanie',          // 285
-    'gear-stickers'        //  85 · sista lilla ja:et upp mot fri frakt
+    'awesome-mugg',        // 249 · Mest populär — det lilla första ja:et
+    'action-dad-cap',      // 399 · Nyhet
+    'spoiler-hoodie',      // 799 · kontrast tillbaka uppåt
+    'crew-tee',            // 289
+    'static-reel-sleeve',  // 549 · skilt från TAKE ONE så de inte äter varandra
+    'reel-trucker-cap',    // 379
+    'lil-director-tee',    // 399 · Nyhet — presenten, känslan
+    'icon-stickers',       //  99 · impuls
+    'directors-beanie',    // 429
+    'reel-mugg',           // 299
+    'ad1-beanie',          // 309
+    'gear-stickers'        //  99 · sista lilla ja:et upp mot fri frakt
     // PÅ VÄG IN — lägg in denna när bilderna finns:
     // 'on-set-cap'    (369) passar direkt efter 'action-dad-cap'
   ];

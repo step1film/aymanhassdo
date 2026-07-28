@@ -572,72 +572,21 @@
       });
     });
 
-    /* --- 003: affischbildspel, byter bild vid hover och klick --- */
+    /* --- 003: affischerna, alla synliga bredvid varandra --- */
     const posters = window.STEP1FILM_POSTERS || {};
     document.querySelectorAll('[data-slides]').forEach(box => {
       const list = posters[box.dataset.slides] || [];
       if (!list.length) { box.classList.add('is-empty'); return; }
 
-      const imgs = list.map((src, i) => {
+      list.forEach((src) => {
         const img = document.createElement('img');
         img.src = src;
         img.alt = '';
-        img.loading = i === 0 ? 'eager' : 'lazy';
-        if (i === 0) img.classList.add('is-on');
+        img.loading = 'lazy';
+        // En affisch som inte laddar ska försvinna, inte lämna en trasig ikon
+        img.addEventListener('error', () => img.remove());
         box.appendChild(img);
-        return img;
       });
-
-      let dots = null;
-      if (list.length > 1) {
-        dots = document.createElement('div');
-        dots.className = 'fs-dots';
-        list.forEach((_, i) => {
-          const d = document.createElement('span');
-          if (i === 0) d.classList.add('is-on');
-          dots.appendChild(d);
-        });
-        box.appendChild(dots);
-      }
-
-      let idx = 0;
-      function show(n) {
-        idx = (n + imgs.length) % imgs.length;
-        imgs.forEach((im, i) => im.classList.toggle('is-on', i === idx));
-        if (dots) Array.from(dots.children).forEach((d, i) => d.classList.toggle('is-on', i === idx));
-      }
-
-      /* Rullar automatiskt och loopar. Pausar vid hover så man hinner se,
-         och står stilla helt vid prefers-reduced-motion. */
-      let timer = null;
-      const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
-      const play = () => {
-        if (prefersReducedMotion || timer || imgs.length < 2) return;
-        timer = setInterval(() => show(idx + 1), 3200);
-      };
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver((entries) => {
-          entries.forEach((e) => (e.isIntersecting ? play() : stop()));
-        }, { threshold: 0.35 }).observe(box);
-      } else {
-        play();
-      }
-      const item = box.closest('.film-item');
-      if (item) {
-        item.addEventListener('mouseenter', stop);
-        item.addEventListener('mouseleave', play);
-      }
-      box.addEventListener('click', () => { stop(); show(idx + 1); });
-
-      // Svep på pekskärm
-      let x0 = null;
-      box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
-      box.addEventListener('touchend', e => {
-        if (x0 === null) return;
-        const dx = e.changedTouches[0].clientX - x0;
-        if (Math.abs(dx) > 30) show(idx + (dx < 0 ? 1 : -1));
-        x0 = null;
-      }, { passive: true });
     });
   }
 

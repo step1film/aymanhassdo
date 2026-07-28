@@ -26,7 +26,7 @@ const SHIPPING_FREE_OVER = 1200;
    (fylls i när Printful-varianterna är hämtade, se PRINTFUL_SETUP.md) */
 const CATALOG = {
   'reel-mugg': {
-    name: "Director's Morning", price: 249,
+    name: "Director's Morning", price: 299,
     variants: { 'black|one': 5415345254 }
   },
   'awesome-mugg': {
@@ -34,20 +34,20 @@ const CATALOG = {
     variants: { 'white|one': 5415373167 }
   },
   'take-one-sleeve': {
-    name: 'TAKE ONE SLEEVE', price: 529, sizePrices: { '13"': 529, '15"': 629 },
+    name: 'TAKE ONE SLEEVE', price: 599, sizePrices: { '13"': 599, '15"': 699 },
     variants: { 'pastel|13"': 5415334461, 'pastel|15"': 5415334462 }
   },
   'static-reel-sleeve': {
-    name: 'GLITCH SLEEVE', price: 459, sizePrices: { '13"': 459, '15"': 529 },
+    name: 'GLITCH SLEEVE', price: 549, sizePrices: { '13"': 549, '15"': 649 },
     variants: { 'silver|13"': 5415374045, 'silver|15"': 5415374046 }
   },
   'rolling-backpack': {
-    name: 'ROLLING BACKPACK', price: 739,
+    name: 'ROLLING BACKPACK', price: 779,
     // Navy och rosa är två separata produkter hos Printful
     variants: { 'navy|one': 5415353196, 'pink|one': 5415329629 }
   },
   'spoiler-hoodie': {
-    name: 'SPOILER HOODIE', price: 669,
+    name: 'SPOILER HOODIE', price: 799,
     // Printful: Bone = natur, Lavender = ljusrosa
     variants: {
       'natural|S': 5415690062, 'natural|M': 5415690063, 'natural|L': 5415690064, 'natural|XL': 5415690065,
@@ -56,7 +56,7 @@ const CATALOG = {
     }
   },
   '24fps-hoodie': {
-    name: '24FPS HOODIE', price: 739,
+    name: '24FPS HOODIE', price: 899,
     variants: {
       'black|S': 5415343283, 'black|M': 5415343284, 'black|L': 5415343285,
       'black|XL': 5415343286, 'black|2XL': 5415343287,
@@ -65,16 +65,16 @@ const CATALOG = {
     }
   },
   'reel-trucker-cap': {
-    name: 'STEP1 FAN', price: 369,
+    name: 'STEP1 FAN', price: 379,
     // Printful: Heather Grey/White = silver
     variants: { 'navy|one': 5415344277, 'silver|one': 5415344278, 'black|one': 5415344276 }
   },
   'action-dad-cap': {
-    name: 'ACTION DAD CAP', price: 369,
+    name: 'ACTION DAD CAP', price: 399,
     variants: { 'camel|one': 5415342081, 'black|one': 5415342080 }
   },
   'directors-beanie': {
-    name: "DIRECTOR'S BEANIE", price: 309,
+    name: "DIRECTOR'S BEANIE", price: 429,
     variants: {
       'olive|one': 5415347439, 'black|one': 5415347436,
       'brown|one': 5415347437, 'navy|one': 5415347438
@@ -86,7 +86,7 @@ const CATALOG = {
     variants: { 'candy|one': 5415348966, 'orange|one': 5415348965, 'white|one': 5415348967 }
   },
   'lil-director-tee': {
-    name: "LIL' DIRECTOR TEE", price: 269,
+    name: "LIL' DIRECTOR TEE", price: 399,
     variants: {
       'candy|6M': 5415644687, 'candy|12M': 5415644688, 'candy|18M': 5415644689, 'candy|24M': 5415644690,
       'lightblue|6M': 5415644691, 'lightblue|12M': 5415644692, 'lightblue|18M': 5415644693, 'lightblue|24M': 5415644694,
