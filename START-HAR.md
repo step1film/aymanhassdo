@@ -53,13 +53,11 @@ Butiken står kvar i demoläge, inga betalningar är påslagna.
 
 Domänen går till **GitHub**, inte Netlify.
 
-- [x] **2.1** ✅ **Klart** — fyra A-poster mot GitHub. ⚠️ CNAME för `www` saknas fortfarande. Ursprungligen: hos den du köpte domänen av, lägg fyra A-poster för `step1film.se` mot GitHubs adresser `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` — och en CNAME för `www` mot `step1film.github.io`.
-- [x] **2.2** ✅ Domänen inlagd i GitHub Pages. Kvar: kryssa i **Enforce HTTPS** (certifikatet är utfärdat).
+- [x] **2.1** ✅ **Klart** — fyra A-poster mot GitHub + CNAME för `www`. Båda verifierade utifrån.
+- [x] **2.2** ✅ Domänen inlagd i GitHub Pages, **Enforce HTTPS** påslaget.
 - [x] **2.3** ✅ DNS slog igenom, certifikat utfärdat.
 - [x] **2.4** ✅ `https://step1film.se` fungerar med hänglås.
-- [ ] **2.5** 🙋 I **Netlify**, sätt två miljövariabler (*Site settings → Environment variables*):
-  - `SITE_URL` = `https://step1film.se` — dit kunden skickas efter betalning
-  - `API_URL` = `https://step1film.netlify.app` — dit Swish ringer tillbaka
+- [x] **2.5** ✅ `SITE_URL` och `API_URL` satta i Netlify.
 
 > Båda behövs eftersom sajten och funktionerna ligger på olika värdar.
 > Blandar du ihop dem hamnar kunden fel efter betalning, eller så når
@@ -84,12 +82,10 @@ Fyll i det du har — Stripe och Swish är oberoende av varandra, du kan
 köra igång det ena först.
 
 **Stripe (kort + Klarna)**
-- [ ] **4.1** 🙋 Skapa Stripe-konto, aktivera Klarna under *Payment methods*.
-- [ ] **4.2** 🙋 Miljövariabel `STRIPE_SECRET_KEY` = din **`sk_test_…`** (testnyckeln, inte den skarpa).
-- [ ] **4.3** 🙋 Stripe → *Developers → Webhooks* → lägg till endpoint:
-      `https://step1film.netlify.app/.netlify/functions/stripe-webhook`, händelse `checkout.session.completed`.
-      **Netlify-adressen, inte step1film.se** — det är där funktionen bor.
-- [ ] **4.4** 🙋 Kopiera *Signing secret* → miljövariabel `STRIPE_WEBHOOK_SECRET`.
+- [x] **4.1** ✅ Stripe-konto klart. ⬜ Klarna återstår att aktivera under *Payment methods*.
+- [x] **4.2** ✅ `STRIPE_SECRET_KEY` satt (testnyckel).
+- [x] **4.3** ✅ Webhook skapad mot `stripe-webhook`, händelse `checkout.session.completed`.
+- [x] **4.4** ✅ `STRIPE_WEBHOOK_SECRET` satt.
 
 **Swish**
 - [ ] **4.5** 🙋 Teckna **Swish Handel** hos din bank (tar några dagar — starta tidigt).
@@ -97,8 +93,8 @@ köra igång det ena först.
 - [ ] **4.7** 🙋 Miljövariabler: `SWISH_PAYEE_ALIAS`, `SWISH_CERT_P12`, `SWISH_CERT_PASSWORD`, och `SWISH_ENV` = `test`.
 
 **Slå på**
-- [ ] **4.8** 🤖 Jag sätter `apiBase: 'https://step1film.netlify.app/.netlify/functions'` och `card: true` / `swish: true` i `shop.js`.
-- [ ] **4.9** 🙋 Gör en testbeställning med Stripes testkort `4242 4242 4242 4242`. Kontrollera att ordern dyker upp som **utkast** i Printful med rätt produkt, färg och storlek.
+- [x] **4.8** ✅ `apiBase` satt och `card: true` i `shop.js`. Swish står kvar avstängd tills bankavtalet finns.
+- [x] **4.9** ✅ Två testköp gjorda. Utkast i Printful med rätt produkt, färg, storlek och adress.
 
 ---
 
