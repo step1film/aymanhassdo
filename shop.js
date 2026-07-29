@@ -510,12 +510,7 @@
       image: 'assets/products/step1-jersey.webp',
       gallery: [
         'assets/products/step1-jersey.webp',
-        'assets/products/step1-jersey-1.webp',
-        'assets/products/step1-jersey-2.webp',
-        'assets/products/step1-jersey-3.webp',
-        'assets/products/step1-jersey-4.webp',
-        'assets/products/step1-jersey-5.webp',
-        'assets/products/step1-jersey-6.webp'
+        'assets/products/step1-jersey-5.webp'
       ]
     }
 
