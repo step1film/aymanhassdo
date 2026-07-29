@@ -557,32 +557,71 @@
       }
     });
 
-    /* --- 002: samarbetslogotyper --- */
+    /* --- 002: samarbetslogotyper på en praxinoskoptrumma ---
+       Loggorna sitter runt en cylinder som snurrar. Radien är den som
+       gör att de N sidorna precis går ihop till en sluten trumma:
+         radie = (sidbredd / 2) / tan(180° / N)
+       Bredden hålls nere när det är många loggor, annars blir trumman
+       så stor att man bara ser en bråkdel av varje. */
     const clients = window.STEP1FILM_CLIENTS || [];
     document.querySelectorAll('[data-logos]').forEach(box => {
-      if (!clients.length) { box.classList.add('is-empty'); return; }
-      clients.slice(0, 6).forEach(c => {
+      const list = clients.filter(c => c && c.src);
+      if (!list.length) { box.classList.add('is-empty'); return; }
+
+      const n = list.length;
+      const drum = document.createElement('div');
+      drum.className = 'fl-drum';
+
+      if (n === 1) {
+        // En enda logga — ingen trumma att snurra
+        drum.style.setProperty('--steg', '0deg');
+        drum.style.setProperty('--radie', '0px');
+        drum.style.animation = 'none';
+      } else {
+        const bredd = n > 6 ? 0.52 : 0.62;              // andel av rutans bredd
+        const radie = (bredd / 2) / Math.tan(Math.PI / n);
+        drum.style.setProperty('--bredd', (bredd * 100).toFixed(1) + '%');
+        drum.style.setProperty('--steg', (360 / n).toFixed(3) + 'deg');
+        drum.style.setProperty('--radie', (radie * 100).toFixed(1) + 'cqw');
+        // Ungefär 2,6 s per logga — hinner läsas utan att kännas trögt
+        drum.style.setProperty('--varv', (n * 2.6).toFixed(1) + 's');
+      }
+
+      list.forEach((c, i) => {
         const img = document.createElement('img');
         img.src = c.src;
         img.alt = c.name || '';
-        img.loading = 'lazy';
+        // Inte lazy: en logga som dyker upp mitt i snurren ser trasig ut.
+        // Hela uppsättningen väger under 100 kB.
+        img.loading = 'eager';
+        img.style.setProperty('--i', i);
         // En logotyp som inte laddar ska försvinna, inte lämna en trasig ikon
         img.addEventListener('error', () => img.remove());
-        box.appendChild(img);
+        drum.appendChild(img);
       });
+      box.appendChild(drum);
     });
 
-    /* --- 003: affischerna, alla synliga bredvid varandra --- */
+    /* --- 003: affischerna tonar in och ut, var och en på sin plats ---
+       Två affischer delar rutan på mitten, tre står vänster/mitten/höger. */
     const posters = window.STEP1FILM_POSTERS || {};
+    const PLATSER = { 1: ['50%'], 2: ['30%', '70%'], 3: ['22%', '50%', '78%'] };
     document.querySelectorAll('[data-slides]').forEach(box => {
       const list = posters[box.dataset.slides] || [];
       if (!list.length) { box.classList.add('is-empty'); return; }
 
-      list.forEach((src) => {
+      // Fler än tre: fördela jämnt över rutan
+      const platser = PLATSER[list.length] ||
+        list.map((_, i) => (((i + 0.5) / list.length) * 100).toFixed(0) + '%');
+
+      list.forEach((src, i) => {
         const img = document.createElement('img');
         img.src = src;
         img.alt = '';
         img.loading = 'lazy';
+        img.style.setProperty('--i', i);
+        img.style.setProperty('--antal', list.length);
+        img.style.setProperty('--x', platser[i]);
         // En affisch som inte laddar ska försvinna, inte lämna en trasig ikon
         img.addEventListener('error', () => img.remove());
         box.appendChild(img);

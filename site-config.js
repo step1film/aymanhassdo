@@ -31,17 +31,35 @@ window.STEP1FILM_EMBEDS = {
 };
 
 /* 002 REKLAMFILM — samarbetslogotyper.
-   Lägg filerna i assets/clients/ (SVG är bäst, annars PNG med
-   genomskinlig bakgrund) och lista dem här. Max 6 visas.
-   Logotyperna görs automatiskt vita så raden blir enhetlig. */
+   Loggorna sitter på en trumma som snurrar som ett praxinoskop.
+   Filerna i assets/clients/ är redan tvättade: vit siluett på
+   genomskinlig botten, alla i samma optiska storlek.
+
+   Lägger du till en ny logga — spara originalet i
+   assets/Reklam i Småland_partners/ och säg till, så kör jag den
+   genom samma tvätt. Annars sticker den ut i färg och storlek.
+
+   `name` blir bildens alt-text för skärmläsare. Rätta gärna de två
+   som heter partner-08 / partner-09 — jag kunde inte läsa namnen
+   ur logotyperna. */
 window.STEP1FILM_CLIENTS = [
-  // { src: 'assets/clients/kundnamn.svg', name: 'Kundnamn' },
+  { src: 'assets/clients/arcus.webp',             name: 'Arcus Utbildning & Jobbförmedling' },
+  { src: 'assets/clients/kinnarps.webp',          name: 'Kinnarps' },
+  { src: 'assets/clients/hemkop.webp',            name: 'Hemköp' },
+  { src: 'assets/clients/vaggeryds-kommun.webp',  name: 'Vaggeryds kommun' },
+  { src: 'assets/clients/traningsmagasinet.webp', name: 'Träningsmagasinet' },
+  { src: 'assets/clients/hallstorps-bil.webp',    name: 'Hällstorps Bil' },
+  { src: 'assets/clients/home-care.webp',         name: 'Home Care' },
+  { src: 'assets/clients/brightness-au.webp',     name: 'Brightness Au' },
+  { src: 'assets/clients/partner-08.webp',        name: '' },
+  { src: 'assets/clients/partner-09.webp',        name: '' }
 ];
 
 /* 003 KORTFILMER — affischerna.
    Lägg affischerna i assets/films/posters/ och lista dem här.
-   Alla visas bredvid varandra i rutan, så tre är lagom — fler blir
-   smala. Lägger du till en fjärde, kolla att de fortfarande går att se. */
+   De tonar in och ut, var och en på sin egen plats i rutan:
+   en i mitten, två delar rutan, tre står vänster/mitten/höger.
+   Fler än tre går, men de börjar trängas. */
 window.STEP1FILM_POSTERS = {
   // Samma ordning som filmerna nämns i texten
   shorts: [

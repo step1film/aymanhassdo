@@ -655,25 +655,49 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .film-embed.no-video .fe-soon { display: block; }
 
-/* 002 — samarbetslogotyper */
+/* 002 — samarbetslogotyper som praxinoskop.
+   Loggorna sitter på insidan av en trumma som snurrar; man ser en i
+   taget genom rutan, precis som i det gamla optiska leksaksinstrumentet.
+   --i sätts per logga av main.js, --steg och --radie av samma kod. */
 .film-logos {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  justify-content: center;
-  gap: clamp(0.4rem, 0.9vw, 0.9rem);
-  padding: 0.6rem;
+  /* cqw i --radie räknas mot den här bredden */
+  container-type: inline-size;
+  perspective: 460px;
+  perspective-origin: 50% 50%;
+  /* Loggorna tonar in och ut i kanterna i stället för att klippas av */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 26%, #000 74%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 26%, #000 74%, transparent 100%);
 }
-.film-logos img {
-  max-width: 40%;
-  max-height: 38%;
-  object-fit: contain;
-  /* Logotyperna kommer i alla färger — gör dem enhetligt ljusa */
-  filter: grayscale(1) brightness(0) invert(1);
-  opacity: 0.55;
+.fl-drum {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: praxinoskop var(--varv, 26s) linear infinite;
+}
+.film-item:hover .fl-drum,
+.film-item:focus-within .fl-drum { animation-play-state: paused; }
+
+.fl-drum img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--bredd, 58%);
+  height: auto;
+  transform:
+    translate(-50%, -50%)
+    rotateY(calc(var(--i) * var(--steg)))
+    translateZ(var(--radie));
+  backface-visibility: hidden;
+  opacity: 0.88;
   transition: opacity 0.3s;
 }
-.film-item:hover .film-logos img { opacity: 0.9; }
+.film-item:hover .fl-drum img,
+.film-item:focus-within .fl-drum img { opacity: 1; }
+
+@keyframes praxinoskop { to { transform: rotateY(-360deg); } }
+
+/* Ingen snurr för den som bett om lugn rörelse — visa loggorna stilla */
+body.reduced-motion .fl-drum { animation: none; }
 .fl-empty, .fs-empty {
   font-family: var(--ff-display);
   font-size: clamp(0.5rem, 0.72vw, 0.62rem);
@@ -684,27 +708,41 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .film-logos:not(.is-empty) .fl-empty { display: none; }
 
 /* 003 — affischbildspel */
-/* Alla affischerna bredvid varandra — inte en i taget.
-   Affischerna är stående, rutan liggande: mörk botten så de får stå hela. */
+/* Affischerna tonar in och ut, var och en på sin egen plats i rutan.
+   --i och --antal sätts av main.js; platserna ligger i --x. */
 .film-slides {
-  display: flex;
-  align-items: stretch;
-  gap: 2px;
-  padding: 2px;
   background: #0e0e0e;
+  padding: 3px;
 }
 .film-slides img {
-  flex: 1 1 0;
-  min-width: 0;
-  height: 100%;
-  /* Tre affischer i en liten liggande ruta: cover fyller varje spalt,
-     contain hade lämnat dem som frimärken i luften. */
-  object-fit: cover;
-  opacity: 0.85;
-  transition: opacity 0.35s var(--ease);
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: var(--x);
+  transform: translateX(-50%);
+  width: auto;
+  height: calc(100% - 6px);
+  object-fit: contain;
+  opacity: 0;
+  animation: affischTon calc(var(--antal) * 3.4s) ease-in-out infinite;
+  animation-delay: calc(var(--i) * 3.4s);
 }
-.film-item:hover .film-slides img,
-.film-item:focus-within .film-slides img { opacity: 1; }
+@keyframes affischTon {
+  0%   { opacity: 0; }
+  6%   { opacity: 1; }
+  30%  { opacity: 1; }
+  38%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+/* Står den still ska ändå alla synas — då bredvid varandra i stället
+   för på sina fadingplatser, som annars hade legat över varandra. */
+body.reduced-motion .film-slides img {
+  animation: none;
+  opacity: 1;
+  left: calc((var(--i) + 0.5) / var(--antal) * 100%);
+  width: calc(100% / var(--antal) - 4px);
+  object-fit: cover;
+}
 .film-slides:not(.is-empty) .fs-empty { display: none; }
 
 /* 004 + 005 — skylt i stället för stillbild */
