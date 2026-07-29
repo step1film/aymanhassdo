@@ -507,11 +507,11 @@
       price: 459,
       colors: ['pastel'],
       sizes: ['XS', 'S', 'M', 'L', 'XL'], defaultSize: 'M',
-      image: 'assets/products/step1-jersey.webp',
-      gallery: [
-        'assets/products/step1-jersey.webp',
-        'assets/products/step1-jersey-5.webp'
-      ]
+      /* Bilderna är borttagna igen — kortet visar SVG-mockupen så
+         länge. Ladda upp nya i assets/products/ och säg till, så
+         sätter jag tillbaka image + gallery här. */
+      image: null,
+      gallery: []
     }
 
     /* ===================================================
@@ -605,7 +605,11 @@
   /* Tillfälligt dolda — slut hos Printful. Ta bort id:t ur listan för
      att visa produkten igen; allt annat (bilder, priser, variant-id)
      ligger kvar orört. */
-  const HIDDEN = ['crew-tee', 'ad1-beanie'];
+  const HIDDEN = [
+    'crew-tee',      // slut hos Printful
+    'ad1-beanie',    // slut hos Printful
+    'step1-jersey'   // väntar på nya bilder — allt annat ligger klart
+  ];
   
     const PRODUCT_ORDER = [
     '24fps-hoodie',        // 899 · Filmfavorit — ankare + starkaste berättelsen
@@ -831,7 +835,9 @@
       });
       wrap.appendChild(img);
     } else {
-      wrap.innerHTML = SVG[product.type](product.print);
+      // Saknas mockup för produkttypen får rutan stå tom — det får
+      // aldrig krascha hela butiken (då försvinner alla produkter).
+      wrap.innerHTML = SVG[product.type] ? SVG[product.type](product.print) : '';
     }
     return wrap;
   }
