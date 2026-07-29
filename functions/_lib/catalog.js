@@ -111,7 +111,7 @@ const CATALOG = {
     variants: { 'forest|one': 5415372317 }
   },
   'step1-jersey': {
-    name: 'STEP1 JERSEY', price: 459,
+    name: 'STEP1 JERSEY', price: 529,
     variants: {
       'pastel|XS': 5415333024, 'pastel|S': 5415333025, 'pastel|M': 5415333026,
       'pastel|L': 5415333027, 'pastel|XL': 5415333028

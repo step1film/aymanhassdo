@@ -13,7 +13,10 @@
   'use strict';
 
   const COMPANY = {
-    legalName: 'Ayman Hassdo',
+    /* Namnet kunden möter i sidfot och på villkorssidorna.
+       Organisationsnumret nedan visas på Köpvillkor och är det som
+       formellt identifierar säljaren. */
+    legalName: 'STEP1FILM',
     /* Organisationsnummer (enskild firma = personnummer).
        Visas enbart på Köpvillkor-sidan — inte i sidfoten på varje
        sida — för att uppfylla informationskravet med minsta möjliga

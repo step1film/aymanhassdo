@@ -228,11 +228,33 @@
     const nextBtn = document.getElementById('hNext');
     if (!hWrapper || !panels.length) return;
 
-    const LABELS = () => window.STEP1FILM_NAV_LABELS || ['Films', 'About', 'Practice', 'Press', 'Contact'];
+    const LABELS = () => window.STEP1FILM_NAV_LABELS || ['The Filmmaker', 'Selected Works', 'What We Do', 'Press', 'Contact'];
     const TOTAL = panels.length;
     const fmt = n => String(n + 1).padStart(2, '0');
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
+
+    /* --- Fokusenheten ---
+       Rullningen 0–1 läses av som ett fokusavstånd: närgränsen 0,6 m
+       vid showreelen, oändligt längst ned. Kurvan är hyperbolisk som
+       på en riktig objektivskala — tätt i början, glest mot slutet. */
+    const idxEl  = document.getElementById('fuIndex');
+    const distEl = document.getElementById('fuDist');
+    const NARA = 0.6;      // meter — objektivets närgräns
+    const FJARRAN = 24;    // bortom detta står det ∞
+
+    const enhetEl = document.querySelector('.fu-unit');
+    function visaFokus(p) {
+      p = Math.max(0, Math.min(1, p));
+      if (idxEl) idxEl.style.top = (p * 100).toFixed(2) + '%';
+      if (!distEl) return;
+      // 1/avstånd rör sig linjärt — det är så en fokusskala är graderad
+      const d = 1 / ((1 / NARA) * (1 - p) + (1 / (FJARRAN * 3)) * p);
+      const oandligt = d >= FJARRAN;
+      distEl.textContent = oandligt ? '\u221E' : d >= 10 ? d.toFixed(0) : d.toFixed(1);
+      // "∞ m" betyder ingenting — meterbeteckningen tas bort där
+      if (enhetEl) enhetEl.style.visibility = oandligt ? 'hidden' : '';
+    }
 
     // Byt språk → skriv om den synliga sektionsetiketten direkt
     document.addEventListener('s1f:langchange', () => {
@@ -273,6 +295,8 @@
         if (i === 0) reportCover(progress);
       });
 
+      visaFokus(scrolledIn / (TOTAL * vh));
+
       const panelIdx = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolledIn / vh) - 1));
       setActive(panelIdx);
 
@@ -303,6 +327,8 @@
           const vh = window.innerHeight;
           const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
           reportCover(1 - visible / vh);
+          const kvar = document.documentElement.scrollHeight - vh;
+          visaFokus(kvar > 0 ? window.scrollY / kvar : 0);
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
@@ -334,8 +360,11 @@
       focusEl.focus({ preventScroll: true });
       if (!had) focusEl.addEventListener('blur', () => focusEl.removeAttribute('tabindex'), { once: true });
     }
+    document.querySelectorAll('a[href="#about"]').forEach((a) => {
+      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(0, document.getElementById('about')); });
+    });
     document.querySelectorAll('a[href="#films"]').forEach((a) => {
-      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(0, document.getElementById('films')); });
+      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(1, document.getElementById('films')); });
     });
     document.querySelectorAll('a[href="#hero"]').forEach((a) => {
       a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(-1, document.getElementById('hero')); });
@@ -630,6 +659,66 @@
   }
 
   /* --------------------------------------------------
+     PROJEKTFÖRFRÅGAN — panel 05
+     Skickas till funktionen collab, som mejlar vidare till
+     collaboration@step1film.se. Går det inte fram får besökaren
+     adressen så hen kan skriva direkt i stället.
+  -------------------------------------------------- */
+  const COLLAB_MAIL = 'collaboration@step1film.se';
+
+  function initCollabForm() {
+    const form = document.getElementById('collabForm');
+    const status = document.getElementById('cfStatus');
+    if (!form || !status) return;
+
+    const t = (nyckel, reserv) => (window.STEP1FILM_I18N && window.STEP1FILM_I18N.t(nyckel)) || reserv;
+    const api = (window.STEP1FILM_API || 'https://step1film.netlify.app/.netlify/functions').replace(/\/$/, '');
+
+    function säg(text, sort) {
+      status.textContent = text;
+      status.className = 'cf-status' + (sort ? ' cf-status--' + sort : '');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData(form).entries());
+
+      if (!String(d.name || '').trim() || !String(d.email || '').trim() || !String(d.pitch || '').trim()) {
+        säg(t('cfMissing', 'Fyll i namn, e-post och din idé.'), 'fel');
+        return;
+      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(d.email).trim())) {
+        säg(t('cfBadEmail', 'Kontrollera e-postadressen.'), 'fel');
+        return;
+      }
+
+      const knapp = form.querySelector('.cf-send');
+      knapp.disabled = true;
+      säg(t('cfSending', 'Skickar …'));
+
+      try {
+        const r = await fetch(api + '/collab', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(d)
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        form.reset();
+        säg(t('cfOk', 'Tack! Mejlet är skickat — du hör från oss.'), 'ok');
+      } catch {
+        // Servern kan vara avstängd — ge adressen så det inte blir en återvändsgränd
+        säg(t('cfFail', 'Det gick inte att skicka just nu. Mejla oss direkt:'), 'fel');
+        const a = document.createElement('a');
+        a.href = 'mailto:' + COLLAB_MAIL;
+        a.textContent = COLLAB_MAIL;
+        status.append(' ', a);
+      } finally {
+        knapp.disabled = false;
+      }
+    });
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -638,6 +727,7 @@
     initTweaks();
     initHeroVideo();
     initFilmMedia();
+    initCollabForm();
     initLoader(() => {
       document.body.classList.remove('is-loading');
       initScrollDriver();

@@ -502,16 +502,22 @@
     , {
       id: 'step1-jersey', cat: 'clothing', type: 'jersey', print: 'S1F',
       name: { sv: 'STEP1 JERSEY', en: 'STEP1 JERSEY' },
-      desc: { sv: 'FILM CREW 23 på ryggen — ett lag som inte spelar boll, utan gör film. Pastellspektrumet löper hela vägen runt plagget. Allover-tryck, återvunnen polyester.', en: 'FILM CREW 23 across the back — a team that doesn\'t play ball, it makes films. The pastel spectrum runs the whole way around. All-over print, recycled polyester.' },
+      desc: { sv: 'FILM CREW 88 på ryggen — ett lag som inte spelar boll, utan gör film. Pastellspektrumet löper hela vägen runt plagget. Allover-tryck, återvunnen polyester.', en: 'FILM CREW 88 across the back — a team that doesn\'t play ball, it makes films. The pastel spectrum runs the whole way around. All-over print, recycled polyester.' },
       material: { sv: ['Allover-tryck, återvunnen polyester', 'Ledig passform', 'Ärmlös'], en: ['All-over print, recycled polyester', 'Relaxed fit', 'Sleeveless'] },
-      price: 459,
+      price: 529,
       colors: ['pastel'],
       sizes: ['XS', 'S', 'M', 'L', 'XL'], defaultSize: 'M',
-      /* Bilderna är borttagna igen — kortet visar SVG-mockupen så
-         länge. Ladda upp nya i assets/products/ och säg till, så
-         sätter jag tillbaka image + gallery här. */
-      image: null,
-      gallery: []
+      image: 'assets/products/step1-jersey.webp',
+      gallery: [
+        'assets/products/step1-jersey.webp',
+        'assets/products/step1-jersey-1.webp',
+        'assets/products/step1-jersey-2.webp',
+        'assets/products/step1-jersey-3.webp',
+        'assets/products/step1-jersey-4.webp',
+        'assets/products/step1-jersey-5.webp',
+        'assets/products/step1-jersey-6.webp',
+        'assets/products/step1-jersey-7.webp'
+      ]
     }
 
     /* ===================================================
@@ -606,16 +612,15 @@
      att visa produkten igen; allt annat (bilder, priser, variant-id)
      ligger kvar orört. */
   const HIDDEN = [
-    'crew-tee',      // slut hos Printful
-    'ad1-beanie',    // slut hos Printful
-    'step1-jersey'   // väntar på nya bilder — allt annat ligger klart
+    'crew-tee',     // slut hos Printful
+    'ad1-beanie'    // slut hos Printful
   ];
   
     const PRODUCT_ORDER = [
     '24fps-hoodie',        // 899 · Filmfavorit — ankare + starkaste berättelsen
     'rolling-backpack',    // 779 · Bestseller — håller ankaret uppe
     'take-one-sleeve',     // 599 · Trend — första prissänkningen känns som en lättnad
-    'step1-jersey',        // 459 · Nyhet — laget, håller kvar i det höga spannet
+    'step1-jersey',        // 529 · Nyhet — laget, håller kvar i det höga spannet
     'awesome-mugg',        // 249 · Mest populär — det lilla första ja:et
     'action-dad-cap',      // 399 · Nyhet
     'spoiler-hoodie',      // 799 · kontrast tillbaka uppåt

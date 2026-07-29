@@ -60,29 +60,29 @@
       p2Title: 'Filmaren',
       portraitCap: 'Ayman Hassdo &nbsp;·&nbsp; Småland',
       aboutLead: 'Ayman Hassdo är en bred filmskapare som arbetar som regissör, filmfotograf, manusförfattare, ljuddesigner, producent och kompositör.',
-      aboutBody: 'Född i Al-Hassake i Syrien och uppvuxen på landsbygden. Flyttade till Damaskus 2007 för att satsa på musiken och lärde sig film på egen hand när tillgången var knapp. Kom till Sverige som flykting 2013 — lärde sig svenska och regisserade sedan sin första dokumentär om vad det innebär att lära sig ett nytt språk. Studerade film på Öland 2017, där han färdigställde en biografisk poesidokumentär. I dag arbetar han som frilans från en liten by utanför Jönköping, i Småland.',
+      aboutBody: 'Född i Al-Hassake i Syrien och uppvuxen på landsbygden. Flyttade till Damaskus 2007 för att satsa på musiken och lärde sig film på egen hand när tillgången var knapp. Kom till Sverige som flykting 2013 — lärde sig svenska och regisserade sedan sin första dokumentär om vad det innebär att lära sig ett nytt språk. Studerade film på Öland 2017, där han färdigställde en biografisk poesidokumentär. I dag arbetar han som frilans från en liten by i Småland.',
       aboutQuiet: 'Arbetet är format av två länder och en övertygelse — att film kan ge plats åt medmänsklighet, klimat och kultur utan att höja rösten.',
       aboutNumsAria: 'Verksamhet',
       an1: 'Kom till Sverige',
       an2: 'Filmskola, Öland',
       an3: 'Discipliner',
 
-      /* --- Panel 03: Vad jag gör --- */
-      p3Title: 'Det jag helst gör',
-      p3Meta: 'Discipliner & leveranser',
-      p3Intro: 'Jag gillar att hitta lösningar — genom film, teknik och kod. Och lika mycket att föra vidare det jag lärt mig: pedagogiskt arbete med både barn och vuxna.',
-      aw1: 'Regi',
-      aw1d: 'Långfilm, kortfilm, dokumentär, reklam. Från manus till leverans.',
-      aw2: 'Skrivande',
-      aw2d: 'Allt börjar på pappret. Jag måste se scenen stå still innan kameran får röra sig.',
-      aw3: 'Ljud & musik',
-      aw3d: 'Ljuddesign, mixning och originalmusik.',
-      aw4: 'Klipp & färg',
-      aw4d: 'Bildklipp, färgläggning och finish för festival och webb.',
-      aw5: 'Foto (stillbild)',
-      aw5d: 'Stillbild, porträtt och redaktionellt — stillsamt, i befintligt ljus.',
-      aw6: 'Företagsfilm',
-      aw6d: 'Reklamfilm och företagsfilm, producerad från Småland.',
+      /* --- Panel 03: Vad vi kan göra --- */
+      p3Title: 'Vad vi kan göra<br>för ditt filmprojekt',
+      p3Meta: 'Från första samtalet till färdig mix',
+      p3Intro: 'Skicka ett mejl med var projektet står, vad det handlar om, och en länk till rörligt material om det finns. Sedan tar vi ett onlinemöte och bestämmer en plan tillsammans.',
+      aw1: 'Vi planerar projektet',
+      aw1d: 'Ett onlinemöte när du skickat projektstatus, projektbeskrivning och länk till ditt material.',
+      aw2: 'Vi utvecklar ditt manus',
+      aw2d: 'Vi hjälper dig ta idén från anteckning till ett manus som håller.',
+      aw3: 'Vi filmar din film',
+      aw3d: 'Vi filmar — kamera, ljus och regi på plats.',
+      aw4: 'Vi klipper',
+      aw4d: 'Bildklipp och färg, tills filmen hittar sin rytm.',
+      aw5: 'Vi ljudlägger och mixar',
+      aw5d: 'Ljuddesign, musik och den färdiga mixen.',
+      aw6: 'Vi kopplar dig rätt',
+      aw6d: 'Vi hjälper din vision fram genom att koppla dig till de filmmedarbetare den behöver.',
 
       /* --- Panel 04: Press --- */
       p4Title: 'Med&nbsp;deras<br>ord',
@@ -98,18 +98,25 @@
 
       /* --- Panel 05: Kontakt --- */
       p5Title: 'Nu<br>kör vi',
-      contactIntro: 'Tillgänglig för regi, foto och reklamfilm — baserad i Småland, arbetar var som helst. Festivalprogrammare och produktionsbolag är välkomna.',
-      crEmail: 'E-post',
-      crPortfolio: 'Portfolio',
-      crRates: 'Tjänster & priser',
-      crRatesVal: 'På förfrågan',
+      contactIntro: 'Pitcha din idé i några rader, bifoga ditt material och låt oss prata därefter. ;)',
+      cfName: 'Namn',
+      cfEmail: 'E-post',
+      cfLink: 'Länk till ditt material',
+      cfOptional: 'valfritt',
+      cfPitch: 'Din idé',
+      cfSend: 'Skicka',
+      cfSending: 'Skickar …',
+      cfOk: 'Tack! Mejlet är skickat — du hör från oss.',
+      cfFail: 'Det gick inte att skicka just nu. Mejla oss direkt:',
+      cfMissing: 'Fyll i namn, e-post och din idé.',
+      cfBadEmail: 'Kontrollera e-postadressen.',
       crBased: 'Baserad i',
-      crBasedVal: 'Jönköping, Småland',
+      crBasedVal: 'Småland',
 
       /* --- Navigation --- */
-      navFilms: 'Filmer',
-      navAbout: 'Om',
-      navPractice: 'Verksamhet',
+      navFilms: 'Utvalda arbeten',
+      navAbout: 'Filmskaparen',
+      navPractice: 'Vad vi gör',
       navPress: 'Press',
       navContact: 'Kontakt',
       navAria: 'Sektionsnavigering',
@@ -117,7 +124,7 @@
       nextSection: 'Nästa sektion',
 
       /* --- Sidfot --- */
-      footCopy: '© 2026 Ayman Hassdo · Jönköping, Sverige'
+      footCopy: '© 2026 STEP1FILM · Småland, Sverige'
     },
 
     en: {
@@ -159,28 +166,28 @@
       p2Title: 'The<br>Filmmaker',
       portraitCap: 'Ayman Hassdo &nbsp;·&nbsp; Småland',
       aboutLead: 'Ayman Hassdo is a multi-disciplinary filmmaker working as a director, cinematographer, screenwriter, sound designer, producer and composer.',
-      aboutBody: 'Born in Al-Hassake, Syria, and raised in the countryside. Moved to Damascus in 2007 to pursue music; taught himself film when access to it was scarce. Arrived in Sweden as a refugee in 2013 — learned Swedish, then directed a first documentary on what it means to learn a new language. Studied film on Öland in 2017, where he completed a biography-poetry documentary. Today he works freelance from a small village outside Jönköping, in Småland.',
+      aboutBody: 'Born in Al-Hassake, Syria, and raised in the countryside. Moved to Damascus in 2007 to pursue music; taught himself film when access to it was scarce. Arrived in Sweden as a refugee in 2013 — learned Swedish, then directed a first documentary on what it means to learn a new language. Studied film on Öland in 2017, where he completed a biography-poetry documentary. Today he works freelance from a small village in Småland.',
       aboutQuiet: 'The work is shaped by two countries and one belief — that film can hold space for humanity, climate and culture without raising its voice.',
       aboutNumsAria: 'Practice',
       an1: 'Arrived in Sweden',
       an2: 'Film school, Öland',
       an3: 'Disciplines',
 
-      p3Title: 'What I Like To Do',
-      p3Meta: 'Disciplines & deliverables',
-      p3Intro: 'I like inventing solutions — through film, technology and code. And just as much, I love passing on what I’ve learned: pedagogical work with children and grown-ups alike.',
-      aw1: 'Direction',
-      aw1d: 'Feature, short, documentary, commercial. From script to delivery.',
-      aw2: 'Writing',
-      aw2d: 'It all starts on paper. I need to see the scene hold still before the camera is allowed to move.',
-      aw3: 'Sound & Music',
-      aw3d: 'Sound design, mixing and original score.',
-      aw4: 'Editing & Colour',
-      aw4d: 'Picture edit, grade and finish for festival and online delivery.',
-      aw5: 'Photography',
-      aw5d: 'Stills, portrait and editorial — quiet, available-light work.',
-      aw6: 'Corporate film',
-      aw6d: 'Commercial and corporate film, produced from Småland.',
+      p3Title: 'What we can do<br>for your film project',
+      p3Meta: 'From first call to final mix',
+      p3Intro: 'Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we take an online meeting and set a plan together.',
+      aw1: 'We plan the project',
+      aw1d: 'An online meeting once you have sent your project status, a description, and a link to any material.',
+      aw2: 'We develop your script',
+      aw2d: 'We help you take the idea from a note to a screenplay that holds.',
+      aw3: 'We shoot your film',
+      aw3d: 'We film it — camera, light and direction on set.',
+      aw4: 'We edit',
+      aw4d: 'Picture edit and grade, until the film finds its rhythm.',
+      aw5: 'We do sound and mix',
+      aw5d: 'Sound design, music and the final mix.',
+      aw6: 'We connect you right',
+      aw6d: 'We help your vision along by connecting you to the film crew it needs.',
 
       p4Title: 'In&nbsp;their<br>words',
       p4Meta: 'Press & client notes',
@@ -194,24 +201,31 @@
       pq3m: 'Sveriges Radio P4',
 
       p5Title: 'Let’s<br>Work',
-      contactIntro: 'Available for direction, cinematography and commercial work — based in Småland, working anywhere. Festival programmers and production companies welcome.',
-      crEmail: 'Email',
-      crPortfolio: 'Portfolio',
-      crRates: 'Services & rates',
-      crRatesVal: 'On request',
+      contactIntro: 'Pitch your idea in a few lines, attach your material, and let’s talk from there. ;)',
+      cfName: 'Name',
+      cfEmail: 'Email',
+      cfLink: 'Link to your material',
+      cfOptional: 'optional',
+      cfPitch: 'Your idea',
+      cfSend: 'Send',
+      cfSending: 'Sending …',
+      cfOk: 'Thank you! Your message is on its way — you will hear from us.',
+      cfFail: 'That did not go through. Email us directly:',
+      cfMissing: 'Please fill in name, email and your idea.',
+      cfBadEmail: 'Please check the email address.',
       crBased: 'Based in',
-      crBasedVal: 'Jönköping, Småland',
+      crBasedVal: 'Småland',
 
-      navFilms: 'Films',
-      navAbout: 'About',
-      navPractice: 'Practice',
+      navFilms: 'Selected Works',
+      navAbout: 'The Filmmaker',
+      navPractice: 'What We Do',
       navPress: 'Press',
       navContact: 'Contact',
       navAria: 'Section navigation',
       prevSection: 'Previous section',
       nextSection: 'Next section',
 
-      footCopy: '© 2026 Ayman Hassdo · Jönköping, Sweden'
+      footCopy: '© 2026 STEP1FILM · Småland, Sweden'
     }
   };
 
@@ -247,8 +261,9 @@
     });
 
     // Sektionsnamnen i sidonavigeringen läses av main.js
+    // Samma ordning som panelerna: 01 filmskaparen, 02 utvalda arbeten
     window.STEP1FILM_NAV_LABELS =
-      [t('navFilms'), t('navAbout'), t('navPractice'), t('navPress'), t('navContact')];
+      [t('navAbout'), t('navFilms'), t('navPractice'), t('navPress'), t('navContact')];
     document.dispatchEvent(new CustomEvent('s1f:langchange', { detail: { lang } }));
   }
 

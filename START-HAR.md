@@ -103,6 +103,7 @@ villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
 - [ ] **4.11** 🙋 *Domains* → lägg till `step1film.se`. Resend ger dig tre DNS-poster (SPF, DKIM, DMARC) att lägga in hos one.com. **Rör inte MX-posterna** — de styr din inkommande post.
 - [ ] **4.12** 🙋 *API Keys* → skapa en nyckel. Lägg i Netlify som hemlig variabel `RESEND_API_KEY`.
 - [ ] **4.13** 🙋 Lägg också `EMAIL_FROM` = `STEP1FILM STORE <shop@step1film.se>` (vanlig variabel, inte hemlig). Vill du ha en dold kopia själv: `EMAIL_BCC` = `shop@step1film.se`.
+- [ ] **4.14** 🙋 Skapa adressen `collaboration@step1film.se` hos one.com. Formuläret på startsidan (panel 05) mejlar dit — samma två nycklar som ovan driver det.
 
 > Hoppar du över det här slutar ingenting att fungera — betalningen går
 > igenom, ordern hamnar hos Printful, och mejlet loggas i Netlify så du
@@ -128,10 +129,11 @@ Gör bara detta när ett helt testköp gått igenom felfritt.
 
 ## Kan göras när som helst — oberoende av allt ovan
 
-- [ ] 🙋 **Logotyper** till reklamraden → `assets/clients/`
-- [ ] 🙋 **Affischer** till kortfilmerna → `assets/films/posters/`
-- [ ] 🙋 Bilder som fortfarande saknas: `take-one-sleeve-3.png`, `backpack-pink-2.png`, `hoodie-24fps-black-7.png`
-- [ ] 🙋 Nya bilder till **Step1 Jersey** och **On Set Cap** (produkterna ligger färdigskrivna och väntar)
+- [x] 🙋 ✅ **Logotyper** till reklamraden — tio stycken, tvättade och på plats
+- [x] 🙋 ✅ **Affischer** till kortfilmerna — tre stycken
+- [ ] 🙋 Bilder som fortfarande saknas: `take-one-sleeve-3`, `backpack-pink-2`, `hoodie-24fps-black-7`
+- [ ] 🙋 Bilder till **On Set Cap** (produkten ligger färdigskriven och väntar)
+- [ ] 🙋 Namn på två logotyper — `partner-08` (blå cirkel) och `partner-09` (mynt med ek)
 - [ ] 🤖 Material/passform saknas på 7 produkter — säg till så fyller jag i det jag kan och frågar om resten
 
 ---
@@ -147,6 +149,7 @@ Gör bara detta när ett helt testköp gått igenom felfritt.
 | "Betalning kunde inte skapas" | Miljövariabel saknas eller är felstavad i Netlify |
 | Order betald men inget i Printful | Webhookens signing secret stämmer inte |
 | Kunden får ingen bekräftelse | `RESEND_API_KEY`/`EMAIL_FROM` saknas, eller domänen är inte verifierad hos Resend |
+| Formuläret säger "gick inte att skicka" | Samma sak — eller så finns inte `collaboration@step1film.se` ännu |
 | Mejlen slutade fungera efter DNS | Namnservrarna byttes utan att MX-posterna följde med |
 
 Fastnar du: skicka felmeddelandet och vilket steg du står på, så tar vi det därifrån.
