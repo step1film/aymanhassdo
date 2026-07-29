@@ -14,8 +14,12 @@
   const isTouch =
     window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
+  /* Svepsystemet kräver både bredd OCH höjd. En telefon i liggande läge
+     är bred nog (t.ex. 932 px) men bara ~430 px hög — då fick filmlistan
+     171 px där den behöver 354 och halva innehållet försvann.
+     Håll i synk med media queries i style.css. */
   const isWideScreen = () =>
-    window.matchMedia && window.matchMedia('(min-width: 901px)').matches;
+    window.matchMedia && window.matchMedia('(min-width: 901px) and (min-height: 560px)').matches;
 
   if (prefersReducedMotion) document.body.classList.add('reduced-motion');
 
@@ -719,6 +723,50 @@
   }
 
   /* --------------------------------------------------
+     VRID ENHETEN
+     Visas bara när en vridning faktiskt lönar sig, alltså när
+     liggande läge skulle klara svepsystemets krav (901 px brett,
+     560 px högt). Uppmätt:
+       iPad Air     820×1180 → liggande 1180×820  ✔ visas
+       iPad mini    768×1024 → liggande 1024×768  ✔ visas
+       iPhone 14    390×844  → liggande  844×390  ✘ för smalt
+       iPhone Max   430×932  → liggande  932×430  ✘ för lågt
+     Att tjata om en vridning som ger en sämre sida vore bara i vägen.
+  -------------------------------------------------- */
+  function initRotateHint() {
+    const box = document.getElementById('rotate-hint');
+    const close = document.getElementById('rhClose');
+    if (!box || !isTouch) return;
+
+    const NYCKEL = 's1f_rotate_seen';
+    let sedd = false;
+    try { sedd = localStorage.getItem(NYCKEL) === '1'; } catch {}
+    if (sedd) return;
+
+    // Vinner vi något på att vrida? Bredd och höjd byter plats.
+    const lonarSig = () =>
+      window.innerHeight > window.innerWidth &&      // står stående nu
+      window.innerHeight >= 901 &&                   // blir bredden
+      window.innerWidth >= 560;                      // blir höjden
+
+    function gom() {
+      box.classList.remove('in');
+      setTimeout(() => { box.hidden = true; }, 450);
+      try { localStorage.setItem(NYCKEL, '1'); } catch {}
+    }
+
+    if (!lonarSig()) return;
+    box.hidden = false;
+    requestAnimationFrame(() => box.classList.add('in'));
+
+    close.addEventListener('click', gom);
+    // Vred hen på enheten är saken avklarad
+    window.addEventListener('resize', () => { if (!lonarSig()) gom(); }, { passive: true });
+    // Står den kvar stående ändå ska den inte blockera sidan för evigt
+    setTimeout(() => { if (!box.hidden) gom(); }, 9000);
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -731,6 +779,7 @@
     initLoader(() => {
       document.body.classList.remove('is-loading');
       initScrollDriver();
+      initRotateHint();
     });
   }
 

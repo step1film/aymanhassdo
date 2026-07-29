@@ -27,6 +27,11 @@
       skipIntroAria: 'Hoppa över introt och gå till sidan',
       loaderLabel: 'ROLL &nbsp;·&nbsp; LJUD &nbsp;·&nbsp; TAGNING',
 
+      /* --- Vrid enheten --- */
+      rotateTitle: 'Vrid enheten',
+      rotateBody: 'Liggande läge ger dig hela versionen — samma som på en dator.',
+      rotateStay: 'Behåll som det är',
+
       /* --- Hero --- */
       playShowreel: 'SPELA SHOWREEL',
       showreel: 'Showreel',
@@ -71,6 +76,7 @@
       p3Title: 'Vad vi kan göra<br>för ditt filmprojekt',
       p3Meta: 'Från första samtalet till färdig mix',
       p3Intro: 'Skicka ett mejl med var projektet står, vad det handlar om, och en länk till rörligt material om det finns. Sedan tar vi ett onlinemöte och bestämmer en plan tillsammans.',
+      aboutMail: 'Skriv till Ayman',
       aw1: 'Vi planerar projektet',
       aw1d: 'Ett onlinemöte när du skickat projektstatus, projektbeskrivning och länk till ditt material.',
       aw2: 'Vi utvecklar ditt manus',
@@ -136,6 +142,10 @@
       skipIntroAria: 'Skip intro and enter site',
       loaderLabel: 'ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION',
 
+      rotateTitle: 'Turn your device',
+      rotateBody: 'Landscape gives you the full version — the same one you get on a computer.',
+      rotateStay: 'Stay as it is',
+
       playShowreel: 'PLAY SHOWREEL',
       showreel: 'Showreel',
       enterSite: 'Enter site',
@@ -176,6 +186,7 @@
       p3Title: 'What we can do<br>for your film project',
       p3Meta: 'From first call to final mix',
       p3Intro: 'Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we take an online meeting and set a plan together.',
+      aboutMail: 'Write to Ayman',
       aw1: 'We plan the project',
       aw1d: 'An online meeting once you have sent your project status, a description, and a link to any material.',
       aw2: 'We develop your script',

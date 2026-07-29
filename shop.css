@@ -92,6 +92,10 @@ body::before {
   white-space: nowrap;
 }
 .logo-text span { color: var(--accent); }
+/* Samma färgbyte som i hero och på skyltarna: rött blir vitt, vitt rött */
+.logo-text, .logo-text span { transition: color 0.35s var(--ease); }
+a.logo-text:hover, a.logo-text:focus-visible { color: var(--accent); }
+a.logo-text:hover span, a.logo-text:focus-visible span { color: var(--white); }
 .logo-text small {
   display: block;
   font-family: var(--ff-body);

@@ -57,7 +57,7 @@ or custom cursor).
 - Size selection (clothing) and category filtering.
 - Cart with quantity control, saved in `localStorage`.
 - **SV / EN** language toggle (remembered between visits).
-- Checkout collects the order and opens a pre-filled e-mail to `step1film@gmail.com`.
+- Checkout runs through Stripe (card + Klarna); the order confirmation goes out from `shop@step1film.se`.
 
 **Editing the store** — open `shop.js`:
 - `PRODUCTS` — add/rename items, set prices, colours and sizes.

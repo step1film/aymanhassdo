@@ -54,7 +54,7 @@
           "addressRegion": "Småland",
           "addressCountry": "SE"
         },
-        "email": "mailto:step1film@gmail.com",
+        "email": "mailto:info@step1film.se",
         "knowsLanguage": ["English", "Swedish", "Arabic"],
         "knowsAbout": ["Film direction", "Cinematography", "Documentary film", "Sound design", "Photography", "Colour grading", "Film editing"],
         "sameAs": [
@@ -125,6 +125,25 @@
     </button>
   </div>
 
+
+  <!-- =====================================================
+       02. VRID ENHETEN — visas bara på surfplattor i stående läge,
+           där liggande läge faktiskt ger datorupplevelsen.
+  ====================================================== -->
+  <div id="rotate-hint" hidden>
+    <div class="rh-card" role="status" aria-live="polite">
+      <div class="rh-device" aria-hidden="true">
+        <span class="rh-screen"></span>
+        <svg class="rh-arrow" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M8 24a16 16 0 0 1 27-11.6" stroke-linecap="round"></path>
+          <polyline points="35,4 35,13 26,13" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+      </div>
+      <p class="rh-title" data-i18n="rotateTitle">Turn your device</p>
+      <p class="rh-body" data-i18n="rotateBody">Landscape gives you the full version — the same one you get on a computer.</p>
+      <button type="button" class="rh-close" id="rhClose" data-i18n="rotateStay">Stay as it is</button>
+    </div>
+  </div>
 
   <!-- =====================================================
        03. SITE PAGE
@@ -201,6 +220,10 @@
                     <span class="anlabel" data-i18n="an3">Disciplines</span>
                   </div>
                 </div>
+                <a class="about-mail" href="mailto:ayman@step1film.se">
+                  <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                  <span class="am-val">ayman@step1film.se</span>
+                </a>
               </div>
             </div>
           </section>
@@ -311,10 +334,8 @@
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">03</span>
                 <h2 class="panel-title" id="awards-title" data-i18n-html="p3Title">What we can do<br>for your film project</h2>
-                <span class="panel-meta" data-i18n="p3Meta">From first call to final mix</span>
               </div>
-              <p class="panel-intro" data-i18n="p3Intro">Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we take an online meeting and set a plan together.</p>
-              <div class="awards-list" role="list">
+              <div class="awards-list awards-list--even" role="list">
                 <div class="award-row" role="listitem">
                   <span class="aw-year">01</span>
                   <span class="aw-name" data-i18n="aw1">Plan the project</span>
@@ -392,6 +413,7 @@
                 <h2 class="panel-title" id="contact-title" data-i18n-html="p5Title">Let’s<br>Work</h2>
               </div>
               <p class="contact-intro" data-i18n="contactIntro">Pitch your idea in a few lines, attach your material, and let’s talk from there. ;)</p>
+              <p class="contact-intro contact-intro--quiet" data-i18n="p3Intro">Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we take an online meeting and set a plan together.</p>
 
               <form class="collab-form" id="collabForm" novalidate>
                 <div class="cf-row">
@@ -484,7 +506,7 @@
           <span class="foot-copy" data-i18n="footCopy">© 2026 STEP1FILM · Småland, Sweden</span>
         </div>
         <div class="foot-col foot-col--right">
-          <a class="foot-link" href="mailto:step1film@gmail.com">step1film@gmail.com</a>
+          <a class="foot-link" href="mailto:info@step1film.se">info@step1film.se</a>
           <a class="foot-link" href="https://aymanhassdo.myportfolio.com/" target="_blank" rel="noopener noreferrer">Portfolio</a>
         </div>
       </div>
