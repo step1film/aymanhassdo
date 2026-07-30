@@ -444,10 +444,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
    är. --spot-x/y sätts av main.js, --spot-r är hålets storlek. */
 :root {
   --panel-dim: 0.60;
-  --spot-x: -50vw;
-  --spot-y: -50vh;
-  --spot-r: 0px;
-  /* Hålets radie när markören är på plats. Ändra här. */
+  /* Startläge: mitt i rutan, så cirkeln finns redan innan man rört musen */
+  --spot-x: 50vw;
+  --spot-y: 50vh;
+  --spot-r: 110px;
+  /* Hålets radie. Ändra här. */
   --spot-hole: 110px;
 }
 .h-panel::before {
@@ -457,10 +458,18 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   z-index: 0;
   pointer-events: none;
   background: rgba(0, 0, 0, var(--panel-dim));
-  -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
-                        transparent 0%, transparent 42%, #000 100%);
-          mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
-                        transparent 0%, transparent 42%, #000 100%);
+}
+/* Hålet finns BARA där det finns en riktig pekare. På pekskärm blev
+   masken en radial-gradient med noll radie, och Safari tolkade den som
+   helt genomskinlig — hela det mörka lagret försvann och texten stod
+   direkt mot bakgrundsbilden. */
+@media (hover: hover) and (pointer: fine) {
+  .h-panel::before {
+    -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
+                          transparent 0%, transparent 42%, #000 100%);
+            mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
+                          transparent 0%, transparent 42%, #000 100%);
+  }
 }
 /* Innehållet måste ligga över det mörka lagret */
 .panel-inner { position: relative; z-index: 1; }
@@ -487,6 +496,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  /* Spalterna tar sin egen bredd och överskottet fördelas mellan dem,
+     i stället för att textspalten sträcks ut och lämnar ett tomrum
+     före CV-linjen. */
+  justify-content: space-between;
   gap: clamp(1.5rem, 3.4vw, 3.4rem);
   flex: 1;
   min-height: 0;
@@ -991,7 +1004,7 @@ body.reduced-motion .film-slides img {
   display: flex;
   flex-direction: column;
   gap: clamp(0.6rem, 1.5vh, 1rem);
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-height: 0;
   min-width: 0;
 }
@@ -1010,32 +1023,36 @@ body.reduced-motion .film-slides img {
 .about-scroll::-webkit-scrollbar { width: 4px; }
 .about-scroll::-webkit-scrollbar-thumb { background: var(--line-s); border-radius: 4px; }
 
+/* EN stil genom hela texten: samma typsnitt, samma grad, samma
+   radavstånd. Skillnaderna görs med vikt och färg, inte med storlek.
+   Smalare spalt gör att texten löper längre ned i stället för brett. */
 .about-lead,
 .about-body,
 .about-quote,
 .about-sign {
   font-family: var(--ff-body);
+  font-size: clamp(0.78rem, 0.95vw, 0.88rem);
   font-weight: 300;
-  line-height: 1.8;
+  line-height: 1.85;
   text-wrap: pretty;
+  max-width: 48ch;
 }
-.about-lead  { font-size: clamp(0.84rem, 1.05vw, 0.95rem); color: var(--white); }
-.about-body  { font-size: clamp(0.75rem, 0.92vw, 0.83rem); color: var(--text); }
+.about-lead  { color: var(--white); }
+.about-body  { color: var(--text); }
 .about-quote {
-  font-size: clamp(0.75rem, 0.92vw, 0.83rem);
   color: var(--white);
+  font-weight: 500;          /* tjockare, men samma grad */
   padding-left: 0.9rem;
   border-left: 2px solid var(--accent);
 }
 .about-sign {
-  font-size: clamp(0.75rem, 0.92vw, 0.83rem);
-  color: var(--text-dim);
+  color: var(--white);
   letter-spacing: 0.06em;
 }
 
 /* --- CV-spalten: står bredvid texten, inte under --- */
 .about-cv {
-  flex: 0 0 clamp(190px, 21vw, 268px);
+  flex: 0 0 clamp(200px, 22vw, 290px);
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -1696,11 +1713,22 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: clamp(1.2rem, 2.6vw, 2.8rem);
 }
-.cv-grid--three .cvb-row { grid-template-columns: 1fr; gap: 0.15rem; }
-.cv-grid--three .cvb-year { margin-bottom: 0.1rem; }
-.cv-grid--three .cvb-role { font-size: clamp(0.82rem, 1.05vw, 0.95rem); }
-.cv-grid--three .cvb-where { font-size: 0.7rem; }
-.cv-grid--three .cvb-note { font-size: 0.64rem; max-width: none; }
+.cv-grid--three .cvb-row { grid-template-columns: 1fr; gap: 0; }
+.cv-grid--three .cvb-year { margin-bottom: 0; font-size: clamp(0.56rem, 0.62vh, 0.68rem); }
+.cv-grid--three .cvb-role { font-size: clamp(0.7rem, 0.95vh, 0.92rem); line-height: 1.3; }
+.cv-grid--three .cvb-where { font-size: clamp(0.6rem, 0.72vh, 0.7rem); line-height: 1.35; }
+.cv-grid--three .cvb-note { font-size: clamp(0.55rem, 0.65vh, 0.64rem); line-height: 1.45; max-width: none; margin-top: 0.1rem; }
+.cv-grid--three .cvb-head { font-size: clamp(0.68rem, 1vh, 0.95rem); padding-bottom: 0.35rem; }
+/* Under ~760 px höjd blir utbildningsspalten för lång — sista raden
+   ströks. Här dras luft och grader ned ytterligare i stället för att
+   låta listan rulla. */
+@media (max-height: 780px) {
+  .cv-grid--three .cvb-row { padding: 0.12rem 0; }
+  .cv-grid--three .cvb-role { font-size: 0.72rem; line-height: 1.25; }
+  .cv-grid--three .cvb-where { font-size: 0.6rem; line-height: 1.3; }
+  .cv-grid--three .cvb-year { font-size: 0.55rem; }
+  .panel-inner--cv .panel-head { margin-bottom: 0; }
+}
 .cv-block { display: flex; flex-direction: column; gap: 0.7rem; min-height: 0; min-width: 0; }
 .cvb-head {
   font-family: var(--ff-display);
@@ -1712,23 +1740,20 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--line);
 }
+/* Ingen rullning här — allt ska rymmas. Raderna krymper i stället:
+   luften mellan dem och textgraderna skalas med panelhöjden. */
 .cvb-list {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-s) transparent;
+  overflow: hidden;
 }
-.cvb-list::-webkit-scrollbar { width: 4px; }
-.cvb-list::-webkit-scrollbar-thumb { background: var(--line-s); border-radius: 4px; }
 
 .cvb-row {
   display: grid;
   grid-template-columns: 6.5rem 1fr;
   gap: 0 clamp(0.8rem, 1.6vw, 1.4rem);
-  padding: clamp(0.5rem, 1.2vh, 0.9rem) 0;
+  padding: clamp(0.22rem, 0.75vh, 0.7rem) 0;
   border-bottom: 1px solid var(--line);
   align-items: baseline;
 }
@@ -1801,10 +1826,11 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   .about-portrait { width: min(210px, 54vw); margin-bottom: 1.1rem; }
   .portrait-cap { white-space: normal; font-size: 0.52rem; letter-spacing: 0.1em; line-height: 1.5; }
 
-  .about-lead  { font-size: 0.95rem; line-height: 1.7; }
-  .about-body  { font-size: 0.88rem; line-height: 1.75; }
-  .about-quote { font-size: 0.88rem; line-height: 1.7; }
-  .about-sign  { font-size: 0.88rem; }
+  .about-lead, .about-body, .about-quote, .about-sign {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    max-width: none;
+  }
 
   /* Adressraden staplas — etiketten fick tre rader bredvid mejlet */
   .about-mail {

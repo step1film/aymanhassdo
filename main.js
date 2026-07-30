@@ -308,6 +308,14 @@
       document.dispatchEvent(new CustomEvent('s1f:herocover', { detail: v }));
     }
 
+    /* Mjukstart och mjukstopp — smootherstep. Kurvan börjar och slutar
+       med noll hastighet, så svepet känns som en rörelse mellan två
+       nyckelbilder i stället för en linjär dragning. */
+    function mjuk(p) {
+      p = Math.max(0, Math.min(1, p));
+      return p * p * p * (p * (p * 6 - 15) + 10);
+    }
+
     /* --- Desktop: clip-path wipe driven by scrollY ---
        Skärm 0 är showreelen; panel i sveper in under skärm i+1. */
     function onScrollDesktop() {
@@ -315,12 +323,16 @@
 
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
       panels.forEach((panel, i) => {
-        const progress = Math.max(0, Math.min(1, (scrolledIn - i * vh) / vh));
+        const progress = mjuk((scrolledIn - i * vh) / vh);
         panel.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
         if (i === 0) reportCover(progress);
       });
 
-      visaFokus(scrolledIn / (TOTAL * vh));
+      /* Fokusräknaren följer samma kurva som svepet — annars hade
+         siffran glidit jämnt medan bilden rörde sig ojämnt. */
+      const steg = Math.max(0, Math.min(TOTAL, Math.floor(scrolledIn / vh)));
+      const inomSteg = mjuk(scrolledIn / vh - steg);
+      visaFokus((steg + inomSteg) / TOTAL);
 
       const panelIdx = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolledIn / vh) - 1));
       setActive(panelIdx);
@@ -480,7 +492,6 @@
     /* Ljushålet i panelernas mörka lager följer markören. Radien ligger
        i CSS (--spot-r) så den går att ändra på ett ställe. */
     const rot = document.documentElement;
-    const HÅL = getComputedStyle(rot).getPropertyValue('--spot-hole').trim() || '110px';
 
     let x = 0, y = 0, väntar = false;
     function måla() {
@@ -494,21 +505,16 @@
     window.addEventListener('mousemove', (e) => {
       x = e.clientX; y = e.clientY;
       if (!väntar) { väntar = true; requestAnimationFrame(måla); }
-      if (!el.classList.contains('visible')) {
-        el.classList.add('visible');
-        rot.style.setProperty('--spot-r', HÅL);
-      }
+      if (!el.classList.contains('visible')) el.classList.add('visible');
       // Röd ton när man pekar på något klickbart
       const påLänk = !!(e.target && e.target.closest &&
         e.target.closest('a,button,[role="button"],.h-dot,.h-arrow,.film-item'));
       el.classList.toggle('on-link', påLänk);
     }, { passive: true });
 
-    // Lämnar pekaren fönstret ska hålet slockna, inte frysa fast
-    document.addEventListener('mouseleave', () => {
-      el.classList.remove('visible');
-      rot.style.setProperty('--spot-r', '0px');
-    });
+    /* Cirkeln ligger kvar även när pekaren lämnar fönstret — bara
+       filmmärket tonas bort. Hålet ska alltid finnas. */
+    document.addEventListener('mouseleave', () => el.classList.remove('visible'));
   }
 
   /* --------------------------------------------------

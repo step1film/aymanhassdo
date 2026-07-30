@@ -27,7 +27,7 @@
 
     /* ---------- Köpvillkor ---------- */
     kv1: 'Terms of purchase',
-    kv2: 'The terms below apply when you shop as a consumer in STEP1 STORE.',
+    kv2: 'Terms of purchase for STEP1 STORE — prices, payment, delivery, right of withdrawal and complaints when you shop as a consumer.',
     kv3: 'Seller',
     kv4: 'Company',
     kv5: 'Company registration number',
@@ -65,7 +65,7 @@
 
     /* ---------- Retur & ångerrätt ---------- */
     ra1: 'Returns & right of withdrawal',
-    ra2: 'How to withdraw from a purchase or return an item from STEP1 STORE.',
+    ra2: 'How to withdraw from a purchase or return an item from STEP1 STORE. 14 days to change your mind, how the return works and when you get your money.',
     ra3: '14-day right of withdrawal',
     ra4: 'You have the right to withdraw from your purchase within <strong>14 days</strong> without giving any reason. The withdrawal period starts on the day you (or someone you have appointed) receive the item. If the order consists of several items delivered separately, the period runs from the day you received the last item.',
     ra5: 'The right of withdrawal follows the Swedish Distance and Off-Premises Contracts Act (2005:59).',
@@ -88,7 +88,7 @@
 
     /* ---------- Frakt & leverans ---------- */
     fl1: 'Shipping & delivery',
-    fl2: 'Delivery times, shipping cost and how we send your orders.',
+    fl2: 'Delivery time, shipping cost and tracking for STEP1 STORE. Everything is printed to order and shipped within the EU. Free shipping over 1,200 SEK.',
     fl3: 'Shipping cost',
     fl4: 'Standard shipping',
     fl5: 'SEK 79',
@@ -115,7 +115,7 @@
 
     /* ---------- Integritetspolicy ---------- */
     ip1: 'Privacy policy',
-    ip2: 'How STEP1 STORE processes your personal data under the GDPR.',
+    ip2: 'How STEP1 STORE processes your personal data under the GDPR — what we collect, why, for how long and what rights you have.',
     ip3: 'Data controller',
     ip4: 'Company',
     ip5: 'Address',
