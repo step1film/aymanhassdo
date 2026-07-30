@@ -193,11 +193,13 @@
           <!-- PANEL 01 — THE DREAM -->
           <section class="h-panel" id="about" data-panel="0" data-screen-label="01 The Dream" aria-labelledby="about-title">
             <div class="panel-inner panel-inner--about">
+
               <div class="about-portrait">
                 <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
                      alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
                 <p class="portrait-cap" data-i18n-html="portraitCap">Photo by Joel Arvidsson &nbsp;·&nbsp; Småland, Sweden</p>
               </div>
+
               <div class="about-content">
                 <div class="panel-head">
                   <span class="panel-num" aria-hidden="true">01</span>
@@ -213,36 +215,38 @@
                   <p class="about-sign" aria-hidden="true">/Ayman</p>
                 </div>
 
-                <div class="about-cv">
-                  <div class="cv-col">
-                    <span class="cv-head" data-i18n="cvSchool">Education</span>
-                    <div class="cv-row">
-                      <span class="cv-year">2009</span>
-                      <span class="cv-what">Music Institute, Damascus<em data-i18n="cvComposing">Composing</em></span>
-                    </div>
-                    <div class="cv-row">
-                      <span class="cv-year">2017&ndash;2018</span>
-                      <span class="cv-what">Ölands folkhögskola<em data-i18n="cvDoc">Film · Documentary</em></span>
-                    </div>
-                    <div class="cv-row">
-                      <span class="cv-year">2020&ndash;2023</span>
-                      <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvDistance">Distance</em></span>
-                    </div>
-                  </div>
-                  <div class="cv-col">
-                    <span class="cv-head" data-i18n="cvFilms">Films</span>
-                    <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
-                    <div class="cv-list" data-filmography>
-                      <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
-                    </div>
-                  </div>
-                </div>
-
                 <a class="about-mail" href="mailto:ayman@step1film.se">
                   <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
                   <span class="am-val">ayman@step1film.se</span>
                 </a>
               </div>
+
+              <!-- Tredje spalten: utbildning och filmer, bredvid texten -->
+              <aside class="about-cv" aria-label="CV">
+                <div class="cv-col">
+                  <span class="cv-head" data-i18n="cvSchool">Education</span>
+                  <div class="cv-row">
+                    <span class="cv-year">2009</span>
+                    <span class="cv-what">Music Institute, Damascus<em data-i18n="cvComposing">Composing</em></span>
+                  </div>
+                  <div class="cv-row">
+                    <span class="cv-year">2017&ndash;2018</span>
+                    <span class="cv-what">Ölands folkhögskola<em data-i18n="cvDoc">Film · Documentary</em></span>
+                  </div>
+                  <div class="cv-row">
+                    <span class="cv-year">2020&ndash;2023</span>
+                    <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvDistance">Distance</em></span>
+                  </div>
+                </div>
+                <div class="cv-col">
+                  <span class="cv-head" data-i18n="cvFilms">Films</span>
+                  <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
+                  <div class="cv-list" data-filmography>
+                    <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
+                  </div>
+                </div>
+              </aside>
+
             </div>
           </section>
 
@@ -388,41 +392,26 @@
             </div>
           </section>
 
-          <!-- PANEL 04 — PRESS / QUOTES
-               AVSTÄNGD. Ta bort hidden-attributet nedan för att visa den
-               igen — numrering, prickar, fokusenhet och rullhöjd räknas
-               om automatiskt i main.js. -->
-          <section class="h-panel" id="press" hidden data-panel="3" data-screen-label="04 Press" aria-labelledby="press-title">
-            <div class="panel-inner panel-inner--press">
+          <!-- PANEL 04 — CV -->
+          <section class="h-panel" id="press" data-panel="3" data-screen-label="04 CV" aria-labelledby="press-title">
+            <div class="panel-inner panel-inner--cv">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">04</span>
-                <h2 class="panel-title" id="press-title" data-i18n-html="p4Title">In&nbsp;their<br>words</h2>
-                <span class="panel-meta" data-i18n="p4Meta">Press & client notes</span>
+                <h2 class="panel-title" id="press-title" data-i18n-html="p4Title">CV</h2>
+                <span class="panel-meta" data-i18n="p4Meta">Experience &amp; filmography</span>
               </div>
-              <div class="press-grid">
-                <figure class="press-quote">
-                  <blockquote data-i18n="pq1">We see great potential in the film, which shows a unique side of the difficult process of fleeing war and adapting to a new society.</blockquote>
-                  <figcaption>
-                    <span class="pq-author" data-i18n="pq1a">GAZE — Region Jönköpings Län</span>
-                    <span class="pq-meta" data-i18n="pq1m">The GAZE talent programme</span>
-                  </figcaption>
-                </figure>
-                <figure class="press-quote">
-                  <blockquote data-i18n="pq2">I have never met anyone as driven as he is.</blockquote>
-                  <figcaption>
-                    <span class="pq-author" data-i18n="pq2a">Kjell Frick — media teacher</span>
-                    <span class="pq-meta" data-i18n="pq2m">SVT Nyheter Jönköping</span>
-                  </figcaption>
-                </figure>
-                <figure class="press-quote">
-                  <blockquote data-i18n="pq3">A documentary about what it is like to learn a new language.</blockquote>
-                  <figcaption>
-                    <span class="pq-author">Ayman Hassdo</span>
-                    <span class="pq-meta" data-i18n="pq3m">Sveriges Radio P4</span>
-                  </figcaption>
-                </figure>
+              <div class="cv-grid">
+                <div class="cv-block">
+                  <h3 class="cvb-head" data-i18n="cvExperience">Experience</h3>
+                  <!-- Fylls från STEP1FILM_CV i site-config.js -->
+                  <div class="cvb-list" data-cv></div>
+                </div>
+                <div class="cv-block cv-block--films">
+                  <h3 class="cvb-head" data-i18n="cvFilmography">Filmography</h3>
+                  <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
+                  <div class="cvb-list" data-filmography-full></div>
+                </div>
               </div>
-              <p class="press-note"></p>
             </div>
           </section>
 

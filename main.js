@@ -611,24 +611,77 @@
       }
     });
 
-    /* --- 01: filmografin i CV-rutan --- */
-    const filmer = window.STEP1FILM_FILMOGRAPHY || [];
-    document.querySelectorAll('[data-filmography]').forEach(box => {
-      const lista = filmer.filter(f => f && f.title);
-      if (!lista.length) return;            // tomlägestexten står kvar
-      box.textContent = '';
-      lista.forEach(f => {
-        const rad = document.createElement(f.url ? 'a' : 'span');
-        if (f.url) { rad.href = f.url; rad.target = '_blank'; rad.rel = 'noopener'; }
-        else rad.className = 'cv-item';
-        rad.innerHTML = `<span class="cv-year"></span><span class="cv-what"><em></em></span>`;
-        rad.querySelector('.cv-year').textContent = f.year || '';
-        const what = rad.querySelector('.cv-what');
-        what.insertBefore(document.createTextNode(f.title), what.firstChild);
-        what.querySelector('em').textContent = f.role || '';
-        box.appendChild(rad);
+    /* --- 01: filmografin i CV-spalten, kort form --- */
+    const sprak = () => (window.STEP1FILM_I18N && window.STEP1FILM_I18N.lang) || 'sv';
+    const tv = (v) => (v && typeof v === 'object') ? (v[sprak()] || v.sv || '') : (v || '');
+
+    const filmer = (window.STEP1FILM_FILMOGRAPHY || []).filter(f => f && f.title);
+    function ritaKortFilmografi() {
+      document.querySelectorAll('[data-filmography]').forEach(box => {
+        if (!filmer.length) return;         // tomlägestexten står kvar
+        box.textContent = '';
+        filmer.forEach(f => {
+          const rad = document.createElement(f.url ? 'a' : 'span');
+          if (f.url) { rad.href = f.url; rad.target = '_blank'; rad.rel = 'noopener'; }
+          else rad.className = 'cv-item';
+          rad.innerHTML = '<span class="cv-year"></span><span class="cv-what"><em></em></span>';
+          rad.querySelector('.cv-year').textContent = f.year || '';
+          const what = rad.querySelector('.cv-what');
+          what.insertBefore(document.createTextNode(f.title), what.firstChild);
+          what.querySelector('em').textContent = [tv(f.format), f.runtime].filter(Boolean).join(' · ');
+          box.appendChild(rad);
+        });
       });
-    });
+    }
+    /* --- 04: full filmografi och erfarenhet --- */
+    const cvPoster = window.STEP1FILM_CV || [];
+
+    function ritaCV() {
+      document.querySelectorAll('[data-cv]').forEach(box => {
+        box.textContent = '';
+        cvPoster.forEach(p => {
+          const rad = document.createElement('div');
+          rad.className = 'cvb-row';
+          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
+            + '<span class="cvb-role"></span><span class="cvb-where"></span></div>';
+          rad.querySelector('.cvb-year').textContent = tv(p.year);
+          rad.querySelector('.cvb-role').textContent = tv(p.role);
+          rad.querySelector('.cvb-where').textContent = tv(p.where);
+          box.appendChild(rad);
+        });
+      });
+
+      document.querySelectorAll('[data-filmography-full]').forEach(box => {
+        box.textContent = '';
+        filmer.forEach(f => {
+          const rad = document.createElement('div');
+          rad.className = 'cvb-row';
+          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
+            + '<span class="cvb-role"></span><span class="cvb-where"></span>'
+            + '<span class="cvb-note"></span></div>';
+          rad.querySelector('.cvb-year').textContent = f.year || '';
+
+          const titel = rad.querySelector('.cvb-role');
+          titel.textContent = f.title;
+          if (f.subtitle) {
+            const alt = document.createElement('em');
+            alt.textContent = ' “' + f.subtitle + '”';
+            titel.appendChild(alt);
+          }
+
+          const meta = [tv(f.format), f.runtime, tv(f.status)].filter(Boolean);
+          rad.querySelector('.cvb-where').textContent = meta.join(' · ');
+
+          const not = rad.querySelector('.cvb-note');
+          const nt = tv(f.note);
+          if (nt) not.textContent = nt; else not.remove();
+          box.appendChild(rad);
+        });
+      });
+    }
+    ritaKortFilmografi();
+    ritaCV();
+    document.addEventListener('s1f:langchange', () => { ritaKortFilmografi(); ritaCV(); });
 
     /* --- 002: samarbetslogotyper på en praxinoskoptrumma ---
        Loggorna sitter runt en cylinder som snurrar. Radien är den som

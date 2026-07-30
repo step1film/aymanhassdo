@@ -55,12 +55,79 @@ window.STEP1FILM_CLIENTS = [
   { src: 'assets/clients/partner-09.webp',        name: '' }
 ];
 
-/* 01 DRÖMMEN — filmografin i CV-rutan.
-   Fyll på listan här så dyker den upp bredvid utbildningen.
-   `url` är valfri; finns den blir raden en länk.
-     { year: '2023', title: 'Otyg', role: 'Regi · Foto', url: '' } */
+/* FILMOGRAFIN — används på två ställen:
+     panel 01, kort lista bredvid texten
+     panel 04, full lista med speltid och festivaler
+   `note` visas bara i panel 04. Lämna tom om det inte finns något. */
 window.STEP1FILM_FILMOGRAPHY = [
-  // { year: '', title: '', role: '', url: '' },
+  {
+    year: '2015–2016',
+    title: 'NYA ORD',
+    subtitle: 'New Words',
+    format: { sv: 'Dokumentär · pedagogik, komedi, musik, resa', en: 'Documentary · educational, comedy, music, travel' },
+    runtime: '48 min'
+  },
+  {
+    year: '2020–2021',
+    title: 'THE MIND’S EYE',
+    format: { sv: 'Kortfilm · drama', en: 'Short film · drama' },
+    runtime: '05 min',
+    note: {
+      sv: 'Official selection — CortoDino Film Festival, X Edizione, Neapel, 23 november 2020. Semifinal — Festival del Cinema di Cefalù, Palermo, 23 november 2020.',
+      en: 'Official selection — CortoDino Film Festival, X Edizione, Naples, 23 November 2020. Semi-final — Festival del Cinema di Cefalù, Palermo, 23 November 2020.'
+    }
+  },
+  {
+    year: '2021–2022',
+    title: 'TOGETHER WE CREATE HARMONY',
+    format: { sv: 'Musik och kort 3D-film', en: 'Music and a short 3D film' },
+    runtime: '04 min',
+    note: {
+      sv: 'Allt började med en fråga: kan olika noter mötas och skapa harmoni? Vi lät en orientalisk sång i bayati-skalan möta en svensk. De harmonierade vackert.',
+      en: 'It started with one question: can different notes meet and create harmony? We let an oriental song in the bayati scale meet a Swedish one. They harmonised beautifully.'
+    }
+  },
+  {
+    year: '2022–2023',
+    title: 'OTYG',
+    format: { sv: 'Kortfilm', en: 'Short film' },
+    runtime: '09 min',
+    note: {
+      sv: 'Pitchad på Värnamo Filmhistoriska Festival och visad på två filmfestivaler online. Manus till en långfilm är under utveckling.',
+      en: 'Pitched at the Värnamo Film History Festival and shown at two online film festivals. A feature-length script is in development.'
+    }
+  },
+  {
+    year: '2026–2027',
+    title: 'BIRDS OF PASSAGE',
+    format: { sv: 'Långfilmsdokumentär', en: 'Feature-length documentary' },
+    status: { sv: 'Pågående', en: 'In progress' },
+    note: { sv: 'Samproduktion: Story AB', en: 'Co-production: Story AB' }
+  }
+];
+
+/* CV — erfarenhet. Visas på panel 04. */
+window.STEP1FILM_CV = [
+  {
+    year: '2017–2020',
+    role: { sv: 'Fritidshem / pedagog', en: 'After-school centre / educator' },
+    where: { sv: 'Film och musik för barn F–3, Vaggeryds kommun', en: 'Film and music for children, years F–3, Vaggeryd municipality' }
+  },
+  {
+    year: { sv: 'Sedan 2016', en: 'Since 2016' },
+    role: { sv: 'Reklam- och infofilm', en: 'Commercial and information film' },
+    where: { sv: 'Uppdrag för svenska varumärken', en: 'Commissions for Swedish brands' }
+  },
+  {
+    year: '2015 / 2017',
+    role: { sv: 'Filmprojektledare', en: 'Film project leader' },
+    where: { sv: 'I samarbete med biblioteket i Vaggeryd', en: 'In collaboration with Vaggeryd library' }
+  },
+  {
+    year: '2008–2010',
+    role: { sv: 'Lärare', en: 'Teacher' },
+    where: { sv: 'Kulturskolan, Syrien', en: 'The culture school, Syria' }
+  }
 ];
 
 /* 003 KORTFILMER — affischerna.
