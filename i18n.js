@@ -264,12 +264,13 @@
     }
   };
 
-  /* Engelska är huvudspråk på filmsidan — den vänder sig till festivaler
-     och produktionsbolag utanför Sverige. Butiken har svenska som
-     standard, eftersom den säljer till svenska kunder. Väljer besökaren
-     språk själv sparas det och gäller överallt. */
+  /* Svenska är standard. Sajten säljer och söker uppdrag i Sverige,
+   så det är svenska sökord den ska rankas på — och en svensk besökare
+   ska inte behöva byta språk först. Engelskan finns ett klick bort och
+   sparas när den väljs, så internationella besökare slipper välja om.
+   HÅLL I SYNK med lang-attributet i index.html. */
   let lang = localStorage.getItem('s1f_lang');
-  if (lang !== 'sv' && lang !== 'en') lang = 'en';
+  if (lang !== 'sv' && lang !== 'en') lang = 'sv';
 
   const t = key => {
     const dict = STRINGS[lang] || STRINGS.sv;

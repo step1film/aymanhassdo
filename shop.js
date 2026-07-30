@@ -648,6 +648,84 @@
   });
 
   /* -----------------------------------------------------
+     Strukturerad data för Google
+     -----------------------------------------------------
+     En ItemList med alla synliga produkter. Google kan då visa
+     pris och lagerstatus direkt i sökresultatet.
+
+     Priserna kommer från samma PRODUCTS-lista som butiken renderar,
+     så de kan aldrig glida isär. Skriptet läggs i <head> som
+     application/ld+json — det körs inte, det läses.
+  ----------------------------------------------------- */
+  function skrivProduktdata() {
+    const bas = location.origin + location.pathname.replace(/[^/]*$/, '');
+    const företag = window.S1F_COMPANY || {};
+
+    const varor = PRODUCTS.map((p, i) => {
+      // Lägsta priset visas — storleksberoende produkter har ett spann
+      const priser = p.sizePrices ? Object.values(p.sizePrices) : [p.price];
+      const lägst = Math.min(...priser);
+      const högst = Math.max(...priser);
+
+      const bild = p.image || (p.images && p.images[p.colors[0]]) || null;
+
+      const vara = {
+        '@type': 'Product',
+        name: p.name.sv,
+        description: p.desc.sv,
+        sku: p.id,
+        brand: { '@type': 'Brand', name: 'STEP1FILM' },
+        category: { clothing: 'Kläder', caps: 'Kepsar och mössor',
+                    mugs: 'Muggar', accessories: 'Accessoarer' }[p.cat] || 'Merch',
+        url: bas + 'shop.html#' + p.id
+      };
+      if (bild) vara.image = bas + bild;
+      if (p.colors && p.colors.length) {
+        vara.color = p.colors.map(c => (COLORS[c] && COLORS[c].sv) || c).join(', ');
+      }
+      if (p.sizes && p.sizes.length) vara.size = p.sizes.join(', ');
+      if (p.material && p.material.sv) vara.material = p.material.sv.join(', ');
+
+      vara.offers = (lägst === högst)
+        ? {
+            '@type': 'Offer',
+            price: String(lägst),
+            priceCurrency: 'SEK',
+            availability: 'https://schema.org/InStock',
+            itemCondition: 'https://schema.org/NewCondition',
+            url: bas + 'shop.html',
+            seller: { '@type': 'Organization', name: företag.legalName || 'STEP1FILM' }
+          }
+        : {
+            '@type': 'AggregateOffer',
+            lowPrice: String(lägst),
+            highPrice: String(högst),
+            offerCount: priser.length,
+            priceCurrency: 'SEK',
+            availability: 'https://schema.org/InStock',
+            url: bas + 'shop.html',
+            seller: { '@type': 'Organization', name: företag.legalName || 'STEP1FILM' }
+          };
+
+      return { '@type': 'ListItem', position: i + 1, item: vara };
+    });
+
+    const data = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'STEP1 STORE',
+      numberOfItems: varor.length,
+      itemListElement: varor
+    };
+
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    // textContent, inte innerHTML — inget här ska tolkas som markup
+    el.textContent = JSON.stringify(data);
+    document.head.appendChild(el);
+  }
+
+  /* -----------------------------------------------------
      i18n
   ----------------------------------------------------- */
   const I18N = {
@@ -1747,6 +1825,7 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
      WIRE UP
   ----------------------------------------------------- */
   function init() {
+    skrivProduktdata();
     buildLightbox();
     // Filter
     document.querySelectorAll('.cat-filter button').forEach((b) => {

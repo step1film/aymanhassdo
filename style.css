@@ -41,7 +41,7 @@
   --ease:  cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Filmkornets styrka. 0 stänger av det. */
-  --grain-op: 0.06;
+  --grain-op: 0.028;
 }
 
 /* ---- Reset ---- */
@@ -497,10 +497,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  /* Spalterna tar sin egen bredd och överskottet fördelas mellan dem,
-     i stället för att textspalten sträcks ut och lämnar ett tomrum
-     före CV-linjen. */
-  justify-content: space-between;
+  /* Porträttet och CV-spalten har fasta bredder, allt överskott går
+     till texten. Den ska fylla ut hela ytan mellan porträttet och
+     CV-linjen — inte flyta som en smal pelare mitt i tomrummet. */
   gap: clamp(1.5rem, 3.4vw, 3.4rem);
   flex: 1;
   min-height: 0;
@@ -1005,7 +1004,7 @@ body.reduced-motion .film-slides img {
   display: flex;
   flex-direction: column;
   gap: clamp(0.6rem, 1.5vh, 1rem);
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-height: 0;
   min-width: 0;
 }
@@ -1026,17 +1025,20 @@ body.reduced-motion .film-slides img {
 
 /* EN stil genom hela texten: samma typsnitt, samma grad, samma
    radavstånd. Skillnaderna görs med vikt och färg, inte med storlek.
-   Smalare spalt gör att texten löper längre ned i stället för brett. */
+   Spalten ska fylla ytan mellan porträttet och CV-linjen. Det löser jag
+   med graden, inte bara med bredden: taket höjs från 0.88 till 1.02rem,
+   så texten växer med skärmen och når fram till CV-linjen utan att
+   raderna blir orimligt långa. max-width är kvar som yttersta spärr. */
 .about-lead,
 .about-body,
 .about-quote,
 .about-sign {
   font-family: var(--ff-body);
-  font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+  font-size: clamp(0.78rem, 0.95vw, 1.02rem);
   font-weight: 300;
   line-height: 1.85;
   text-wrap: pretty;
-  max-width: 48ch;
+  max-width: 92ch;
 }
 .about-lead  { color: var(--white); }
 .about-body  { color: var(--text); }
@@ -1127,7 +1129,10 @@ body.reduced-motion .film-slides img {
 .award-row:hover { border-color: var(--line-s); }
 .aw-year   { font-family: var(--ff-display); font-size: 0.78rem; letter-spacing: 0.18em; color: var(--accent); }
 .aw-name   { font-family: var(--ff-display); font-size: clamp(0.95rem, 1.6vw, 1.3rem); color: var(--white); letter-spacing: 0.04em; }
-.aw-detail { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+/* Förklaringarna låg på --text-dim (#888) och drunknade mot den mörka
+   bakgrundsbilden. De är panelens egentliga innehåll och ska gå att
+   läsa — därför brödtextens ljusgrå, en nyans under rubrikvitt. */
+.aw-detail { font-size: clamp(0.78rem, 0.62vw, 0.9rem); color: var(--text); line-height: 1.7; }
 
 /* Jämnhöga rader: förklaringarna är olika långa, och space-between
    sköt isär raderna i olika grad. Här sitter de tätt i stället, och
@@ -1806,15 +1811,25 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
    ===================================================== */
 @media (max-width: 900px), (max-height: 559px) {
   /* ---- Panel 01 på telefon ----
-     Spalterna blir ett vanligt block-flöde. Med flex kvar fick
-     textytan en fast basis och rann ut över CV:t nedanför — texten
-     och utbildningslistan ritades bokstavligen ovanpå varandra. */
+     De tre spalterna blir en enda, i läsordning: porträtt → bildtext
+     → biografin → adressen. `display: contents` löser upp
+     porträttspalten så att adressraden kan hamna sist i stället för
+     att kila in sig mellan bilden och texten — på bred skärm står
+     den kvar under porträttet där den hör hemma.
+     Notera flex: none och min-height: 0 nedan: med de ärvda värdena
+     kvar fick textytan en fast basis och rann ut över det som låg
+     under, så styckena ritades ovanpå varandra. */
   .about-cols {
-    display: block;
+    display: flex;
+    flex-direction: column;
     flex: none;
     min-height: 0;
   }
-  .about-content { display: block; flex: none; min-height: 0; }
+  .about-portrait { display: contents; }
+  .portrait-img  { order: 1; }
+  .portrait-cap  { order: 2; }
+  .about-content { order: 3; display: block; flex: none; min-height: 0; }
+  .about-mail    { order: 4; }
   .about-scroll {
     display: block;
     flex: none;
@@ -1824,8 +1839,23 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   }
   .about-scroll > * + * { margin-top: 0.9em; }
 
-  .about-portrait { width: min(210px, 54vw); margin-bottom: 1.1rem; }
-  .portrait-cap { white-space: normal; font-size: 0.52rem; letter-spacing: 0.1em; line-height: 1.5; }
+  /* Bredden sitter på bilden nu, inte på spalten — den är upplöst */
+  .portrait-img { width: min(210px, 54vw); }
+  /* Bildtexten stod i --text-dim och försvann rakt in i den ljusa
+     sjön bakom. Här får den brödtextens ljusgrå och lite mer luft. */
+  .portrait-cap {
+    white-space: normal;
+    font-size: 0.54rem;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    color: var(--text);
+    margin-top: 0.5rem;
+  }
+
+  /* Pitchtexten bort på telefon. Den säger samma sak som panel 05:s
+     formulär, och här stod den mellan porträttet och biografin och
+     sköt ned det som faktiskt är sidans innehåll. */
+  .about-pitch { display: none; }
 
   .about-lead, .about-body, .about-quote, .about-sign {
     font-size: 0.9rem;
@@ -1833,29 +1863,22 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
     max-width: none;
   }
 
-  /* Adressraden staplas — etiketten fick tre rader bredvid mejlet */
+  /* Adressraden staplas — etiketten fick tre rader bredvid mejlet.
+     Den ligger sist på telefon och avslutar panelen, så den får en
+     egen linje över sig i stället för att flyta ihop med texten. */
   .about-mail {
     display: block;
-    margin-top: 0.9rem;
-    padding-top: 0.6rem;
+    margin-top: 1.6rem;
+    padding-top: 0.8rem;
   }
-  .am-label { display: block; font-size: 0.5rem; margin-bottom: 0.2rem; }
-  .am-val { display: block; margin-left: 0; font-size: 0.92rem; }
+  .am-label { display: block; font-size: 0.52rem; color: var(--text); margin-bottom: 0.25rem; }
+  .am-val { display: block; margin-left: 0; font-size: 0.95rem; }
 
-  .about-cv {
-    display: block;
-    flex: none;
-    margin-top: 1.4rem;
-    padding-left: 0;
-    padding-top: 1rem;
-    border-left: 0;
-    border-top: 1px solid var(--line);
-  }
-  .about-cv .cv-col + .cv-col { margin-top: 1.3rem; }
-  .cv-what { font-size: 0.85rem; }
-  .cv-what em { font-size: 0.74rem; }
-  .cv-year { font-size: 0.7rem; }
-  .cv-head { font-size: 0.55rem; }
+  /* Film- och utbildningsspalten bort på telefon. Den var en tredje
+     lista i en redan lång panel, och exakt samma uppgifter står i
+     panel 04 — där de har egen plats och egna rubriker. Inget
+     innehåll försvinner alltså från sajten, bara från den här vyn. */
+  .about-cv { display: none; }
 }
 
 /* =====================================================

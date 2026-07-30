@@ -27,8 +27,6 @@
   --ease:  cubic-bezier(0.16, 1, 0.3, 1);
   --radius: 4px;
 
-  /* Filmkornets styrka. 0 stänger av det. */
-  --grain-op: 0.06;
 }
 
 /* ---- Reset ---- */
@@ -1176,57 +1174,6 @@ a.logo-text:hover span, a.logo-text:focus-visible span { color: var(--white); }
 }
 .foot-copy { margin-top: 0.9rem; font-size: 0.82rem; color: var(--text-dim); }
 
-/* =====================================================
-   FILMKORN
-   =====================================================
-   Ett stillbildsbrus som hoppar mellan åtta lägen — samma
-   trick som riktig filmgrain: kornet byter plats varje ruta,
-   det rör sig inte mjukt.
 
-   Bruset är en SVG-turbulens som data-URI, alltså noll extra
-   nätverksanrop. Lagret ligger fast över sidan, tar inga
-   musklick och animerar bara transform, vilket går på GPU:n.
-   Styrkan sitter i --grain-op — sätt den till 0 för att
-   stänga av kornet utan att röra något annat. */
-body::after {
-  content: '';
-  position: fixed;
-  /* Bara så mycket större än rutan att förflyttningen på ±4 %
-     aldrig blottar en kant. -60 % gav en kompositorlagerruta på
-     40 MB vid full HD — onödigt tungt på telefon. */
-  inset: -10%;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: var(--grain-op, 0.038);
-  /* Ingen blandningsmetod. overlay och soft-light bevarar svärtan
-     per definition, och på en nästan svart sajt gav de 0,7 stegs
-     skillnad — helt osynligt. Rak inblandning lyfter svärtan några
-     steg, vilket är precis vad riktigt filmkorn gör i skuggorna. */
-  /* 128×128 gaussiskt brus centrerat på exakt 128 grått. Med overlay
-     betyder mitten "ingen förändring", så kornet varken lyfter eller
-     sänker medelljuset — det bara ger textur. SVG-turbulens gick inte
-     att centrera; den klipptes mot 0 och hamnade på 170 i medel. */
-  background-image: url('assets/grain.png');
-  background-repeat: repeat;
-  background-size: 128px 128px;
-  will-change: transform;
-  animation: filmkorn 0.55s steps(1, end) infinite;
-}
-
-@keyframes filmkorn {
-  0%    { transform: translate3d(0, 0, 0); }
-  12.5% { transform: translate3d(-4%, -2%, 0); }
-  25%   { transform: translate3d(3%, -4%, 0); }
-  37.5% { transform: translate3d(-2%, 3%, 0); }
-  50%   { transform: translate3d(4%, 2%, 0); }
-  62.5% { transform: translate3d(-3%, 4%, 0); }
-  75%   { transform: translate3d(2%, -3%, 0); }
-  87.5% { transform: translate3d(-4%, 1%, 0); }
-  100%  { transform: translate3d(0, 0, 0); }
-}
-
-/* Lugn rörelse: kornet ligger stilla i stället för att flimra */
-body.reduced-motion::after { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  body::after { animation: none; }
-}
+/* Filmkornet ligger bara på startsidan — i butiken gjorde det
+   plaggen mindre skarpa, och där är det bilden som säljer. */
