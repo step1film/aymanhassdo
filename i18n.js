@@ -54,23 +54,27 @@
       f3Syn: 'Nya ord — min första film, om utmaningen att lära sig ett nytt språk som flykting . The Mind’s Eye . Otyg . Together We Create Harmony.',
       cornerSign: 'HÖRNA',
       f4Type: 'Fritt hörn',
-      f4Title: 'STEP1 HÖRNA',
+      f4Title: 'STEP<em>1</em> HÖRNA',
       f4Syn: 'Från musik till digital konst, webbutveckling och workshops — ett fritt hörn där idéer får testas innan de blir film.',
       f5Year: 'Butik',
       f5Type: 'Merch · Tryck',
       f5Syn: 'Allt är designat för STEP1 STORE och trycks först när du beställer. Färska varor — och inget blir över. Handla nu →',
       storeAria: 'STEP1 Store — merch, kepsar och muggar',
 
-      /* --- Panel 02: Om --- */
-      p2Title: 'Filmaren',
-      portraitCap: 'Ayman Hassdo &nbsp;·&nbsp; Småland',
-      aboutLead: 'Ayman Hassdo är en bred filmskapare som arbetar som regissör, filmfotograf, manusförfattare, ljuddesigner, producent och kompositör.',
-      aboutBody: 'Född i Al-Hassake i Syrien och uppvuxen på landsbygden. Flyttade till Damaskus 2007 för att satsa på musiken och lärde sig film på egen hand när tillgången var knapp. Kom till Sverige som flykting 2013 — lärde sig svenska och regisserade sedan sin första dokumentär om vad det innebär att lära sig ett nytt språk. Studerade film på Öland 2017, där han färdigställde en biografisk poesidokumentär. I dag arbetar han som frilans från en liten by i Småland.',
-      aboutQuiet: 'Arbetet är format av två länder och en övertygelse — att film kan ge plats åt medmänsklighet, klimat och kultur utan att höja rösten.',
-      aboutNumsAria: 'Verksamhet',
-      an1: 'Kom till Sverige',
-      an2: 'Filmskola, Öland',
-      an3: 'Discipliner',
+      /* --- Panel 01: Drömmen --- */
+      p2Title: 'Dröm&shy;men',
+      portraitCap: 'Foto: Joel Arvidsson &nbsp;·&nbsp; Småland, Sverige',
+      aboutP1: 'Jag föddes i nordöstra Syrien, i en ganska torr region med en rik mångfald av människor, språk och kulturer. Det som präglade mig mest var människornas värme, generositet och omtanke — värderingar som följt mig genom livet och gett mig modet att drömma stort.',
+      aboutP2: 'När kriget tvingade mig att lämna Syrien kom jag till Sverige. Här möttes jag av nya möjligheter och började arbeta målmedvetet för att förverkliga mina drömmar. Jag har studerat och fortsätter, fått stöd, kunskap och förtroende, och kärlek från människor längs vägen. Därför vill jag nu ge något tillbaka.',
+      aboutP3: 'STEP1FILM finns för att stötta nästa generation filmskapare. Om du arbetar med din debut, har en idé som du tror starkt på men inte vet hur du ska ta nästa steg, eller saknar ett nätverk inom filmbranschen — vill vi gärna hjälpa dig. Vi kan vägleda dig genom processen, hjälpa dig att utveckla en plan och, när det är möjligt, sätta dig i kontakt med rätt personer inom branschen.',
+      aboutP4: 'Att göra film är sällan en resa man klarar ensam. Om vi kan bidra med kunskap, erfarenhet eller rätt kontakter gör vi det gärna. Tveka inte att höra av dig — kanske är ett enkelt samtal början på din nästa film.',
+      aboutQuote: 'Kom ihåg: om dina drömmar inte skrämmer dig är de kanske inte tillräckligt stora.',
+      cvSchool: 'Utbildning',
+      cvComposing: 'Komposition',
+      cvDoc: 'Film · Dokumentär',
+      cvDistance: 'Distans',
+      cvFilms: 'Filmer',
+      cvFilmsSoon: 'Filmografi kommer',
 
       /* --- Panel 03: Vad vi kan göra --- */
       p3Title: 'Vad vi kan göra<br>för ditt filmprojekt',
@@ -104,7 +108,7 @@
 
       /* --- Panel 05: Kontakt --- */
       p5Title: 'Nu<br>kör vi',
-      contactIntro: 'Pitcha din idé i några rader, bifoga ditt material och låt oss prata därefter. ;)',
+      contactIntro: 'Pitcha din idé i några rader — var projektet står, vad det handlar om, och en länk till ditt material om det finns. Sedan tar vi ett onlinemöte och bestämmer en plan tillsammans. ;)',
       cfName: 'Namn',
       cfEmail: 'E-post',
       cfLink: 'Länk till ditt material',
@@ -121,7 +125,7 @@
 
       /* --- Navigation --- */
       navFilms: 'Utvalda arbeten',
-      navAbout: 'Filmskaparen',
+      navAbout: 'Drömmen',
       navPractice: 'Vad vi gör',
       navPress: 'Press',
       navContact: 'Kontakt',
@@ -166,22 +170,26 @@
       f3Syn: 'Nya ord — my first film, on the challenges of learning a new language as a refugee . The Mind’s Eye . Otyg . Together We Create Harmony.',
       cornerSign: 'CORNER',
       f4Type: 'Free corner',
-      f4Title: 'STEP1 CORNER',
+      f4Title: 'STEP<em>1</em> CORNER',
       f4Syn: 'From music to digital art, web development and workshops — a free corner where ideas get tested before they become film.',
       f5Year: 'Store',
       f5Type: 'Merch · Print',
       f5Syn: 'Everything is designed for STEP1 STORE and printed only when you order. Fresh pieces — and nothing left over. Shop now →',
       storeAria: 'STEP1 Store — merch, caps and mugs',
 
-      p2Title: 'The<br>Filmmaker',
-      portraitCap: 'Ayman Hassdo &nbsp;·&nbsp; Småland',
-      aboutLead: 'Ayman Hassdo is a multi-disciplinary filmmaker working as a director, cinematographer, screenwriter, sound designer, producer and composer.',
-      aboutBody: 'Born in Al-Hassake, Syria, and raised in the countryside. Moved to Damascus in 2007 to pursue music; taught himself film when access to it was scarce. Arrived in Sweden as a refugee in 2013 — learned Swedish, then directed a first documentary on what it means to learn a new language. Studied film on Öland in 2017, where he completed a biography-poetry documentary. Today he works freelance from a small village in Småland.',
-      aboutQuiet: 'The work is shaped by two countries and one belief — that film can hold space for humanity, climate and culture without raising its voice.',
-      aboutNumsAria: 'Practice',
-      an1: 'Arrived in Sweden',
-      an2: 'Film school, Öland',
-      an3: 'Disciplines',
+      p2Title: 'The<br>Dream',
+      portraitCap: 'Photo by Joel Arvidsson &nbsp;·&nbsp; Småland, Sweden',
+      aboutP1: 'I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.',
+      aboutP2: 'When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.',
+      aboutP3: 'STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.',
+      aboutP4: 'Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.',
+      aboutQuote: 'Remember: if your dreams don’t scare you, maybe they aren’t big enough.',
+      cvSchool: 'Education',
+      cvComposing: 'Composing',
+      cvDoc: 'Film · Documentary',
+      cvDistance: 'Distance',
+      cvFilms: 'Films',
+      cvFilmsSoon: 'Filmography coming',
 
       p3Title: 'What we can do<br>for your film project',
       p3Meta: 'From first call to final mix',
@@ -212,7 +220,7 @@
       pq3m: 'Sveriges Radio P4',
 
       p5Title: 'Let’s<br>Work',
-      contactIntro: 'Pitch your idea in a few lines, attach your material, and let’s talk from there. ;)',
+      contactIntro: 'Pitch your idea in a few lines — where the project stands, what it is about, and a link to any footage you have. Then we take an online meeting and set a plan together. ;)',
       cfName: 'Name',
       cfEmail: 'Email',
       cfLink: 'Link to your material',
@@ -228,7 +236,7 @@
       crBasedVal: 'Småland',
 
       navFilms: 'Selected Works',
-      navAbout: 'The Filmmaker',
+      navAbout: 'The Dream',
       navPractice: 'What We Do',
       navPress: 'Press',
       navContact: 'Contact',
@@ -271,10 +279,16 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
-    // Sektionsnamnen i sidonavigeringen läses av main.js
-    // Samma ordning som panelerna: 01 filmskaparen, 02 utvalda arbeten
-    window.STEP1FILM_NAV_LABELS =
-      [t('navAbout'), t('navFilms'), t('navPractice'), t('navPress'), t('navContact')];
+    /* Sektionsnamnen i sidonavigeringen läses av main.js.
+       Uppslag på panelens id, inte på ordningen — då spelar det ingen
+       roll om en panel stängs av eller byter plats. */
+    window.STEP1FILM_NAV_LABELS = {
+      about:   t('navAbout'),
+      films:   t('navFilms'),
+      awards:  t('navPractice'),
+      press:   t('navPress'),
+      contact: t('navContact')
+    };
     document.dispatchEvent(new CustomEvent('s1f:langchange', { detail: { lang } }));
   }
 

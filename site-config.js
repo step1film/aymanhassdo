@@ -55,6 +55,14 @@ window.STEP1FILM_CLIENTS = [
   { src: 'assets/clients/partner-09.webp',        name: '' }
 ];
 
+/* 01 DRÖMMEN — filmografin i CV-rutan.
+   Fyll på listan här så dyker den upp bredvid utbildningen.
+   `url` är valfri; finns den blir raden en länk.
+     { year: '2023', title: 'Otyg', role: 'Regi · Foto', url: '' } */
+window.STEP1FILM_FILMOGRAPHY = [
+  // { year: '', title: '', role: '', url: '' },
+];
+
 /* 003 KORTFILMER — affischerna.
    Lägg affischerna i assets/films/posters/ och lista dem här.
    De tonar in och ut, var och en på sin egen plats i rutan:

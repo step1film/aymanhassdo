@@ -190,36 +190,54 @@
             </div>
           </section>
 
-          <!-- PANEL 01 — ABOUT -->
-          <section class="h-panel" id="about" data-panel="0" data-screen-label="01 The Filmmaker" aria-labelledby="about-title">
+          <!-- PANEL 01 — THE DREAM -->
+          <section class="h-panel" id="about" data-panel="0" data-screen-label="01 The Dream" aria-labelledby="about-title">
             <div class="panel-inner panel-inner--about">
               <div class="about-portrait">
                 <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
                      alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
-                <p class="portrait-cap" data-i18n-html="portraitCap">Photo by Joel Arvidsson &nbsp;·&nbsp; Småland.Sweden</p>
+                <p class="portrait-cap" data-i18n-html="portraitCap">Photo by Joel Arvidsson &nbsp;·&nbsp; Småland, Sweden</p>
               </div>
               <div class="about-content">
                 <div class="panel-head">
                   <span class="panel-num" aria-hidden="true">01</span>
-                  <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Filmmaker</h2>
+                  <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Dream</h2>
                 </div>
-                <p class="about-lead" data-i18n="aboutLead">Ayman Hassdo is a multi-disciplinary filmmaker working as a director, cinematographer, screenwriter, sound designer, producer and composer.</p>
-                <p class="about-body" data-i18n="aboutBody">Born in Al-Hassake, Syria, and raised in the countryside. Moved to Damascus in 2007 to pursue music; taught himself film when access to it was scarce. Arrived in Sweden as a refugee in 2013 — learned Swedish, then directed a first documentary on what it means to learn a new language. Studied film on Öland in 2017, where he completed a biography-poetry documentary. Today he works freelance from a small village outside Jönköping, in Småland.</p>
-                <p class="about-body about-body--quiet" data-i18n="aboutQuiet">The work is shaped by two countries and one belief — that film can hold space for humanity, climate and culture without raising its voice.</p>
-                <div class="about-nums" data-i18n-aria="aboutNumsAria" aria-label="Verksamhet">
-                  <div class="about-num-item">
-                    <span class="annum">2013</span>
-                    <span class="anlabel" data-i18n="an1">Arrived in Sweden</span>
+
+                <div class="about-scroll">
+                  <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
+                  <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
+                  <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
+                  <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
+                  <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
+                  <p class="about-sign" aria-hidden="true">/Ayman</p>
+                </div>
+
+                <div class="about-cv">
+                  <div class="cv-col">
+                    <span class="cv-head" data-i18n="cvSchool">Education</span>
+                    <div class="cv-row">
+                      <span class="cv-year">2009</span>
+                      <span class="cv-what">Music Institute, Damascus<em data-i18n="cvComposing">Composing</em></span>
+                    </div>
+                    <div class="cv-row">
+                      <span class="cv-year">2017&ndash;2018</span>
+                      <span class="cv-what">Ölands folkhögskola<em data-i18n="cvDoc">Film · Documentary</em></span>
+                    </div>
+                    <div class="cv-row">
+                      <span class="cv-year">2020&ndash;2023</span>
+                      <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvDistance">Distance</em></span>
+                    </div>
                   </div>
-                  <div class="about-num-item">
-                    <span class="annum">2017&ndash;2018</span>
-                    <span class="anlabel" data-i18n="an2">Film school, Öland</span>
-                  </div>
-                  <div class="about-num-item">
-                    <span class="annum">6</span>
-                    <span class="anlabel" data-i18n="an3">Disciplines</span>
+                  <div class="cv-col">
+                    <span class="cv-head" data-i18n="cvFilms">Films</span>
+                    <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
+                    <div class="cv-list" data-filmography>
+                      <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
+                    </div>
                   </div>
                 </div>
+
                 <a class="about-mail" href="mailto:ayman@step1film.se">
                   <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
                   <span class="am-val">ayman@step1film.se</span>
@@ -303,7 +321,7 @@
                       <span class="film-year">2018</span>
                       <span class="film-type" data-i18n="f4Type">Free corner</span>
                     </div>
-                    <h3 class="film-title" data-i18n="f4Title">STEP1 CORNER</h3>
+                    <h3 class="film-title" data-i18n-html="f4Title">STEP<em>1</em> CORNER</h3>
                     <p class="film-syn" data-i18n="f4Syn">From music to digital art, web development and workshops — a free corner where ideas get tested before they become film.</p>
                   </div>
                 </article>
@@ -319,7 +337,7 @@
                       <span class="film-year" data-i18n="f5Year">Store</span>
                       <span class="film-type" data-i18n="f5Type">Merch · Print</span>
                     </div>
-                    <h3 class="film-title">STEP1 STORE</h3>
+                    <h3 class="film-title">STEP<em>1</em> STORE</h3>
                     <p class="film-syn" data-i18n="f5Syn">Everything is designed for STEP1 STORE and printed only when you order. Fresh pieces — and nothing left over. Shop now →</p>
                   </div>
                 </a>
@@ -370,8 +388,11 @@
             </div>
           </section>
 
-          <!-- PANEL 04 — PRESS / QUOTES -->
-          <section class="h-panel" id="press" data-panel="3" data-screen-label="04 Press" aria-labelledby="press-title">
+          <!-- PANEL 04 — PRESS / QUOTES
+               AVSTÄNGD. Ta bort hidden-attributet nedan för att visa den
+               igen — numrering, prickar, fokusenhet och rullhöjd räknas
+               om automatiskt i main.js. -->
+          <section class="h-panel" id="press" hidden data-panel="3" data-screen-label="04 Press" aria-labelledby="press-title">
             <div class="panel-inner panel-inner--press">
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">04</span>
@@ -412,8 +433,7 @@
                 <span class="panel-num" aria-hidden="true">05</span>
                 <h2 class="panel-title" id="contact-title" data-i18n-html="p5Title">Let’s<br>Work</h2>
               </div>
-              <p class="contact-intro" data-i18n="contactIntro">Pitch your idea in a few lines, attach your material, and let’s talk from there. ;)</p>
-              <p class="contact-intro contact-intro--quiet" data-i18n="p3Intro">Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we take an online meeting and set a plan together.</p>
+              <p class="contact-intro" data-i18n="contactIntro">Pitch your idea in a few lines — where the project stands, what it is about, and a link to any footage you have. Then we take an online meeting and set a plan together. ;)</p>
 
               <form class="collab-form" id="collabForm" novalidate>
                 <div class="cf-row">
@@ -462,7 +482,7 @@
 
           <div class="fu-readout" aria-hidden="true">
             <span class="fu-mark" id="hCur">01</span>
-            <span class="fu-of">/ 05</span>
+            <span class="fu-of" id="fuTotal">/ 05</span>
           </div>
 
           <div class="fu-scale">

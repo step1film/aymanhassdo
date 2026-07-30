@@ -224,17 +224,38 @@
   -------------------------------------------------- */
   function initScrollDriver() {
     const hWrapper = document.getElementById('h-wrapper');
-    const panels = Array.from(document.querySelectorAll('.h-panel'));
-    const dots = Array.from(document.querySelectorAll('.h-dot'));
+    /* Bara paneler som är påslagna. Sätt hidden på en <section class="h-panel">
+       så försvinner den ur numrering, prickar, rullhöjd och fokusenhet. */
+    const panels = Array.from(document.querySelectorAll('.h-panel:not([hidden])'));
+    let dots = Array.from(document.querySelectorAll('.h-dot'));
     const curEl = document.getElementById('hCur');
+    const totalEl = document.getElementById('fuTotal');
     const labelEl = document.getElementById('hLabel');
     const prevBtn = document.getElementById('hPrev');
     const nextBtn = document.getElementById('hNext');
     if (!hWrapper || !panels.length) return;
 
-    const LABELS = () => window.STEP1FILM_NAV_LABELS || ['The Filmmaker', 'Selected Works', 'What We Do', 'Press', 'Contact'];
+    const RESERV = { about: 'The Dream', films: 'Selected Works', awards: 'What We Do', press: 'Press', contact: 'Contact' };
+    const LABELS = () => window.STEP1FILM_NAV_LABELS || RESERV;
     const TOTAL = panels.length;
     const fmt = n => String(n + 1).padStart(2, '0');
+
+    /* Numrera om efter hur många paneler som faktiskt är på. Allt
+       nedan räknar på TOTAL, så en avstängd panel lämnar inget hål. */
+    panels.forEach((panel, i) => {
+      panel.dataset.panel = String(i);
+      const num = panel.querySelector('.panel-num');
+      if (num) num.textContent = fmt(i);
+    });
+    dots.slice(TOTAL).forEach(d => d.remove());
+    dots = dots.slice(0, TOTAL);
+    dots.forEach((d, i) => {
+      d.dataset.i = String(i);
+      d.setAttribute('data-i18n-aria', 'nav' + panels[i].id.charAt(0).toUpperCase() + panels[i].id.slice(1));
+    });
+    if (totalEl) totalEl.textContent = '/ ' + fmt(TOTAL - 1);
+    // En skärm för showreelen + en per panel
+    hWrapper.style.height = ((TOTAL + 1) * 100) + 'vh';
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
 
@@ -262,7 +283,7 @@
 
     // Byt språk → skriv om den synliga sektionsetiketten direkt
     document.addEventListener('s1f:langchange', () => {
-      if (labelEl && lastPanelIdx >= 0) labelEl.textContent = LABELS()[lastPanelIdx] || '';
+      if (labelEl && lastPanelIdx >= 0) labelEl.textContent = LABELS()[panels[lastPanelIdx].id] || '';
     });
 
     function setActive(panelIdx) {
@@ -274,7 +295,7 @@
         d.setAttribute('aria-current', on ? 'true' : 'false');
       });
       if (curEl) curEl.textContent = fmt(panelIdx);
-      if (labelEl) labelEl.textContent = LABELS()[panelIdx] || '';
+      if (labelEl) labelEl.textContent = LABELS()[panels[panelIdx].id] || '';
     }
 
     /* Hur stor del av showreelen som täcks av panel 01 (0–1).
@@ -588,6 +609,25 @@
       } else {
         load();
       }
+    });
+
+    /* --- 01: filmografin i CV-rutan --- */
+    const filmer = window.STEP1FILM_FILMOGRAPHY || [];
+    document.querySelectorAll('[data-filmography]').forEach(box => {
+      const lista = filmer.filter(f => f && f.title);
+      if (!lista.length) return;            // tomlägestexten står kvar
+      box.textContent = '';
+      lista.forEach(f => {
+        const rad = document.createElement(f.url ? 'a' : 'span');
+        if (f.url) { rad.href = f.url; rad.target = '_blank'; rad.rel = 'noopener'; }
+        else rad.className = 'cv-item';
+        rad.innerHTML = `<span class="cv-year"></span><span class="cv-what"><em></em></span>`;
+        rad.querySelector('.cv-year').textContent = f.year || '';
+        const what = rad.querySelector('.cv-what');
+        what.insertBefore(document.createTextNode(f.title), what.firstChild);
+        what.querySelector('em').textContent = f.role || '';
+        box.appendChild(rad);
+      });
     });
 
     /* --- 002: samarbetslogotyper på en praxinoskoptrumma ---
