@@ -194,59 +194,65 @@
           <section class="h-panel" id="about" data-panel="0" data-screen-label="01 The Dream" aria-labelledby="about-title">
             <div class="panel-inner panel-inner--about">
 
-              <div class="about-portrait">
-                <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
-                     alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
-                <p class="portrait-cap" data-i18n-html="portraitCap">Photo by Joel Arvidsson &nbsp;·&nbsp; Småland, Sweden</p>
+              <div class="panel-head">
+                <span class="panel-num" aria-hidden="true">01</span>
+                <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Dream</h2>
               </div>
 
-              <div class="about-content">
-                <div class="panel-head">
-                  <span class="panel-num" aria-hidden="true">01</span>
-                  <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Dream</h2>
+              <!-- Tre spalter som alla börjar på samma höjd -->
+              <div class="about-cols">
+
+                <div class="about-portrait">
+                  <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
+                       alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
+                  <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
+                  <a class="about-mail" href="mailto:ayman@step1film.se">
+                    <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                    <span class="am-val">ayman@step1film.se</span>
+                  </a>
                 </div>
 
-                <div class="about-scroll">
-                  <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
-                  <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
-                  <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
-                  <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
-                  <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
-                  <p class="about-sign" aria-hidden="true">/Ayman</p>
+                <div class="about-content">
+                  <div class="about-scroll">
+                    <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
+                    <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
+                    <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
+                    <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
+                    <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
+                    <p class="about-sign" aria-hidden="true">/Ayman</p>
+                  </div>
                 </div>
 
-                <a class="about-mail" href="mailto:ayman@step1film.se">
-                  <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
-                  <span class="am-val">ayman@step1film.se</span>
-                </a>
+                <aside class="about-cv" aria-label="CV">
+                  <div class="cv-col">
+                    <span class="cv-head" data-i18n="cvSchool">Education</span>
+                    <div class="cv-row">
+                      <span class="cv-year">2024</span>
+                      <span class="cv-what">Tornedalens folkhögskola<em data-i18n="cvEd1">Coordination and grant applications · distance</em></span>
+                    </div>
+                    <div class="cv-row">
+                      <span class="cv-year">2020&ndash;2023</span>
+                      <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvEd2">Cinematography · distance</em></span>
+                    </div>
+                    <div class="cv-row">
+                      <span class="cv-year">2016&ndash;2017</span>
+                      <span class="cv-what">Ölands folkhögskola<em data-i18n="cvEd3">Documentary film</em></span>
+                    </div>
+                    <div class="cv-row">
+                      <span class="cv-year">2007&ndash;2009</span>
+                      <span class="cv-what">Music Institute, Damascus<em data-i18n="cvEd6">Composing</em></span>
+                    </div>
+                  </div>
+                  <div class="cv-col">
+                    <span class="cv-head" data-i18n="cvFilms">Films</span>
+                    <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
+                    <div class="cv-list" data-filmography>
+                      <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
+                    </div>
+                  </div>
+                </aside>
+
               </div>
-
-              <!-- Tredje spalten: utbildning och filmer, bredvid texten -->
-              <aside class="about-cv" aria-label="CV">
-                <div class="cv-col">
-                  <span class="cv-head" data-i18n="cvSchool">Education</span>
-                  <div class="cv-row">
-                    <span class="cv-year">2009</span>
-                    <span class="cv-what">Music Institute, Damascus<em data-i18n="cvComposing">Composing</em></span>
-                  </div>
-                  <div class="cv-row">
-                    <span class="cv-year">2017&ndash;2018</span>
-                    <span class="cv-what">Ölands folkhögskola<em data-i18n="cvDoc">Film · Documentary</em></span>
-                  </div>
-                  <div class="cv-row">
-                    <span class="cv-year">2020&ndash;2023</span>
-                    <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvDistance">Distance</em></span>
-                  </div>
-                </div>
-                <div class="cv-col">
-                  <span class="cv-head" data-i18n="cvFilms">Films</span>
-                  <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
-                  <div class="cv-list" data-filmography>
-                    <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
-                  </div>
-                </div>
-              </aside>
-
             </div>
           </section>
 
@@ -275,10 +281,10 @@
                     <div class="film-num">001</div>
                     <div class="film-meta">
                       <span class="film-year">2026-2027</span>
-                      <span class="film-type" data-i18n="f1Type">Documentary . In progress</span>
+                      <span class="film-type" data-i18n="f1Type">Documentary · In progress</span>
                     </div>
                     <h3 class="film-title">BIRDS OF PASSAGE</h3>
-                    <p class="film-syn" data-i18n="f1Syn">A feature-length documentary . Runtime: 85 min</p>
+                    <p class="film-syn" data-i18n="f1Syn">A feature-length documentary · Runtime 85 min</p>
                   </div>
                 </article>
 
@@ -307,10 +313,10 @@
                     <div class="film-num">003</div>
                     <div class="film-meta">
                       <span class="film-year">2014-2023</span>
-                      <span class="film-type" data-i18n="f3Type">Shorts . Documentary</span>
+                      <span class="film-type" data-i18n="f3Type">Shorts · Documentary</span>
                     </div>
                     <h3 class="film-title" data-i18n="f3Title">SHORT FILMS</h3>
-                    <p class="film-syn" data-i18n="f3Syn">Nya ord — my first film, on the challenges of learning a new language as a refugee . The Mind’s Eye . Otyg . Together We Create Harmony.</p>
+                    <p class="film-syn" data-i18n="f3Syn">Nya ord — my first film, on the challenges of learning a new language as a refugee · The Mind’s Eye · Otyg · Together We Create Harmony.</p>
                   </div>
                 </article>
 
@@ -366,16 +372,16 @@
                 <div class="award-row" role="listitem">
                   <span class="aw-year">02</span>
                   <span class="aw-name" data-i18n="aw2">Develop the script</span>
-                  <span class="aw-detail" data-i18n="aw2d">We help you take the idea from a note to a screenplay that holds.</span>
+                  <span class="aw-detail" data-i18n="aw2d">From a note to a screenplay that holds.</span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">03</span>
                   <span class="aw-name" data-i18n="aw3">Shoot the film</span>
-                  <span class="aw-detail" data-i18n="aw3d">We film it — camera, light and direction on set.</span>
+                  <span class="aw-detail" data-i18n="aw3d">Camera, light and direction on set.</span>
                 </div>
                 <div class="award-row" role="listitem">
                   <span class="aw-year">04</span>
-                  <span class="aw-name" data-i18n="aw4">Edit</span>
+                  <span class="aw-name" data-i18n="aw4">Edit your film</span>
                   <span class="aw-detail" data-i18n="aw4d">Picture edit and grade, until the film finds its rhythm.</span>
                 </div>
                 <div class="award-row" role="listitem">
@@ -386,7 +392,7 @@
                 <div class="award-row" role="listitem">
                   <span class="aw-year">06</span>
                   <span class="aw-name" data-i18n="aw6">Find the right people</span>
-                  <span class="aw-detail" data-i18n="aw6d">We help your vision along by connecting you to the film crew it needs.</span>
+                  <span class="aw-detail" data-i18n="aw6d">Contact with the film crew your vision needs.</span>
                 </div>
               </div>
             </div>
@@ -398,9 +404,14 @@
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">04</span>
                 <h2 class="panel-title" id="press-title" data-i18n-html="p4Title">CV</h2>
-                <span class="panel-meta" data-i18n="p4Meta">Experience &amp; filmography</span>
+                <span class="panel-meta" data-i18n="p4Meta">Education · Experience · Filmography</span>
               </div>
-              <div class="cv-grid">
+              <div class="cv-grid cv-grid--three">
+                <div class="cv-block">
+                  <h3 class="cvb-head" data-i18n="cvSchool">Education</h3>
+                  <!-- Fylls från STEP1FILM_EDUCATION i site-config.js -->
+                  <div class="cvb-list" data-education></div>
+                </div>
                 <div class="cv-block">
                   <h3 class="cvb-head" data-i18n="cvExperience">Experience</h3>
                   <!-- Fylls från STEP1FILM_CV i site-config.js -->
@@ -453,12 +464,6 @@
                 </div>
               </form>
 
-              <div class="contact-list contact-list--slim">
-                <div class="contact-row contact-row--static">
-                  <span class="cr-label" data-i18n="crBased">Based in</span>
-                  <span class="cr-val" data-i18n="crBasedVal">Småland</span>
-                </div>
-              </div>
             </div>
           </section>
 
@@ -516,7 +521,6 @@
         </div>
         <div class="foot-col foot-col--right">
           <a class="foot-link" href="mailto:info@step1film.se">info@step1film.se</a>
-          <a class="foot-link" href="https://aymanhassdo.myportfolio.com/" target="_blank" rel="noopener noreferrer">Portfolio</a>
         </div>
       </div>
     </footer>

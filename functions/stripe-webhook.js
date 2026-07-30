@@ -15,7 +15,7 @@
 'use strict';
 
 const Stripe = require('stripe');
-const { priceCart } = require('./_lib/catalog');
+const { priceCart, SHIP_COUNTRIES } = require('./_lib/catalog');
 const { fulfilOrder } = require('./_lib/fulfil');
 
 exports.handler = async (event) => {
@@ -63,6 +63,21 @@ exports.handler = async (event) => {
       recipient.city = sd.address.city || recipient.city;
       recipient.zip = sd.address.postal_code || recipient.zip;
       recipient.country_code = sd.address.country || recipient.country_code || 'SE';
+    }
+
+    /* Landkontroll efter Stripes adress.
+       Butikens formulär skickar alltid SE, men Klarna och kortbetalningar
+       samlar in en egen faktureringsadress som skriver över den. Utan den
+       här kontrollen kunde en order till ett annat land gå till tryck med
+       svensk frakt betald — förlust på varje sådan order.
+       Kunden HAR betalat, så vi svarar 200 och lägger ordern för hand. */
+    if (!SHIP_COUNTRIES.includes(String(recipient.country_code).toUpperCase())) {
+      console.warn(`[stripe-webhook] ⚠️ MANUELL HANTERING: order ${md.reference} har `
+        + `leveransland ${recipient.country_code}, vi levererar bara till `
+        + `${SHIP_COUNTRIES.join(', ')}. Ingen Printful-order lagd. `
+        + `Kontakta kunden om utrikesfrakt eller återbetala.\n`
+        + JSON.stringify(recipient));
+      return { statusCode: 200, body: 'ok (utländsk adress, manuell hantering)' };
     }
 
     await fulfilOrder({

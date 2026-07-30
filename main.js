@@ -476,10 +476,39 @@
     el.id = 'film-cursor';
     el.setAttribute('aria-hidden', 'true');
     document.body.appendChild(el);
-    window.addEventListener('mousemove', e => {
-      el.style.transform = `translate3d(${e.clientX - 10}px,${e.clientY - 10}px,0)`;
-      if (!el.classList.contains('visible')) el.classList.add('visible');
+
+    /* Ljushålet i panelernas mörka lager följer markören. Radien ligger
+       i CSS (--spot-r) så den går att ändra på ett ställe. */
+    const rot = document.documentElement;
+    const HÅL = getComputedStyle(rot).getPropertyValue('--spot-hole').trim() || '110px';
+
+    let x = 0, y = 0, väntar = false;
+    function måla() {
+      väntar = false;
+      // Positionen sitter i CSS-variabler — ingen layout räknas om
+      rot.style.setProperty('--spot-x', x + 'px');
+      rot.style.setProperty('--spot-y', y + 'px');
+      el.style.transform = `translate3d(${x}px,${y}px,0)`;
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!väntar) { väntar = true; requestAnimationFrame(måla); }
+      if (!el.classList.contains('visible')) {
+        el.classList.add('visible');
+        rot.style.setProperty('--spot-r', HÅL);
+      }
+      // Röd ton när man pekar på något klickbart
+      const påLänk = !!(e.target && e.target.closest &&
+        e.target.closest('a,button,[role="button"],.h-dot,.h-arrow,.film-item'));
+      el.classList.toggle('on-link', påLänk);
     }, { passive: true });
+
+    // Lämnar pekaren fönstret ska hålet slockna, inte frysa fast
+    document.addEventListener('mouseleave', () => {
+      el.classList.remove('visible');
+      rot.style.setProperty('--spot-r', '0px');
+    });
   }
 
   /* --------------------------------------------------
@@ -633,10 +662,25 @@
         });
       });
     }
-    /* --- 04: full filmografi och erfarenhet --- */
+    /* --- 04: utbildning, erfarenhet och full filmografi --- */
     const cvPoster = window.STEP1FILM_CV || [];
+    const utbildning = window.STEP1FILM_EDUCATION || [];
 
     function ritaCV() {
+      document.querySelectorAll('[data-education]').forEach(box => {
+        box.textContent = '';
+        utbildning.forEach(u => {
+          const rad = document.createElement('div');
+          rad.className = 'cvb-row';
+          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
+            + '<span class="cvb-role"></span><span class="cvb-where"></span></div>';
+          rad.querySelector('.cvb-year').textContent = tv(u.year);
+          rad.querySelector('.cvb-role').textContent = tv(u.what);
+          rad.querySelector('.cvb-where').textContent = tv(u.where);
+          box.appendChild(rad);
+        });
+      });
+
       document.querySelectorAll('[data-cv]').forEach(box => {
         box.textContent = '';
         cvPoster.forEach(p => {

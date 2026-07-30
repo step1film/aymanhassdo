@@ -256,6 +256,19 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   vertical-align: -0.05em;
 }
 
+/* På smala skärmar rullar innehållet bakom den fasta loggan. Utan
+   en tonad botten läste texten rakt genom STEP1FILM och språkvalet. */
+@media (max-width: 900px), (max-height: 559px) {
+  #logo-mark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.72) 62%, transparent 100%);
+    pointer-events: none;
+  }
+}
+
 @media (max-width: 560px) {
   .logo-store { letter-spacing: 0.14em; margin-left: 0.6rem; }
   .lang-toggle { font-size: 0.66rem; }
@@ -405,17 +418,52 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   will-change: clip-path;
 }
 
-/* Ordningen är panel 01 = filmskaparen, 02 = utvalda arbeten.
-   z-index avgör vem som sveper in över vem. */
-#about   { z-index: 1; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild02') center / cover no-repeat; clip-path: inset(0 0 0 0%);   }
+/* Ordningen är panel 01 = drömmen, 02 = utvalda arbeten.
+   z-index avgör vem som sveper in över vem.
+
+   Bakgrundsbilden ligger ren här. Det mörka lagret är ett eget
+   skikt (.h-panel::before) så att markören kan skära ett mjukt hål
+   i det och släppa fram bilden — se MARKÖRENS LJUSHÅL längre ned. */
+#about   { z-index: 1; background: url('Bild02') center / cover no-repeat; clip-path: inset(0 0 0 0%);   }
 /* På breda skärmar startar även panel 01 utanför bild och sveper in
    över showreelen. Samma brytpunkt som isWideScreen() i main.js.
    På smala skärmar stackas panelerna vertikalt och 01 ska synas direkt. */
 @media (min-width: 901px) and (min-height: 560px) { #about { clip-path: inset(0 0 0 100%); } }
-#films   { z-index: 2; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild01') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#awards  { z-index: 3; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild03') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#press   { z-index: 4; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild04') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#contact { z-index: 5; background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('Bild05') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#films   { z-index: 2; background: url('Bild01') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#awards  { z-index: 3; background: url('Bild03') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#press   { z-index: 4; background: url('Bild04') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#contact { z-index: 5; background: url('Bild05') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+
+/* =====================================================
+   MARKÖRENS LJUSHÅL
+   =====================================================
+   Det mörka lagret var tidigare inbakat i bakgrunden på 0.72.
+   Nu ligger det som eget skikt på 0.60 — lite ljusare, så bilderna
+   andas — och en radial mask skär ett mjukt hål där markören är.
+   Där hålet är målas inget mörkt lager, alltså syns bilden som den
+   är. --spot-x/y sätts av main.js, --spot-r är hålets storlek. */
+:root {
+  --panel-dim: 0.60;
+  --spot-x: -50vw;
+  --spot-y: -50vh;
+  --spot-r: 0px;
+  /* Hålets radie när markören är på plats. Ändra här. */
+  --spot-hole: 110px;
+}
+.h-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, var(--panel-dim));
+  -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
+                        transparent 0%, transparent 42%, #000 100%);
+          mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
+                        transparent 0%, transparent 42%, #000 100%);
+}
+/* Innehållet måste ligga över det mörka lagret */
+.panel-inner { position: relative; z-index: 1; }
 
 .panel-inner {
   height: 100%;
@@ -432,14 +480,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   overflow: hidden;
 }
 
-.panel-inner--about {
+/* Rubriken ligger överst i full bredd, de tre spalterna under den —
+   då börjar porträttet, texten och CV:t på exakt samma höjd. */
+.panel-inner--about { gap: clamp(0.8rem, 2vh, 1.5rem); }
+.about-cols {
+  display: flex;
   flex-direction: row;
-  /* stretch, inte center: annars får .about-content sin naturliga höjd
-     och kan växa ut ur panelen — då hamnade CV:t och adressraden utanför
-     bild på 1280×720. Med stretch krymper textytan i stället. */
   align-items: stretch;
   gap: clamp(1.5rem, 3.4vw, 3.4rem);
-  padding-top: var(--nav-h);
+  flex: 1;
+  min-height: 0;
 }
 
 .panel-head {
@@ -904,8 +954,8 @@ body.reduced-motion .film-slides img {
   width: clamp(180px, 24vw, 300px);
   display: flex;
   flex-direction: column;
-  justify-content: center;   /* porträttet mitt i den stretchade spalten */
-  gap: 0.7rem;
+  justify-content: flex-start;  /* i linje med textens överkant */
+  gap: 0.55rem;
 }
 .portrait-img {
   width: 100%;
@@ -925,10 +975,12 @@ body.reduced-motion .film-slides img {
   filter: grayscale(0.35) contrast(1.04);
 }
 .portrait-cap {
-  font-size: 0.55rem;
-  letter-spacing: 0.28em;
+  /* En rad, alltid — spärren krymper i stället för att texten bryts */
+  font-size: clamp(0.42rem, 0.62vw, 0.52rem);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
+  white-space: nowrap;
 }
 /* --- Textspalten ---
    Planerad typografi: ETT typsnitt (brödtexten) och tre steg.
@@ -1148,10 +1200,14 @@ body.reduced-motion .film-slides img {
   align-items: center;
   gap: clamp(1.2rem, 2.6vh, 2rem);
 }
+/* Rubriken en bit mot mitten — inte ända ut i kanten */
 .panel-inner--contact .panel-head {
-  align-self: flex-end;
+  align-self: center;
   justify-content: flex-end;
   text-align: right;
+  width: 100%;
+  max-width: 46rem;
+  padding-right: clamp(0px, 4vw, 3rem);
 }
 .panel-inner--contact .contact-intro,
 .panel-inner--contact .collab-form,
@@ -1263,19 +1319,32 @@ body.reduced-motion .film-slides img {
    ===================================================== */
 #film-cursor {
   position: fixed;
-  top: 0; left: 0;
+  /* -6.5px = halva bredden. Var -10 tidigare, vilket sköt märket
+     3,5 px snett från den punkt man faktiskt pekar på. */
+  top: -6.5px; left: -6.5px;
   width: 13px; height: 13px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
   transform: translate3d(-200px, -200px, 0);
   opacity: 0;
-  transition: opacity 0.3s;
-  background: url('cursor.png') center / contain no-repeat;
-  filter: invert(1);
+  /* mask i stället för invert(1): då går märket att färga om */
+  background: var(--white);
+  -webkit-mask: url('cursor.png') center / contain no-repeat;
+          mask: url('cursor.png') center / contain no-repeat;
+  transition: opacity 0.3s, background-color 0.2s;
 }
 /* Genomskinlig — markören ska antyda, inte skymma */
 #film-cursor.visible { opacity: 0.45; }
+/* Röd ton över länkar och knappar */
+#film-cursor.on-link { background: var(--accent); opacity: 0.9; }
+
+/* Ingen hand över länkar — samma märke överallt. UA-stilen sätter
+   cursor:pointer på a:link, och den måste skrivas över uttryckligen. */
+@media (hover: hover) and (pointer: fine) {
+  a, a:link, a:visited, button, [role="button"], summary, label,
+  .h-dot, .h-arrow, .lang-toggle button, .rh-close, .cf-send { cursor: none; }
+}
 
 /* =====================================================
    TWEAKS PANEL (accent color)
@@ -1362,7 +1431,8 @@ body.reduced-motion .film-slides img {
   .panel-inner {
     height: auto;
     min-height: 100svh;
-    padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 2rem) 3rem;
+    /* Höger sida måste hålla sig undan den fasta fokusenheten */
+    padding: calc(var(--nav-h) + 2rem) 3.4rem 3rem clamp(1.25rem, 5vw, 2rem);
     gap: 1.4rem;
     overflow: visible;
   }
@@ -1621,6 +1691,16 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   flex: 1;
   min-height: 0;
 }
+/* Tre delar: utbildning · erfarenhet · filmografi */
+.cv-grid--three {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(1.2rem, 2.6vw, 2.8rem);
+}
+.cv-grid--three .cvb-row { grid-template-columns: 1fr; gap: 0.15rem; }
+.cv-grid--three .cvb-year { margin-bottom: 0.1rem; }
+.cv-grid--three .cvb-role { font-size: clamp(0.82rem, 1.05vw, 0.95rem); }
+.cv-grid--three .cvb-where { font-size: 0.7rem; }
+.cv-grid--three .cvb-note { font-size: 0.64rem; max-width: none; }
 .cv-block { display: flex; flex-direction: column; gap: 0.7rem; min-height: 0; min-width: 0; }
 .cvb-head {
   font-family: var(--ff-display);
@@ -1693,4 +1773,60 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   .cf-field input, .cf-field textarea { padding: 0.45rem 0.65rem; }
   .cf-field textarea { min-height: 3.4rem; }
   .contact-intro { line-height: 1.65; }
+}
+
+/* =====================================================
+   CV-SPALTEN PÅ PANEL 01 — smal, så året står över texten
+   ===================================================== */
+@media (max-width: 900px), (max-height: 559px) {
+  /* ---- Panel 01 på telefon ----
+     Spalterna blir ett vanligt block-flöde. Med flex kvar fick
+     textytan en fast basis och rann ut över CV:t nedanför — texten
+     och utbildningslistan ritades bokstavligen ovanpå varandra. */
+  .about-cols {
+    display: block;
+    flex: none;
+    min-height: 0;
+  }
+  .about-content { display: block; flex: none; min-height: 0; }
+  .about-scroll {
+    display: block;
+    flex: none;
+    min-height: 0;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .about-scroll > * + * { margin-top: 0.9em; }
+
+  .about-portrait { width: min(210px, 54vw); margin-bottom: 1.1rem; }
+  .portrait-cap { white-space: normal; font-size: 0.52rem; letter-spacing: 0.1em; line-height: 1.5; }
+
+  .about-lead  { font-size: 0.95rem; line-height: 1.7; }
+  .about-body  { font-size: 0.88rem; line-height: 1.75; }
+  .about-quote { font-size: 0.88rem; line-height: 1.7; }
+  .about-sign  { font-size: 0.88rem; }
+
+  /* Adressraden staplas — etiketten fick tre rader bredvid mejlet */
+  .about-mail {
+    display: block;
+    margin-top: 0.9rem;
+    padding-top: 0.6rem;
+  }
+  .am-label { display: block; font-size: 0.5rem; margin-bottom: 0.2rem; }
+  .am-val { display: block; margin-left: 0; font-size: 0.92rem; }
+
+  .about-cv {
+    display: block;
+    flex: none;
+    margin-top: 1.4rem;
+    padding-left: 0;
+    padding-top: 1rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .about-cv .cv-col + .cv-col { margin-top: 1.3rem; }
+  .cv-what { font-size: 0.85rem; }
+  .cv-what em { font-size: 0.74rem; }
+  .cv-year { font-size: 0.7rem; }
+  .cv-head { font-size: 0.55rem; }
 }

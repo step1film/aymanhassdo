@@ -21,6 +21,19 @@ const CURRENCY = 'sek';
 const SHIPPING_FEE = 79;
 const SHIPPING_FREE_OVER = 1200;
 
+/* Länder vi levererar till.
+   79 kr är en svensk fraktavgift. Printful tar mer för utrikes, så en
+   order till t.ex. Tyskland hade gått med förlust — och Frakt & leverans
+   lovar uttryckligen bara Sverige. Vill du öppna EU behövs fraktzoner
+   här och i shop.js först, inte bara en rad till i listan. */
+const SHIP_COUNTRIES = ['SE'];
+
+/* Produkter som är dolda i butiken — HÅLL I SYNK med HIDDEN i shop.js.
+   Utan den här listan kunde någon som kände till id:t beställa en slutsåld
+   vara genom att skicka det direkt till servern. Kunden hade betalat och
+   Printful-ordern misslyckats. */
+const HIDDEN = ['crew-tee', 'ad1-beanie'];
+
 /* id → { name, price, sizePrices?, variants? }
    variants: 'färg|storlek' → Printful sync_variant_id
    (fylls i när Printful-varianterna är hämtade, se PRINTFUL_SETUP.md) */
@@ -146,6 +159,7 @@ function priceCart(items) {
     const id = String(raw.id || '');
     const product = CATALOG[id];
     if (!product) throw new Error(`Okänd produkt: ${id}`);
+    if (HIDDEN.includes(id)) throw new Error(`${product.name} går inte att beställa just nu.`);
 
     const qty = Math.floor(Number(raw.qty));
     if (!Number.isFinite(qty) || qty < 1 || qty > 20) throw new Error('Ogiltigt antal.');
@@ -186,11 +200,14 @@ function validateRecipient(r) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(out.email)) throw new Error('Ogiltig e-postadress.');
   out.phone = r.phone ? String(r.phone).trim().slice(0, 40) : '';
   out.country_code = (r.country_code ? String(r.country_code) : 'SE').toUpperCase().slice(0, 2);
+  if (!SHIP_COUNTRIES.includes(out.country_code)) {
+    throw new Error(`Vi levererar bara till ${SHIP_COUNTRIES.join(', ')} just nu. Mejla shop@step1film.se för leverans till ${out.country_code}.`);
+  }
   out.notes = r.notes ? String(r.notes).trim().slice(0, 500) : '';
   return out;
 }
 
 module.exports = {
-  CATALOG, CURRENCY, SHIPPING_FEE, SHIPPING_FREE_OVER,
+  CATALOG, CURRENCY, SHIPPING_FEE, SHIPPING_FREE_OVER, SHIP_COUNTRIES, HIDDEN,
   priceFor, priceCart, validateRecipient
 };

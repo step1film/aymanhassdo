@@ -106,6 +106,51 @@ window.STEP1FILM_FILMOGRAPHY = [
   }
 ];
 
+/* CV — utbildning. Visas på panel 04 (och de fyra senaste även i
+   CV-spalten på panel 01). */
+window.STEP1FILM_EDUCATION = [
+  {
+    year: { sv: 'Sep–okt 2024', en: 'Sep–Oct 2024' },
+    what: { sv: 'Samordning och projektansökningar', en: 'Coordination and grant applications' },
+    where: { sv: 'Intensivkurs på distans · Tornedalens folkhögskola', en: 'Intensive course, distance · Tornedalen folk high school' }
+  },
+  {
+    year: '2020–2023',
+    what: { sv: 'Kandidat, filmfoto', en: 'Bachelor, cinematography' },
+    where: { sv: 'Egypten · distans', en: 'Egypt · distance' }
+  },
+  {
+    year: '2016–2017',
+    what: { sv: 'Dokumentärfilm', en: 'Documentary film' },
+    where: { sv: 'Ölands folkhögskola · Öland, Sverige', en: 'Ölands folk high school · Öland, Sweden' }
+  },
+  {
+    year: '2016',
+    what: { sv: 'Manusskrivarveckan', en: 'Screenwriting week' },
+    where: { sv: 'Workshop arrangerad av Råfilm', en: 'Workshop organised by Råfilm' }
+  },
+  {
+    year: '2013–2015',
+    what: { sv: 'Media och produktion, svenska', en: 'Media and production, Swedish' },
+    where: { sv: 'Fenix · Vaggeryd', en: 'Fenix · Vaggeryd' }
+  },
+  {
+    year: '2007–2009',
+    what: { sv: 'Musikinstitutet', en: 'Music Institute' },
+    where: { sv: 'Damaskus, Syrien', en: 'Damascus, Syria' }
+  },
+  {
+    year: '2007',
+    what: { sv: 'Gymnasium', en: 'Upper secondary school' },
+    where: { sv: 'Al-Hasakah, Syrien', en: 'Al-Hasakah, Syria' }
+  },
+  {
+    year: '2005',
+    what: { sv: 'Kortare IT-kurser', en: 'Short IT courses' },
+    where: { sv: 'Syrien', en: 'Syria' }
+  }
+];
+
 /* CV — erfarenhet. Visas på panel 04. */
 window.STEP1FILM_CV = [
   {
