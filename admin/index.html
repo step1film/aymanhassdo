@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c0c0c" />
+  <!-- Adminsidan ska aldrig hamna i en sökmotor -->
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>STEP1FILM — admin</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<!-- =====================================================
+     INLOGGNING
+====================================================== -->
+<div id="grind">
+  <form class="grind-kort" id="grindForm" autocomplete="on">
+    <span class="grind-marke">STEP<em>1</em>FILM</span>
+    <h1 class="grind-rubrik">Admin</h1>
+    <!-- Dolt användarnamn: lösenordshanterare vill ha ett fält att
+         hänga lösenordet på, annars sparar de det inte. -->
+    <input type="text" name="username" value="step1film" autocomplete="username"
+           hidden aria-hidden="true" tabindex="-1" readonly />
+    <label class="falt">
+      <span class="falt-etikett">Lösenord</span>
+      <input type="password" id="grindLosen" name="password" autocomplete="current-password" required />
+    </label>
+    <button class="knapp knapp--primar" type="submit" id="grindKnapp">Logga in</button>
+    <p class="grind-fel" id="grindFel" role="alert" hidden></p>
+    <p class="grind-not">Ändringar du sparar här går rakt ut på step1film.se.</p>
+  </form>
+</div>
+
+<!-- =====================================================
+     ADMIN
+====================================================== -->
+<div id="admin" hidden>
+
+  <header class="topp">
+    <span class="topp-marke">STEP<em>1</em>FILM <span class="topp-ord">admin</span></span>
+    <nav class="flikar" id="flikar" role="tablist">
+      <button class="flik active" data-flik="texter"    role="tab" type="button">Texter</button>
+      <button class="flik"        data-flik="filmer"    role="tab" type="button">Filmer &amp; CV</button>
+      <button class="flik"        data-flik="video"     role="tab" type="button">Video</button>
+      <button class="flik"        data-flik="produkter" role="tab" type="button">Produkter</button>
+      <button class="flik"        data-flik="bilder"    role="tab" type="button">Bilder</button>
+    </nav>
+    <div class="topp-hoger">
+      <span class="sparstatus" id="sparStatus" role="status" aria-live="polite"></span>
+      <button class="knapp" type="button" id="loggaUt">Logga ut</button>
+    </div>
+  </header>
+
+  <main class="yta" id="yta">
+
+    <!-- ---------- TEXTER ---------- -->
+    <section class="del active" data-del="texter">
+      <div class="del-topp">
+        <div>
+          <h2>Texter</h2>
+          <p class="hjalp">Varje rad finns på svenska och engelska. Lämnar du engelskan tom
+             visas den svenska texten i stället. <code>&lt;br&gt;</code> ger radbrytning,
+             <code>&lt;em&gt;1&lt;/em&gt;</code> ger den röda ettan.</p>
+        </div>
+        <div class="del-verktyg">
+          <input class="sok" type="search" id="sokText" placeholder="Sök text …" aria-label="Sök bland texterna" />
+          <button class="knapp knapp--primar" type="button" data-spara="texter">Spara texter</button>
+        </div>
+      </div>
+      <div id="textLista"></div>
+    </section>
+
+    <!-- ---------- FILMER & CV ---------- -->
+    <section class="del" data-del="filmer">
+      <div class="del-topp">
+        <div>
+          <h2>Filmer &amp; CV</h2>
+          <p class="hjalp">Listorna på panel 02 och CV-panelen. Dra i handtaget för att ändra ordning.</p>
+        </div>
+        <div class="del-verktyg">
+          <button class="knapp knapp--primar" type="button" data-spara="innehall">Spara</button>
+        </div>
+      </div>
+      <div id="filmLista"></div>
+    </section>
+
+    <!-- ---------- VIDEO ---------- -->
+    <section class="del" data-del="video">
+      <div class="del-topp">
+        <div>
+          <h2>Video</h2>
+          <p class="hjalp">Showreelen i heron, trailern på panel 02 och de fyra klippen i Drömmen.
+             Klistra in hela Vimeo-adressen så plockar jag ut id och nyckel åt dig.</p>
+        </div>
+        <div class="del-verktyg">
+          <button class="knapp knapp--primar" type="button" data-spara="innehall">Spara</button>
+        </div>
+      </div>
+      <div id="videoLista"></div>
+    </section>
+
+    <!-- ---------- PRODUKTER ---------- -->
+    <section class="del" data-del="produkter">
+      <div class="del-topp">
+        <div>
+          <h2>Produkter</h2>
+          <p class="hjalp varning">Priset här är både det kunden ser och det som debiteras —
+             de sparas alltid ihop, så de kan inte glida isär.
+             Ordningen i listan är ordningen i butiken.</p>
+        </div>
+        <div class="del-verktyg">
+          <button class="knapp" type="button" id="nyProdukt">Lägg till produkt</button>
+          <button class="knapp knapp--primar" type="button" data-spara="produkter">Spara produkter</button>
+        </div>
+      </div>
+      <div id="produktLista"></div>
+    </section>
+
+    <!-- ---------- BILDER ---------- -->
+    <section class="del" data-del="bilder">
+      <div class="del-topp">
+        <div>
+          <h2>Bilder</h2>
+          <p class="hjalp">Ladda upp en bild så hamnar den i repot direkt. Filnamnet du väljer
+             är det du sedan skriver in på produkten eller i listan.
+             Max 4 MB, och bara .webp, .jpg eller .png.</p>
+        </div>
+      </div>
+      <div id="bildYta"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Meddelanderuta -->
+<div id="rop" role="status" aria-live="polite" hidden></div>
+
+<script src="admin.js" defer></script>
+</body>
+</html>

@@ -4,4 +4,8 @@ Allow: /
 # Arkiverad kod — inte en del av sajten
 Disallow: /_archive/
 
+# Adminsidan. Den är lösenordsskyddad på servern, men den ska inte
+# ligga i ett sökresultat heller — sidan har dessutom en noindex-tagg.
+Disallow: /admin/
+
 Sitemap: https://step1film.se/sitemap.xml

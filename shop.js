@@ -112,423 +112,865 @@
      PRODUCTS
   ----------------------------------------------------- */
   const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  /* Produktlistan skrivs av adminsidan — redigera i step1film.se/admin,
+     inte här. Kommentarer inne i blocket försvinner vid nästa sparning.
+
+     Fält per produkt:
+       id           unikt, används i kundvagn och order — byt aldrig i efterhand
+       cat          filtergrupp i butiken
+       type         avgör vilken SVG-mockup som visas när bild saknas
+       print        trycket på mockupen
+       name/desc    { sv, en }
+       material     { sv: [rader], en: [rader] } — punktlistan under priset
+       badge        { sv, en } — den lilla etiketten på kortet, valfri
+       price        kronor. sizePrices sätter avvikande pris per storlek.
+       colors       färgnycklar, sizes storlekar (null = one size)
+       image        kortets bild · gallery bilderna i produktvyn
+       images/galleries  samma sak men per färg
+
+     ⚠️ PRISET FINNS PÅ TVÅ STÄLLEN. Här står det kunden ser; i
+     functions/_lib/catalog.js står det servern faktiskt debiterar.
+     Adminsidan skriver båda i samma commit. Ändrar du för hand måste
+     du ändra båda, annars ser kunden ett pris och betalar ett annat. */
+  /* ADMIN:START produkter */
   const PRODUCTS = [
-    /* ===== RIKTIGA PRINTFUL-PRODUKTER =====================
-       Bild laddas från assets/products/. Ladda upp filen med
-       exakt det filnamn som står i `image` nedan. Saknas den
-       visas mockupen tills vidare. Variant-ID:n läggs till när
-       vi kopplar leverans. */
     {
-      id: 'reel-mugg', cat: 'mugs', type: 'mug', print: 'S1F',
-      name: { sv: "Director's Morning", en: "Director's Morning" },
-      desc: { sv: 'Där varje historia börjar — en kopp kaffe och en idé. Svart glansig mugg, 15 oz.', en: 'Where every story begins — a cup of coffee and an idea. Black glossy mug, 15 oz.' },
-      material: { sv: ['Keramik, svart glansig', 'Volym: 15 oz (ca 440 ml)'], en: ['Ceramic, black glossy', 'Volume: 15 oz (approx. 440 ml)'] },
-      price: 299,
-      colors: ['black'],
-      sizes: null,
-      image: 'assets/products/reel-mugg.webp',
-      gallery: [
-        'assets/products/reel-mugg.webp',
-        'assets/products/reel-mugg-2.webp',
-        'assets/products/reel-mugg-lifestyle.webp'
-      ]
-    },
-    {
-      id: 'awesome-mugg', cat: 'mugs', type: 'mug', print: 'AWE',
-      name: { sv: 'AWESOME MUGG', en: 'AWESOME MUG' },
-      desc: { sv: 'Efter en lång dag på inspelning sitter en varm choklad fint — och en påminnelse om att du redan är awesome. Vit glansig mugg, 11 oz.', en: 'After a long day on set, hot chocolate is a must — and a reminder that you\'re already awesome. White glossy mug, 11 oz.' },
-      badge: { sv: 'Mest populär', en: 'Most popular' },
-      material: { sv: ['Keramik, vit glansig', 'Volym: 11 oz (ca 330 ml)'], en: ['Ceramic, white glossy', 'Volume: 11 oz (approx. 330 ml)'] },
-      price: 249,
-      colors: ['white'],
-      sizes: null,
-      image: 'assets/products/awesome-mugg-stacked.webp',
-      // Basbild (utan siffra) först, sedan 01, 02, 03, 04, 05
-      gallery: [
-        'assets/products/awesome-mugg-stacked.webp',
-        'assets/products/awesome-mugg-hands.webp',
-        'assets/products/awesome-mugg.webp',
-        'assets/products/awesome-mugg-model.webp',
-        'assets/products/awesome-mugg-holiday.webp',
-        'assets/products/awesome-mugg-box.webp'
-      ]
-    },
-    {
-      id: 'take-one-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
-      name: { sv: 'TAKE ONE SLEEVE', en: 'TAKE ONE SLEEVE' },
-      desc: { sv: 'Inspirerad av filmklappan. "Take One" är början på varje berättelse — bär din utrustning som crewet.', en: 'Inspired by the clapperboard. "Take One" is the start of every story — carry your gear like the crew.' },
-      material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
-      badge: { sv: 'Trend', en: 'Trending' },
-      price: 599,
-      sizePrices: { '13"': 599, '15"': 699 },
-      colors: ['pastel'],
-      sizes: ['13"', '15"'], defaultSize: '13"',
-      image: 'assets/products/take-one-sleeve.webp',
-      gallery: [
-        'assets/products/take-one-sleeve.webp',
-        'assets/products/take-one-sleeve-1.webp',
-        'assets/products/take-one-sleeve-2.webp',
-        'assets/products/take-one-sleeve-4.webp'
-      ]
-    },
-    {
-      id: 'rolling-backpack', cat: 'accessories', type: 'backpack', print: 'S1F',
-      name: { sv: 'ROLLING BACKPACK', en: 'ROLLING BACKPACK' },
-      desc: { sv: '"Rolling!" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Fårö. Vadderad laptopficka.', en: '"Rolling!" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Fårö. Padded laptop pocket.' },
-      badge: { sv: 'Bestseller', en: 'Bestseller' },
-      material: { sv: ['Vadderad laptopficka', 'Justerbara axelremmar'], en: ['Padded laptop pocket', 'Adjustable shoulder straps'] },
-      price: 779,
-      colors: ['navy', 'pink'],
-      sizes: null,
-      image: 'assets/products/backpack-navy.webp',
-      // Egen bild per färg i kundvagnen
-      images: {
-        pink: 'assets/products/backpack-pink.webp',
-        navy: 'assets/products/backpack-navy.webp'
+      "id": "24fps-hoodie",
+      "cat": "clothing",
+      "type": "hoodie",
+      "print": "24",
+      "name": {
+        "sv": "24FPS HOODIE",
+        "en": "24FPS HOODIE"
       },
-      // Eget bildspel per färg på produktkortet
-      galleries: {
-        pink: [
-          'assets/products/backpack-pink.webp',
-          'assets/products/backpack-pink-1.webp',
-          'assets/products/backpack-pink-3.webp',
-          'assets/products/backpack-pink-4.webp',
-          'assets/products/backpack-pink-5.webp',
-          'assets/products/backpack-pink-6.webp',
-          'assets/products/backpack-pink-7.webp',
-          'assets/products/backpack-pink-8.webp',
-          'assets/products/backpack-pink-9.webp'
-        ],
-        navy: [
-          'assets/products/backpack-navy.webp',
-          'assets/products/backpack-navy-1.webp',
-          'assets/products/backpack-navy-2.webp',
-          'assets/products/backpack-navy-3.webp',
-          'assets/products/backpack-navy-4.webp',
-          'assets/products/backpack-navy-5.webp',
-          'assets/products/backpack-navy-6.webp',
-          'assets/products/backpack-navy-7.webp',
-          'assets/products/backpack-navy-8.webp',
-          'assets/products/backpack-navy-9.webp'
-        ]
-      }
-    },
-
-    {
-      id: 'spoiler-hoodie', cat: 'clothing', type: 'hoodie', print: 'S1F',
-      name: { sv: 'SPOILER HOODIE', en: 'SPOILER HOODIE' },
-      desc: { sv: 'Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.', en: 'You always know how the film ends — own it. A cosy hoodie for those who\'ve seen it all.' },
-      price: 799,
-      colors: ['natural', 'lightpink', 'white'],
-      // Printful gör bara S–XL på den här modellen
-      sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
-      image: 'assets/products/hoodie-natural.webp',
-      images: {
-        natural: 'assets/products/hoodie-natural.webp',
-        lightpink: 'assets/products/hoodie-pink.webp',
-        white: 'assets/products/hoodie-white.webp'
+      "desc": {
+        "sv": "Livet levs i 24 bilder per sekund — inspirerad av filmälskare. Bär känslan av film. Mjuk 100 % bomull med fleecefodrad insida som håller värmen.",
+        "en": "Life runs at 24 frames per second — inspired by film lovers. Wear the feeling of film. Made with smooth 100% cotton and a soft fleece-lined interior for warmth."
       },
-      galleries: {
-        natural: [
-          'assets/products/hoodie-natural.webp',
-          'assets/products/hoodie-natural-1.webp',
-          'assets/products/hoodie-natural-2.webp',
-          'assets/products/hoodie-natural-3.webp',
-          'assets/products/hoodie-natural-4.webp'
-        ],
-        lightpink: [
-          'assets/products/hoodie-pink.webp',
-          'assets/products/hoodie-pink-1.webp',
-          'assets/products/hoodie-pink-3.webp',
-          'assets/products/hoodie-pink-4.webp'
-        ],
-        white: [
-          'assets/products/hoodie-white.webp',
-          'assets/products/hoodie-white-1.webp',
-          'assets/products/hoodie-white-2.webp',
-          'assets/products/hoodie-white-3.webp',
-          'assets/products/hoodie-white-5.webp'
-        ]
-      }
-    },
-
-    {
-      id: '24fps-hoodie', cat: 'clothing', type: 'hoodie', print: '24',
-      name: { sv: '24FPS HOODIE', en: '24FPS HOODIE' },
-      desc: { sv: 'Livet levs i 24 bilder per sekund — inspirerad av filmälskare. Bär känslan av film. Mjuk 100 % bomull med fleecefodrad insida som håller värmen.', en: 'Life runs at 24 frames per second — inspired by film lovers. Wear the feeling of film. Made with smooth 100% cotton and a soft fleece-lined interior for warmth.' },
-      badge: { sv: 'Filmfavorit', en: 'Film favourite' },
-      price: 899,
-      colors: ['black', 'lightpink'],
-      // Printful har inte XS på den här modellen, och kallar XXL för 2XL
-      sizes: ['S', 'M', 'L', 'XL', '2XL'], defaultSize: 'M',
-      image: 'assets/products/hoodie-24fps-black.webp',
-      images: {
-        black: 'assets/products/hoodie-24fps-black.webp',
-        lightpink: 'assets/products/hoodie-24fps-lightpink.webp'
+      "badge": {
+        "sv": "Filmfavorit",
+        "en": "Film favourite"
       },
-      galleries: {
-        black: [
-          'assets/products/hoodie-24fps-black.webp',
-          'assets/products/hoodie-24fps-black-1.webp',
-          'assets/products/hoodie-24fps-black-2.webp',
-          'assets/products/hoodie-24fps-black-3.webp',
-          'assets/products/hoodie-24fps-black-4.webp',
-          'assets/products/hoodie-24fps-black-5.webp',
-          'assets/products/hoodie-24fps-black-6.webp',
-          'assets/products/hoodie-24fps-black-8.webp',
-          'assets/products/hoodie-24fps-black-9.webp',
-          'assets/products/hoodie-24fps-black-10.webp'
+      "price": 899,
+      "colors": [
+        "black",
+        "lightpink"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "2XL"
+      ],
+      "defaultSize": "M",
+      "image": "assets/products/hoodie-24fps-black.webp",
+      "images": {
+        "black": "assets/products/hoodie-24fps-black.webp",
+        "lightpink": "assets/products/hoodie-24fps-lightpink.webp"
+      },
+      "galleries": {
+        "black": [
+          "assets/products/hoodie-24fps-black.webp",
+          "assets/products/hoodie-24fps-black-1.webp",
+          "assets/products/hoodie-24fps-black-2.webp",
+          "assets/products/hoodie-24fps-black-3.webp",
+          "assets/products/hoodie-24fps-black-4.webp",
+          "assets/products/hoodie-24fps-black-5.webp",
+          "assets/products/hoodie-24fps-black-6.webp",
+          "assets/products/hoodie-24fps-black-8.webp",
+          "assets/products/hoodie-24fps-black-9.webp",
+          "assets/products/hoodie-24fps-black-10.webp"
         ],
-        lightpink: [
-          'assets/products/hoodie-24fps-lightpink.webp',
-          'assets/products/hoodie-24fps-lightpink-1.webp',
-          'assets/products/hoodie-24fps-lightpink-2.webp',
-          'assets/products/hoodie-24fps-lightpink-3.webp',
-          'assets/products/hoodie-24fps-lightpink-4.webp',
-          'assets/products/hoodie-24fps-lightpink-5.webp',
-          'assets/products/hoodie-24fps-lightpink-6.webp',
-          'assets/products/hoodie-24fps-lightpink-7.webp'
+        "lightpink": [
+          "assets/products/hoodie-24fps-lightpink.webp",
+          "assets/products/hoodie-24fps-lightpink-1.webp",
+          "assets/products/hoodie-24fps-lightpink-2.webp",
+          "assets/products/hoodie-24fps-lightpink-3.webp",
+          "assets/products/hoodie-24fps-lightpink-4.webp",
+          "assets/products/hoodie-24fps-lightpink-5.webp",
+          "assets/products/hoodie-24fps-lightpink-6.webp",
+          "assets/products/hoodie-24fps-lightpink-7.webp"
         ]
       },
-      fit: {
-        sv: 'Liten i storleken – välj gärna en storlek större än vanligt.',
-        en: 'Runs small – consider ordering one size up.'
+      "fit": {
+        "sv": "Liten i storleken – välj gärna en storlek större än vanligt.",
+        "en": "Runs small – consider ordering one size up."
       },
-      details: {
-        sv: {
-          desc: [
-            'Vissa plagg bär bara ett tryck — den här bär en känsla. 24FPS HOODIE är gjord för dig som lever och andas film, med en tung, mjuk bomullsfleece som känns lika bra som den ser ut.',
-            'Rymlig passform, varm huva och en generös känguruficka gör den lika hemma på inspelningsplatsen som i soffan efter premiären. Detta är inte bara en hoodie. Det är en del av STEP1-universumet — designad i studion, byggd för din vardag.'
+      "details": {
+        "sv": {
+          "desc": [
+            "Vissa plagg bär bara ett tryck — den här bär en känsla. 24FPS HOODIE är gjord för dig som lever och andas film, med en tung, mjuk bomullsfleece som känns lika bra som den ser ut.",
+            "Rymlig passform, varm huva och en generös känguruficka gör den lika hemma på inspelningsplatsen som i soffan efter premiären. Detta är inte bara en hoodie. Det är en del av STEP1-universumet — designad i studion, byggd för din vardag."
           ],
-          specs: ['100% bomull utsida', '65% ringspunnen bomull, 35% polyester', 'Känguruficka fram', 'Tygpatch på ryggen', 'Matchande plana dragsnören', 'Huva i 3 paneler'],
-          fine: 'För vuxna · EU-garanti: 2 år · Uppfyller krav för brandsäkerhet, bly, kadmium, bisfenoler och ftalater.'
+          "specs": [
+            "100% bomull utsida",
+            "65% ringspunnen bomull, 35% polyester",
+            "Känguruficka fram",
+            "Tygpatch på ryggen",
+            "Matchande plana dragsnören",
+            "Huva i 3 paneler"
+          ],
+          "fine": "För vuxna · EU-garanti: 2 år · Uppfyller krav för brandsäkerhet, bly, kadmium, bisfenoler och ftalater."
         },
-        en: {
-          desc: [
-            'Some garments carry just a print — this one carries a feeling. The 24FPS HOODIE is made for those who live and breathe film: a heavy, soft cotton fleece that feels as good as it looks.',
+        "en": {
+          "desc": [
+            "Some garments carry just a print — this one carries a feeling. The 24FPS HOODIE is made for those who live and breathe film: a heavy, soft cotton fleece that feels as good as it looks.",
             "Relaxed fit, warm hood and a roomy kangaroo pocket make it as at home on set as on the couch after the premiere. This isn't just a hoodie. It's part of the STEP1 universe — designed in the studio, built for your everyday."
           ],
-          specs: ['100% cotton face', '65% ring-spun cotton, 35% polyester', 'Front pouch pocket', 'Self-fabric patch on the back', 'Matching flat drawstrings', '3-panel hood'],
-          fine: 'For adults · EU warranty: 2 years · Meets flammability, lead, cadmium, bisphenol and phthalate requirements.'
+          "specs": [
+            "100% cotton face",
+            "65% ring-spun cotton, 35% polyester",
+            "Front pouch pocket",
+            "Self-fabric patch on the back",
+            "Matching flat drawstrings",
+            "3-panel hood"
+          ],
+          "fine": "For adults · EU warranty: 2 years · Meets flammability, lead, cadmium, bisphenol and phthalate requirements."
         }
       }
     },
     {
-      id: 'reel-trucker-cap', cat: 'caps', type: 'cap', print: 'S1F',
-      name: { sv: 'STEP1 FAN', en: 'STEP1 FAN' },
-      desc: { sv: 'Sätt på dig Step1-kepsen och något händer — idéerna börjar rulla. Bär den och du bär med dig Step1. Broderad logga, vit mesh, justerbar. One size.', en: 'Put on the Step1 cap and something happens — the ideas start rolling. Wear it and you carry Step1 with you. Embroidered logo, white mesh, adjustable. One size.' },
-      price: 379,
-      colors: ['navy', 'silver', 'black'],
-      sizes: null,
-      image: 'assets/products/trucker-cap-navy.webp',
-      images: {
-        navy: 'assets/products/trucker-cap-navy.webp',
-        silver: 'assets/products/trucker-cap-silver.webp',
-        black: 'assets/products/trucker-cap-black.webp'
+      "id": "rolling-backpack",
+      "cat": "accessories",
+      "type": "backpack",
+      "print": "S1F",
+      "name": {
+        "sv": "ROLLING BACKPACK",
+        "en": "ROLLING BACKPACK"
       },
-      galleries: {
-        navy: [
-          'assets/products/trucker-cap-navy.webp',
-          'assets/products/trucker-cap-navy-1.webp',
-          'assets/products/trucker-cap-navy-2.webp',
-          'assets/products/trucker-cap-navy-3.webp',
-          'assets/products/trucker-cap-navy-5.webp'
+      "desc": {
+        "sv": "\"Rolling!\" Packa din vision och bär den vart du än filmar. Inspirerad av Östersjön, ritad på Fårö. Vadderad laptopficka.",
+        "en": "\"Rolling!\" Pack your vision and carry it wherever you shoot. Inspired by the Baltic Sea, drawn on Fårö. Padded laptop pocket."
+      },
+      "badge": {
+        "sv": "Bestseller",
+        "en": "Bestseller"
+      },
+      "material": {
+        "sv": [
+          "Vadderad laptopficka",
+          "Justerbara axelremmar"
         ],
-        silver: [
-          'assets/products/trucker-cap-silver.webp',
-          'assets/products/trucker-cap-silver-1.webp',
-          'assets/products/trucker-cap-silver-2.webp',
-          'assets/products/trucker-cap-silver-3.webp',
-          'assets/products/trucker-cap-silver-4.webp',
-          'assets/products/trucker-cap-silver-5.webp'
+        "en": [
+          "Padded laptop pocket",
+          "Adjustable shoulder straps"
+        ]
+      },
+      "price": 779,
+      "colors": [
+        "navy",
+        "pink"
+      ],
+      "sizes": null,
+      "image": "assets/products/backpack-navy.webp",
+      "images": {
+        "pink": "assets/products/backpack-pink.webp",
+        "navy": "assets/products/backpack-navy.webp"
+      },
+      "galleries": {
+        "pink": [
+          "assets/products/backpack-pink.webp",
+          "assets/products/backpack-pink-1.webp",
+          "assets/products/backpack-pink-3.webp",
+          "assets/products/backpack-pink-4.webp",
+          "assets/products/backpack-pink-5.webp",
+          "assets/products/backpack-pink-6.webp",
+          "assets/products/backpack-pink-7.webp",
+          "assets/products/backpack-pink-8.webp",
+          "assets/products/backpack-pink-9.webp"
         ],
-        black: [
-          'assets/products/trucker-cap-black.webp',
-          'assets/products/trucker-cap-black-1.webp',
-          'assets/products/trucker-cap-black-2.webp',
-          'assets/products/trucker-cap-black-3.webp',
-          'assets/products/trucker-cap-black-4.webp',
-          'assets/products/trucker-cap-black-5.webp'
+        "navy": [
+          "assets/products/backpack-navy.webp",
+          "assets/products/backpack-navy-1.webp",
+          "assets/products/backpack-navy-2.webp",
+          "assets/products/backpack-navy-3.webp",
+          "assets/products/backpack-navy-4.webp",
+          "assets/products/backpack-navy-5.webp",
+          "assets/products/backpack-navy-6.webp",
+          "assets/products/backpack-navy-7.webp",
+          "assets/products/backpack-navy-8.webp",
+          "assets/products/backpack-navy-9.webp"
         ]
       }
     },
     {
-      id: 'icon-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
-      name: { sv: 'ICON STICKERS', en: 'ICON STICKERS' },
-      desc: { sv: 'Små ikoner, stora historier. Dekorera din värld med filmkärlek — kiss-cut stickers i rosa.', en: 'Small icons, big stories. Decorate your world with film love — kiss-cut stickers in pink.' },
-      price: 99,
-      colors: ['pink'],
-      sizes: null,
-      image: 'assets/products/icon-stickers.webp',
-      gallery: [
-        'assets/products/icon-stickers.webp',
-        'assets/products/icon-stickers-1.webp',
-        'assets/products/icon-stickers-2.webp'
-      ]
-    },
-
-    {
-      id: 'directors-beanie', cat: 'caps', type: 'cap', print: 'DIR',
-      name: { sv: "DIRECTOR'S BEANIE", en: "DIRECTOR'S BEANIE" },
-      desc: { sv: '"Reserved for vision." Håll huvudet varmt och blicken skarp — för idéernas timmar. "Inspirerad av Smålands skogar." One size.', en: '"Reserved for vision." Keep your head warm and your eye sharp — for the hours of ideas. "Inspired by the forests of Småland." One size.' },
-      price: 429,
-      colors: ['olive', 'black', 'brown', 'navy'],
-      sizes: null,
-      image: 'assets/products/beanie-olive.webp',
-      images: {
-        black: 'assets/products/beanie-black.webp',
-        brown: 'assets/products/beanie-brown.webp',
-        navy: 'assets/products/beanie-navy.webp',
-        olive: 'assets/products/beanie-olive.webp'
+      "id": "take-one-sleeve",
+      "cat": "accessories",
+      "type": "sleeve",
+      "print": "S1F",
+      "name": {
+        "sv": "TAKE ONE SLEEVE",
+        "en": "TAKE ONE SLEEVE"
       },
-      galleries: {
-        black: ['assets/products/beanie-black.webp', 'assets/products/beanie-black-1.webp', 'assets/products/beanie-black-2.webp', 'assets/products/beanie-black-3.webp', 'assets/products/beanie-black-5.webp'],
-        brown: ['assets/products/beanie-brown.webp', 'assets/products/beanie-brown-1.webp', 'assets/products/beanie-brown-2.webp', 'assets/products/beanie-brown-3.webp', 'assets/products/beanie-brown-4.webp'],
-        navy: ['assets/products/beanie-navy.webp', 'assets/products/beanie-navy-1.webp', 'assets/products/beanie-navy-2.webp', 'assets/products/beanie-navy-3.webp'],
-        olive: ['assets/products/beanie-olive.webp', 'assets/products/beanie-olive-1.webp', 'assets/products/beanie-olive-2.webp', 'assets/products/beanie-olive-3.webp', 'assets/products/beanie-olive-4.webp']
-      }
-    },
-    {
-      id: 'ad1-beanie', cat: 'caps', type: 'cap', print: 'AD1',
-      name: { sv: 'AD1 BEANIE', en: 'AD1 BEANIE' },
-      desc: { sv: '"Reserved for vision." För tankarna som blir till film. Ribbstickad mössa med vikt kant. One size.', en: '"Reserved for vision." For the thoughts that become films. Ribbed knit beanie, cuffed. One size.' },
-      price: 309,
-      colors: ['candy', 'orange', 'white'],
-      sizes: null,
-      image: 'assets/products/ad1-beanie-pink.webp',
-      images: {
-        candy: 'assets/products/ad1-beanie-pink.webp',
-        orange: 'assets/products/ad1-beanie-orange.webp',
-        white: 'assets/products/ad1-beanie-white.webp'
+      "desc": {
+        "sv": "Inspirerad av filmklappan. \"Take One\" är början på varje berättelse — bär din utrustning som crewet.",
+        "en": "Inspired by the clapperboard. \"Take One\" is the start of every story — carry your gear like the crew."
       },
-      galleries: {
-        candy: ['assets/products/ad1-beanie-pink.webp', 'assets/products/ad1-beanie-pink-1.webp', 'assets/products/ad1-beanie-pink-2.webp', 'assets/products/ad1-beanie-pink-3.webp'],
-        orange: ['assets/products/ad1-beanie-orange.webp', 'assets/products/ad1-beanie-orange-1.webp', 'assets/products/ad1-beanie-orange-2.webp'],
-        white: ['assets/products/ad1-beanie-white.webp', 'assets/products/ad1-beanie-white-1.webp', 'assets/products/ad1-beanie-white-2.webp', 'assets/products/ad1-beanie-white-3.webp']
-      }
-    },
-    {
-      id: 'static-reel-sleeve', cat: 'accessories', type: 'sleeve', print: 'S1F',
-      name: { sv: 'GLITCH SLEEVE', en: 'GLITCH SLEEVE' },
-      desc: { sv: 'Inspirerad av glitchen mellan tagningarna. Skydda din maskin med en design som är helt unik. Vadderat med dragkedja.', en: 'Inspired by the glitch between takes. Protect your machine with a design that\'s one of a kind. Padded, zippered.' },
-      material: { sv: ['Vadderat fodral med dragkedja', 'Finns för 13" och 15"'], en: ['Padded sleeve with zipper', 'Available for 13" and 15"'] },
-      price: 549,
-      sizePrices: { '13"': 549, '15"': 649 },
-      colors: ['silver'],
-      sizes: ['13"', '15"'], defaultSize: '13"',
-      image: 'assets/products/static-sleeve.webp',
-      gallery: [
-        'assets/products/static-sleeve.webp',
-        'assets/products/static-sleeve-1.webp',
-        'assets/products/static-sleeve-2.webp'
+      "material": {
+        "sv": [
+          "Vadderat fodral med dragkedja",
+          "Finns för 13\" och 15\""
+        ],
+        "en": [
+          "Padded sleeve with zipper",
+          "Available for 13\" and 15\""
+        ]
+      },
+      "badge": {
+        "sv": "Trend",
+        "en": "Trending"
+      },
+      "price": 599,
+      "sizePrices": {
+        "13\"": 599,
+        "15\"": 699
+      },
+      "colors": [
+        "pastel"
+      ],
+      "sizes": [
+        "13\"",
+        "15\""
+      ],
+      "defaultSize": "13\"",
+      "image": "assets/products/take-one-sleeve.webp",
+      "gallery": [
+        "assets/products/take-one-sleeve.webp",
+        "assets/products/take-one-sleeve-1.webp",
+        "assets/products/take-one-sleeve-2.webp",
+        "assets/products/take-one-sleeve-4.webp"
       ]
     },
     {
-      id: 'lil-director-tee', cat: 'clothing', type: 'tee', print: 'LIL',
-      name: { sv: "LIL' DIRECTOR TEE", en: "LIL' DIRECTOR TEE" },
-      desc: { sv: 'En ny liten regissör är född. "Get ready for some movies, with a bottle of popcorn" — mjuk baby-tee. Storlek 6–24 mån.', en: 'A tiny new director is born. "Get ready for some movies, with a bottle of popcorn" — soft baby tee. Sizes 6–24 months.' },
-      badge: { sv: 'Nyhet', en: 'New' },
-      material: { sv: ['Mjuk bomull', 'Storlek 6–24 månader'], en: ['Soft cotton', 'Sizes 6–24 months'] },
-      price: 399,
-      colors: ['candy', 'lightblue', 'white'],
-      sizes: ['6M', '12M', '18M', '24M'], defaultSize: '12M',
-      image: 'assets/products/lil-tee-pink.webp',
-      images: {
-        candy: 'assets/products/lil-tee-pink.webp',
-        lightblue: 'assets/products/lil-tee-lightblue.webp',
-        white: 'assets/products/lil-tee-white.webp'
+      "id": "step1-jersey",
+      "cat": "clothing",
+      "type": "jersey",
+      "print": "S1F",
+      "name": {
+        "sv": "STEP1 JERSEY",
+        "en": "STEP1 JERSEY"
       },
-      galleries: {
-        candy: ['assets/products/lil-tee-pink.webp', 'assets/products/lil-tee-pink-1.webp', 'assets/products/lil-tee-pink-2.webp', 'assets/products/lil-tee-pink-3.webp'],
-        lightblue: ['assets/products/lil-tee-lightblue.webp', 'assets/products/lil-tee-lightblue-1.webp', 'assets/products/lil-tee-lightblue-2.webp', 'assets/products/lil-tee-lightblue-3.webp', 'assets/products/lil-tee-lightblue-4.webp'],
-        white: ['assets/products/lil-tee-white.webp', 'assets/products/lil-tee-white-1.webp', 'assets/products/lil-tee-white-2.webp', 'assets/products/lil-tee-white-3.webp']
-      }
-    },
-
-    {
-      id: 'crew-tee', cat: 'clothing', type: 'tee', print: 'CREW',
-      name: { sv: 'CREW TEE', en: 'CREW TEE' },
-      desc: { sv: 'Ingen film blir till utan sitt crew. Bär laget — en unisex-tee som är skön och klädsam på alla.', en: "No film happens without its crew. Wear the team — a unisex tee that's comfortable and flattering on everyone." },
-      price: 289,
-      colors: ['heather', 'yellow', 'black'],
-      // Printful gör bara S–XL på den här modellen
-      sizes: ['S', 'M', 'L', 'XL'], defaultSize: 'M',
-      image: 'assets/products/crew-tee-heather.webp',
-      images: {
-        yellow: 'assets/products/crew-tee-yellow.webp',
-        black: 'assets/products/crew-tee-black.webp',
-        heather: 'assets/products/crew-tee-heather.webp'
+      "desc": {
+        "sv": "FILM CREW 88 på ryggen — ett lag som inte spelar boll, utan gör film. Pastellspektrumet löper hela vägen runt plagget. Allover-tryck, återvunnen polyester.",
+        "en": "FILM CREW 88 across the back — a team that doesn't play ball, it makes films. The pastel spectrum runs the whole way around. All-over print, recycled polyester."
       },
-      galleries: {
-        yellow: ['assets/products/crew-tee-yellow.webp', 'assets/products/crew-tee-yellow-1.webp', 'assets/products/crew-tee-yellow-2.webp', 'assets/products/crew-tee-yellow-3.webp'],
-        black: ['assets/products/crew-tee-black.webp', 'assets/products/crew-tee-black-1.webp', 'assets/products/crew-tee-black-2.webp', 'assets/products/crew-tee-black-3.webp', 'assets/products/crew-tee-black-4.webp'],
-        heather: ['assets/products/crew-tee-heather.webp', 'assets/products/crew-tee-heather-1.webp', 'assets/products/crew-tee-heather-2.webp', 'assets/products/crew-tee-heather-3.webp', 'assets/products/crew-tee-heather-4.webp']
-      }
-    },
-    {
-      id: 'action-dad-cap', cat: 'caps', type: 'cap', print: 'ACT',
-      name: { sv: 'ACTION DAD CAP', en: 'ACTION DAD CAP' },
-      desc: { sv: 'Klappan slår ihop och allt börjar. "And action" — de två orden som startar varje scen. Bär dem varje dag. 100 % bomullsmanchester. One size.', en: 'The slate claps and everything begins. "And action" — the two words that start every scene. Wear them every day. 100% cotton corduroy. One size.' },
-      badge: { sv: 'Nyhet', en: 'New' },
-      material: { sv: ['100 % bomullsmanchester', 'Justerbar spänne', 'One size'], en: ['100% cotton corduroy', 'Adjustable snap', 'One size'] },
-      price: 399,
-      colors: ['camel', 'black'],
-      sizes: null,
-      image: 'assets/products/dad-cap-camel.webp',
-      images: {
-        camel: 'assets/products/dad-cap-camel.webp',
-        black: 'assets/products/dad-cap-black.webp'
+      "material": {
+        "sv": [
+          "Allover-tryck, återvunnen polyester",
+          "Ledig passform",
+          "Ärmlös"
+        ],
+        "en": [
+          "All-over print, recycled polyester",
+          "Relaxed fit",
+          "Sleeveless"
+        ]
       },
-      galleries: {
-        camel: ['assets/products/dad-cap-camel.webp', 'assets/products/dad-cap-camel-1.webp', 'assets/products/dad-cap-camel-2.webp', 'assets/products/dad-cap-camel-3.webp'],
-        black: ['assets/products/dad-cap-black.webp', 'assets/products/dad-cap-black-1.webp', 'assets/products/dad-cap-black-2.webp', 'assets/products/dad-cap-black-3.webp']
-      }
+      "price": 529,
+      "colors": [
+        "pastel"
+      ],
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "defaultSize": "M",
+      "image": "assets/products/step1-jersey.webp",
+      "gallery": [
+        "assets/products/step1-jersey.webp",
+        "assets/products/step1-jersey-1.webp",
+        "assets/products/step1-jersey-2.webp",
+        "assets/products/step1-jersey-3.webp",
+        "assets/products/step1-jersey-4.webp",
+        "assets/products/step1-jersey-5.webp",
+        "assets/products/step1-jersey-6.webp",
+        "assets/products/step1-jersey-7.webp"
+      ]
     },
     {
-      id: 'gear-stickers', cat: 'accessories', type: 'sticker', print: 'S1F',
-      name: { sv: 'GEAR STICKERS', en: 'GEAR STICKERS' },
-      desc: { sv: 'En hyllning till kamerorna som format filmhistorien. Kiss-cut stickers, tåliga och vattenavvisande.', en: 'A tribute to the cameras that shaped film history. Kiss-cut stickers, durable and water-resistant.' },
-      price: 99,
-      colors: ['forest'],
-      sizes: null,
-      image: 'assets/products/gear-stickers.webp',
-      gallery: [
-        'assets/products/gear-stickers.webp',
-        'assets/products/gear-stickers-1.webp',
-        'assets/products/gear-stickers-2.webp',
-        'assets/products/gear-stickers-3.webp'
+      "id": "awesome-mugg",
+      "cat": "mugs",
+      "type": "mug",
+      "print": "AWE",
+      "name": {
+        "sv": "AWESOME MUGG",
+        "en": "AWESOME MUG"
+      },
+      "desc": {
+        "sv": "Efter en lång dag på inspelning sitter en varm choklad fint — och en påminnelse om att du redan är awesome. Vit glansig mugg, 11 oz.",
+        "en": "After a long day on set, hot chocolate is a must — and a reminder that you're already awesome. White glossy mug, 11 oz."
+      },
+      "badge": {
+        "sv": "Mest populär",
+        "en": "Most popular"
+      },
+      "material": {
+        "sv": [
+          "Keramik, vit glansig",
+          "Volym: 11 oz (ca 330 ml)"
+        ],
+        "en": [
+          "Ceramic, white glossy",
+          "Volume: 11 oz (approx. 330 ml)"
+        ]
+      },
+      "price": 249,
+      "colors": [
+        "white"
+      ],
+      "sizes": null,
+      "image": "assets/products/awesome-mugg-stacked.webp",
+      "gallery": [
+        "assets/products/awesome-mugg-stacked.webp",
+        "assets/products/awesome-mugg-hands.webp",
+        "assets/products/awesome-mugg.webp",
+        "assets/products/awesome-mugg-model.webp",
+        "assets/products/awesome-mugg-holiday.webp",
+        "assets/products/awesome-mugg-box.webp"
+      ]
+    },
+    {
+      "id": "action-dad-cap",
+      "cat": "caps",
+      "type": "cap",
+      "print": "ACT",
+      "name": {
+        "sv": "ACTION DAD CAP",
+        "en": "ACTION DAD CAP"
+      },
+      "desc": {
+        "sv": "Klappan slår ihop och allt börjar. \"And action\" — de två orden som startar varje scen. Bär dem varje dag. 100 % bomullsmanchester. One size.",
+        "en": "The slate claps and everything begins. \"And action\" — the two words that start every scene. Wear them every day. 100% cotton corduroy. One size."
+      },
+      "badge": {
+        "sv": "Nyhet",
+        "en": "New"
+      },
+      "material": {
+        "sv": [
+          "100 % bomullsmanchester",
+          "Justerbar spänne",
+          "One size"
+        ],
+        "en": [
+          "100% cotton corduroy",
+          "Adjustable snap",
+          "One size"
+        ]
+      },
+      "price": 399,
+      "colors": [
+        "camel",
+        "black"
+      ],
+      "sizes": null,
+      "image": "assets/products/dad-cap-camel.webp",
+      "images": {
+        "camel": "assets/products/dad-cap-camel.webp",
+        "black": "assets/products/dad-cap-black.webp"
+      },
+      "galleries": {
+        "camel": [
+          "assets/products/dad-cap-camel.webp",
+          "assets/products/dad-cap-camel-1.webp",
+          "assets/products/dad-cap-camel-2.webp",
+          "assets/products/dad-cap-camel-3.webp"
+        ],
+        "black": [
+          "assets/products/dad-cap-black.webp",
+          "assets/products/dad-cap-black-1.webp",
+          "assets/products/dad-cap-black-2.webp",
+          "assets/products/dad-cap-black-3.webp"
+        ]
+      }
+    },
+    {
+      "id": "spoiler-hoodie",
+      "cat": "clothing",
+      "type": "hoodie",
+      "print": "S1F",
+      "name": {
+        "sv": "SPOILER HOODIE",
+        "en": "SPOILER HOODIE"
+      },
+      "desc": {
+        "sv": "Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.",
+        "en": "You always know how the film ends — own it. A cosy hoodie for those who've seen it all."
+      },
+      "price": 799,
+      "colors": [
+        "natural",
+        "lightpink",
+        "white"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "defaultSize": "M",
+      "image": "assets/products/hoodie-natural.webp",
+      "images": {
+        "natural": "assets/products/hoodie-natural.webp",
+        "lightpink": "assets/products/hoodie-pink.webp",
+        "white": "assets/products/hoodie-white.webp"
+      },
+      "galleries": {
+        "natural": [
+          "assets/products/hoodie-natural.webp",
+          "assets/products/hoodie-natural-1.webp",
+          "assets/products/hoodie-natural-2.webp",
+          "assets/products/hoodie-natural-3.webp",
+          "assets/products/hoodie-natural-4.webp"
+        ],
+        "lightpink": [
+          "assets/products/hoodie-pink.webp",
+          "assets/products/hoodie-pink-1.webp",
+          "assets/products/hoodie-pink-3.webp",
+          "assets/products/hoodie-pink-4.webp"
+        ],
+        "white": [
+          "assets/products/hoodie-white.webp",
+          "assets/products/hoodie-white-1.webp",
+          "assets/products/hoodie-white-2.webp",
+          "assets/products/hoodie-white-3.webp",
+          "assets/products/hoodie-white-5.webp"
+        ]
+      }
+    },
+    {
+      "id": "crew-tee",
+      "cat": "clothing",
+      "type": "tee",
+      "print": "CREW",
+      "name": {
+        "sv": "CREW TEE",
+        "en": "CREW TEE"
+      },
+      "desc": {
+        "sv": "Ingen film blir till utan sitt crew. Bär laget — en unisex-tee som är skön och klädsam på alla.",
+        "en": "No film happens without its crew. Wear the team — a unisex tee that's comfortable and flattering on everyone."
+      },
+      "price": 289,
+      "colors": [
+        "heather",
+        "yellow",
+        "black"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "defaultSize": "M",
+      "image": "assets/products/crew-tee-heather.webp",
+      "images": {
+        "yellow": "assets/products/crew-tee-yellow.webp",
+        "black": "assets/products/crew-tee-black.webp",
+        "heather": "assets/products/crew-tee-heather.webp"
+      },
+      "galleries": {
+        "yellow": [
+          "assets/products/crew-tee-yellow.webp",
+          "assets/products/crew-tee-yellow-1.webp",
+          "assets/products/crew-tee-yellow-2.webp",
+          "assets/products/crew-tee-yellow-3.webp"
+        ],
+        "black": [
+          "assets/products/crew-tee-black.webp",
+          "assets/products/crew-tee-black-1.webp",
+          "assets/products/crew-tee-black-2.webp",
+          "assets/products/crew-tee-black-3.webp",
+          "assets/products/crew-tee-black-4.webp"
+        ],
+        "heather": [
+          "assets/products/crew-tee-heather.webp",
+          "assets/products/crew-tee-heather-1.webp",
+          "assets/products/crew-tee-heather-2.webp",
+          "assets/products/crew-tee-heather-3.webp",
+          "assets/products/crew-tee-heather-4.webp"
+        ]
+      },
+      "hidden": true
+    },
+    {
+      "id": "static-reel-sleeve",
+      "cat": "accessories",
+      "type": "sleeve",
+      "print": "S1F",
+      "name": {
+        "sv": "GLITCH SLEEVE",
+        "en": "GLITCH SLEEVE"
+      },
+      "desc": {
+        "sv": "Inspirerad av glitchen mellan tagningarna. Skydda din maskin med en design som är helt unik. Vadderat med dragkedja.",
+        "en": "Inspired by the glitch between takes. Protect your machine with a design that's one of a kind. Padded, zippered."
+      },
+      "material": {
+        "sv": [
+          "Vadderat fodral med dragkedja",
+          "Finns för 13\" och 15\""
+        ],
+        "en": [
+          "Padded sleeve with zipper",
+          "Available for 13\" and 15\""
+        ]
+      },
+      "price": 549,
+      "sizePrices": {
+        "13\"": 549,
+        "15\"": 649
+      },
+      "colors": [
+        "silver"
+      ],
+      "sizes": [
+        "13\"",
+        "15\""
+      ],
+      "defaultSize": "13\"",
+      "image": "assets/products/static-sleeve.webp",
+      "gallery": [
+        "assets/products/static-sleeve.webp",
+        "assets/products/static-sleeve-1.webp",
+        "assets/products/static-sleeve-2.webp"
+      ]
+    },
+    {
+      "id": "reel-trucker-cap",
+      "cat": "caps",
+      "type": "cap",
+      "print": "S1F",
+      "name": {
+        "sv": "STEP1 FAN",
+        "en": "STEP1 FAN"
+      },
+      "desc": {
+        "sv": "Sätt på dig Step1-kepsen och något händer — idéerna börjar rulla. Bär den och du bär med dig Step1. Broderad logga, vit mesh, justerbar. One size.",
+        "en": "Put on the Step1 cap and something happens — the ideas start rolling. Wear it and you carry Step1 with you. Embroidered logo, white mesh, adjustable. One size."
+      },
+      "price": 379,
+      "colors": [
+        "navy",
+        "silver",
+        "black"
+      ],
+      "sizes": null,
+      "image": "assets/products/trucker-cap-navy.webp",
+      "images": {
+        "navy": "assets/products/trucker-cap-navy.webp",
+        "silver": "assets/products/trucker-cap-silver.webp",
+        "black": "assets/products/trucker-cap-black.webp"
+      },
+      "galleries": {
+        "navy": [
+          "assets/products/trucker-cap-navy.webp",
+          "assets/products/trucker-cap-navy-1.webp",
+          "assets/products/trucker-cap-navy-2.webp",
+          "assets/products/trucker-cap-navy-3.webp",
+          "assets/products/trucker-cap-navy-5.webp"
+        ],
+        "silver": [
+          "assets/products/trucker-cap-silver.webp",
+          "assets/products/trucker-cap-silver-1.webp",
+          "assets/products/trucker-cap-silver-2.webp",
+          "assets/products/trucker-cap-silver-3.webp",
+          "assets/products/trucker-cap-silver-4.webp",
+          "assets/products/trucker-cap-silver-5.webp"
+        ],
+        "black": [
+          "assets/products/trucker-cap-black.webp",
+          "assets/products/trucker-cap-black-1.webp",
+          "assets/products/trucker-cap-black-2.webp",
+          "assets/products/trucker-cap-black-3.webp",
+          "assets/products/trucker-cap-black-4.webp",
+          "assets/products/trucker-cap-black-5.webp"
+        ]
+      }
+    },
+    {
+      "id": "lil-director-tee",
+      "cat": "clothing",
+      "type": "tee",
+      "print": "LIL",
+      "name": {
+        "sv": "LIL' DIRECTOR TEE",
+        "en": "LIL' DIRECTOR TEE"
+      },
+      "desc": {
+        "sv": "En ny liten regissör är född. \"Get ready for some movies, with a bottle of popcorn\" — mjuk baby-tee. Storlek 6–24 mån.",
+        "en": "A tiny new director is born. \"Get ready for some movies, with a bottle of popcorn\" — soft baby tee. Sizes 6–24 months."
+      },
+      "badge": {
+        "sv": "Nyhet",
+        "en": "New"
+      },
+      "material": {
+        "sv": [
+          "Mjuk bomull",
+          "Storlek 6–24 månader"
+        ],
+        "en": [
+          "Soft cotton",
+          "Sizes 6–24 months"
+        ]
+      },
+      "price": 399,
+      "colors": [
+        "candy",
+        "lightblue",
+        "white"
+      ],
+      "sizes": [
+        "6M",
+        "12M",
+        "18M",
+        "24M"
+      ],
+      "defaultSize": "12M",
+      "image": "assets/products/lil-tee-pink.webp",
+      "images": {
+        "candy": "assets/products/lil-tee-pink.webp",
+        "lightblue": "assets/products/lil-tee-lightblue.webp",
+        "white": "assets/products/lil-tee-white.webp"
+      },
+      "galleries": {
+        "candy": [
+          "assets/products/lil-tee-pink.webp",
+          "assets/products/lil-tee-pink-1.webp",
+          "assets/products/lil-tee-pink-2.webp",
+          "assets/products/lil-tee-pink-3.webp"
+        ],
+        "lightblue": [
+          "assets/products/lil-tee-lightblue.webp",
+          "assets/products/lil-tee-lightblue-1.webp",
+          "assets/products/lil-tee-lightblue-2.webp",
+          "assets/products/lil-tee-lightblue-3.webp",
+          "assets/products/lil-tee-lightblue-4.webp"
+        ],
+        "white": [
+          "assets/products/lil-tee-white.webp",
+          "assets/products/lil-tee-white-1.webp",
+          "assets/products/lil-tee-white-2.webp",
+          "assets/products/lil-tee-white-3.webp"
+        ]
+      }
+    },
+    {
+      "id": "icon-stickers",
+      "cat": "accessories",
+      "type": "sticker",
+      "print": "S1F",
+      "name": {
+        "sv": "ICON STICKERS",
+        "en": "ICON STICKERS"
+      },
+      "desc": {
+        "sv": "Små ikoner, stora historier. Dekorera din värld med filmkärlek — kiss-cut stickers i rosa.",
+        "en": "Small icons, big stories. Decorate your world with film love — kiss-cut stickers in pink."
+      },
+      "price": 99,
+      "colors": [
+        "pink"
+      ],
+      "sizes": null,
+      "image": "assets/products/icon-stickers.webp",
+      "gallery": [
+        "assets/products/icon-stickers.webp",
+        "assets/products/icon-stickers-1.webp",
+        "assets/products/icon-stickers-2.webp"
+      ]
+    },
+    {
+      "id": "directors-beanie",
+      "cat": "caps",
+      "type": "cap",
+      "print": "DIR",
+      "name": {
+        "sv": "DIRECTOR'S BEANIE",
+        "en": "DIRECTOR'S BEANIE"
+      },
+      "desc": {
+        "sv": "\"Reserved for vision.\" Håll huvudet varmt och blicken skarp — för idéernas timmar. \"Inspirerad av Smålands skogar.\" One size.",
+        "en": "\"Reserved for vision.\" Keep your head warm and your eye sharp — for the hours of ideas. \"Inspired by the forests of Småland.\" One size."
+      },
+      "price": 429,
+      "colors": [
+        "olive",
+        "black",
+        "brown",
+        "navy"
+      ],
+      "sizes": null,
+      "image": "assets/products/beanie-olive.webp",
+      "images": {
+        "black": "assets/products/beanie-black.webp",
+        "brown": "assets/products/beanie-brown.webp",
+        "navy": "assets/products/beanie-navy.webp",
+        "olive": "assets/products/beanie-olive.webp"
+      },
+      "galleries": {
+        "black": [
+          "assets/products/beanie-black.webp",
+          "assets/products/beanie-black-1.webp",
+          "assets/products/beanie-black-2.webp",
+          "assets/products/beanie-black-3.webp",
+          "assets/products/beanie-black-5.webp"
+        ],
+        "brown": [
+          "assets/products/beanie-brown.webp",
+          "assets/products/beanie-brown-1.webp",
+          "assets/products/beanie-brown-2.webp",
+          "assets/products/beanie-brown-3.webp",
+          "assets/products/beanie-brown-4.webp"
+        ],
+        "navy": [
+          "assets/products/beanie-navy.webp",
+          "assets/products/beanie-navy-1.webp",
+          "assets/products/beanie-navy-2.webp",
+          "assets/products/beanie-navy-3.webp"
+        ],
+        "olive": [
+          "assets/products/beanie-olive.webp",
+          "assets/products/beanie-olive-1.webp",
+          "assets/products/beanie-olive-2.webp",
+          "assets/products/beanie-olive-3.webp",
+          "assets/products/beanie-olive-4.webp"
+        ]
+      }
+    },
+    {
+      "id": "reel-mugg",
+      "cat": "mugs",
+      "type": "mug",
+      "print": "S1F",
+      "name": {
+        "sv": "Director's Morning",
+        "en": "Director's Morning"
+      },
+      "desc": {
+        "sv": "Där varje historia börjar — en kopp kaffe och en idé. Svart glansig mugg, 15 oz.",
+        "en": "Where every story begins — a cup of coffee and an idea. Black glossy mug, 15 oz."
+      },
+      "material": {
+        "sv": [
+          "Keramik, svart glansig",
+          "Volym: 15 oz (ca 440 ml)"
+        ],
+        "en": [
+          "Ceramic, black glossy",
+          "Volume: 15 oz (approx. 440 ml)"
+        ]
+      },
+      "price": 299,
+      "colors": [
+        "black"
+      ],
+      "sizes": null,
+      "image": "assets/products/reel-mugg.webp",
+      "gallery": [
+        "assets/products/reel-mugg.webp",
+        "assets/products/reel-mugg-2.webp",
+        "assets/products/reel-mugg-lifestyle.webp"
+      ]
+    },
+    {
+      "id": "ad1-beanie",
+      "cat": "caps",
+      "type": "cap",
+      "print": "AD1",
+      "name": {
+        "sv": "AD1 BEANIE",
+        "en": "AD1 BEANIE"
+      },
+      "desc": {
+        "sv": "\"Reserved for vision.\" För tankarna som blir till film. Ribbstickad mössa med vikt kant. One size.",
+        "en": "\"Reserved for vision.\" For the thoughts that become films. Ribbed knit beanie, cuffed. One size."
+      },
+      "price": 309,
+      "colors": [
+        "candy",
+        "orange",
+        "white"
+      ],
+      "sizes": null,
+      "image": "assets/products/ad1-beanie-pink.webp",
+      "images": {
+        "candy": "assets/products/ad1-beanie-pink.webp",
+        "orange": "assets/products/ad1-beanie-orange.webp",
+        "white": "assets/products/ad1-beanie-white.webp"
+      },
+      "galleries": {
+        "candy": [
+          "assets/products/ad1-beanie-pink.webp",
+          "assets/products/ad1-beanie-pink-1.webp",
+          "assets/products/ad1-beanie-pink-2.webp",
+          "assets/products/ad1-beanie-pink-3.webp"
+        ],
+        "orange": [
+          "assets/products/ad1-beanie-orange.webp",
+          "assets/products/ad1-beanie-orange-1.webp",
+          "assets/products/ad1-beanie-orange-2.webp"
+        ],
+        "white": [
+          "assets/products/ad1-beanie-white.webp",
+          "assets/products/ad1-beanie-white-1.webp",
+          "assets/products/ad1-beanie-white-2.webp",
+          "assets/products/ad1-beanie-white-3.webp"
+        ]
+      },
+      "hidden": true
+    },
+    {
+      "id": "gear-stickers",
+      "cat": "accessories",
+      "type": "sticker",
+      "print": "S1F",
+      "name": {
+        "sv": "GEAR STICKERS",
+        "en": "GEAR STICKERS"
+      },
+      "desc": {
+        "sv": "En hyllning till kamerorna som format filmhistorien. Kiss-cut stickers, tåliga och vattenavvisande.",
+        "en": "A tribute to the cameras that shaped film history. Kiss-cut stickers, durable and water-resistant."
+      },
+      "price": 99,
+      "colors": [
+        "forest"
+      ],
+      "sizes": null,
+      "image": "assets/products/gear-stickers.webp",
+      "gallery": [
+        "assets/products/gear-stickers.webp",
+        "assets/products/gear-stickers-1.webp",
+        "assets/products/gear-stickers-2.webp",
+        "assets/products/gear-stickers-3.webp"
       ]
     }
-    , {
-      id: 'step1-jersey', cat: 'clothing', type: 'jersey', print: 'S1F',
-      name: { sv: 'STEP1 JERSEY', en: 'STEP1 JERSEY' },
-      desc: { sv: 'FILM CREW 88 på ryggen — ett lag som inte spelar boll, utan gör film. Pastellspektrumet löper hela vägen runt plagget. Allover-tryck, återvunnen polyester.', en: 'FILM CREW 88 across the back — a team that doesn\'t play ball, it makes films. The pastel spectrum runs the whole way around. All-over print, recycled polyester.' },
-      material: { sv: ['Allover-tryck, återvunnen polyester', 'Ledig passform', 'Ärmlös'], en: ['All-over print, recycled polyester', 'Relaxed fit', 'Sleeveless'] },
-      price: 529,
-      colors: ['pastel'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL'], defaultSize: 'M',
-      image: 'assets/products/step1-jersey.webp',
-      gallery: [
-        'assets/products/step1-jersey.webp',
-        'assets/products/step1-jersey-1.webp',
-        'assets/products/step1-jersey-2.webp',
-        'assets/products/step1-jersey-3.webp',
-        'assets/products/step1-jersey-4.webp',
-        'assets/products/step1-jersey-5.webp',
-        'assets/products/step1-jersey-6.webp',
-        'assets/products/step1-jersey-7.webp'
-      ]
-    }
+  ];
+  /* ADMIN:SLUT produkter */
 
+  /* -----------------------------------------------------
+     SPARAT UNDERLAG — ligger utanför adminblocket med flit,
+     så det överlever nästa sparning. Kopiera in i admin när
+     produkten ska aktiveras.
+  ----------------------------------------------------- */
     /* ===================================================
        PÅ VÄG IN — färdigskriven, väntar bara på bilderna
        ===================================================
        Så här aktiverar du den när bilderna är uppladdade:
-         1. Ta bort raden ovanför blocket ( `/*` ) och raden
-            under ( slut-tecknet ), så koden börjar gälla.
-         2. Lägg till id:t i PRODUCT_ORDER längre ner.
-         3. Avkommentera priset i functions/_lib/catalog.js
-            (raderna ligger redan där, med variant-id:n ifyllda).
+         Lägg in produkten via adminsidan (step1film.se/admin →
+         Produkter → Lägg till) och kopiera in fälten härifrån.
+         Admin skriver både shop.js och catalog.js, så priset kan
+         inte glida isär. Variant-id:n står i catalog.js-huvudet.
+         Dra produkten till rätt plats i listan — ordningen där är
+         ordningen i butiken.
 
        BILDER SOM BEHÖVS (exakta filnamn, i assets/products/):
          On Set Cap — en uppsättning per färg:
@@ -585,67 +1027,35 @@
       }
     }
     --------------------------------------------------- */
-  ];
 
   /* -----------------------------------------------------
-     VISNINGSORDNING — ids i den ordning de ska visas.
-     Produkter som saknas i listan hamnar sist (i array-ordning).
+     ORDNING OCH SYNLIGHET
+     -----------------------------------------------------
+     Båda styrs numera från adminsidan, inte härifrån:
+       · ordningen i butiken = ordningen i PRODUCTS-listan
+       · `hidden: true` på en produkt tar bort den ur butiken
+
+     En dold produkt går inte heller att beställa: HIDDEN nedan
+     speglas till functions/_lib/catalog.js, som är det som faktiskt
+     debiterar. Annars hade någon som kände till id:t kunnat beställa
+     en slutsåld vara genom att skicka det direkt till servern.
+
+     ORDNINGEN ÄR MEDVETEN — flyttar du om, tänk på varför:
+       · Ankring — de dyraste plaggen först, allt därefter känns rimligare.
+       · Social bevisning — de flaggade produkterna (Filmfavorit,
+         Bestseller, Trend, Mest populär) ligger i första skärmen.
+       · Kontrasteffekt — priset växlar upp och ner istället för att
+         falla jämnt, så varje ny produkt läses som ett eget beslut.
+       · Von Restorff — inga två grannar delar kategori (två hoodies,
+         två mössor, två fodral ligger aldrig bredvid varandra).
+       · Litet första ja — den billiga muggen tidigt sänker tröskeln.
+       · Serieposition — starkast först, billig impuls sist, där kunden
+         ändå överväger att fylla på till fri frakt (1 200 kr).
   ----------------------------------------------------- */
-  /* Ordningen nedan följer några klassiska köppsykologiska principer:
-     · Ankring — de dyraste plaggen först, allt därefter känns rimligare.
-     · Social bevisning — de flaggade produkterna (Filmfavorit, Bestseller,
-       Trend, Mest populär) ligger i första skärmen.
-     · Kontrasteffekt — priset växlar upp och ner istället för att falla
-       jämnt, så varje ny produkt läses som ett eget beslut.
-     · Von Restorff — inga två grannar delar kategori (två hoodies, två
-       mössor, två fodral ligger aldrig bredvid varandra).
-     · Litet första ja — 229 kr-muggen tidigt sänker tröskeln till första köpet.
-     · Serieposition — starkast först och billig impuls sist, där kunden
-       ändå överväger att fylla på till fri frakt (1 200 kr).
-
-     TIDIGARE ORDNING (för att backa detta steg):
-       action-dad-cap, take-one-sleeve, 24fps-hoodie, awesome-mugg,
-       rolling-backpack, lil-director-tee, icon-stickers, crew-tee,
-       spoiler-hoodie, reel-trucker-cap, reel-mugg, ad1-beanie,
-       static-reel-sleeve, directors-beanie, gear-stickers            */
-  /* Tillfälligt dolda — slut hos Printful. Ta bort id:t ur listan för
-     att visa produkten igen; allt annat (bilder, priser, variant-id)
-     ligger kvar orört. */
-  const HIDDEN = [
-    'crew-tee',     // slut hos Printful
-    'ad1-beanie'    // slut hos Printful
-  ];
-  
-    const PRODUCT_ORDER = [
-    '24fps-hoodie',        // 899 · Filmfavorit — ankare + starkaste berättelsen
-    'rolling-backpack',    // 779 · Bestseller — håller ankaret uppe
-    'take-one-sleeve',     // 599 · Trend — första prissänkningen känns som en lättnad
-    'step1-jersey',        // 529 · Nyhet — laget, håller kvar i det höga spannet
-    'awesome-mugg',        // 249 · Mest populär — det lilla första ja:et
-    'action-dad-cap',      // 399 · Nyhet
-    'spoiler-hoodie',      // 799 · kontrast tillbaka uppåt
-    'crew-tee',            // 289
-    'static-reel-sleeve',  // 549 · skilt från TAKE ONE så de inte äter varandra
-    'reel-trucker-cap',    // 379
-    'lil-director-tee',    // 399 · Nyhet — presenten, känslan
-    'icon-stickers',       //  99 · impuls
-    'directors-beanie',    // 429
-    'reel-mugg',           // 299
-    'ad1-beanie',          // 309
-    'gear-stickers'        //  99 · sista lilla ja:et upp mot fri frakt
-    // PÅ VÄG IN — lägg in denna när bilderna finns:
-    // 'on-set-cap'    (369) passar direkt efter 'action-dad-cap'
-  ];
-  // Filtrera bort dolda produkter innan något renderas eller prissätts
+  const HIDDEN = PRODUCTS.filter(p => p.hidden).map(p => p.id);
   for (let i = PRODUCTS.length - 1; i >= 0; i--) {
-    if (HIDDEN.includes(PRODUCTS[i].id)) PRODUCTS.splice(i, 1);
+    if (PRODUCTS[i].hidden) PRODUCTS.splice(i, 1);
   }
-
-  PRODUCTS.sort((a, b) => {
-    const ia = PRODUCT_ORDER.indexOf(a.id);
-    const ib = PRODUCT_ORDER.indexOf(b.id);
-    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
-  });
 
   /* -----------------------------------------------------
      Strukturerad data för Google

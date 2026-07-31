@@ -28,115 +28,209 @@ const SHIPPING_FREE_OVER = 1200;
    här och i shop.js först, inte bara en rad till i listan. */
 const SHIP_COUNTRIES = ['SE'];
 
-/* Produkter som är dolda i butiken — HÅLL I SYNK med HIDDEN i shop.js.
-   Utan den här listan kunde någon som kände till id:t beställa en slutsåld
-   vara genom att skicka det direkt till servern. Kunden hade betalat och
-   Printful-ordern misslyckats. */
-const HIDDEN = ['crew-tee', 'ad1-beanie'];
-
 /* id → { name, price, sizePrices?, variants? }
    variants: 'färg|storlek' → Printful sync_variant_id
-   (fylls i när Printful-varianterna är hämtade, se PRINTFUL_SETUP.md) */
+
+   ⚠️ SKRIVS AV ADMINSIDAN — redigera i step1film.se/admin, inte här.
+   Kommentarer inne i blocket försvinner vid nästa sparning.
+   Adminsidan skriver den här filen och shop.js i samma commit, så
+   visningspriset och det debiterade priset aldrig kan glida isär.
+
+   SPARAT UNDERLAG — ON SET CAP, väntar på bilder. Variant-id:n är
+   redan hämtade; lägg in produkten i admin när den ska aktiveras:
+     'on-set-cap': { name: 'ON SET CAP', price: 369,
+       variants: { 'navy|one': 5415333757, 'charcoal|one': 5415333758,
+                   'white|one': 5415333759 } } */
+/* ADMIN:START katalog */
 const CATALOG = {
-  'reel-mugg': {
-    name: "Director's Morning", price: 299,
-    variants: { 'black|one': 5415345254 }
-  },
-  'awesome-mugg': {
-    name: 'AWESOME MUGG', price: 249,
-    variants: { 'white|one': 5415373167 }
-  },
-  'take-one-sleeve': {
-    name: 'TAKE ONE SLEEVE', price: 599, sizePrices: { '13"': 599, '15"': 699 },
-    variants: { 'pastel|13"': 5415334461, 'pastel|15"': 5415334462 }
-  },
-  'static-reel-sleeve': {
-    name: 'GLITCH SLEEVE', price: 549, sizePrices: { '13"': 549, '15"': 649 },
-    variants: { 'silver|13"': 5415374045, 'silver|15"': 5415374046 }
-  },
-  'rolling-backpack': {
-    name: 'ROLLING BACKPACK', price: 779,
-    // Navy och rosa är två separata produkter hos Printful
-    variants: { 'navy|one': 5415353196, 'pink|one': 5415329629 }
-  },
-  'spoiler-hoodie': {
-    name: 'SPOILER HOODIE', price: 799,
-    // Printful: Bone = natur, Lavender = ljusrosa
-    variants: {
-      'natural|S': 5415690062, 'natural|M': 5415690063, 'natural|L': 5415690064, 'natural|XL': 5415690065,
-      'lightpink|S': 5415690058, 'lightpink|M': 5415690059, 'lightpink|L': 5415690060, 'lightpink|XL': 5415690061,
-      'white|S': 5415690066, 'white|M': 5415690067, 'white|L': 5415690068, 'white|XL': 5415690069
+  "reel-mugg": {
+    "name": "Director's Morning",
+    "price": 299,
+    "variants": {
+      "black|one": 5415345254
     }
   },
-  '24fps-hoodie': {
-    name: '24FPS HOODIE', price: 899,
-    variants: {
-      'black|S': 5415343283, 'black|M': 5415343284, 'black|L': 5415343285,
-      'black|XL': 5415343286, 'black|2XL': 5415343287,
-      'lightpink|S': 5415343289, 'lightpink|M': 5415343290, 'lightpink|L': 5415343291,
-      'lightpink|XL': 5415343292, 'lightpink|2XL': 5415343293
+  "awesome-mugg": {
+    "name": "AWESOME MUGG",
+    "price": 249,
+    "variants": {
+      "white|one": 5415373167
     }
   },
-  'reel-trucker-cap': {
-    name: 'STEP1 FAN', price: 379,
-    // Printful: Heather Grey/White = silver
-    variants: { 'navy|one': 5415344277, 'silver|one': 5415344278, 'black|one': 5415344276 }
-  },
-  'action-dad-cap': {
-    name: 'ACTION DAD CAP', price: 399,
-    variants: { 'camel|one': 5415342081, 'black|one': 5415342080 }
-  },
-  'directors-beanie': {
-    name: "DIRECTOR'S BEANIE", price: 429,
-    variants: {
-      'olive|one': 5415347439, 'black|one': 5415347436,
-      'brown|one': 5415347437, 'navy|one': 5415347438
+  "take-one-sleeve": {
+    "name": "TAKE ONE SLEEVE",
+    "price": 599,
+    "sizePrices": {
+      "13\"": 599,
+      "15\"": 699
+    },
+    "variants": {
+      "pastel|13\"": 5415334461,
+      "pastel|15\"": 5415334462
     }
   },
-  'ad1-beanie': {
-    name: 'AD1 BEANIE', price: 309,
-    // Printful: Baby Pink = candy, Gold = orange
-    variants: { 'candy|one': 5415348966, 'orange|one': 5415348965, 'white|one': 5415348967 }
-  },
-  'lil-director-tee': {
-    name: "LIL' DIRECTOR TEE", price: 399,
-    variants: {
-      'candy|6M': 5415644687, 'candy|12M': 5415644688, 'candy|18M': 5415644689, 'candy|24M': 5415644690,
-      'lightblue|6M': 5415644691, 'lightblue|12M': 5415644692, 'lightblue|18M': 5415644693, 'lightblue|24M': 5415644694,
-      'white|6M': 5415644695, 'white|12M': 5415644696, 'white|18M': 5415644697, 'white|24M': 5415644698
+  "static-reel-sleeve": {
+    "name": "GLITCH SLEEVE",
+    "price": 549,
+    "sizePrices": {
+      "13\"": 549,
+      "15\"": 649
+    },
+    "variants": {
+      "silver|13\"": 5415374045,
+      "silver|15\"": 5415374046
     }
   },
-  'crew-tee': {
-    name: 'CREW TEE', price: 289,
-    // Printful: Heather Slate = heather
-    variants: {
-      'heather|S': 5415681066, 'heather|M': 5415681067, 'heather|L': 5415681068, 'heather|XL': 5415681069,
-      'yellow|S': 5415681070, 'yellow|M': 5415681071, 'yellow|L': 5415681072, 'yellow|XL': 5415681073,
-      'black|S': 5415681062, 'black|M': 5415681063, 'black|L': 5415681064, 'black|XL': 5415681065
+  "rolling-backpack": {
+    "name": "ROLLING BACKPACK",
+    "price": 779,
+    "variants": {
+      "navy|one": 5415353196,
+      "pink|one": 5415329629
     }
   },
-  'icon-stickers': {
-    name: 'ICON STICKERS', price: 99,
-    variants: { 'pink|one': 5415346306 }
+  "spoiler-hoodie": {
+    "name": "SPOILER HOODIE",
+    "price": 799,
+    "variants": {
+      "natural|S": 5415690062,
+      "natural|M": 5415690063,
+      "natural|L": 5415690064,
+      "natural|XL": 5415690065,
+      "lightpink|S": 5415690058,
+      "lightpink|M": 5415690059,
+      "lightpink|L": 5415690060,
+      "lightpink|XL": 5415690061,
+      "white|S": 5415690066,
+      "white|M": 5415690067,
+      "white|L": 5415690068,
+      "white|XL": 5415690069
+    }
   },
-  'gear-stickers': {
-    name: 'GEAR STICKERS', price: 99,
-    variants: { 'forest|one': 5415372317 }
+  "24fps-hoodie": {
+    "name": "24FPS HOODIE",
+    "price": 899,
+    "variants": {
+      "black|S": 5415343283,
+      "black|M": 5415343284,
+      "black|L": 5415343285,
+      "black|XL": 5415343286,
+      "black|2XL": 5415343287,
+      "lightpink|S": 5415343289,
+      "lightpink|M": 5415343290,
+      "lightpink|L": 5415343291,
+      "lightpink|XL": 5415343292,
+      "lightpink|2XL": 5415343293
+    }
   },
-  'step1-jersey': {
-    name: 'STEP1 JERSEY', price: 529,
-    variants: {
-      'pastel|XS': 5415333024, 'pastel|S': 5415333025, 'pastel|M': 5415333026,
-      'pastel|L': 5415333027, 'pastel|XL': 5415333028
+  "reel-trucker-cap": {
+    "name": "STEP1 FAN",
+    "price": 379,
+    "variants": {
+      "navy|one": 5415344277,
+      "silver|one": 5415344278,
+      "black|one": 5415344276
+    }
+  },
+  "action-dad-cap": {
+    "name": "ACTION DAD CAP",
+    "price": 399,
+    "variants": {
+      "camel|one": 5415342081,
+      "black|one": 5415342080
+    }
+  },
+  "directors-beanie": {
+    "name": "DIRECTOR'S BEANIE",
+    "price": 429,
+    "variants": {
+      "olive|one": 5415347439,
+      "black|one": 5415347436,
+      "brown|one": 5415347437,
+      "navy|one": 5415347438
+    }
+  },
+  "ad1-beanie": {
+    "name": "AD1 BEANIE",
+    "price": 309,
+    "variants": {
+      "candy|one": 5415348966,
+      "orange|one": 5415348965,
+      "white|one": 5415348967
+    },
+    "hidden": true
+  },
+  "lil-director-tee": {
+    "name": "LIL' DIRECTOR TEE",
+    "price": 399,
+    "variants": {
+      "candy|6M": 5415644687,
+      "candy|12M": 5415644688,
+      "candy|18M": 5415644689,
+      "candy|24M": 5415644690,
+      "lightblue|6M": 5415644691,
+      "lightblue|12M": 5415644692,
+      "lightblue|18M": 5415644693,
+      "lightblue|24M": 5415644694,
+      "white|6M": 5415644695,
+      "white|12M": 5415644696,
+      "white|18M": 5415644697,
+      "white|24M": 5415644698
+    }
+  },
+  "crew-tee": {
+    "name": "CREW TEE",
+    "price": 289,
+    "variants": {
+      "heather|S": 5415681066,
+      "heather|M": 5415681067,
+      "heather|L": 5415681068,
+      "heather|XL": 5415681069,
+      "yellow|S": 5415681070,
+      "yellow|M": 5415681071,
+      "yellow|L": 5415681072,
+      "yellow|XL": 5415681073,
+      "black|S": 5415681062,
+      "black|M": 5415681063,
+      "black|L": 5415681064,
+      "black|XL": 5415681065
+    },
+    "hidden": true
+  },
+  "icon-stickers": {
+    "name": "ICON STICKERS",
+    "price": 99,
+    "variants": {
+      "pink|one": 5415346306
+    }
+  },
+  "gear-stickers": {
+    "name": "GEAR STICKERS",
+    "price": 99,
+    "variants": {
+      "forest|one": 5415372317
+    }
+  },
+  "step1-jersey": {
+    "name": "STEP1 JERSEY",
+    "price": 529,
+    "variants": {
+      "pastel|XS": 5415333024,
+      "pastel|S": 5415333025,
+      "pastel|M": 5415333026,
+      "pastel|L": 5415333027,
+      "pastel|XL": 5415333028
     }
   }
-  // PÅ VÄG IN — avkommentera samtidigt som produkten aktiveras i shop.js.
-  // Variant-id:n är redan hämtade och ifyllda.
-  // ,'on-set-cap': {
-  //   name: 'ON SET CAP', price: 369,
-  //   variants: { 'navy|one': 5415333757, 'charcoal|one': 5415333758, 'white|one': 5415333759 }
-  // }
 };
+/* ADMIN:SLUT katalog */
+
+/* Dolda produkter läses ur katalogen ovan, precis som i shop.js.
+   Listan stod förut hårdkodad här och glömdes bort när adminsidan
+   började skriva filen: en produkt som doldes i butiken gick
+   fortfarande att beställa genom att skicka id:t direkt till servern.
+   Nu kommer båda ur samma flagga och kan inte glida isär. */
+const HIDDEN = Object.keys(CATALOG).filter(id => CATALOG[id].hidden);
 
 /** Pris för en produkt givet vald storlek. */
 function priceFor(id, size) {
