@@ -144,6 +144,23 @@
   </div>
 
   <!-- =====================================================
+       02b. TRAILERRUTAN — öppnas av "Watch" på panel 02.
+            iframe:en skapas först vid klick och rivs när rutan
+            stängs, så filmen slutar spela när man går vidare.
+  ====================================================== -->
+  <div id="trailer-box" hidden>
+    <div class="tb-backdrop" data-tb-close></div>
+    <div class="tb-card" role="dialog" aria-modal="true" aria-labelledby="tbTitle">
+      <div class="tb-head">
+        <span class="tb-title" id="tbTitle"></span>
+        <button type="button" class="tb-close" data-tb-close
+                data-i18n-aria="closeTrailer" aria-label="Stäng trailern">&times;</button>
+      </div>
+      <div class="tb-stage" data-tb-stage></div>
+    </div>
+  </div>
+
+  <!-- =====================================================
        03. SITE PAGE
   ====================================================== -->
   <main id="page">
@@ -179,6 +196,7 @@
             </div>
             <div class="hero-content">
               <h1 class="hero-name">STEP<span>1</span>FILM</h1>
+              <p class="hero-tag" data-i18n="heroTag">Stories from people.</p>
               <a href="#about" class="hero-down" data-i18n-aria="enterSite" aria-label="Gå in på sidan">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
                   <line x1="12" y1="4" x2="12" y2="20"></line>
@@ -201,13 +219,19 @@
               <div class="about-cols">
 
                 <div class="about-portrait">
-                  <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
-                       alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
+                  <!-- Stående version. Originalet (ayman-hassdo.webp) är liggande
+                       3:2 och tappade halva bildbredden i den här 3:4-rutan. -->
+                  <img class="portrait-img" src="assets/portraits/ayman-hassdo-portratt.webp"
+                       alt="Ayman Hassdo" width="1050" height="1400" loading="lazy" decoding="async" />
                   <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
-                  <p class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</p>
-                  <a class="about-mail" href="mailto:ayman@step1film.se">
-                    <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
-                    <span class="am-val">ayman@step1film.se</span>
+                  <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
+                       och hela blocket lyser rött när man pekar på adressen. -->
+                  <a class="about-write" href="mailto:ayman@step1film.se">
+                    <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
+                    <span class="about-mail">
+                      <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                      <span class="am-val">ayman@step1film.se</span>
+                    </span>
                   </a>
                 </div>
 
@@ -218,37 +242,28 @@
                     <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
                     <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
                     <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
-                    <p class="about-sign" aria-hidden="true">/Ayman</p>
+                    <p class="about-sign" aria-hidden="true">/Ayman Hassdo</p>
                   </div>
                 </div>
 
-                <aside class="about-cv" aria-label="CV">
-                  <div class="cv-col">
-                    <span class="cv-head" data-i18n="cvSchool">Education</span>
-                    <div class="cv-row">
-                      <span class="cv-year">2024</span>
-                      <span class="cv-what">Tornedalens folkhögskola<em data-i18n="cvEd1">Coordination and grant applications · distance</em></span>
-                    </div>
-                    <div class="cv-row">
-                      <span class="cv-year">2020&ndash;2023</span>
-                      <span class="cv-what">Film &amp; TV School, Egypt<em data-i18n="cvEd2">Cinematography · distance</em></span>
-                    </div>
-                    <div class="cv-row">
-                      <span class="cv-year">2016&ndash;2017</span>
-                      <span class="cv-what">Ölands folkhögskola<em data-i18n="cvEd3">Documentary film</em></span>
-                    </div>
-                    <div class="cv-row">
-                      <span class="cv-year">2007&ndash;2009</span>
-                      <span class="cv-what">Music Institute, Damascus<em data-i18n="cvEd6">Composing</em></span>
-                    </div>
+                <!-- Klippspelaren. Klippen listas i STEP1FILM_REEL i
+                     site-config.js; varje klipp visas i 30 sekunder och
+                     sedan går den vidare till nästa av sig själv. -->
+                <aside class="about-reel" data-reel aria-label="Klipp">
+                  <span class="reel-head" data-i18n="reelHead">Clips</span>
+                  <div class="reel-stage">
+                    <div class="reel-frame" data-reel-frame></div>
+                    <span class="reel-empty" data-i18n="reelSoon">Clips coming</span>
                   </div>
-                  <div class="cv-col">
-                    <span class="cv-head" data-i18n="cvFilms">Films</span>
-                    <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
-                    <div class="cv-list" data-filmography>
-                      <span class="cv-empty" data-i18n="cvFilmsSoon">Filmography coming</span>
-                    </div>
+                  <div class="reel-bar">
+                    <button class="reel-nav" type="button" data-reel-prev
+                            data-i18n-aria="reelPrev" aria-label="Föregående klipp">&#8249;</button>
+                    <span class="reel-title" data-reel-title></span>
+                    <button class="reel-nav" type="button" data-reel-next
+                            data-i18n-aria="reelNext" aria-label="Nästa klipp">&#8250;</button>
                   </div>
+                  <div class="reel-dots" data-reel-dots role="tablist"
+                       data-i18n-aria="reelList" aria-label="Välj klipp"></div>
                 </aside>
 
               </div>
@@ -285,57 +300,75 @@
                     <h3 class="film-title">BIRDS OF PASSAGE</h3>
                     <p class="film-syn" data-i18n="f1Syn">A feature-length documentary · Runtime 85 min</p>
                   </div>
+                  <!-- Öppnar trailern i en ruta mitt på sidan -->
+                  <button class="film-cta" type="button" data-watch="film-001"
+                          data-i18n-aria="watchAria" aria-label="Se trailern till Birds of Passage">
+                    <span data-i18n="ctaWatch">Watch</span>
+                  </button>
                 </article>
 
                 <article class="film-item" tabindex="0">
-                  <!-- Samarbetslogotyper: lägg SVG/PNG i assets/clients/ och lista dem här -->
-                  <div class="film-thumb film-logos" data-logos>
-                    <span class="fl-empty" data-i18n="logosSoon">Collaborations</span>
+                  <!-- Bilder kommer 2027. Fram till dess står rutan tom. -->
+                  <div class="film-thumb film-slides" data-slides="mammor">
+                    <span class="fs-empty" data-i18n="stillsSoon">Stills coming</span>
                   </div>
                   <div class="film-body">
                     <div class="film-num">002</div>
                     <div class="film-meta">
-                      <span class="film-year">2019-2026</span>
-                      <span class="film-type" data-i18n="f2Type">Commercial</span>
+                      <span class="film-year">2027</span>
+                      <span class="film-type" data-i18n="f2Type">Research &amp; development</span>
                     </div>
-                    <h3 class="film-title" data-i18n="f2Title">Commercial film — in Småland</h3>
-                    <p class="film-syn" data-i18n="f2Syn">Direction and cinematography for Swedish brands.</p>
+                    <h3 class="film-title" data-i18n="f2Title">I HAVE TWO MOTHERS</h3>
+                    <p class="film-syn" data-i18n="f2Syn">A film under research and development.</p>
                   </div>
+                  <span class="film-cta film-cta--soon" data-i18n="ctaSoon">Soon</span>
                 </article>
 
                 <article class="film-item" tabindex="0">
-                  <!-- Affischbildspel: filerna listas i STEP1FILM_POSTERS längst ner -->
-                  <div class="film-thumb film-slides" data-slides="shorts">
-                    <span class="fs-empty" data-i18n="postersSoon">Posters</span>
+                  <!-- Reklamfilm och kortfilm ligger i samma post nu, så rutan
+                       visar båda: affischerna först, sedan logotyptrumman,
+                       och så om igen. Affischerna listas i STEP1FILM_POSTERS,
+                       loggorna i STEP1FILM_CLIENTS. -->
+                  <div class="film-thumb film-merge">
+                    <div class="fm-lager film-slides" data-slides="shorts">
+                      <span class="fs-empty" data-i18n="postersSoon">Posters</span>
+                    </div>
+                    <div class="fm-lager film-logos" data-logos>
+                      <span class="fl-empty" data-i18n="logosSoon">Collaborations</span>
+                    </div>
                   </div>
                   <div class="film-body">
                     <div class="film-num">003</div>
                     <div class="film-meta">
-                      <span class="film-year">2014-2023</span>
-                      <span class="film-type" data-i18n="f3Type">Shorts · Documentary</span>
+                      <span class="film-year">2014-2026</span>
+                      <span class="film-type" data-i18n="f3Type">Shorts · Documentary · Commercial</span>
                     </div>
-                    <h3 class="film-title" data-i18n="f3Title">SHORT FILMS</h3>
-                    <p class="film-syn" data-i18n="f3Syn">Nya ord — my first film, on the challenges of learning a new language as a refugee · The Mind’s Eye · Otyg · Together We Create Harmony.</p>
+                    <h3 class="film-title" data-i18n="f3Title">FILMS</h3>
+                    <p class="film-syn" data-i18n="f3Syn">Short films, documentaries and commissioned work for Swedish brands — from Nya ord to The Mind’s Eye, Otyg and Together We Create Harmony.</p>
                   </div>
+                  <!-- Egen sida byggs senare -->
+                  <span class="film-cta film-cta--soon" data-i18n="ctaFilms">Films</span>
                 </article>
 
                 <article class="film-item" tabindex="0">
                   <div class="film-thumb film-sign" aria-hidden="true">
                     <span class="fsign-mark">STEP<em>1</em></span>
-                    <span class="fsign-word" data-i18n="cornerSign">CORNER</span>
+                    <span class="fsign-word" data-i18n="labSign">DIGITAL LAB</span>
                   </div>
                   <div class="film-body">
                     <div class="film-num">004</div>
                     <div class="film-meta">
                       <span class="film-year">2018</span>
-                      <span class="film-type" data-i18n="f4Type">Free corner</span>
+                      <span class="film-type" data-i18n="f4Type">Digital lab</span>
                     </div>
-                    <h3 class="film-title" data-i18n-html="f4Title">STEP<em>1</em> CORNER</h3>
-                    <p class="film-syn" data-i18n="f4Syn">From music to digital art, web development and workshops — a free corner where ideas get tested before they become film.</p>
+                    <h3 class="film-title" data-i18n-html="f4Title">STEP<em>1</em> DIGITAL LAB</h3>
+                    <p class="film-syn" data-i18n="f4Syn">From music to digital art, web development and workshops — a free lab where ideas get tested before they become film.</p>
                   </div>
+                  <!-- Egen sida byggs senare -->
+                  <span class="film-cta film-cta--soon" data-i18n="ctaSoon">Soon</span>
                 </article>
 
-                <a class="film-item film-item--store" href="shop.html" data-i18n-aria="storeAria" aria-label="STEP1 Store — merch, kepsar och muggar" target="_blank" rel="noopener">
+                <article class="film-item film-item--store" tabindex="0">
                   <div class="film-thumb film-sign film-sign--store" aria-hidden="true">
                     <span class="fsign-mark">STEP<em>1</em></span>
                     <span class="fsign-word">STORE</span>
@@ -347,9 +380,13 @@
                       <span class="film-type" data-i18n="f5Type">Merch · Print</span>
                     </div>
                     <h3 class="film-title">STEP<em>1</em> STORE</h3>
-                    <p class="film-syn" data-i18n="f5Syn">Everything is designed for STEP1 STORE and printed only when you order. Fresh pieces — and nothing left over. Shop now →</p>
+                    <p class="film-syn" data-i18n="f5Syn">Everything is designed for STEP1 STORE and printed only when you order. Fresh pieces — and nothing left over.</p>
                   </div>
-                </a>
+                  <a class="film-cta" href="shop.html" target="_blank" rel="noopener"
+                     data-i18n-aria="storeAria" aria-label="STEP1 Store — merch, kepsar och muggar">
+                    <span data-i18n="ctaShopping">Shopping</span>
+                  </a>
+                </article>
 
               </div>
             </div>
@@ -403,23 +440,33 @@
               <div class="panel-head">
                 <span class="panel-num" aria-hidden="true">04</span>
                 <h2 class="panel-title" id="press-title" data-i18n-html="p4Title">CV</h2>
-                <span class="panel-meta" data-i18n="p4Meta">Education · Experience · Filmography</span>
+                <span class="panel-meta" data-i18n="p4Meta">Films · Festivals · Support · Selected by</span>
               </div>
-              <div class="cv-grid cv-grid--three">
-                <div class="cv-block">
-                  <h3 class="cvb-head" data-i18n="cvSchool">Education</h3>
-                  <!-- Fylls från STEP1FILM_EDUCATION i site-config.js -->
-                  <div class="cvb-list" data-education></div>
-                </div>
-                <div class="cv-block">
-                  <h3 class="cvb-head" data-i18n="cvExperience">Experience</h3>
-                  <!-- Fylls från STEP1FILM_CV i site-config.js -->
-                  <div class="cvb-list" data-cv></div>
-                </div>
+              <!-- Filmerna får hela vänsterspalten; festivaler, stöd och
+                   urval staplas till höger. Utbildningslistan och
+                   årsraderna är borta — de sa ingenting om arbetet. -->
+              <div class="cv-grid cv-grid--film">
                 <div class="cv-block cv-block--films">
-                  <h3 class="cvb-head" data-i18n="cvFilmography">Filmography</h3>
+                  <h3 class="cvb-head" data-i18n="cvFilms">Films</h3>
                   <!-- Fylls från STEP1FILM_FILMOGRAPHY i site-config.js -->
                   <div class="cvb-list" data-filmography-full></div>
+                </div>
+                <div class="cv-block">
+                  <h3 class="cvb-head" data-i18n="cvFestivals">Festivals</h3>
+                  <!-- Fylls från STEP1FILM_FESTIVALS i site-config.js -->
+                  <div class="cvb-list" data-festivals></div>
+                </div>
+                <div class="cv-side">
+                  <div class="cv-block">
+                    <h3 class="cvb-head" data-i18n="cvSupport">Support</h3>
+                    <!-- Fylls från STEP1FILM_SUPPORT i site-config.js -->
+                    <div class="cvb-list" data-support></div>
+                  </div>
+                  <div class="cv-block">
+                    <h3 class="cvb-head" data-i18n="cvSelected">Selected by</h3>
+                    <!-- Fylls från STEP1FILM_SELECTED i site-config.js -->
+                    <div class="cvb-list" data-selected></div>
+                  </div>
                 </div>
               </div>
             </div>

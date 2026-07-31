@@ -40,8 +40,6 @@
   --nav-h: 58px;
   --ease:  cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Filmkornets styrka. 0 stänger av det. */
-  --grain-op: 0.028;
 }
 
 /* ---- Reset ---- */
@@ -380,6 +378,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
    Märket byter aldrig färg: STEP1FILM står vitt med röd etta, punkt. */
 .hero-name span { color: var(--accent); }
 
+/* Underrubriken. Liten och spärrad så den läser som en signatur under
+   märket, inte som en andra rubrik. */
+.hero-tag {
+  margin-top: 0.9rem;
+  font-family: var(--ff-display);
+  font-size: clamp(0.62rem, 1.3vw, 0.95rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
 .hero-sub {
   margin-top: 0.9rem;
   font-size: clamp(0.7rem, 1.2vw, 0.85rem);
@@ -422,18 +431,54 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Ordningen är panel 01 = drömmen, 02 = utvalda arbeten.
    z-index avgör vem som sveper in över vem.
 
-   Bakgrundsbilden ligger ren här. Det mörka lagret är ett eget
-   skikt (.h-panel::before) så att markören kan skära ett mjukt hål
-   i det och släppa fram bilden — se MARKÖRENS LJUSHÅL längre ned. */
-#about   { z-index: 1; background: url('Bild02') center / cover no-repeat; clip-path: inset(0 0 0 0%);   }
+   Varje panel har tre skikt, i den ordning de målas:
+     ::before   bakgrundsbilden, som driver långsamt
+     ::after    det mörka lagret + filmkornet
+     .panel-inner   texten, ovanpå allt
+
+   Bilden sitter på ::before och inte på panelen själv, för att den ska
+   gå att flytta med transform. Panelen kan inte transformeras — den
+   bär clip-path som styr svepet. */
+#about   { z-index: 1; clip-path: inset(0 0 0 0%);   }
 /* På breda skärmar startar även panel 01 utanför bild och sveper in
    över showreelen. Samma brytpunkt som isWideScreen() i main.js.
    På smala skärmar stackas panelerna vertikalt och 01 ska synas direkt. */
 @media (min-width: 901px) and (min-height: 560px) { #about { clip-path: inset(0 0 0 100%); } }
-#films   { z-index: 2; background: url('Bild01') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#awards  { z-index: 3; background: url('Bild03') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#press   { z-index: 4; background: url('Bild04') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
-#contact { z-index: 5; background: url('Bild05') center / cover no-repeat; clip-path: inset(0 0 0 100%); }
+#films   { z-index: 2; clip-path: inset(0 0 0 100%); }
+#awards  { z-index: 3; clip-path: inset(0 0 0 100%); }
+#press   { z-index: 4; clip-path: inset(0 0 0 100%); }
+#contact { z-index: 5; clip-path: inset(0 0 0 100%); }
+
+#about::before   { background-image: url('Bild02'); }
+#films::before   { background-image: url('Bild01'); }
+#awards::before  { background-image: url('Bild03'); }
+#press::before   { background-image: url('Bild04'); }
+#contact::before { background-image: url('Bild05'); }
+
+/* Bakgrunden i långsam rörelse. Skiktet är tilltaget 6 % åt varje håll
+   så att drivningen aldrig blottar en kant. 54 sekunder fram och lika
+   lång väg tillbaka — det ska anas, inte märkas. */
+.h-panel::before {
+  content: '';
+  position: absolute;
+  inset: -6%;
+  z-index: 0;
+  pointer-events: none;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  will-change: transform;
+  animation: bakgrundsdrift 54s ease-in-out infinite alternate;
+}
+@keyframes bakgrundsdrift {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to   { transform: scale(1.06) translate3d(-1.4%, 1.1%, 0); }
+}
+/* Den som bett om lugn rörelse får bilden stilla */
+body.reduced-motion .h-panel::before { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .h-panel::before { animation: none; }
+}
 
 /* =====================================================
    MARKÖRENS LJUSHÅL
@@ -452,20 +497,37 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Hålets radie. Ändra här. */
   --spot-hole: 110px;
 }
-.h-panel::before {
+/* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
+   förut över hela sajten (body::after) och lade sig även på texten och
+   i sidfoten. Nu ligger det här inne: ovanpå bilden och det mörka
+   lagret, under texten — precis som riktigt korn i en filmkopia.
+
+   Kornets styrka sitter i alfakanalen i PNG:en (8/255 ≈ 3 %), inte i en
+   opacitet, eftersom det delar element med det mörka lagret och de två
+   behöver olika genomskinlighet. Ska kornet ändras får bilden göras om.
+   Bakgrundslistan målas uppifrån och ned: kornet först, färgen sist. */
+.h-panel::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: rgba(0, 0, 0, var(--panel-dim));
+  background-image: url('assets/grain.png');
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  background-color: rgba(0, 0, 0, var(--panel-dim));
+  animation: filmkorn 0.55s steps(1, end) infinite;
+}
+body.reduced-motion .h-panel::after { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .h-panel::after { animation: none; }
 }
 /* Hålet finns BARA där det finns en riktig pekare. På pekskärm blev
    masken en radial-gradient med noll radie, och Safari tolkade den som
    helt genomskinlig — hela det mörka lagret försvann och texten stod
    direkt mot bakgrundsbilden. */
 @media (hover: hover) and (pointer: fine) {
-  .h-panel::before {
+  .h-panel::after {
     -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
                           transparent 0%, transparent 42%, #000 100%);
             mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
@@ -718,7 +780,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .film-item {
   display: grid;
-  grid-template-columns: clamp(96px, 12vw, 150px) 1fr;
+  /* Ruta · text · knapp. Knappspalten tar bara sin egen bredd. */
+  grid-template-columns: clamp(96px, 12vw, 150px) 1fr auto;
   gap: 0 clamp(1rem, 2.2vw, 2rem);
   padding: clamp(0.5rem, 1vh, 0.85rem) 0;
   border-top: 1px solid var(--line);
@@ -734,6 +797,31 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Ettan i rubriken följer samma lockup som skylten */
 .film-title em { color: var(--accent); font-style: normal; }
 .film-item--store .film-syn { color: var(--text); }
+
+/* Knappen i högerkanten av varje rad. Ett par av dem leder till sidor
+   som byggs senare och är därför inte länkar än — de står som en dämpad
+   etikett i stället, så ingen klickar på något som inte finns. */
+.film-cta {
+  grid-column: 3;
+  align-self: center;
+  justify-self: end;
+  white-space: nowrap;
+  font-family: var(--ff-display);
+  font-size: clamp(0.56rem, 0.78vw, 0.7rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--line);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+a.film-cta:hover, a.film-cta:focus-visible,
+button.film-cta:hover, button.film-cta:focus-visible {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(224, 28, 28, 0.08);
+}
+.film-cta--soon { opacity: 0.55; cursor: default; }
 
 .film-thumb {
   --slot-bg: #161616;
@@ -820,8 +908,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   transform-style: preserve-3d;
   animation: praxinoskop var(--varv, 26s) linear infinite;
 }
-.film-item:hover .fl-drum,
-.film-item:focus-within .fl-drum { animation-play-state: paused; }
+/* Trumman snurrar oavbrutet. Den pausade förut vid hover, men en
+   praxinoskoptrumma som stannar mitt i varvet ser bara trasig ut —
+   halva loggan står bort från betraktaren. Vid hover lyfts i stället
+   opaciteten, se nedan. */
 
 .fl-drum img {
   position: absolute;
@@ -850,6 +940,16 @@ body.reduced-motion .fl-drum { animation: none; }
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-dim);
+  /* Centrerad i hela rutan. Som vanligt flöde hamnade texten i övre
+     vänstra hörnet, och "Bilder kommer" bröts till två rader där andra
+     raden klipptes bort av rutans överflow på telefon. */
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 0.35rem;
+  text-align: center;
+  text-wrap: balance;
 }
 .film-logos:not(.is-empty) .fl-empty { display: none; }
 
@@ -890,6 +990,29 @@ body.reduced-motion .film-slides img {
   object-fit: cover;
 }
 .film-slides:not(.is-empty) .fs-empty { display: none; }
+
+/* 003 — två rutor i en. Reklamfilmen och kortfilmerna slogs ihop till
+   en post, så rutan turas om: affischerna i sju sekunder, sedan
+   logotyptrumman i sju, och så vidare. Båda lagren ligger på varandra
+   och bara det som är framme syns. */
+.film-merge { position: relative; }
+.fm-lager {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: rutbyte 14s ease-in-out infinite;
+}
+.fm-lager:nth-child(2) { animation-delay: 7s; }
+@keyframes rutbyte {
+  0%   { opacity: 0; }
+  4%   { opacity: 1; }
+  46%  { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+/* Lugn rörelse: ingen växling — affischerna står kvar */
+body.reduced-motion .fm-lager { animation: none; opacity: 1; }
+body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 
 /* 004 + 005 — skylt i stället för stillbild */
 .film-sign {
@@ -980,7 +1103,8 @@ body.reduced-motion .film-slides img {
      hellre än skjuter ut ur panelen. */
   max-height: min(62vh, 100%);
   object-fit: cover;
-  object-position: 50% 30%;
+  /* Bilden är redan 3:4, samma som rutan — inget beskärs bort */
+  object-position: 50% 50%;
   background: #161616;
   border: 1px solid var(--line);
   display: block;
@@ -1053,19 +1177,18 @@ body.reduced-motion .film-slides img {
   letter-spacing: 0.06em;
 }
 
-/* --- CV-spalten: står bredvid texten, inte under --- */
-.about-cv {
-  flex: 0 0 clamp(200px, 22vw, 290px);
+/* --- Klippspelaren: står bredvid texten där CV-spalten stod --- */
+.about-reel {
+  flex: 0 0 clamp(220px, 24vw, 330px);
   min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(1rem, 2.4vh, 1.8rem);
+  gap: 0.7rem;
   padding-left: clamp(1rem, 2.2vw, 2rem);
   border-left: 1px solid var(--line);
 }
-.cv-col { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
-.cv-head {
+.reel-head {
   font-size: 0.5rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -1073,35 +1196,172 @@ body.reduced-motion .film-slides img {
   padding-bottom: 0.15rem;
   border-bottom: 1px solid var(--line);
 }
-.cv-row, .cv-list a, .cv-list .cv-item { display: block; }
-.cv-year {
-  display: block;
-  font-family: var(--ff-display);
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  color: var(--accent);
+.reel-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #121212;
+  border: 1px solid var(--line);
+  overflow: hidden;
 }
-.cv-what { display: block; font-size: 0.72rem; line-height: 1.4; color: var(--white); }
-.cv-what em { display: block; font-style: normal; font-size: 0.63rem; color: var(--text-dim); }
-.cv-list { display: flex; flex-direction: column; gap: 0.45rem; }
-.cv-list a { transition: color 0.25s; }
-.cv-list a:hover .cv-what { color: var(--accent); }
-.cv-empty { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); }
+.reel-frame { position: absolute; inset: 0; }
+.reel-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.reel-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--ff-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.about-reel.has-clips .reel-empty { display: none; }
 
-/* Direktadressen till Ayman — bara här på drömsidan */
-.about-mail {
+.reel-bar {
   display: flex;
-  align-items: baseline;
-  gap: 0.85rem;
-  padding-top: 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+.reel-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.reel-nav {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  transition: color 0.25s, border-color 0.25s;
+}
+.reel-nav:hover, .reel-nav:focus-visible { color: var(--white); border-color: var(--line-s); }
+
+.reel-dots { display: flex; gap: 0.35rem; }
+.reel-dot {
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  transition: background 0.3s;
+}
+.reel-dot.active { background: var(--accent); }
+.reel-dot:hover:not(.active) { background: var(--line-s); }
+
+/* Direktadressen till Ayman — bara här på drömsidan.
+   Pitchen och adressen sitter i samma länk: linjen ligger överst, över
+   pitchtexten, och när man pekar på adressen färgas hela blocket rött.
+   De hör ihop — pitchen säger vad man skriver, adressen vart. */
+.about-write {
+  display: block;
+  padding-top: 0.6rem;
   border-top: 1px solid var(--line);
   flex-shrink: 0;
   transition: border-color 0.3s;
 }
-.about-mail:hover, .about-mail:focus-visible { border-color: var(--accent); }
+.about-write:hover, .about-write:focus-visible { border-color: var(--accent); }
+
+.about-mail {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  margin-top: 0.6rem;
+}
 .am-label { font-size: 0.5rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim); }
 .am-val { margin-left: auto; font-size: 0.78rem; color: var(--white); transition: color 0.25s; }
-.about-mail:hover .am-val { color: var(--accent); }
+.about-write:hover .am-val,
+.about-write:focus-visible .am-val { color: var(--accent); }
+/* Pitchtexten under porträttet, kopplad till adressraden */
+.about-pitch {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.65;
+  color: var(--text-dim);
+  text-wrap: pretty;
+  transition: color 0.25s;
+}
+.about-write:hover .about-pitch,
+.about-write:focus-visible .about-pitch { color: var(--accent); }
+
+/* =====================================================
+   TRAILERRUTAN — öppnas av "Watch" på panel 02
+   =====================================================
+   En liten skärm mitt på sidan i stället för helskärm: trailern
+   är ett smakprov, och panelen bakom ska fortfarande synas. */
+#trailer-box {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+#trailer-box[hidden] { display: none; }
+.tb-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 6, 0.82);
+  backdrop-filter: blur(3px);
+}
+.tb-card {
+  position: relative;
+  width: min(760px, 100%);
+  background: #0d0d0d;
+  border: 1px solid var(--line-s);
+  animation: tbIn 0.35s var(--ease);
+}
+@keyframes tbIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+body.reduced-motion .tb-card { animation: none; }
+.tb-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+.tb-title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--ff-display);
+  font-size: clamp(0.62rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.tb-close {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  transition: color 0.25s, border-color 0.25s;
+}
+.tb-close:hover, .tb-close:focus-visible { color: var(--white); border-color: var(--white); }
+.tb-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+.tb-stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* =====================================================
    PRACTICE PANEL (was AWARDS — now disciplines list)
@@ -1461,19 +1721,16 @@ body.reduced-motion .film-slides img {
   }
 
   /* About: vertical stack on phones */
-  /* Smala skärmar: porträtt, text och CV under varandra */
+  /* Smala skärmar: porträtt, text och klipp under varandra */
   .panel-inner--about { flex-direction: column; align-items: stretch; padding-top: calc(var(--nav-h) + 1.5rem); gap: 1.5rem; }
   .about-portrait { width: min(220px, 60vw); }
   .about-scroll { overflow: visible; padding-right: 0; }
-  .about-cv {
+  .about-reel {
     flex: none;
     padding-left: 0;
     padding-top: 0.9rem;
     border-left: 0;
     border-top: 1px solid var(--line);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
   }
 
   /* Films: thumb stays as a small inline frame */
@@ -1482,6 +1739,15 @@ body.reduced-motion .film-slides img {
     grid-template-columns: 92px 1fr;
     gap: 0 1rem;
     flex: none;
+  }
+  /* Knappen får en egen rad under texten. Som tredje spalt tog den
+     114 px av 390 och pressade texten till 95 px — synopsis bröts mitt
+     i ordet och beskars. Här ligger den i stället i full bredd under. */
+  .film-cta {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 0.7rem;
+    padding: 0.55rem 1.1rem;
   }
 
   /* Practice list: collapse the detail column under the name on small screens */
@@ -1714,26 +1980,57 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   flex: 1;
   min-height: 0;
 }
-/* Tre delar: utbildning · erfarenhet · filmografi */
-.cv-grid--three {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+/* Tre spalter: filmerna, festivalerna, och stöd + urval staplade i
+   den sista. Filmerna är den tyngsta posten och får mest plats.
+   Fördelningen är gjord så att ingen spalt blir längre än panelen —
+   allt ska synas utan att listorna behöver rulla. */
+.cv-grid--film {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.9fr);
   gap: clamp(1.2rem, 2.6vw, 2.8rem);
 }
-.cv-grid--three .cvb-row { grid-template-columns: 1fr; gap: 0; }
-.cv-grid--three .cvb-year { margin-bottom: 0; font-size: clamp(0.56rem, 0.62vh, 0.68rem); }
-.cv-grid--three .cvb-role { font-size: clamp(0.7rem, 0.95vh, 0.92rem); line-height: 1.3; }
-.cv-grid--three .cvb-where { font-size: clamp(0.6rem, 0.72vh, 0.7rem); line-height: 1.35; }
-.cv-grid--three .cvb-note { font-size: clamp(0.55rem, 0.65vh, 0.64rem); line-height: 1.45; max-width: none; margin-top: 0.1rem; }
-.cv-grid--three .cvb-head { font-size: clamp(0.68rem, 1vh, 0.95rem); padding-bottom: 0.35rem; }
-/* Under ~760 px höjd blir utbildningsspalten för lång — sista raden
-   ströks. Här dras luft och grader ned ytterligare i stället för att
-   låta listan rulla. */
+.cv-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 2.2vh, 1.8rem);
+  min-height: 0;
+  min-width: 0;
+}
+/* Graderna ligger högre än förut — den gamla panelen skulle rymma
+   fyra spalter och trycktes ihop till oläslighet. Med två spalter
+   och färre rader finns utrymme att låta texten andas. */
+.cv-grid--film .cvb-row { grid-template-columns: 1fr; gap: 0; }
+.cv-grid--film .cvb-year { margin-bottom: 0; font-size: clamp(0.62rem, 0.78vh, 0.8rem); }
+.cv-grid--film .cvb-role { font-size: clamp(0.86rem, 1.25vh, 1.15rem); line-height: 1.3; }
+.cv-grid--film .cvb-where { font-size: clamp(0.72rem, 0.95vh, 0.88rem); line-height: 1.4; }
+.cv-grid--film .cvb-note { font-size: clamp(0.66rem, 0.85vh, 0.8rem); line-height: 1.5; max-width: none; margin-top: 0.15rem; }
+.cv-grid--film .cvb-head { font-size: clamp(0.78rem, 1.15vh, 1.1rem); padding-bottom: 0.4rem; }
+
+/* Låga fönster: luften mellan raderna dras ned före textgraderna,
+   så listan fortfarande ryms utan att bli svår att läsa. */
 @media (max-height: 780px) {
-  .cv-grid--three .cvb-row { padding: 0.12rem 0; }
-  .cv-grid--three .cvb-role { font-size: 0.72rem; line-height: 1.25; }
-  .cv-grid--three .cvb-where { font-size: 0.6rem; line-height: 1.3; }
-  .cv-grid--three .cvb-year { font-size: 0.55rem; }
+  .cv-grid--film .cvb-row { padding: 0.16rem 0; }
+  .cv-grid--film .cvb-role { font-size: 0.88rem; line-height: 1.25; }
+  .cv-grid--film .cvb-where { font-size: 0.72rem; line-height: 1.3; }
+  .cv-grid--film .cvb-note { font-size: 0.66rem; line-height: 1.4; }
+  .cv-grid--film .cvb-year { font-size: 0.62rem; }
   .panel-inner--cv .panel-head { margin-bottom: 0; }
+  /* Filmspalten är den enda som blir för lång på låga fönster, och det
+     är noterna som tar plats. De kortas till två rader i stället för
+     att sista filmen klipps bort helt. Mätt: 22 px för lång på
+     1280×720, 61 px på 1366×650 — två rader räcker med marginal. */
+  .cv-grid--film .cvb-note {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+/* Riktigt låga fönster (t.ex. 1366×650): två rader räcker inte, listan
+   behövde 409 px men fick 348. Noterna går helt bort i filmspalten.
+   De handlar mest om festivalvisningar, och de står nu i sin egen
+   spalt bredvid — ingenting försvinner från panelen. */
+@media (max-height: 700px) {
+  .cv-grid--film .cv-block--films .cvb-note { display: none; }
 }
 .cv-block { display: flex; flex-direction: column; gap: 0.7rem; min-height: 0; min-width: 0; }
 .cvb-head {
@@ -1829,7 +2126,8 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   .portrait-img  { order: 1; }
   .portrait-cap  { order: 2; }
   .about-content { order: 3; display: block; flex: none; min-height: 0; }
-  .about-mail    { order: 4; }
+  .about-reel    { order: 4; }
+  .about-write   { order: 5; }
   .about-scroll {
     display: block;
     flex: none;
@@ -1866,80 +2164,48 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   /* Adressraden staplas — etiketten fick tre rader bredvid mejlet.
      Den ligger sist på telefon och avslutar panelen, så den får en
      egen linje över sig i stället för att flyta ihop med texten. */
-  .about-mail {
-    display: block;
-    margin-top: 1.6rem;
-    padding-top: 0.8rem;
-  }
+  .about-write { margin-top: 1.6rem; padding-top: 0.8rem; }
+  .about-mail { display: block; margin-top: 0.8rem; }
   .am-label { display: block; font-size: 0.52rem; color: var(--text); margin-bottom: 0.25rem; }
   .am-val { display: block; margin-left: 0; font-size: 0.95rem; }
 
-  /* Film- och utbildningsspalten bort på telefon. Den var en tredje
-     lista i en redan lång panel, och exakt samma uppgifter står i
-     panel 04 — där de har egen plats och egna rubriker. Inget
-     innehåll försvinner alltså från sajten, bara från den här vyn. */
-  .about-cv { display: none; }
+  /* Klippspelaren står kvar på telefon — den är sidans enda rörliga
+     bild här och tar bara en 16:9-ruta. */
+  .about-reel {
+    flex: none;
+    margin-top: 1.4rem;
+    padding-left: 0;
+    padding-top: 1rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .reel-title { font-size: 0.72rem; }
+  .reel-nav { width: 2rem; height: 2rem; font-size: 1rem; }
 }
 
 /* =====================================================
    FILMKORN
    =====================================================
-   Ett stillbildsbrus som hoppar mellan åtta lägen — samma
-   trick som riktig filmgrain: kornet byter plats varje ruta,
-   det rör sig inte mjukt.
+   Ett stillbildsbrus som hoppar mellan åtta lägen — samma trick som
+   riktigt filmkorn: kornet byter plats varje ruta, det glider inte.
 
-   Bruset är en SVG-turbulens som data-URI, alltså noll extra
-   nätverksanrop. Lagret ligger fast över sidan, tar inga
-   musklick och animerar bara transform, vilket går på GPU:n.
-   Styrkan sitter i --grain-op — sätt den till 0 för att
-   stänga av kornet utan att röra något annat. */
-body::after {
-  content: '';
-  position: fixed;
-  /* Bara så mycket större än rutan att förflyttningen på ±4 %
-     aldrig blottar en kant. -60 % gav en kompositorlagerruta på
-     40 MB vid full HD — onödigt tungt på telefon. */
-  inset: -10%;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: var(--grain-op, 0.038);
-  /* Ingen blandningsmetod. overlay och soft-light bevarar svärtan
-     per definition, och på en nästan svart sajt gav de 0,7 stegs
-     skillnad — helt osynligt. Rak inblandning lyfter svärtan några
-     steg, vilket är precis vad riktigt filmkorn gör i skuggorna. */
-  /* 128×128 gaussiskt brus centrerat på exakt 128 grått. Med overlay
-     betyder mitten "ingen förändring", så kornet varken lyfter eller
-     sänker medelljuset — det bara ger textur. SVG-turbulens gick inte
-     att centrera; den klipptes mot 0 och hamnade på 170 i medel. */
-  background-image: url('assets/grain.png');
-  background-repeat: repeat;
-  background-size: 128px 128px;
-  will-change: transform;
-  animation: filmkorn 0.55s steps(1, end) infinite;
-}
+   Själva lagret sitter på .h-panel::after längre upp, mellan bilden
+   och texten. Här ligger bara rörelsen.
 
+   Rörelsen görs med background-position, inte transform. Skiktet ligger
+   kant i kant med panelen och bär markörens mask; en förflyttning med
+   transform hade både blottat kanterna och dragit med sig masken, så
+   att ljushålet hamnat vid sidan av markören. Mönstret upprepas, så
+   det räcker att flytta bakgrunden inom en ruta. */
 @keyframes filmkorn {
-  0%    { transform: translate3d(0, 0, 0); }
-  12.5% { transform: translate3d(-4%, -2%, 0); }
-  25%   { transform: translate3d(3%, -4%, 0); }
-  37.5% { transform: translate3d(-2%, 3%, 0); }
-  50%   { transform: translate3d(4%, 2%, 0); }
-  62.5% { transform: translate3d(-3%, 4%, 0); }
-  75%   { transform: translate3d(2%, -3%, 0); }
-  87.5% { transform: translate3d(-4%, 1%, 0); }
-  100%  { transform: translate3d(0, 0, 0); }
+  0%    { background-position:   0px   0px; }
+  12.5% { background-position: -37px -21px; }
+  25%   { background-position:  29px -44px; }
+  37.5% { background-position: -18px  33px; }
+  50%   { background-position:  41px  25px; }
+  62.5% { background-position: -31px  47px; }
+  75%   { background-position:  23px -35px; }
+  87.5% { background-position: -45px  13px; }
+  100%  { background-position:   0px   0px; }
 }
 
-/* Lugn rörelse: kornet ligger stilla i stället för att flimra */
-body.reduced-motion::after { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  body::after { animation: none; }
-}
-
-/* Pitchtexten under porträttet, kopplad till adressraden */
-.about-pitch {
-  font-size: 0.72rem;
-  line-height: 1.65;
-  color: var(--text-dim);
-  text-wrap: pretty;
-}

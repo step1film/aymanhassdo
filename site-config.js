@@ -55,6 +55,21 @@ window.STEP1FILM_CLIENTS = [
   { src: 'assets/clients/partner-09.webp',        name: '' }
 ];
 
+/* KLIPPSPELAREN på panel 01 (Drömmen).
+   Fyra klipp som man bläddrar mellan. Varje klipp spelar 30 sekunder
+   och går sedan vidare till nästa av sig själv — det är ett smakprov,
+   inte hela filmen. Vill du visa mer, ändra `SEKUNDER` i main.js.
+
+   `id`    = siffrorna sist i Vimeo-adressen
+   `hash`  = sekretessnyckeln (h=…) — behövs bara för olistade filmer
+   `title` = det som står under rutan, och bildens titel för skärmläsare */
+window.STEP1FILM_REEL = [
+  { id: '469092414',  title: 'THE MIND’S EYE — trailer' },
+  { id: '529274561',  title: 'Fusion — Vem kan segla & Ya Msafer' },
+  { id: '135358398',  title: 'NYA ORD — trailer, 2015' },
+  { id: '1174493683', title: 'Värnamo Filmhistoriska Vänner' }
+];
+
 /* FILMOGRAFIN — används på två ställen:
      panel 01, kort lista bredvid texten
      panel 04, full lista med speltid och festivaler
@@ -106,8 +121,79 @@ window.STEP1FILM_FILMOGRAPHY = [
   }
 ];
 
-/* CV — utbildning. Visas på panel 04 (och de fyra senaste även i
-   CV-spalten på panel 01). */
+/* CV, panel 04 — FESTIVALER.
+   Allt här är hämtat från uppgifterna som redan stod i filmografin.
+   ⚠️ FYLL PÅ: de två onlinefestivalerna för OTYG saknar namn, och
+   visningar som inte nämnts på sajten tidigare finns inte med alls.
+   Skicka namn, ort och år så lägger jag in dem. */
+window.STEP1FILM_FESTIVALS = [
+  {
+    year: '2020',
+    what: 'CortoDino Film Festival, X Edizione',
+    where: { sv: 'Neapel, Italien', en: 'Naples, Italy' },
+    note: { sv: 'THE MIND’S EYE · Official selection', en: 'THE MIND’S EYE · Official selection' }
+  },
+  {
+    year: '2020',
+    what: 'Festival del Cinema di Cefalù',
+    where: { sv: 'Palermo, Italien', en: 'Palermo, Italy' },
+    note: { sv: 'THE MIND’S EYE · Semifinal', en: 'THE MIND’S EYE · Semi-final' }
+  },
+  {
+    year: '2023',
+    what: { sv: 'Värnamo Filmhistoriska Festival', en: 'Värnamo Film History Festival' },
+    where: { sv: 'Värnamo, Sverige', en: 'Värnamo, Sweden' },
+    note: { sv: 'OTYG · Pitch', en: 'OTYG · Pitch' }
+  },
+  {
+    year: '2023',
+    what: { sv: 'Två filmfestivaler online', en: 'Two online film festivals' },
+    where: '',
+    note: { sv: 'OTYG · Visning', en: 'OTYG · Screening' }
+  }
+];
+
+/* CV, panel 04 — STÖD OCH SAMARBETEN.
+   ⚠️ FYLL PÅ: fonder, regioner och produktionsbolag som stöttat
+   projekten. Just nu står bara det som redan nämnts på sajten. */
+window.STEP1FILM_SUPPORT = [
+  {
+    year: '2026–2027',
+    what: 'Story AB',
+    where: { sv: 'Samproduktion · BIRDS OF PASSAGE', en: 'Co-production · BIRDS OF PASSAGE' }
+  },
+  {
+    year: '2015 / 2017',
+    what: { sv: 'Vaggeryds bibliotek', en: 'Vaggeryd library' },
+    where: { sv: 'Filmprojekt för unga', en: 'Film projects for young people' }
+  }
+];
+
+/* CV, panel 04 — UTVALD AV.
+   Talangprogram, urval och redaktioner som lyft fram arbetet.
+   ⚠️ FYLL PÅ — det här är den kortaste listan och den som säger mest. */
+window.STEP1FILM_SELECTED = [
+  {
+    year: '',
+    what: 'GAZE',
+    where: { sv: 'Talangprogram · Region Jönköpings län', en: 'Talent programme · Region Jönköping County' }
+  },
+  {
+    year: '',
+    what: 'SVT Nyheter Jönköping',
+    where: { sv: 'Reportage', en: 'Feature' }
+  },
+  {
+    year: '',
+    what: 'Sveriges Radio P4',
+    where: { sv: 'Reportage', en: 'Feature' }
+  }
+];
+
+/* CV — utbildning. Ligger kvar som underlag men visas inte längre
+   någonstans på sajten; utbildningsspalten togs bort från både
+   Drömmen och CV-panelen. Raderas inte, så att den går att ta in
+   igen utan att skrivas om. */
 window.STEP1FILM_EDUCATION = [
   {
     year: { sv: 'Sep–okt 2024', en: 'Sep–Oct 2024' },
@@ -186,5 +272,9 @@ window.STEP1FILM_POSTERS = {
     'assets/films/posters/nya-ord.jpg',
     'assets/films/posters/minds-eye.jpg',
     'assets/films/posters/otyg.jpg'
-  ]
+  ],
+  /* 002 JAG SOM HAR TVÅ MAMMOR — bilder kommer 2027.
+     Så länge listan är tom står det "Bilder kommer" i rutan.
+     Lägg filerna i assets/films/mammor/ och skriv in dem här. */
+  mammor: []
 };

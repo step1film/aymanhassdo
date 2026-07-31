@@ -308,12 +308,24 @@
       document.dispatchEvent(new CustomEvent('s1f:herocover', { detail: v }));
     }
 
-    /* Mjukstart och mjukstopp — smootherstep. Kurvan börjar och slutar
-       med noll hastighet, så svepet känns som en rörelse mellan två
-       nyckelbilder i stället för en linjär dragning. */
+    /* Mjukstart och mjukstopp. Kurvan börjar och slutar med noll
+       hastighet, så svepet känns som en rörelse mellan två nyckelbilder
+       i stället för en linjär dragning.
+
+       Smootherstep ensamt gled i gång för tidigt. Här blandas den till
+       hälften med sig själv körd två gånger. Utsidorna blir flackare och
+       mitten brantare: hastigheten i mitten går från 1,88× till 2,7× den
+       linjära, och i kanterna ned till 0,12×. Samma sträcka på samma
+       rullning, men fördelad som en riktig in- och utfasning.
+
+       Två gånger rakt av gav 3,5× i mitten och 0,01× i kanterna — då
+       stod bilden stilla en kvarts skärm och kändes trasig i stället
+       för mjuk. Blandningen är avvägd mot det. */
     function mjuk(p) {
       p = Math.max(0, Math.min(1, p));
-      return p * p * p * (p * (p * 6 - 15) + 10);
+      const s = p * p * p * (p * (p * 6 - 15) + 10);
+      const ss = s * s * s * (s * (s * 6 - 15) + 10);
+      return 0.5 * s + 0.5 * ss;
     }
 
     /* --- Desktop: clip-path wipe driven by scrollY ---
@@ -646,60 +658,42 @@
       }
     });
 
-    /* --- 01: filmografin i CV-spalten, kort form --- */
     const sprak = () => (window.STEP1FILM_I18N && window.STEP1FILM_I18N.lang) || 'sv';
     const tv = (v) => (v && typeof v === 'object') ? (v[sprak()] || v.sv || '') : (v || '');
 
     const filmer = (window.STEP1FILM_FILMOGRAPHY || []).filter(f => f && f.title);
-    function ritaKortFilmografi() {
-      document.querySelectorAll('[data-filmography]').forEach(box => {
-        if (!filmer.length) return;         // tomlägestexten står kvar
+
+    /* --- 04: filmer, festivaler, stöd och urval ---
+       De tre korta listorna har samma form: år, namn, en underrad och
+       ibland en not. Därför en enda ritare i stället för tre kopior. */
+    function ritaLista(valjare, poster) {
+      document.querySelectorAll(valjare).forEach(box => {
         box.textContent = '';
-        filmer.forEach(f => {
-          const rad = document.createElement(f.url ? 'a' : 'span');
-          if (f.url) { rad.href = f.url; rad.target = '_blank'; rad.rel = 'noopener'; }
-          else rad.className = 'cv-item';
-          rad.innerHTML = '<span class="cv-year"></span><span class="cv-what"><em></em></span>';
-          rad.querySelector('.cv-year').textContent = f.year || '';
-          const what = rad.querySelector('.cv-what');
-          what.insertBefore(document.createTextNode(f.title), what.firstChild);
-          what.querySelector('em').textContent = [tv(f.format), f.runtime].filter(Boolean).join(' · ');
+        (poster || []).forEach(p => {
+          const rad = document.createElement('div');
+          rad.className = 'cvb-row';
+          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
+            + '<span class="cvb-role"></span><span class="cvb-where"></span>'
+            + '<span class="cvb-note"></span></div>';
+          const ar = tv(p.year);
+          if (ar) rad.querySelector('.cvb-year').textContent = ar;
+          else rad.querySelector('.cvb-year').remove();
+          rad.querySelector('.cvb-role').textContent = tv(p.what);
+          const var_ = tv(p.where);
+          if (var_) rad.querySelector('.cvb-where').textContent = var_;
+          else rad.querySelector('.cvb-where').remove();
+          const not = tv(p.note);
+          if (not) rad.querySelector('.cvb-note').textContent = not;
+          else rad.querySelector('.cvb-note').remove();
           box.appendChild(rad);
         });
       });
     }
-    /* --- 04: utbildning, erfarenhet och full filmografi --- */
-    const cvPoster = window.STEP1FILM_CV || [];
-    const utbildning = window.STEP1FILM_EDUCATION || [];
 
     function ritaCV() {
-      document.querySelectorAll('[data-education]').forEach(box => {
-        box.textContent = '';
-        utbildning.forEach(u => {
-          const rad = document.createElement('div');
-          rad.className = 'cvb-row';
-          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
-            + '<span class="cvb-role"></span><span class="cvb-where"></span></div>';
-          rad.querySelector('.cvb-year').textContent = tv(u.year);
-          rad.querySelector('.cvb-role').textContent = tv(u.what);
-          rad.querySelector('.cvb-where').textContent = tv(u.where);
-          box.appendChild(rad);
-        });
-      });
-
-      document.querySelectorAll('[data-cv]').forEach(box => {
-        box.textContent = '';
-        cvPoster.forEach(p => {
-          const rad = document.createElement('div');
-          rad.className = 'cvb-row';
-          rad.innerHTML = '<span class="cvb-year"></span><div class="cvb-body">'
-            + '<span class="cvb-role"></span><span class="cvb-where"></span></div>';
-          rad.querySelector('.cvb-year').textContent = tv(p.year);
-          rad.querySelector('.cvb-role').textContent = tv(p.role);
-          rad.querySelector('.cvb-where').textContent = tv(p.where);
-          box.appendChild(rad);
-        });
-      });
+      ritaLista('[data-festivals]', window.STEP1FILM_FESTIVALS);
+      ritaLista('[data-support]',   window.STEP1FILM_SUPPORT);
+      ritaLista('[data-selected]',  window.STEP1FILM_SELECTED);
 
       document.querySelectorAll('[data-filmography-full]').forEach(box => {
         box.textContent = '';
@@ -729,9 +723,8 @@
         });
       });
     }
-    ritaKortFilmografi();
     ritaCV();
-    document.addEventListener('s1f:langchange', () => { ritaKortFilmografi(); ritaCV(); });
+    document.addEventListener('s1f:langchange', ritaCV);
 
     /* --- 002: samarbetslogotyper på en praxinoskoptrumma ---
        Loggorna sitter runt en cylinder som snurrar. Radien är den som
@@ -910,6 +903,156 @@
   }
 
   /* --------------------------------------------------
+     TRAILERRUTAN — "Watch" på panel 02
+     Öppnar filmen i en liten skärm mitt på sidan. iframe:en byggs
+     vid klick och rivs vid stängning, så ljudet inte fortsätter
+     spela bakom en stängd ruta. Samma källa som rutan i listan,
+     men med Vimeos kontroller och ljudet på.
+  -------------------------------------------------- */
+  function initTrailerBox() {
+    const box = document.getElementById('trailer-box');
+    if (!box) return;
+    const scen  = box.querySelector('[data-tb-stage]');
+    const titel = box.querySelector('.tb-title');
+    let sistaKnapp = null;
+
+    function stang() {
+      if (box.hidden) return;
+      box.hidden = true;
+      scen.textContent = '';                 // river iframe:en → filmen slutar
+      document.body.classList.remove('tb-open');
+      if (sistaKnapp) { sistaKnapp.focus(); sistaKnapp = null; }
+    }
+
+    function oppna(nyckel, knapp) {
+      const cfg = (window.STEP1FILM_EMBEDS || {})[nyckel];
+      const id = cfg && String(cfg.id || '').trim();
+      if (!id) return;                       // inget id → knappen gör inget
+      sistaKnapp = knapp || null;
+      titel.textContent = cfg.title || '';
+      const src = 'https://player.vimeo.com/video/' + encodeURIComponent(id)
+        + '?autoplay=1&playsinline=1&autopause=0'
+        + (cfg.hash ? '&h=' + encodeURIComponent(cfg.hash) : '');
+      const frame = document.createElement('iframe');
+      frame.src = cfg.provider === 'vimeo' || !cfg.provider ? src
+        : 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      frame.title = cfg.title || 'Trailer';
+      frame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+      frame.setAttribute('allowfullscreen', '');
+      frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      scen.textContent = '';
+      scen.appendChild(frame);
+      box.hidden = false;
+      document.body.classList.add('tb-open');
+      box.querySelector('.tb-close').focus();
+    }
+
+    document.querySelectorAll('[data-watch]').forEach(knapp => {
+      knapp.addEventListener('click', (e) => {
+        e.preventDefault();
+        oppna(knapp.dataset.watch, knapp);
+      });
+    });
+    box.querySelectorAll('[data-tb-close]').forEach(el => el.addEventListener('click', stang));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') stang(); });
+  }
+
+  /* --------------------------------------------------
+     KLIPPSPELAREN — panel 01
+     Fyra Vimeo-klipp som man bläddrar mellan. Varje klipp spelar
+     SEKUNDER sekunder och lämnar sedan över till nästa av sig själv.
+     Klippen listas i STEP1FILM_REEL i site-config.js.
+
+     Ingen Vimeo-JS inblandad: säkerhetsheadern släpper bara in skript
+     från den egna sajten, så bytet sköts av en vanlig timer och en ny
+     iframe. Det räcker — vi behöver bara starta om, inte styra spelaren.
+  -------------------------------------------------- */
+  function initReel() {
+    const SEKUNDER = 30;                 // så mycket av varje klipp som visas
+
+    document.querySelectorAll('[data-reel]').forEach(box => {
+      const klipp = (window.STEP1FILM_REEL || []).filter(k => k && k.id);
+      const scen    = box.querySelector('[data-reel-frame]');
+      const titelEl = box.querySelector('[data-reel-title]');
+      const prickar = box.querySelector('[data-reel-dots]');
+      if (!scen) return;
+
+      if (!klipp.length) { box.classList.add('is-empty'); return; }
+      box.classList.add('has-clips');
+
+      // En prick per klipp — både lägesvisare och genväg
+      const dots = klipp.map((k, i) => {
+        const d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'reel-dot';
+        d.setAttribute('role', 'tab');
+        d.setAttribute('aria-label', k.title || String(i + 1));
+        d.addEventListener('click', () => visa(i));
+        if (prickar) prickar.appendChild(d);
+        return d;
+      });
+
+      let nu = -1;
+      let timer = null;
+      let igang = false;
+
+      function bygg(i) {
+        const k = klipp[i];
+        /* background=1 ger en ren bild utan Vimeos knappar — klippet är
+           ett smakprov, inte en spelare man ska styra. loop=1 finns med
+           för klipp som är kortare än SEKUNDER. */
+        const src = 'https://player.vimeo.com/video/' + encodeURIComponent(k.id)
+          + '?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1'
+          + (k.hash ? '&h=' + encodeURIComponent(k.hash) : '');
+        const frame = document.createElement('iframe');
+        frame.src = src;
+        frame.title = k.title || 'Klipp';
+        frame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+        frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        frame.setAttribute('loading', 'lazy');
+        scen.textContent = '';
+        scen.appendChild(frame);
+      }
+
+      function visa(i, auto) {
+        i = ((i % klipp.length) + klipp.length) % klipp.length;
+        if (i === nu && auto !== true) return;
+        nu = i;
+        bygg(i);
+        if (titelEl) titelEl.textContent = klipp[i].title || '';
+        dots.forEach((d, j) => {
+          d.classList.toggle('active', j === i);
+          d.setAttribute('aria-selected', j === i ? 'true' : 'false');
+        });
+        clearTimeout(timer);
+        // Den som bett om lugn rörelse får byta klipp själv
+        if (!prefersReducedMotion) timer = setTimeout(() => visa(nu + 1, true), SEKUNDER * 1000);
+      }
+
+      box.querySelector('[data-reel-prev]')?.addEventListener('click', () => visa(nu - 1));
+      box.querySelector('[data-reel-next]')?.addEventListener('click', () => visa(nu + 1));
+
+      /* Starta först när rutan syns — annars drar fyra videor data på
+         mobil innan någon rullat ned till panelen. */
+      const start = () => { if (!igang) { igang = true; visa(0); } };
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((poster) => {
+          poster.forEach(p => { if (p.isIntersecting) { start(); io.disconnect(); } });
+        }, { threshold: 0.25 });
+        io.observe(box);
+      } else {
+        start();
+      }
+
+      // Ligger fliken i bakgrunden ska timern inte springa i väg
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) clearTimeout(timer);
+        else if (igang && !prefersReducedMotion) timer = setTimeout(() => visa(nu + 1, true), SEKUNDER * 1000);
+      });
+    });
+  }
+
+  /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
   function boot() {
@@ -918,6 +1061,8 @@
     initTweaks();
     initHeroVideo();
     initFilmMedia();
+    initReel();
+    initTrailerBox();
     initCollabForm();
     initLoader(() => {
       document.body.classList.remove('is-loading');
