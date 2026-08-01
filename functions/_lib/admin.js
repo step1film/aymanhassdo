@@ -255,11 +255,11 @@ function lasBlock(kalla, namn, uttryck) {
   return fn({});
 }
 
-/** site-config.js: elva globaler i ett block. */
+/** site-config.js: nio globaler i ett block. */
 const INNEHALL_NYCKLAR = [
   'STEP1FILM_VIDEO', 'STEP1FILM_EMBEDS', 'STEP1FILM_REEL', 'STEP1FILM_CLIENTS',
-  'STEP1FILM_FILMOGRAPHY', 'STEP1FILM_FESTIVALS', 'STEP1FILM_SUPPORT',
-  'STEP1FILM_SELECTED', 'STEP1FILM_EDUCATION', 'STEP1FILM_CV', 'STEP1FILM_POSTERS'
+  'STEP1FILM_FILMOGRAPHY', 'STEP1FILM_SELECTED',
+  'STEP1FILM_EDUCATION', 'STEP1FILM_CV', 'STEP1FILM_POSTERS'
 ];
 
 function lasInnehall(kalla) {

@@ -379,9 +379,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .hero-name span { color: var(--accent); }
 
 /* Underrubriken. Liten och spärrad så den läser som en signatur under
-   märket, inte som en andra rubrik. */
+   märket, inte som en andra rubrik. Sitter tätt inpå: märket har
+   line-height 0.95 och lämnar redan luft under baslinjen. */
 .hero-tag {
-  margin-top: 0.9rem;
+  margin-top: 0.15rem;
   font-family: var(--ff-display);
   font-size: clamp(0.62rem, 1.3vw, 0.95rem);
   letter-spacing: 0.3em;
@@ -780,8 +781,12 @@ body.reduced-motion .h-panel::after { animation: none; }
 
 .film-item {
   display: grid;
-  /* Ruta · text · knapp. Knappspalten tar bara sin egen bredd. */
-  grid-template-columns: clamp(96px, 12vw, 150px) 1fr auto;
+  /* Ruta · text · knapp.
+     Textspalten har ett tak i stället för att ta all plats. Med 1fr
+     sköts knappen ut i högerkanten, där den hamnade intill fokusenheten
+     och knappt syntes. Nu står den strax efter texten, ungefär mitt i
+     raden — linjerna löper fortfarande i full bredd. */
+  grid-template-columns: clamp(96px, 12vw, 150px) minmax(0, 1fr) minmax(0, 0.62fr);
   gap: 0 clamp(1rem, 2.2vw, 2rem);
   padding: clamp(0.5rem, 1vh, 0.85rem) 0;
   border-top: 1px solid var(--line);
@@ -804,7 +809,7 @@ body.reduced-motion .h-panel::after { animation: none; }
 .film-cta {
   grid-column: 3;
   align-self: center;
-  justify-self: end;
+  justify-self: start;
   white-space: nowrap;
   font-family: var(--ff-display);
   font-size: clamp(0.56rem, 0.78vw, 0.7rem);
@@ -1098,12 +1103,15 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   /* height:auto krävs — annars vinner height-attributet i HTML över
      aspect-ratio och bilden blir 934 px hög och spiller ur panelen. */
   height: auto;
-  aspect-ratio: 3 / 4;
+  /* Kvadratisk. I den tidigare 3:4-rutan var bara 60 % av ytan foto och
+     resten fyllnad ovanför huvudet — det läste som ett tomrum, inte som
+     en bild. Kvadraten ger 76 % foto och samma bredd som förut. */
+  aspect-ratio: 1 / 1;
   /* På låga skärmar får höjden gå före proportionen; bilden beskärs
      hellre än skjuter ut ur panelen. */
   max-height: min(62vh, 100%);
   object-fit: cover;
-  /* Bilden är redan 3:4, samma som rutan — inget beskärs bort */
+  /* Bilden är redan 1:1, samma som rutan — inget beskärs bort */
   object-position: 50% 50%;
   background: #161616;
   border: 1px solid var(--line);
@@ -1183,7 +1191,9 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Börjar överst, i linje med porträttet och textens första rad.
+     Centrerad låg rubriken 200 px ned och spalten såg ut att hänga. */
+  justify-content: flex-start;
   gap: 0.7rem;
   padding-left: clamp(1rem, 2.2vw, 2rem);
   border-left: 1px solid var(--line);
@@ -1839,11 +1849,18 @@ body.reduced-motion .ld-num { animation: none !important; }
    raderna inte plats, och STORE-raden längst ner föll
    utanför. Ligger sist i filen för att vinna över
    grundreglerna ovan.
+
+   Bara i svepläget. Utan min-width slog reglerna till även på
+   telefon (390×844 är ju under 880 i höjd) och gav filmraden tre
+   spalter — texten pressades till 129 px och beskrivningarna
+   försvann. Samma brytpunkt som isWideScreen() i main.js.
    ===================================================== */
-@media (max-height: 880px) {
+@media (min-width: 901px) and (max-height: 880px) {
   .film-item {
     padding: 0.3rem 0;
-    grid-template-columns: clamp(74px, 8vw, 104px) 1fr;
+    /* Knappspalten måste med här också — utan den föll den tillbaka
+       på 1fr och knappen sköts ut i högerkanten igen. */
+    grid-template-columns: clamp(74px, 8vw, 104px) minmax(0, 1fr) minmax(0, 0.62fr);
   }
   .film-thumb { aspect-ratio: 16 / 9; }
   .film-syn { display: none; }
@@ -1858,11 +1875,12 @@ body.reduced-motion .ld-num { animation: none !important; }
 
 /* Höjder strax över 880 px (t.ex. 1440×900): raderna är i fullstorlek
    men listan har inte riktigt plats, och sista radens text kapades.
-   Lite mindre luft mellan raderna räcker — beskrivningarna får vara kvar. */
-@media (min-height: 881px) and (max-height: 960px) {
+   Lite mindre luft mellan raderna räcker — beskrivningarna får vara kvar.
+   Även den här bara i svepläget, av samma skäl som ovan. */
+@media (min-width: 901px) and (min-height: 881px) and (max-height: 960px) {
   .film-item {
     padding: 0.5rem 0;
-    grid-template-columns: clamp(90px, 9vw, 118px) 1fr;
+    grid-template-columns: clamp(90px, 9vw, 118px) minmax(0, 1fr) minmax(0, 0.62fr);
   }
   .film-thumb { aspect-ratio: 16 / 9; }
   .film-num, .film-meta { margin-bottom: 0.1rem; }
@@ -1980,20 +1998,13 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   flex: 1;
   min-height: 0;
 }
-/* Tre spalter: filmerna, festivalerna, och stöd + urval staplade i
-   den sista. Filmerna är den tyngsta posten och får mest plats.
-   Fördelningen är gjord så att ingen spalt blir längre än panelen —
-   allt ska synas utan att listorna behöver rulla. */
+/* Två spalter: filmerna och urvalet. Festivalerna hade en egen spalt
+   men stod redan i filmernas noter — nu står de bara på ett ställe,
+   under filmen de hör till, och noterna får plats att synas i sin
+   helhet i stället för att klippas till två rader. */
 .cv-grid--film {
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.9fr);
-  gap: clamp(1.2rem, 2.6vw, 2.8rem);
-}
-.cv-side {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.9rem, 2.2vh, 1.8rem);
-  min-height: 0;
-  min-width: 0;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3.5vw, 4rem);
 }
 /* Graderna ligger högre än förut — den gamla panelen skulle rymma
    fyra spalter och trycktes ihop till oläslighet. Med två spalter

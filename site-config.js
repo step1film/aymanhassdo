@@ -41,9 +41,14 @@
    STEP1FILM_FILMOGRAPHY Filmerna. Visas i CV-panelen med speltid och
                          not. `note` visas bara där.
 
-   STEP1FILM_FESTIVALS   CV-panelen: festivaler.
-   STEP1FILM_SUPPORT     CV-panelen: stöd och samarbeten.
    STEP1FILM_SELECTED    CV-panelen: utvald av.
+
+                         Festivaler och stöd hade egna listor förut men är
+                         borta. Festivalvisningarna står i respektive films
+                         `note` — samma uppgifter på ett ställe i stället för
+                         två. Story AB nämns där filmen presenteras, på
+                         panel 02, och biblioteket i Vaggeryd står kvar under
+                         STEP1FILM_CV.
 
    STEP1FILM_EDUCATION   Utbildning. Ligger kvar som underlag men visas
                          inte längre någonstans — spalten togs bort från
@@ -204,82 +209,6 @@ window.STEP1FILM_FILMOGRAPHY = [
     "note": {
       "sv": "Samproduktion: Story AB",
       "en": "Co-production: Story AB"
-    }
-  }
-];
-
-window.STEP1FILM_FESTIVALS = [
-  {
-    "year": "2020",
-    "what": "CortoDino Film Festival, X Edizione",
-    "where": {
-      "sv": "Neapel, Italien",
-      "en": "Naples, Italy"
-    },
-    "note": {
-      "sv": "THE MIND’S EYE · Official selection",
-      "en": "THE MIND’S EYE · Official selection"
-    }
-  },
-  {
-    "year": "2020",
-    "what": "Festival del Cinema di Cefalù",
-    "where": {
-      "sv": "Palermo, Italien",
-      "en": "Palermo, Italy"
-    },
-    "note": {
-      "sv": "THE MIND’S EYE · Semifinal",
-      "en": "THE MIND’S EYE · Semi-final"
-    }
-  },
-  {
-    "year": "2023",
-    "what": {
-      "sv": "Värnamo Filmhistoriska Festival",
-      "en": "Värnamo Film History Festival"
-    },
-    "where": {
-      "sv": "Värnamo, Sverige",
-      "en": "Värnamo, Sweden"
-    },
-    "note": {
-      "sv": "OTYG · Pitch",
-      "en": "OTYG · Pitch"
-    }
-  },
-  {
-    "year": "2023",
-    "what": {
-      "sv": "Två filmfestivaler online",
-      "en": "Two online film festivals"
-    },
-    "where": "",
-    "note": {
-      "sv": "OTYG · Visning",
-      "en": "OTYG · Screening"
-    }
-  }
-];
-
-window.STEP1FILM_SUPPORT = [
-  {
-    "year": "2026–2027",
-    "what": "Story AB",
-    "where": {
-      "sv": "Samproduktion · BIRDS OF PASSAGE",
-      "en": "Co-production · BIRDS OF PASSAGE"
-    }
-  },
-  {
-    "year": "2015 / 2017",
-    "what": {
-      "sv": "Vaggeryds bibliotek",
-      "en": "Vaggeryd library"
-    },
-    "where": {
-      "sv": "Filmprojekt för unga",
-      "en": "Film projects for young people"
     }
   }
 ];

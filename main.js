@@ -691,9 +691,7 @@
     }
 
     function ritaCV() {
-      ritaLista('[data-festivals]', window.STEP1FILM_FESTIVALS);
-      ritaLista('[data-support]',   window.STEP1FILM_SUPPORT);
-      ritaLista('[data-selected]',  window.STEP1FILM_SELECTED);
+      ritaLista('[data-selected]', window.STEP1FILM_SELECTED);
 
       document.querySelectorAll('[data-filmography-full]').forEach(box => {
         box.textContent = '';
