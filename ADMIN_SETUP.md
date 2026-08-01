@@ -30,27 +30,57 @@ Den visas bara en gång. Tappar du bort den får du skapa en ny.
 
 ---
 
-## Del 2 — Hitta på ett lösenord och en hemlighet
+## Del 2 — Bestäm ditt lösenord
 
-Du behöver två slumpsträngar. Skriv dem i en anteckning innan du går
-vidare, för de går inte att läsa ut ur Netlify efteråt.
+Det finns inget lösenord än, och det står ingenstans i koden. Du hittar
+på det själv nu.
 
-**ADMIN_PASSWORD** — det du skriver in när du loggar in. Minst 20
-tecken. Använd gärna fyra ord du hittar på, med bindestreck emellan:
-`kamera-fjäril-tegel-nionde`. Lätt att komma ihåg, omöjligt att gissa.
+**Varför inte i koden?** Allt i repot går att läsa. Ett lösenord i en
+fil vore som att tejpa nyckeln på dörren. Därför ligger det som en
+*miljövariabel* hos Netlify — ett värde bara servern ser, aldrig
+webbläsaren och aldrig git.
 
-**ADMIN_SECRET** — den ser du aldrig. Den signerar din
-inloggningssession. Öppna en terminal och kör:
+Du behöver två strängar.
+
+### ADMIN_PASSWORD — det du skriver in
+
+Det här är ditt lösenord. Minst 20 tecken.
+
+Enklaste sättet att få ett som är både starkt och möjligt att komma
+ihåg: **fyra ord som inte hör ihop, med bindestreck emellan.**
+
+```
+kamera-fjäril-tegel-nionde
+stativ-hallon-oktober-brygga
+```
+
+Hitta på dina egna. Fyra slumpmässiga svenska ord är svårare att gissa
+än `Sommar2026!` — och lättare att minnas.
+
+Undvik: ditt namn, STEP1FILM, födelseår, adressen, något du använder
+någon annanstans.
+
+### ADMIN_SECRET — den du aldrig ser
+
+Den används för att signera din inloggning så att ingen kan förfalska
+en. Du skriver aldrig in den. Den ska vara ren slump.
+
+Har du en terminal:
 
 ```
 openssl rand -base64 48
 ```
 
-Går inte det, ta 50 slumpmässiga tecken från
-<https://www.random.org/strings/> — det spelar ingen roll hur den ser
-ut, bara att den är lång och att ingen annan känner till den.
+Har du inte det: gå till <https://www.random.org/strings/> och be om
+**4 strängar, 20 tecken, med både siffror och bokstäver**, och klistra
+ihop dem till en enda lång rad.
 
----
+### Skriv ner båda innan du går vidare
+
+Netlify visar dem aldrig igen efter att du sparat. Lägg dem i din
+lösenordshanterare, eller på ett papper i en låda. Tappar du
+`ADMIN_PASSWORD` kommer du inte in — men det är inte hela världen: du
+går bara in i Netlify och skriver ett nytt.
 
 ## Del 3 — Lägg in dem i Netlify
 

@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0c0c0c" />
 
-  <title>STEP1FILM — Ayman Hassdo, filmregissör i Småland</title>
+  <title>Filmproduktion i Småland &amp; Jönköpings län — STEP1FILM</title>
 
   <!-- =====================================================
        SEO
   ====================================================== -->
-  <meta name="description" content="STEP1FILM är Ayman Hassdos filmverksamhet i Småland — dokumentär, kortfilm och reklamfilm. Vi hjälper också nya filmskapare vidare, från manus till färdig mix." />
-  <meta name="keywords" content="STEP1FILM, Ayman Hassdo, filmregissör, filmproduktion Småland, dokumentärfilm, kortfilm, reklamfilm, filmklippning, ljuddesign, manusutveckling, filmskapare Sverige" />
+  <meta name="description" content="Filmproduktion i Småland och Jönköpings län. Dokumentär, kortfilm och reklamfilm av Ayman Hassdo — regi, foto, klipp och ljud. Vi hjälper också nya filmskapare vidare, från manus till färdig mix." />
+  <meta name="keywords" content="filmproduktion Småland, filmbolag Jönköpings län, filmfotograf Jönköping, reklamfilm Värnamo, dokumentärfilm Småland, filmregissör Vaggeryd, filmteam Småland, videoproduktion Jönköping, Ayman Hassdo, STEP1FILM" />
   <meta name="author" content="Ayman Hassdo" />
   <link rel="canonical" href="https://step1film.se/" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="STEP1FILM" />
-  <meta property="og:title" content="STEP1FILM — Ayman Hassdo, filmregissör i Småland" />
-  <meta property="og:description" content="Dokumentär, kortfilm och reklamfilm från Småland — och hjälp åt nya filmskapare hela vägen från idé till färdig mix." />
+  <meta property="og:title" content="Filmproduktion i Småland &amp; Jönköpings län — STEP1FILM" />
+  <meta property="og:description" content="Dokumentär, kortfilm och reklamfilm i Småland och Jönköpings län — och hjälp åt nya filmskapare hela vägen från idé till färdig mix." />
   <meta property="og:image" content="https://step1film.se/bg-stage.jpg" />
   <meta property="og:image:width" content="1920" />
   <meta property="og:image:height" content="1080" />
@@ -29,11 +29,24 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="STEP1FILM — Ayman Hassdo, filmregissör i Småland" />
-  <meta name="twitter:description" content="Dokumentär, kortfilm och reklamfilm från Småland — och hjälp åt nya filmskapare." />
+  <meta name="twitter:title" content="Filmproduktion i Småland &amp; Jönköpings län — STEP1FILM" />
+  <meta name="twitter:description" content="Dokumentär, kortfilm och reklamfilm i Småland och Jönköpings län — och hjälp åt nya filmskapare." />
   <meta name="twitter:image" content="https://step1film.se/bg-stage.jpg" />
 
-  <!-- JSON-LD: Person + WebSite -->
+  <!-- =====================================================
+       JSON-LD — strukturerad data
+       =====================================================
+       Person   vem Ayman är
+       ProfessionalService  vad verksamheten gör och VAR den gör det.
+                Det är den här biten som lokal sökning läser: areaServed
+                talar om vilka orter och län uppdragen tas i, och
+                hasOfferCatalog vad som faktiskt erbjuds.
+       WebSite  sajten som helhet
+
+       ⚠️ Ingen gatuadress står här med flit. Vill du synas i Googles
+       kartruta ("lokalt paket") krävs en Google Business Profile med
+       verifierad adress — det går inte att lösa i koden, se SEO.md.
+  ====================================================== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -42,21 +55,65 @@
         "@type": "Person",
         "@id": "https://step1film.se/#person",
         "name": "Ayman Hassdo",
-        "alternateName": "STEP1FILM",
         "url": "https://step1film.se/",
-        "image": "https://step1film.se/bg-stage.jpg",
-        "jobTitle": ["Filmregissör", "Filmproducent", "Klippare"],
+        "image": "https://step1film.se/assets/portraits/ayman-hassdo.webp",
+        "jobTitle": ["Filmregiss\u00f6r", "Filmfotograf", "Filmproducent", "Klippare"],
+        "worksFor": { "@id": "https://step1film.se/#business" },
         "birthPlace": "Al-Hassake, Syria",
-        "nationality": "Syrian",
+        "email": "mailto:ayman@step1film.se",
+        "knowsLanguage": ["sv", "en", "ar"],
+        "knowsAbout": [
+          "Filmregi", "Filmfoto", "Dokument\u00e4rfilm", "Kortfilm", "Reklamfilm",
+          "Manusutveckling", "Filmklippning", "Ljuddesign", "F\u00e4rgl\u00e4ggning"
+        ],
+        "alumniOf": [
+          { "@type": "EducationalOrganization", "name": "\u00d6lands folkh\u00f6gskola" },
+          { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" }
+        ],
+        "sameAs": []
+      },
+      {
+        "@type": ["ProfessionalService", "LocalBusiness"],
+        "@id": "https://step1film.se/#business",
+        "name": "STEP1FILM",
+        "alternateName": "STEP1 FILM",
+        "description": "Filmproduktion i Sm\u00e5land och J\u00f6nk\u00f6pings l\u00e4n \u2014 dokument\u00e4r, kortfilm och reklamfilm. Vi hj\u00e4lper ocks\u00e5 nya filmskapare vidare, fr\u00e5n manus till f\u00e4rdig mix.",
+        "url": "https://step1film.se/",
+        "logo": "https://step1film.se/bg-stage.jpg",
+        "image": "https://step1film.se/bg-stage.jpg",
+        "founder": { "@id": "https://step1film.se/#person" },
+        "email": "mailto:info@step1film.se",
+        "priceRange": "$$",
+        "currenciesAccepted": "SEK",
         "address": {
           "@type": "PostalAddress",
-          "addressLocality": "Småland",
-          "addressRegion": "Småland",
+          "addressRegion": "J\u00f6nk\u00f6pings l\u00e4n",
           "addressCountry": "SE"
         },
-        "email": "mailto:info@step1film.se",
-        "knowsLanguage": ["English", "Swedish", "Arabic"],
-        "knowsAbout": ["Film direction", "Cinematography", "Documentary film", "Sound design", "Photography", "Colour grading", "Film editing"],
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "J\u00f6nk\u00f6pings l\u00e4n" },
+          { "@type": "AdministrativeArea", "name": "Sm\u00e5land" },
+          { "@type": "City", "name": "J\u00f6nk\u00f6ping" },
+          { "@type": "City", "name": "V\u00e4rnamo" },
+          { "@type": "City", "name": "Vaggeryd" },
+          { "@type": "City", "name": "N\u00e4ssj\u00f6" },
+          { "@type": "City", "name": "Gislaved" },
+          { "@type": "City", "name": "Eksj\u00f6" },
+          { "@type": "Country", "name": "Sverige" }
+        ],
+        "knowsLanguage": ["sv", "en", "ar"],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Filmtj\u00e4nster",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Planera filmprojektet", "description": "Ett onlinem\u00f6te d\u00e4r vi g\u00e5r igenom var projektet st\u00e5r och l\u00e4gger en plan." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Manusutveckling", "description": "Fr\u00e5n anteckning till ett manus som h\u00e5ller." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Filminspelning", "description": "Kamera, ljus och regi p\u00e5 plats." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Filmklippning och f\u00e4rgl\u00e4ggning", "description": "Bildklipp och f\u00e4rg, tills filmen hittar sin rytm." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ljuddesign och mix", "description": "Ljuddesign, musik och den f\u00e4rdiga mixen." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Filmteam och kontakter", "description": "Kontakt med de filmmedarbetare din vision beh\u00f6ver." } }
+          ]
+        },
         "sameAs": []
       },
       {
@@ -64,7 +121,7 @@
         "@id": "https://step1film.se/#website",
         "url": "https://step1film.se/",
         "name": "STEP1FILM",
-        "publisher": { "@id": "https://step1film.se/#person" },
+        "publisher": { "@id": "https://step1film.se/#business" },
         "inLanguage": ["sv", "en"]
       }
     ]
@@ -79,9 +136,8 @@
   <!-- =====================================================
        Fonts
   ====================================================== -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
+  <link rel="stylesheet" href="assets/fonts/fonts.css" />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -195,7 +251,10 @@
               <div class="hero-overlay" aria-hidden="true"></div>
             </div>
             <div class="hero-content">
-              <h1 class="hero-name">STEP<span>1</span>FILM</h1>
+              <!-- Märket syns; resten av rubriken läses av sökmotorer och
+                   skärmläsare. Samma innebörd som sidan i övrigt — inget
+                   som göms för besökaren och visas för Google. -->
+              <h1 class="hero-name">STEP<span>1</span>FILM<span class="bara-uppläst"> — filmproduktion i Småland och Jönköpings län</span></h1>
               <p class="hero-tag" data-i18n="heroTag">Stories from people.</p>
               <a href="#about" class="hero-down" data-i18n-aria="enterSite" aria-label="Gå in på sidan">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
@@ -218,35 +277,6 @@
               <!-- Tre spalter som alla börjar på samma höjd -->
               <div class="about-cols">
 
-                <div class="about-portrait">
-                  <!-- Kvadratisk version. Originalet (ayman-hassdo.webp) är
-                       liggande 3:2; i en stående ruta blev bara 60 % foto och
-                       resten fyllnad. Kvadraten ger 76 % foto. -->
-                  <img class="portrait-img" src="assets/portraits/ayman-hassdo-portratt.webp"
-                       alt="Ayman Hassdo" width="1200" height="1200" loading="lazy" decoding="async" />
-                  <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
-                  <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
-                       och hela blocket lyser rött när man pekar på adressen. -->
-                  <a class="about-write" href="mailto:ayman@step1film.se">
-                    <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
-                    <span class="about-mail">
-                      <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
-                      <span class="am-val">ayman@step1film.se</span>
-                    </span>
-                  </a>
-                </div>
-
-                <div class="about-content">
-                  <div class="about-scroll">
-                    <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
-                    <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
-                    <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
-                    <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
-                    <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
-                    <p class="about-sign" aria-hidden="true">/Ayman Hassdo</p>
-                  </div>
-                </div>
-
                 <!-- Klippspelaren. Klippen listas i STEP1FILM_REEL i
                      site-config.js; varje klipp visas i 30 sekunder och
                      sedan går den vidare till nästa av sig själv. -->
@@ -266,6 +296,35 @@
                   <div class="reel-dots" data-reel-dots role="tablist"
                        data-i18n-aria="reelList" aria-label="Välj klipp"></div>
                 </aside>
+
+                <div class="about-content">
+                  <div class="about-scroll">
+                    <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
+                    <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
+                    <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
+                    <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
+                    <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
+                    <p class="about-sign" aria-hidden="true">/Ayman Hassdo</p>
+                  </div>
+                </div>
+
+                <div class="about-portrait">
+                  <!-- Originalfotot, orört. Rutan har bildens egen proportion
+                       (1400×934), så ingenting beskärs och ingen fyllnad
+                       behövs — det är hela fotografiet som visas. -->
+                  <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
+                       alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
+                  <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
+                  <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
+                       och hela blocket lyser rött när man pekar på adressen. -->
+                  <a class="about-write" href="mailto:ayman@step1film.se">
+                    <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
+                    <span class="about-mail">
+                      <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                      <span class="am-val">ayman@step1film.se</span>
+                    </span>
+                  </a>
+                </div>
 
               </div>
             </div>

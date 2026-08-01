@@ -1,0 +1,48 @@
+# =====================================================
+# GitHub Pages — vad som INTE ska publiceras
+# =====================================================
+# GitHub Pages serverar hela repot som en webbplats. Utan
+# den här filen gick allt att hämta med en vanlig adress:
+#
+#   step1film.se/ADMIN_SETUP.md        hela igångsättningen av admin
+#   step1film.se/PAYMENTS_SETUP.md     alla miljövariabelnamn
+#   step1film.se/functions/_lib/admin.js  hela säkerhetsmodellen
+#   step1film.se/netlify.toml          serverkonfigurationen
+#   step1film.se/.env.example          mallen med variabelnamnen
+#
+# Ingen av filerna innehåller en riktig nyckel — de riktiga
+# värdena ligger som miljövariabler hos Netlify och checkas
+# aldrig in. Men tillsammans är de en färdig karta över hur
+# sajten är byggd, och den kartan behöver ingen besökare.
+#
+# ⚠️ Det här gäller BARA GitHub Pages. Netlify bygger från
+# repot självt och kör functions/ som vanligt — de påverkas
+# inte. Ligger repot dessutom publikt på GitHub går filerna
+# att läsa där; vill du stänga det helt får repot göras
+# privat i GitHubs inställningar.
+#
+# Lägg till en rad här om du lägger till fler filer som hör
+# till bygget men inte till webbplatsen.
+# =====================================================
+
+exclude:
+  # Dokumentation
+  - "*.md"
+  - LICENSE
+
+  # Serverkod — körs av Netlify, inte av Pages
+  - functions/
+  - netlify.toml
+
+  # Konfiguration och mallar
+  - .env.example
+  - package.json
+  - package-lock.json
+  - node_modules/
+
+  # Sparad kod, inte sidor
+  - _archive/
+
+# Sajten är färdig HTML. Jekyll ska inte försöka bygga om
+# något — bara kopiera filerna och hoppa över listan ovan.
+plugins: []

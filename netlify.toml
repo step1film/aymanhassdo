@@ -46,12 +46,14 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
     # Tvinga HTTPS i två år (inkl. underdomäner)
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-    # Innehållspolicy: bara egna resurser + Google Fonts + betalningarnas domäner.
+    # Innehållspolicy: bara egna resurser + betalningarnas domäner.
     #   img-src blob:      adminsidan visar en förhandsbild av filen du valt,
     #                      innan den laddats upp — den är en blob: i minnet.
     #   connect-src netlify adminsidan ligger på step1film.se men anropar
     #                      funktionerna på step1film.netlify.app.
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://files.cdn.printful.com; connect-src 'self' https://api.stripe.com https://step1film.netlify.app; form-action 'self' https://checkout.stripe.com; frame-src https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    #   font-src 'self'    typsnitten ligger lokalt sedan de flyttades hem
+    #                      från Google Fonts; ingen extern källa behövs.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://files.cdn.printful.com; connect-src 'self' https://api.stripe.com https://step1film.netlify.app; form-action 'self' https://checkout.stripe.com; frame-src https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
 
 # Betalnings-endpoints ska aldrig cachas
 [[headers]]
