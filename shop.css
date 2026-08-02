@@ -1177,3 +1177,48 @@ a.logo-text:hover span, a.logo-text:focus-visible span { color: var(--white); }
 
 /* Filmkornet ligger bara på startsidan — i butiken gjorde det
    plaggen mindre skarpa, och där är det bilden som säljer. */
+
+
+/* =====================================================
+   KASSAN TILLFÄLLIGT STÄNGD
+   =====================================================
+   Banderoll överst i butiken plus avstängda knappar.
+   Slås av och på med CONFIG.kassaStangd i shop.js — den
+   här stilen ligger kvar och gör ingenting när kassan är
+   öppen, eftersom banderollen då aldrig skapas. */
+.stangt-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  /* Exakt samma yta som produktkorten. Rutnätet är 1240 px brett med
+     clamp(1rem, 4vw, 3rem) i sidopadding, alltså 1144 px innehåll på
+     bred skärm. Banderollen har ingen sådan padding, så bredden räknas
+     fram i stället — då står vänsterkanten i linje med första kortet
+     på varje skärmbredd. */
+  width: min(1144px, 100% - 2 * clamp(1rem, 4vw, 3rem));
+  margin: 1.25rem auto 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--accent, #e01c1c);
+  border-left-width: 3px;
+  border-radius: 4px;
+  background: rgba(224, 28, 28, 0.06);
+  text-wrap: pretty;
+}
+.stangt-banner strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white, #f2f2f2);
+}
+.stangt-banner span {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text, #e2e2e2);
+}
+
+/* Avstängda knappar ska se avstängda ut, inte trasiga */
+.kassa-stangd #toCheckout[disabled],
+.kassa-stangd #placeOrder[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}

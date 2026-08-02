@@ -40,7 +40,31 @@
       apiBase: 'https://step1film.netlify.app/.netlify/functions',
       card: true,    // Stripe: kort + Klarna
       swish: false   // Swish Handel — väntar på avtal med banken
-    }
+    },
+
+    /* -----------------------------------------------------
+       KASSAN TILLFÄLLIGT STÄNGD
+       -----------------------------------------------------
+       true  = butiken syns som vanligt, men går inte att beställa i
+       false = allt normalt
+
+       ⚠️ ATT ÖPPNA IGEN: sätt raden nedan till false. Det är allt.
+
+       VARFÖR DEN ÄR STÄNGD (2026-08-01):
+       Sajten ligger på GitHub Pages och uppdateras direkt, men
+       priskontrollen som DEBITERAR kunden är en Netlify-funktion —
+       och Netlify har pausat alla deployer sedan kontots krediter tog
+       slut. Servern kör därför en version från före den senaste
+       prisändringen. Följden: tio produkter skulle debiteras 10–160 kr
+       för lite, STEP1 JERSEY fanns inte alls i den versionen och gav
+       felmeddelande i kassan, och landspärren mot utlandsorder saknas.
+
+       Ingen kund hade hunnit handla när det upptäcktes.
+
+       Öppna igen när Netlify visat en lyckad deploy — kontrollera på
+       Deploys-sidan att den översta raden säger "Published" med ett
+       färskt commit-id, inte "Skipped". Då stämmer priserna igen. */
+    kassaStangd: true
   };
 
   window.S1F_CONFIG = CONFIG;
@@ -1158,6 +1182,9 @@
       cart: 'Vagnen', cartTitle: 'Din vagn', empty: 'Din vagn är tom.',
       keepShopping: 'Fortsätt handla',
       subtotal: 'Summa', checkout: 'Till kassan',
+      stangdRubrik: 'Butiken öppnar igen inom kort',
+      stangdText: 'Vi ser över priser och leverans just nu, så beställningar är pausade några dagar. Titta gärna runt — allt finns kvar. Vill du ha något redan nu, mejla shop@step1film.se så löser vi det.',
+      stangdKnapp: 'Beställning pausad',
       remove: 'Ta bort',
       coBack: 'Tillbaka', coTitle: 'Kassa',
       name: 'Namn', email: 'E-post', phone: 'Telefon',
@@ -1207,6 +1234,9 @@
       cart: 'Cart', cartTitle: 'Your cart', empty: 'Your cart is empty.',
       keepShopping: 'Keep shopping',
       subtotal: 'Subtotal', checkout: 'Checkout',
+      stangdRubrik: 'The store reopens shortly',
+      stangdText: 'We are reviewing prices and delivery, so orders are paused for a few days. Do have a look around — everything is still here. If you want something now, email shop@step1film.se and we will sort it out.',
+      stangdKnapp: 'Orders paused',
       remove: 'Remove',
       coBack: 'Back', coTitle: 'Checkout',
       name: 'Name', email: 'Email', phone: 'Phone',
@@ -1873,7 +1903,8 @@
       const first = wrap.querySelector('.pay-option:not([style*="none"]) input');
       if (first) first.checked = true;
     }
-    document.getElementById('placeOrder').textContent = t('payNow');
+    // Är kassan stängd står det redan "Beställning pausad" på knappen
+    if (!CONFIG.kassaStangd) document.getElementById('placeOrder').textContent = t('payNow');
   }
 
   /* -----------------------------------------------------
@@ -2033,6 +2064,10 @@
   }
 
   function placeOrder() {
+    // Sista utposten. Knappen är redan avstängd när kassan är stängd,
+    // men den här raden gör att inget kan slinka igenom ändå.
+    if (CONFIG.kassaStangd) { showToast(t('stangdKnapp')); return; }
+
     const get = (id) => (document.getElementById(id).value || '').trim();
     const name = get('coName');
     const email = get('coEmail');
@@ -2124,6 +2159,10 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
     lang = l;
     localStorage.setItem('s1f_lang', l);
     applyStaticI18n();
+    // Banderollen och de avstängda knapparna byter språk de med
+    const gammal = document.getElementById('stangtBanner');
+    if (gammal) gammal.remove();
+    visaStangtLage();
     renderGrid();
     if (checkoutView.style.display === 'block') renderCheckout();
     else renderCart();
@@ -2269,10 +2308,50 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
     document.getElementById('thanksDone').addEventListener('click', closeDrawer);
 
     applyStaticI18n();
+    visaStangtLage();
     renderGrid();
     renderCart();
     updateCartCount();
     handlePaymentReturn();
+  }
+
+  /* -----------------------------------------------------
+     KASSAN STÄNGD — banderoll och avstängd knapp
+     -----------------------------------------------------
+     Butiken ska fortfarande gå att titta i; det är bara vägen till
+     kassan som är stängd. Kunden ska få veta varför direkt, inte
+     upptäcka det först när hen fyllt i sin adress.
+     Styrs av CONFIG.kassaStangd — se kommentaren där. */
+  function visaStangtLage() {
+    if (!CONFIG.kassaStangd) return;
+    document.body.classList.add('kassa-stangd');
+
+    // Banderoll överst i butiken
+    const grid = document.getElementById('grid');
+    if (grid && !document.getElementById('stangtBanner')) {
+      const b = document.createElement('div');
+      b.id = 'stangtBanner';
+      b.className = 'stangt-banner';
+      b.setAttribute('role', 'status');
+      const h = document.createElement('strong');
+      h.textContent = t('stangdRubrik');
+      const p = document.createElement('span');
+      p.textContent = t('stangdText');
+      b.append(h, p);
+      grid.parentNode.insertBefore(b, grid);
+    }
+
+    // Knappen från kundvagnen till kassan
+    const till = document.getElementById('toCheckout');
+    if (till) {
+      till.disabled = true;
+      till.textContent = t('stangdKnapp');
+    }
+    const lagg = document.getElementById('placeOrder');
+    if (lagg) {
+      lagg.disabled = true;
+      lagg.textContent = t('stangdKnapp');
+    }
   }
 
   /** Kunden kommer tillbaka från Stripe: ?order=ok | ?order=cancelled */
