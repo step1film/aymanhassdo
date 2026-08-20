@@ -274,28 +274,9 @@
                 <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Dream</h2>
               </div>
 
-              <!-- Tre spalter som alla börjar på samma höjd -->
+              <!-- Biografin i full bredd, klippen och porträttet på en egen
+                   rad under den. -->
               <div class="about-cols">
-
-                <!-- Klippspelaren. Klippen listas i STEP1FILM_REEL i
-                     site-config.js; varje klipp visas i 30 sekunder och
-                     sedan går den vidare till nästa av sig själv. -->
-                <aside class="about-reel" data-reel aria-label="Klipp">
-                  <span class="reel-head" data-i18n="reelHead">Clips</span>
-                  <div class="reel-stage">
-                    <div class="reel-frame" data-reel-frame></div>
-                    <span class="reel-empty" data-i18n="reelSoon">Clips coming</span>
-                  </div>
-                  <div class="reel-bar">
-                    <button class="reel-nav" type="button" data-reel-prev
-                            data-i18n-aria="reelPrev" aria-label="Föregående klipp">&#8249;</button>
-                    <span class="reel-title" data-reel-title></span>
-                    <button class="reel-nav" type="button" data-reel-next
-                            data-i18n-aria="reelNext" aria-label="Nästa klipp">&#8250;</button>
-                  </div>
-                  <div class="reel-dots" data-reel-dots role="tablist"
-                       data-i18n-aria="reelList" aria-label="Välj klipp"></div>
-                </aside>
 
                 <div class="about-content">
                   <div class="about-scroll">
@@ -308,22 +289,55 @@
                   </div>
                 </div>
 
-                <div class="about-portrait">
-                  <!-- Originalfotot, orört. Rutan har bildens egen proportion
-                       (1400×934), så ingenting beskärs och ingen fyllnad
-                       behövs — det är hela fotografiet som visas. -->
-                  <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
-                       alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
-                  <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
-                  <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
-                       och hela blocket lyser rött när man pekar på adressen. -->
-                  <a class="about-write" href="mailto:ayman@step1film.se">
-                    <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
-                    <span class="about-mail">
-                      <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
-                      <span class="am-val">ayman@step1film.se</span>
-                    </span>
-                  </a>
+                <!-- Mediaraden under texten: klippspelaren till vänster,
+                     porträttet med pitchen till höger. På telefon löses raden
+                     upp (display: contents) så att blocken staplas var för sig
+                     i den ordning order-reglerna i style.css anger. -->
+                <div class="about-media">
+
+                  <!-- Klippspelaren. Klippen listas i STEP1FILM_REEL i
+                       site-config.js; varje klipp visas i 30 sekunder och
+                       sedan går den vidare till nästa av sig själv. -->
+                  <aside class="about-reel" data-reel aria-label="Klipp">
+                    <span class="reel-head" data-i18n="reelHead">Clips</span>
+                    <div class="reel-stage">
+                      <div class="reel-frame" data-reel-frame></div>
+                      <span class="reel-empty" data-i18n="reelSoon">Clips coming</span>
+                    </div>
+                    <div class="reel-bar">
+                      <button class="reel-nav" type="button" data-reel-prev
+                              data-i18n-aria="reelPrev" aria-label="Föregående klipp">&#8249;</button>
+                      <span class="reel-title" data-reel-title></span>
+                      <button class="reel-nav" type="button" data-reel-next
+                              data-i18n-aria="reelNext" aria-label="Nästa klipp">&#8250;</button>
+                    </div>
+                    <div class="reel-dots" data-reel-dots role="tablist"
+                         data-i18n-aria="reelList" aria-label="Välj klipp"></div>
+                  </aside>
+
+                  <div class="about-portrait">
+                    <!-- Originalfotot, orört. Rutan har bildens egen proportion
+                         (1400×934), så ingenting beskärs och ingen fyllnad
+                         behövs — det är hela fotografiet som visas. -->
+                    <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
+                         alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
+                    <!-- Bildtext, pitch och adress står bredvid fotot i stället
+                         för under det — raden blir låg och lämnar höjden åt
+                         texten ovanför. -->
+                    <div class="portrait-side">
+                      <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
+                      <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
+                           och hela blocket lyser rött när man pekar på adressen. -->
+                      <a class="about-write" href="mailto:ayman@step1film.se">
+                        <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
+                        <span class="about-mail">
+                          <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                          <span class="am-val">ayman@step1film.se</span>
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
