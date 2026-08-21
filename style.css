@@ -202,25 +202,38 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .logo-text span { color: var(--accent); }
 
-/* Filmrullen bredvid ordmärket. Samma fil som markören använder, och
-   samma grepp: PNG:en är svart på genomskinlig botten, så den läggs
-   som mask över en färgad yta i stället för att ritas som bild —
-   annars hade den varit svart mot den mörka sidan. Då följer den
-   också med om ordmärkets färg någon gång ändras. */
-.logo-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-}
+/* Filmrullen som märke. Samma fil som markören använder: PNG:en är
+   svart på genomskinlig botten, så den läggs som mask över en färgad
+   yta i stället för att ritas som bild — annars hade den varit svart
+   mot den mörka sidan.
+
+   Måtten är i em och färgen currentColor, så rullen skalar och tonar
+   med texten den står bredvid. Samma regel duger då i sidhuvudet
+   (vitt, 1,25–1,5 rem) som i sidfoten (dovt, mindre).
+
+   INTE flexbox på länken runt omkring: ett flex-item skapas för varje
+   textstycke, så en gap la sig mellan STEP, 1 och FILM också och
+   ordmärket sprack isär till "STEP 1 FILM". */
 .logo-reel {
+  /* Ett <i>, inte ett <span>. Ordmärkena färgar sin siffra röd med
+     .logo-text span och .foot-logo span, och de reglerna hade fångat
+     rullen också — den blev röd i stället för att följa texten. */
+  display: inline-block;
   width: 1em;
   height: 1em;
-  flex: 0 0 auto;
-  background: var(--white);
+  /* Centrerad mot versalhöjden, inte baslinjen — rullen är kvadratisk
+     och versalerna når bara omkring 0,72 em, så den sänks något. */
+  vertical-align: -0.14em;
+  margin-right: 0.38em;
+  background: currentColor;
   -webkit-mask: url('cursor.png') center / contain no-repeat;
           mask: url('cursor.png') center / contain no-repeat;
-  /* text-shadow biter inte på en maskad yta. drop-shadow ger rullen
-     samma lyft mot ljusa bakgrundsbilder som texten bredvid har. */
+}
+
+/* I sidhuvudet ligger märket över bakgrundsfoton. Texten har en
+   text-shadow för att hålla sig läsbar där, men den biter inte på en
+   maskad yta — drop-shadow ger rullen samma lyft. */
+.logo-text .logo-reel {
   filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.6));
 }
 
