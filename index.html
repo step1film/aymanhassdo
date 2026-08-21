@@ -274,30 +274,54 @@
                 <h2 class="panel-title" id="about-title" data-i18n-html="p2Title">The<br>Dream</h2>
               </div>
 
-              <!-- Biografin i full bredd, klippen och porträttet på en egen
-                   rad under den. -->
+              <!-- Biografin och porträttet sida vid sida, klippspelaren
+                   centrerad på en egen rad under dem. -->
               <div class="about-cols">
 
-                <div class="about-content">
-                  <div class="about-scroll">
-                    <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
-                    <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
-                    <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
-                    <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
-                    <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
-                    <p class="about-sign" aria-hidden="true">/Ayman Hassdo</p>
+                <!-- Översta raden: texten till vänster, porträttet som en
+                     smal spalt till höger med bildtext och adress under. -->
+                <div class="about-top">
+
+                  <div class="about-content">
+                    <div class="about-scroll">
+                      <p class="about-lead" data-i18n="aboutP1">I was born in north-eastern Syria, in a fairly dry region with a rich mix of people, languages and cultures. What marked me most was the warmth, generosity and care of the people there — values that have followed me through life and given me the courage to dream big.</p>
+                      <p class="about-body" data-i18n="aboutP2">When the war forced me to leave Syria I came to Sweden. Here I met new possibilities and began working with purpose to make my dreams real. I have studied, and I keep studying; I have been given support, knowledge, trust and love from people along the way. That is why I now want to give something back.</p>
+                      <p class="about-body" data-i18n="aboutP3">STEP1FILM exists to support the next generation of filmmakers. If you are working on your debut, have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry — we would gladly help. We can guide you through the process, help you build a plan and, where possible, put you in touch with the right people in the industry.</p>
+                      <p class="about-body" data-i18n="aboutP4">Making a film is rarely a journey you complete alone. If we can contribute knowledge, experience or the right contacts, we do it gladly. Don’t hesitate to get in touch — a simple conversation might be the beginning of your next film.</p>
+                      <p class="about-quote" data-i18n="aboutQuote">Remember: if your dreams don’t scare you, maybe they aren’t big enough.</p>
+                      <p class="about-sign" aria-hidden="true">/Ayman Hassdo</p>
+                    </div>
                   </div>
+
+                  <div class="about-portrait">
+                    <!-- Originalfotot, orört. Rutan har bildens egen proportion
+                         (1400×934), så ingenting beskärs och ingen fyllnad
+                         behövs — det är hela fotografiet som visas. -->
+                    <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
+                         alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
+                    <div class="portrait-side">
+                      <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
+                      <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
+                           och hela blocket lyser rött när man pekar på adressen. -->
+                      <a class="about-write" href="mailto:ayman@step1film.se">
+                        <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
+                        <span class="about-mail">
+                          <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
+                          <span class="am-val">ayman@step1film.se</span>
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+
                 </div>
 
-                <!-- Mediaraden under texten: klippspelaren till vänster,
-                     porträttet med pitchen till höger. På telefon löses raden
-                     upp (display: contents) så att blocken staplas var för sig
-                     i den ordning order-reglerna i style.css anger. -->
+                <!-- Klippspelaren står ensam och centrerad under texten.
+                     På telefon löses .about-top och .about-media upp med
+                     display: contents, så blocken staplas i order-ordning. -->
                 <div class="about-media">
 
-                  <!-- Klippspelaren. Klippen listas i STEP1FILM_REEL i
-                       site-config.js; varje klipp visas i 30 sekunder och
-                       sedan går den vidare till nästa av sig själv. -->
+                  <!-- Klippen listas i STEP1FILM_REEL i site-config.js; varje
+                       klipp visas i 30 sekunder och går sedan vidare själv. -->
                   <aside class="about-reel" data-reel aria-label="Klipp">
                     <span class="reel-head" data-i18n="reelHead">Clips</span>
                     <div class="reel-stage">
@@ -314,29 +338,6 @@
                     <div class="reel-dots" data-reel-dots role="tablist"
                          data-i18n-aria="reelList" aria-label="Välj klipp"></div>
                   </aside>
-
-                  <div class="about-portrait">
-                    <!-- Originalfotot, orört. Rutan har bildens egen proportion
-                         (1400×934), så ingenting beskärs och ingen fyllnad
-                         behövs — det är hela fotografiet som visas. -->
-                    <img class="portrait-img" src="assets/portraits/ayman-hassdo.webp"
-                         alt="Ayman Hassdo" width="1400" height="934" loading="lazy" decoding="async" />
-                    <!-- Bildtext, pitch och adress står bredvid fotot i stället
-                         för under det — raden blir låg och lämnar höjden åt
-                         texten ovanför. -->
-                    <div class="portrait-side">
-                      <p class="portrait-cap" data-i18n="portraitCap">Photo by Joel Arvidsson · Småland, Sweden</p>
-                      <!-- Pitchen och adressen hör ihop: linjen ligger över pitchen
-                           och hela blocket lyser rött när man pekar på adressen. -->
-                      <a class="about-write" href="mailto:ayman@step1film.se">
-                        <span class="about-pitch" data-i18n="aboutPitch">Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we take an online meeting and set a plan. ;)</span>
-                        <span class="about-mail">
-                          <span class="am-label" data-i18n="aboutMail">Write to Ayman</span>
-                          <span class="am-val">ayman@step1film.se</span>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
 
                 </div>
 
