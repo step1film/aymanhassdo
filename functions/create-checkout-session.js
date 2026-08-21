@@ -87,8 +87,8 @@ exports.handler = async (event) => {
         // Så att bekräftelsemejlet kommer på samma språk som butiken stod på
         lang: payload.lang === 'en' ? 'en' : 'sv'
       },
-      success_url: `${site}/shop.html?order=ok&ref=${reference}`,
-      cancel_url: `${site}/shop.html?order=cancelled`
+      success_url: `${site}/store?order=ok&ref=${reference}`,
+      cancel_url: `${site}/store?order=cancelled`
     });
 
     return { statusCode: 200, headers: cors, body: JSON.stringify({ url: session.url, reference }) };

@@ -224,6 +224,7 @@
   -------------------------------------------------- */
   function initScrollDriver() {
     const hWrapper = document.getElementById('h-wrapper');
+    const hSticky = document.getElementById('h-sticky');
     /* Bara paneler som är påslagna. Sätt hidden på en <section class="h-panel">
        så försvinner den ur numrering, prickar, rullhöjd och fokusenhet. */
     const panels = Array.from(document.querySelectorAll('.h-panel:not([hidden])'));
@@ -233,7 +234,7 @@
     const labelEl = document.getElementById('hLabel');
     const prevBtn = document.getElementById('hPrev');
     const nextBtn = document.getElementById('hNext');
-    if (!hWrapper || !panels.length) return;
+    if (!hWrapper || !hSticky || !panels.length) return;
 
     const RESERV = { about: 'The Dream', films: 'Selected Works', awards: 'What We Do', press: 'Press', contact: 'Contact' };
     const LABELS = () => window.STEP1FILM_NAV_LABELS || RESERV;
@@ -351,6 +352,39 @@
 
       if (prevBtn) prevBtn.disabled = scrolledIn <= 0;
       if (nextBtn) nextBtn.disabled = scrolledIn >= TOTAL * vh;
+
+      /* Under själva svepet stängs pekaren av på panelerna. Annars
+         glider en inkommande panels textruta in under muspekaren mitt
+         i rörelsen och börjar äta hjulet — svepet fryser halvvägs och
+         två paneler blir stående bredvid varandra. */
+      const kvot = scrolledIn / vh;
+      const stillastaende = Math.abs(kvot - Math.round(kvot)) < 0.01;
+      hSticky.classList.toggle('sveper', !stillastaende);
+
+      /* Och när man släpper hjulet: lägg svepet på närmaste hela panel
+         i stället för att låta det stå kvar där det råkade hamna. */
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(snapTillPanel, 160);
+    }
+
+    /* Lägger svepet på närmaste hela panel. Utan det fryser bilden där
+       man råkade sluta rulla — mätt: 1,73 respektive 1,87 steg av 5 i
+       två vanliga fall, alltså mitt emellan två paneler båda gångerna. */
+    let snapTimer = null, snapPagar = false;
+    function snapTillPanel() {
+      if (!wideMode || snapPagar) return;
+      const vh = window.innerHeight;
+      const inne = -hWrapper.getBoundingClientRect().top;
+      if (inne < 0 || inne > TOTAL * vh) return;        // utanför svepet
+      const mal = Math.round(inne / vh);
+      if (Math.abs(inne / vh - mal) < 0.004) return;    // redan på plats
+      snapPagar = true;
+      window.scrollTo({
+        top: hWrapper.offsetTop + mal * vh,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
+      // Släpp spärren när den egna rullningen hunnit landa
+      setTimeout(() => { snapPagar = false; }, 700);
     }
 
     /* --- Mobile: sync nav dots via IntersectionObserver --- */

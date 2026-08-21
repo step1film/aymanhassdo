@@ -1111,7 +1111,7 @@
         brand: { '@type': 'Brand', name: 'STEP1FILM' },
         category: { clothing: 'Kläder', caps: 'Kepsar och mössor',
                     mugs: 'Muggar', accessories: 'Accessoarer' }[p.cat] || 'Merch',
-        url: bas + 'shop.html#' + p.id
+        url: bas + 'store#' + p.id
       };
       if (bild) vara.image = bas + bild;
       if (p.colors && p.colors.length) {
@@ -1127,7 +1127,7 @@
             priceCurrency: 'SEK',
             availability: 'https://schema.org/InStock',
             itemCondition: 'https://schema.org/NewCondition',
-            url: bas + 'shop.html',
+            url: bas + 'store',
             seller: { '@type': 'Organization', name: företag.legalName || 'STEP1FILM' }
           }
         : {
@@ -1137,7 +1137,7 @@
             offerCount: priser.length,
             priceCurrency: 'SEK',
             availability: 'https://schema.org/InStock',
-            url: bas + 'shop.html',
+            url: bas + 'store',
             seller: { '@type': 'Organization', name: företag.legalName || 'STEP1FILM' }
           };
 

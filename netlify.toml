@@ -24,6 +24,39 @@
   to = "/index.html"
   status = 404
 
+# =====================================================
+# BUTIKEN LIGGER PÅ /store
+# =====================================================
+# Filen heter store.html. Netlify serverar den på /store av sig själv,
+# men regeln nedan står kvar som garanti om den inställningen ändras.
+# Den kan inte loopa: källan är /store, målet /store.html.
+[[redirects]]
+  from = "/store"
+  to = "/store.html"
+  status = 200
+
+# Adressen ska vara ren. Träffar någon .html-varianten skickas den vidare.
+[[redirects]]
+  from = "/store.html"
+  to = "/store"
+  status = 301
+
+# Butiken hette shop.html förut. Gamla länkar, bokmärken och sökträffar
+# ska inte dö — och framför allt: Stripe skickar tillbaka kunden till
+# den adress som låg i sessionen när betalningen startade. En betalning
+# som påbörjades före omdöpningen pekar fortfarande på /shop.html, och
+# frågetecknet med ?order=ok måste följa med. Netlify behåller
+# frågesträngen genom en omdirigering.
+[[redirects]]
+  from = "/shop.html"
+  to = "/store"
+  status = 301
+
+[[redirects]]
+  from = "/shop"
+  to = "/store"
+  status = 301
+
 # Snygg genväg: /api/* → funktionerna (valfritt, gör apiBase = '/api')
 [[redirects]]
   from = "/api/*"

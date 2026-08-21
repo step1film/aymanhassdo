@@ -440,15 +440,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--text-dim);
 }
 
-.hero-down {
-  position: absolute; bottom: 2.5rem; left: 50%;
-  transform: translateX(-50%);
-  color: var(--text-dim);
-  animation: heroPulse 2.2s ease-in-out infinite;
-}
-.hero-down svg { width: 28px; height: 28px; }
-@keyframes heroPulse { 0%,100%{opacity:0.4;transform:translateX(-50%) translateY(0)} 50%{opacity:1;transform:translateX(-50%) translateY(5px)} }
-
 /* =====================================================
    WIPE PANEL SYSTEM (desktop)
    ===================================================== */
@@ -603,6 +594,17 @@ body.reduced-motion .h-panel::after { animation: none; }
     background-repeat: no-repeat;
   }
 }
+/* Medan svepet rör sig ska ingen inre ruta kunna ta emot hjulet.
+   Textrutan på panel 01 och filmlistan på panel 02 rullar för sig
+   själva, och glider en av dem in under muspekaren mitt i rörelsen
+   åt den upp hjulet — svepet frös halvvägs och två paneler blev
+   stående bredvid varandra. Klassen sätts i main.js. */
+#h-sticky.sveper .about-scroll,
+#h-sticky.sveper .films-list,
+#h-sticky.sveper .cvb-list {
+  pointer-events: none;
+}
+
 /* Innehållet måste ligga över det mörka lagret */
 .panel-inner { position: relative; z-index: 1; }
 
@@ -931,6 +933,18 @@ button.film-cta:hover, button.film-cta:focus-visible {
   background: rgba(224, 28, 28, 0.08);
 }
 .film-cta--soon { opacity: 0.55; cursor: default; }
+
+/* Hela STORE-raden är klickbar, inte bara knappen till höger. Att
+   trycka på skylten eller rubriken gjorde ingenting förut, fast raden
+   ser ut som ett kort. Ytan tillhör knappens länk — då blir det en
+   länk och inte två, och tangentbord och skärmläsare ser samma sak
+   som förut. */
+.film-item--store { position: relative; }
+.film-item--store .film-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
 
 .film-thumb {
   --slot-bg: #161616;
@@ -1997,7 +2011,7 @@ body.reduced-motion .tb-card { animation: none; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .ld-scan, .ld-num, .hero-down, #grain { animation: none !important; }
+  .ld-scan, .ld-num, #grain { animation: none !important; }
   #grain { display: none; }
   /* On reduced motion we also bypass the boot sequence entirely */
   body.reduced-motion #loader { display: none !important; }
@@ -2006,7 +2020,6 @@ body.reduced-motion .tb-card { animation: none; }
 
 /* Body-level reduced-motion flag (set in JS — covers user choice via tweak too) */
 body.reduced-motion #grain { display: none; }
-body.reduced-motion .hero-down,
 body.reduced-motion .ld-scan,
 body.reduced-motion .ld-num { animation: none !important; }
 
