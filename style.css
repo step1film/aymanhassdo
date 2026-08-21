@@ -2079,8 +2079,11 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
 .cv-grid--film .cvb-head { font-size: clamp(0.78rem, 1.15vh, 1.1rem); padding-bottom: 0.4rem; }
 
 /* Låga fönster: luften mellan raderna dras ned före textgraderna,
-   så listan fortfarande ryms utan att bli svår att läsa. */
-@media (max-height: 780px) {
+   så listan fortfarande ryms utan att bli svår att läsa.
+   Taket höjt från 780 till 820 px när filmlistan blev sex poster:
+   på 1280×800 klipptes sista filmens rader bort utan att det syntes,
+   för .cvb-list döljer överskottet i stället för att rulla. */
+@media (max-height: 820px) {
   .cv-grid--film .cvb-row { padding: 0.16rem 0; }
   .cv-grid--film .cvb-role { font-size: 0.88rem; line-height: 1.25; }
   .cv-grid--film .cvb-where { font-size: 0.72rem; line-height: 1.3; }
@@ -2098,11 +2101,12 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
     overflow: hidden;
   }
 }
-/* Riktigt låga fönster (t.ex. 1366×650): två rader räcker inte, listan
-   behövde 409 px men fick 348. Noterna går helt bort i filmspalten.
-   De handlar mest om festivalvisningar, och de står nu i sin egen
-   spalt bredvid — ingenting försvinner från panelen. */
-@media (max-height: 700px) {
+/* Riktigt låga fönster (t.ex. 1280×720): två rader räcker inte, och
+   med sex filmer i listan räcker inte 700 px som gräns heller — 1280×720
+   fattades 38 px. Noterna går helt bort i filmspalten. De handlar mest
+   om festivalvisningar och står kvar i filmens egen rad på panel 02,
+   så uppgifterna finns kvar på sajten. */
+@media (max-height: 740px) {
   .cv-grid--film .cv-block--films .cvb-note { display: none; }
 }
 .cv-block { display: flex; flex-direction: column; gap: 0.7rem; min-height: 0; min-width: 0; }
@@ -2116,6 +2120,41 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--line);
 }
+/* Underrubrik inne i en spalt — "I media" under urvalen. Mindre och
+   utan linje, så den läses som en avdelning i spalten och inte som en
+   ny spalt bredvid .cvb-head. Marginalen ovanför skiljer den från
+   listan som slutar precis före. */
+.cvb-sub {
+  font-family: var(--ff-display);
+  font-size: clamp(0.66rem, 0.95vw, 0.82rem);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: clamp(0.6rem, 1.6vh, 1.4rem);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line-s);
+}
+
+/* Klickbara namn i CV-listorna. Understruket med avstånd, så det syns
+   att det är en länk utan att strecket skär genom bokstäverna. */
+.cvb-link {
+  color: inherit;
+  text-decoration: underline;
+  /* --line (8 % vitt) syntes inte mot titelns vita text — strecket
+     såg ut som en rendering-artefakt. --line-s bär tydligt. */
+  text-decoration-color: var(--line-s);
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+  transition: color 0.25s, text-decoration-color 0.25s;
+}
+.cvb-link:hover,
+.cvb-link:focus-visible {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 /* Ingen rullning här — allt ska rymmas. Raderna krymper i stället:
    luften mellan dem och textgraderna skalas med panelhöjden. */
 .cvb-list {

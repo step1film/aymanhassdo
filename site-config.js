@@ -43,6 +43,14 @@
 
    STEP1FILM_SELECTED    CV-panelen: utvald av.
 
+   STEP1FILM_MEDIA       CV-panelen: reportage om STEP1FILM, under en egen
+                         rubrik i samma spalt som urvalen. De är press och
+                         inte urval, därför en egen lista. Fältet `url` gör
+                         namnet klickbart — bara http(s), andra adresser
+                         ritas som text (se ritaLista i main.js) och avvisas
+                         av admin-save. Samma fält finns på STEP1FILM_SELECTED
+                         om en post där någon gång behöver en länk.
+
                          Festivaler och stöd hade egna listor förut men är
                          borta. Festivalvisningarna står i respektive films
                          `note` — samma uppgifter på ett ställe i stället för
@@ -146,72 +154,89 @@ window.STEP1FILM_CLIENTS = [
 ];
 
 window.STEP1FILM_FILMOGRAPHY = [
-  {
-    "year": "2015–2016",
-    "title": "NYA ORD",
-    "subtitle": "New Words",
-    "format": {
-      "sv": "Dokumentär · pedagogik, komedi, musik, resa",
-      "en": "Documentary · educational, comedy, music, travel"
+    {
+      "year": "",
+      "title": "JAG SOM HAR TVÅ MAMMOR",
+      "subtitle": "I Have Two Mothers",
+      "format": {
+        "sv": "Dokumentär",
+        "en": "Documentary"
+      },
+      "status": {
+        "sv": "Under utveckling",
+        "en": "In development"
+      },
+      "note": {
+        "sv": "Under research och utveckling. Bilder och mer om filmen kommer 2027.",
+        "en": "In research and development. Stills and more about the film in 2027."
+      }
     },
-    "runtime": "48 min"
-  },
-  {
-    "year": "2020–2021",
-    "title": "THE MIND’S EYE",
-    "format": {
-      "sv": "Kortfilm · drama",
-      "en": "Short film · drama"
+    {
+      "year": "2026–2027",
+      "title": "BIRDS OF PASSAGE",
+      "format": {
+        "sv": "Långfilmsdokumentär",
+        "en": "Feature-length documentary"
+      },
+      "status": {
+        "sv": "Pågående",
+        "en": "In progress"
+      },
+      "note": {
+        "sv": "Samproduktion: Story AB",
+        "en": "Co-production: Story AB"
+      }
     },
-    "runtime": "05 min",
-    "note": {
-      "sv": "Official selection — CortoDino Film Festival, X Edizione, Neapel, 23 november 2020. Semifinal — Festival del Cinema di Cefalù, Palermo, 23 november 2020.",
-      "en": "Official selection — CortoDino Film Festival, X Edizione, Naples, 23 November 2020. Semi-final — Festival del Cinema di Cefalù, Palermo, 23 November 2020."
+    {
+      "year": "2022–2023",
+      "title": "OTYG",
+      "format": {
+        "sv": "Kortfilm",
+        "en": "Short film"
+      },
+      "runtime": "09 min",
+      "note": {
+        "sv": "Pitchad på Värnamo Filmhistoriska Festival och visad på två filmfestivaler online. Manus till en långfilm är under utveckling.",
+        "en": "Pitched at the Värnamo Film History Festival and shown at two online film festivals. A feature-length script is in development."
+      }
+    },
+    {
+      "year": "2021–2022",
+      "title": "TOGETHER WE CREATE HARMONY",
+      "format": {
+        "sv": "Musik och kort 3D-film",
+        "en": "Music and a short 3D film"
+      },
+      "runtime": "04 min",
+      "note": {
+        "sv": "Allt började med en fråga: kan olika noter mötas och skapa harmoni? Vi lät en orientalisk sång i bayati-skalan möta en svensk. De harmonierade vackert.",
+        "en": "It started with one question: can different notes meet and create harmony? We let an oriental song in the bayati scale meet a Swedish one. They harmonised beautifully."
+      }
+    },
+    {
+      "year": "2020–2021",
+      "title": "THE MIND’S EYE",
+      "format": {
+        "sv": "Kortfilm · drama",
+        "en": "Short film · drama"
+      },
+      "runtime": "05 min",
+      "note": {
+        "sv": "Official selection — CortoDino Film Festival, X Edizione, Neapel, 23 november 2020. Semifinal — Festival del Cinema di Cefalù, Palermo, 23 november 2020.",
+        "en": "Official selection — CortoDino Film Festival, X Edizione, Naples, 23 November 2020. Semi-final — Festival del Cinema di Cefalù, Palermo, 23 November 2020."
+      }
+    },
+    {
+      "year": "2015–2016",
+      "title": "NYA ORD",
+      "subtitle": "New Words",
+      "format": {
+        "sv": "Dokumentär · pedagogik, komedi, musik, resa",
+        "en": "Documentary · educational, comedy, music, travel"
+      },
+      "runtime": "48 min"
     }
-  },
-  {
-    "year": "2021–2022",
-    "title": "TOGETHER WE CREATE HARMONY",
-    "format": {
-      "sv": "Musik och kort 3D-film",
-      "en": "Music and a short 3D film"
-    },
-    "runtime": "04 min",
-    "note": {
-      "sv": "Allt började med en fråga: kan olika noter mötas och skapa harmoni? Vi lät en orientalisk sång i bayati-skalan möta en svensk. De harmonierade vackert.",
-      "en": "It started with one question: can different notes meet and create harmony? We let an oriental song in the bayati scale meet a Swedish one. They harmonised beautifully."
-    }
-  },
-  {
-    "year": "2022–2023",
-    "title": "OTYG",
-    "format": {
-      "sv": "Kortfilm",
-      "en": "Short film"
-    },
-    "runtime": "09 min",
-    "note": {
-      "sv": "Pitchad på Värnamo Filmhistoriska Festival och visad på två filmfestivaler online. Manus till en långfilm är under utveckling.",
-      "en": "Pitched at the Värnamo Film History Festival and shown at two online film festivals. A feature-length script is in development."
-    }
-  },
-  {
-    "year": "2026–2027",
-    "title": "BIRDS OF PASSAGE",
-    "format": {
-      "sv": "Långfilmsdokumentär",
-      "en": "Feature-length documentary"
-    },
-    "status": {
-      "sv": "Pågående",
-      "en": "In progress"
-    },
-    "note": {
-      "sv": "Samproduktion: Story AB",
-      "en": "Co-production: Story AB"
-    }
-  }
-];
+  ];
 
 window.STEP1FILM_SELECTED = [
   {
@@ -224,11 +249,31 @@ window.STEP1FILM_SELECTED = [
   },
   {
     "year": "",
+    "what": "Bergmanveckan",
+    "where": {
+      "sv": "Talangveckan · Gotland",
+      "en": "Talent week · Gotland"
+    }
+  },
+  {
+    "year": "",
+    "what": "Sydsvenska kreatörer",
+    "where": {
+      "sv": "",
+      "en": ""
+    }
+  }
+];
+
+window.STEP1FILM_MEDIA = [
+  {
+    "year": "",
     "what": "SVT Nyheter Jönköping",
     "where": {
       "sv": "Reportage",
       "en": "Feature"
-    }
+    },
+    "url": "https://www.svt.se/nyheter/lokalt/jonkoping/ayman-gjorde-en-film-om-svarigheten-att-lara-sig-ett-nytt-sprak"
   },
   {
     "year": "",
@@ -236,7 +281,8 @@ window.STEP1FILM_SELECTED = [
     "where": {
       "sv": "Reportage",
       "en": "Feature"
-    }
+    },
+    "url": "https://www.sverigesradio.se/artikel/6181202"
   }
 ];
 
