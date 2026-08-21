@@ -501,9 +501,12 @@ body.reduced-motion .h-panel::before { animation: none; }
   /* Startläge: mitt i rutan, så cirkeln finns redan innan man rört musen */
   --spot-x: 50vw;
   --spot-y: 50vh;
-  --spot-r: 110px;
+  --spot-r: 70px;
   /* Hålets radie. Ändra här. */
-  --spot-hole: 110px;
+  --spot-hole: 70px;
+  /* Skenets radie — större än hålet, så ljuset faller av mjukt utanför
+     kanten i stället för att sluta tvärt där hålet tar slut. */
+  --spot-glow: 150px;
 }
 /* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
    förut över hela sajten (body::after) och lade sig även på texten och
@@ -540,6 +543,29 @@ body.reduced-motion .h-panel::after { animation: none; }
                           transparent 0%, transparent 42%, #000 100%);
             mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
                           transparent 0%, transparent 42%, #000 100%);
+  }
+
+  /* Skenet från markören — glödlampsvarmt, som en tungstenlampa på ett
+     filmset. Hålet ovanför tar bara bort mörkret och lämnar fotot som
+     det är, alltså kallt och blått; färgen måste läggas till.
+
+     Den ligger som bakgrund på .panel-inner, inte som eget skikt: en
+     bakgrund målas under elementets egna barn, så skenet hamnar över
+     det mörka lagret men under texten — och texten behåller sin färg.
+
+     background-origin: border-box är nödvändig. Utan den räknas
+     gradientens koordinater från paddingkanten, och .panel-inner har
+     flera centimeter padding — skenet hade legat snett i förhållande
+     till markören, mer ju smalare fönstret är. */
+  .panel-inner {
+    background-image: radial-gradient(circle var(--spot-glow) at var(--spot-x) var(--spot-y),
+                        rgba(255, 176, 104, 0.48) 0%,
+                        rgba(255, 148, 68,  0.28) 45%,
+                        rgba(255, 130, 50,  0.10) 70%,
+                        transparent 100%);
+    background-origin: border-box;
+    background-clip: border-box;
+    background-repeat: no-repeat;
   }
 }
 /* Innehållet måste ligga över det mörka lagret */
