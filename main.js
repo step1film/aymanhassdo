@@ -770,6 +770,9 @@
         drum.style.setProperty('--varv', (n * 2.6).toFixed(1) + 's');
       }
 
+      // Samma sak här: tappar trumman alla loggor ska texten tillbaka.
+      let kvarLoggor = n;
+
       list.forEach((c, i) => {
         const img = document.createElement('img');
         img.src = c.src;
@@ -779,7 +782,10 @@
         img.loading = 'eager';
         img.style.setProperty('--i', i);
         // En logotyp som inte laddar ska försvinna, inte lämna en trasig ikon
-        img.addEventListener('error', () => img.remove());
+        img.addEventListener('error', () => {
+          img.remove();
+          if (--kvarLoggor === 0) { drum.remove(); box.classList.add('is-empty'); }
+        });
         drum.appendChild(img);
       });
       box.appendChild(drum);
@@ -797,6 +803,12 @@
       const platser = PLATSER[list.length] ||
         list.map((_, i) => (((i + 0.5) / list.length) * 100).toFixed(0) + '%');
 
+      /* Faller varenda bild bort ska rutan säga "Bilder kommer" igen.
+         is-empty sattes bara när listan var tom, så en lista som pekade
+         på en fil som inte finns — ett stavfel, en bild som inte hunnit
+         laddas upp — gav en tom grå ruta utan text i stället. */
+      let kvar = list.length;
+
       list.forEach((src, i) => {
         const img = document.createElement('img');
         img.src = src;
@@ -806,7 +818,10 @@
         img.style.setProperty('--antal', list.length);
         img.style.setProperty('--x', platser[i]);
         // En affisch som inte laddar ska försvinna, inte lämna en trasig ikon
-        img.addEventListener('error', () => img.remove());
+        img.addEventListener('error', () => {
+          img.remove();
+          if (--kvar === 0) box.classList.add('is-empty');
+        });
         box.appendChild(img);
       });
     });
