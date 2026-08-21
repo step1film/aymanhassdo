@@ -436,6 +436,8 @@ window.STEP1FILM_POSTERS = {
     "assets/films/posters/minds-eye.jpg",
     "assets/films/posters/otyg.jpg"
   ],
-  "mammor": []
+  "mammor": [
+    "assets/films/posters/jag-som-har-tva-mammor.jpg"
+  ]
 };
 /* ADMIN:SLUT innehall */
