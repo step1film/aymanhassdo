@@ -54,6 +54,18 @@ function granskaInnehall(d) {
   }
   if (!Array.isArray(ut.STEP1FILM_FILMOGRAPHY)) throw new Error('Filmografin måste vara en lista.');
   if (!Array.isArray(ut.STEP1FILM_CLIENTS)) throw new Error('Logotyperna måste vara en lista.');
+  if (!Array.isArray(ut.STEP1FILM_SELECTED)) throw new Error('Utvald av måste vara en lista.');
+  if (!Array.isArray(ut.STEP1FILM_MEDIA)) throw new Error('I media måste vara en lista.');
+  /* Länkarna hamnar i href på sajten. Bara http(s) — en javascript:-adress
+     härifrån hade blivit ett skript som kör i besökarens webbläsare. */
+  for (const post of [...ut.STEP1FILM_SELECTED, ...ut.STEP1FILM_MEDIA]) {
+    if (!ärObjekt(post)) throw new Error('En post i CV-listorna är inte ett objekt.');
+    if (post.url != null && post.url !== '') {
+      if (typeof post.url !== 'string' || !/^https?:\/\//i.test(post.url)) {
+        throw new Error(`Ogiltig länk: ${JSON.stringify(post.url)}. Adressen måste börja med https://`);
+      }
+    }
+  }
   if (!ärObjekt(ut.STEP1FILM_VIDEO)) throw new Error('Showreelen måste vara ett objekt.');
   return ut;
 }

@@ -201,7 +201,7 @@
       'aboutQuote', 'aboutPitch', 'aboutMail', 'reelHead', 'reelSoon', 'reelPrev', 'reelNext', 'reelList']],
     ['Panel 03 — Vad vi kan göra', ['p3Title', 'p3Meta', 'p3Intro',
       'aw1', 'aw1d', 'aw2', 'aw2d', 'aw3', 'aw3d', 'aw4', 'aw4d', 'aw5', 'aw5d', 'aw6', 'aw6d']],
-    ['Panel 04 — CV', ['p4Title', 'p4Meta', 'cvFilms', 'cvSelected', 'cvRuntime',
+    ['Panel 04 — CV', ['p4Title', 'p4Meta', 'cvFilms', 'cvSelected', 'cvMedia', 'cvRuntime',
       'pq1', 'pq1a', 'pq1m', 'pq2', 'pq2a', 'pq2m', 'pq3', 'pq3m']],
     ['Panel 05 — Kontakt', ['p5Title', 'contactIntro', 'cfName', 'cfEmail', 'cfLink', 'cfOptional',
       'cfPitch', 'cfSend', 'cfSending', 'cfOk', 'cfFail', 'cfMissing', 'cfBadEmail', 'crBased', 'crBasedVal']],
@@ -408,6 +408,7 @@
   const LISTOR = [
     { nyckel: 'STEP1FILM_FILMOGRAPHY', namn: 'Filmer',      vad: 'filmen',      falt: 'film' },
     { nyckel: 'STEP1FILM_SELECTED',    namn: 'Utvald av',   vad: 'posten',      falt: 'post' },
+    { nyckel: 'STEP1FILM_MEDIA',       namn: 'I media',     vad: 'posten',      falt: 'post' },
     { nyckel: 'STEP1FILM_CLIENTS',     namn: 'Logotyper',   vad: 'logotypen',   falt: 'logga' }
   ];
 
@@ -483,6 +484,8 @@
       kropp.appendChild(falt('År', () => tv(post.year), v => { post.year = v; }, 'innehall'));
       kropp.appendChild(sprakFalt('Namn', post, 'what', 'innehall'));
       kropp.appendChild(sprakFalt('Var / vad', post, 'where', 'innehall'));
+      kropp.appendChild(falt('Länk', () => post.url, v => { post.url = v.trim(); }, 'innehall',
+        { hjalp: 'Valfri. Hela adressen, t.ex. https://www.svt.se/… Namnet blir då klickbart.' }));
     }
 
     kropp.appendChild(listVerktyg(lista, i, 'innehall', rita, def.vad));

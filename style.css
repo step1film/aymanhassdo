@@ -560,19 +560,38 @@ body.reduced-motion .h-panel::after { animation: none; }
   overflow: hidden;
 }
 
-/* Rubriken ligger överst i full bredd, de tre spalterna under den —
-   då börjar porträttet, texten och CV:t på exakt samma höjd. */
+/* Rubriken överst, biografin i full bredd under den och klippen
+   plus porträttet på en egen rad längst ned. Texten är panelens
+   innehåll och får hela bredden; bilderna avslutar den. */
 .panel-inner--about { gap: clamp(0.8rem, 2vh, 1.5rem); }
 .about-cols {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
-  /* Porträttet och CV-spalten har fasta bredder, allt överskott går
-     till texten. Den ska fylla ut hela ytan mellan porträttet och
-     CV-linjen — inte flyta som en smal pelare mitt i tomrummet. */
-  gap: clamp(1.5rem, 3.4vw, 3.4rem);
+  gap: clamp(0.9rem, 2vh, 1.6rem);
   flex: 1;
   min-height: 0;
+  /* Bildhöjden i mediaraden. Klipprutan och fotot har olika
+     proportioner (16:9 mot 3:2) — styr man dem på bredden blir de
+     olika höga och raden ser skev ut. Här sätts höjden i stället och
+     bredden följer av proportionen, så överkant och underkant möts.
+     Måttet hänger på fönstrets höjd: panelen är en skärm hög och
+     bilderna ska aldrig tränga undan biografin. */
+  --media-h: clamp(115px, 16.5vh, 190px);
+}
+
+/* Mediaraden under texten. Den tar bara den höjd innehållet kräver
+   (flex: none) — resten går till biografin, som rullar om den inte
+   får plats. Linjen överst skiljer text från bild. */
+.about-media {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: clamp(1.5rem, 3.4vw, 3.4rem);
+  flex: 0 0 auto;
+  min-height: 0;
+  padding-top: clamp(0.7rem, 1.4vh, 1.2rem);
+  border-top: 1px solid var(--line);
 }
 
 .panel-head {
@@ -1096,31 +1115,40 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 /* =====================================================
    ABOUT PANEL
    ===================================================== */
+/* Porträttet ligger i mediaraden nu, till höger om klippspelaren.
+   Fotot står bredvid sin bildtext i stället för ovanför den — annars
+   hade blocket blivit dubbelt så högt och ätit av textens yta. */
 .about-portrait {
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   min-height: 0;
-  /* Fotot är liggande 3:2 och behöver bredd, men inte på bekostnad av
-     brödtexten: med 360 px började biografin rulla redan på 1600 px.
-     Mätt: 320 px ger 0 px rullning ned till 1440. */
-  width: clamp(200px, 23vw, 320px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 1.8vw, 1.6rem);
+}
+/* Bildtext, pitch och adress i en egen spalt vid sidan av fotot */
+.portrait-side {
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Spärr på bredden: adressen är högerställd i sin rad, och utan tak
+     drev den iväg från etiketten på breda skärmar. */
+  max-width: 44ch;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;  /* i linje med textens överkant */
   gap: 0.55rem;
 }
 .portrait-img {
-  width: 100%;
-  /* height:auto krävs — annars vinner height-attributet i HTML över
-     aspect-ratio och bilden blir 934 px hög och spiller ur panelen. */
-  height: auto;
+  /* Höjden styr, bredden följer av proportionen — samma mått som
+     klipprutan bredvid, så de två bildytorna står jämnhöga. */
+  height: var(--media-h);
+  width: auto;
+  flex: 0 0 auto;
   /* Rutan har fotografiets egen proportion, 1400×934. Då beskärs
      ingenting och ingen fyllnad behövs — det är hela bilden som visas.
      Tidigare stod den i en stående ruta med utdragna kanter över och
      under, vilket bara läste som tomrum. */
   aspect-ratio: 1400 / 934;
-  /* På låga skärmar får höjden gå före proportionen; bilden beskärs
-     hellre än skjuter ut ur panelen. */
-  max-height: min(62vh, 100%);
   object-fit: cover;
   object-position: 50% 42%;
   background: #161616;
@@ -1178,7 +1206,11 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   font-family: var(--ff-body);
   font-size: clamp(0.78rem, 0.95vw, 1.02rem);
   font-weight: 300;
-  line-height: 1.85;
+  /* 1.75 i stället för 1.85: texten ligger i full bredd nu och delar
+     panelen med mediaraden under. De två pixlarna per rad är skillnaden
+     mellan att hela biografin syns och att de sista styckena hamnar
+     under kanten. */
+  line-height: 1.75;
   text-wrap: pretty;
   max-width: 92ch;
 }
@@ -1195,20 +1227,18 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   letter-spacing: 0.06em;
 }
 
-/* --- Klippspelaren: står bredvid texten där CV-spalten stod --- */
+/* --- Klippspelaren: först i mediaraden under texten --- */
 .about-reel {
-  flex: 0 0 clamp(200px, 21vw, 300px);
+  /* Bredden är 16:9 av den gemensamma bildhöjden — då blir klipprutan
+     exakt lika hög som fotot bredvid. Taket på 34vw är en spärr för
+     smala men höga fönster, där rutan annars tog halva raden. */
+  flex: 0 0 min(calc(var(--media-h) * 16 / 9), 34vw);
   min-width: 0;
   display: flex;
   flex-direction: column;
-  /* Börjar överst, i linje med porträttet och textens första rad.
-     Centrerad låg rubriken 200 px ned och spalten såg ut att hänga. */
   justify-content: flex-start;
   gap: 0.7rem;
-  /* Skiljelinjen ligger på den högra kanten nu — klippen står först
-     och porträttet sist, så linjen ska vara mellan klipp och text. */
-  padding-right: clamp(1rem, 2.2vw, 2rem);
-  border-right: 1px solid var(--line);
+  /* Skiljelinjen sitter på .about-media nu, över hela raden. */
 }
 .reel-head {
   font-size: 0.5rem;
@@ -1281,6 +1311,18 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 }
 .reel-dot.active { background: var(--accent); }
 .reel-dot:hover:not(.active) { background: var(--line-s); }
+
+/* Låga fönster (bärbara skärmar upp till ~960 px höga): mediaraden krymper så
+   att biografin får plats. Bilderna är fortfarande läsbara i den
+   storleken, och alternativet — att de sista styckena hamnar under
+   kanten — är sämre. Rullningen i .about-scroll finns kvar som
+   säkerhet för de allra lägsta fönstren. */
+@media (min-width: 901px) and (max-height: 960px) {
+  .about-cols { --media-h: clamp(96px, 13.5vh, 130px); }
+  .about-scroll { gap: 0.7em; }
+  .about-lead, .about-body, .about-quote, .about-sign { line-height: 1.7; }
+  .about-pitch { font-size: 0.68rem; line-height: 1.55; }
+}
 
 /* Direktadressen till Ayman — bara här på drömsidan.
    Pitchen och adressen sitter i samma länk: linjen ligger överst, över
@@ -1745,12 +1787,16 @@ body.reduced-motion .tb-card { animation: none; }
   /* About: vertical stack on phones */
   /* Smala skärmar: porträtt, text och klipp under varandra */
   .panel-inner--about { flex-direction: column; align-items: stretch; padding-top: calc(var(--nav-h) + 1.5rem); gap: 1.5rem; }
+  /* Mediaraden och porträttspalten löses upp — på telefon står bild,
+     text och klipp under varandra, inte bredvid. Linjen som skiljer
+     text från media hör till bredskärmsläget och nollas här. */
+  .about-media {
+    display: contents;
+  }
   .about-portrait { width: min(220px, 60vw); }
   .about-scroll { overflow: visible; padding-right: 0; }
   .about-reel {
     flex: none;
-    /* Linjen sitter på högerkanten i svepläget — nolla båda, så inget
-       spöke blir kvar när spalterna staplas. */
     padding-left: 0;
     padding-right: 0;
     padding-top: 0.9rem;
@@ -2033,8 +2079,11 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
 .cv-grid--film .cvb-head { font-size: clamp(0.78rem, 1.15vh, 1.1rem); padding-bottom: 0.4rem; }
 
 /* Låga fönster: luften mellan raderna dras ned före textgraderna,
-   så listan fortfarande ryms utan att bli svår att läsa. */
-@media (max-height: 780px) {
+   så listan fortfarande ryms utan att bli svår att läsa.
+   Taket höjt från 780 till 820 px när filmlistan blev sex poster:
+   på 1280×800 klipptes sista filmens rader bort utan att det syntes,
+   för .cvb-list döljer överskottet i stället för att rulla. */
+@media (max-height: 820px) {
   .cv-grid--film .cvb-row { padding: 0.16rem 0; }
   .cv-grid--film .cvb-role { font-size: 0.88rem; line-height: 1.25; }
   .cv-grid--film .cvb-where { font-size: 0.72rem; line-height: 1.3; }
@@ -2052,11 +2101,12 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
     overflow: hidden;
   }
 }
-/* Riktigt låga fönster (t.ex. 1366×650): två rader räcker inte, listan
-   behövde 409 px men fick 348. Noterna går helt bort i filmspalten.
-   De handlar mest om festivalvisningar, och de står nu i sin egen
-   spalt bredvid — ingenting försvinner från panelen. */
-@media (max-height: 700px) {
+/* Riktigt låga fönster (t.ex. 1280×720): två rader räcker inte, och
+   med sex filmer i listan räcker inte 700 px som gräns heller — 1280×720
+   fattades 38 px. Noterna går helt bort i filmspalten. De handlar mest
+   om festivalvisningar och står kvar i filmens egen rad på panel 02,
+   så uppgifterna finns kvar på sajten. */
+@media (max-height: 740px) {
   .cv-grid--film .cv-block--films .cvb-note { display: none; }
 }
 .cv-block { display: flex; flex-direction: column; gap: 0.7rem; min-height: 0; min-width: 0; }
@@ -2070,6 +2120,41 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--line);
 }
+/* Underrubrik inne i en spalt — "I media" under urvalen. Mindre och
+   utan linje, så den läses som en avdelning i spalten och inte som en
+   ny spalt bredvid .cvb-head. Marginalen ovanför skiljer den från
+   listan som slutar precis före. */
+.cvb-sub {
+  font-family: var(--ff-display);
+  font-size: clamp(0.66rem, 0.95vw, 0.82rem);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: clamp(0.6rem, 1.6vh, 1.4rem);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line-s);
+}
+
+/* Klickbara namn i CV-listorna. Understruket med avstånd, så det syns
+   att det är en länk utan att strecket skär genom bokstäverna. */
+.cvb-link {
+  color: inherit;
+  text-decoration: underline;
+  /* --line (8 % vitt) syntes inte mot titelns vita text — strecket
+     såg ut som en rendering-artefakt. --line-s bär tydligt. */
+  text-decoration-color: var(--line-s);
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+  transition: color 0.25s, text-decoration-color 0.25s;
+}
+.cvb-link:hover,
+.cvb-link:focus-visible {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 /* Ingen rullning här — allt ska rymmas. Raderna krymper i stället:
    luften mellan dem och textgraderna skalas med panelhöjden. */
 .cvb-list {
@@ -2150,6 +2235,10 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
     min-height: 0;
   }
   .about-portrait { display: contents; }
+  /* Samma sak för sidospalten: den finns bara för att lägga bildtext
+     och adress bredvid fotot på bred skärm. Upplöst hamnar barnen
+     direkt i stapeln och order-värdena nedan gäller igen. */
+  .portrait-side { display: contents; }
   .portrait-img  { order: 1; }
   .portrait-cap  { order: 2; }
   .about-content { order: 3; display: block; flex: none; min-height: 0; }
@@ -2164,8 +2253,10 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   }
   .about-scroll > * + * { margin-top: 0.9em; }
 
-  /* Bredden sitter på bilden nu, inte på spalten — den är upplöst */
-  .portrait-img { width: min(210px, 54vw); }
+  /* Bredden sitter på bilden nu, inte på spalten — den är upplöst.
+     Höjdstyrningen från mediaraden bort: här står bilden i ett
+     vanligt flöde och bredden får bestämma. */
+  .portrait-img { width: min(210px, 54vw); height: auto; }
   /* Bildtexten stod i --text-dim och försvann rakt in i den ljusa
      sjön bakom. Här får den brödtextens ljusgrå och lite mer luft. */
   .portrait-cap {

@@ -678,7 +678,22 @@
           const ar = tv(p.year);
           if (ar) rad.querySelector('.cvb-year').textContent = ar;
           else rad.querySelector('.cvb-year').remove();
-          rad.querySelector('.cvb-role').textContent = tv(p.what);
+          /* Namnet blir en länk om posten har en adress. Bara http(s):
+             en javascript:-adress hade blivit ett skript i besökarens
+             webbläsare, så andra protokoll ritas som vanlig text. */
+          const roll = rad.querySelector('.cvb-role');
+          const adress = tv(p.url);
+          if (adress && /^https?:\/\//i.test(adress)) {
+            const a = document.createElement('a');
+            a.className = 'cvb-link';
+            a.href = adress;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = tv(p.what);
+            roll.appendChild(a);
+          } else {
+            roll.textContent = tv(p.what);
+          }
           const var_ = tv(p.where);
           if (var_) rad.querySelector('.cvb-where').textContent = var_;
           else rad.querySelector('.cvb-where').remove();
@@ -692,6 +707,7 @@
 
     function ritaCV() {
       ritaLista('[data-selected]', window.STEP1FILM_SELECTED);
+      ritaLista('[data-media]', window.STEP1FILM_MEDIA);
 
       document.querySelectorAll('[data-filmography-full]').forEach(box => {
         box.textContent = '';
