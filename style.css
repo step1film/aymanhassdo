@@ -501,12 +501,12 @@ body.reduced-motion .h-panel::before { animation: none; }
   /* Startläge: mitt i rutan, så cirkeln finns redan innan man rört musen */
   --spot-x: 50vw;
   --spot-y: 50vh;
-  --spot-r: 56px;
+  --spot-r: 45px;
   /* Hålets radie. Ändra här. */
-  --spot-hole: 56px;
+  --spot-hole: 45px;
   /* Skenets radie — större än hålet, så ljuset faller av mjukt utanför
      kanten i stället för att sluta tvärt där hålet tar slut. */
-  --spot-glow: 120px;
+  --spot-glow: 96px;
 }
 /* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
    förut över hela sajten (body::after) och lade sig även på texten och
