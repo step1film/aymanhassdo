@@ -18,7 +18,12 @@
 
   <!-- Favicon (matches index.html) -->
   <link rel="canonical" href="https://step1film.se/shop.html" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
+  <!-- Filmrullen, samma märke som markören och ordmärket. favicon.ico
+       ligger i roten eftersom webbläsare hämtar den på egen hand även
+       utan länk; PNG-raderna är för dem som föredrar dem. -->
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/favicon-180.png" />
 
   <!-- Fonts -->
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->

@@ -202,6 +202,28 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .logo-text span { color: var(--accent); }
 
+/* Filmrullen bredvid ordmärket. Samma fil som markören använder, och
+   samma grepp: PNG:en är svart på genomskinlig botten, så den läggs
+   som mask över en färgad yta i stället för att ritas som bild —
+   annars hade den varit svart mot den mörka sidan. Då följer den
+   också med om ordmärkets färg någon gång ändras. */
+.logo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+.logo-reel {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  background: var(--white);
+  -webkit-mask: url('cursor.png') center / contain no-repeat;
+          mask: url('cursor.png') center / contain no-repeat;
+  /* text-shadow biter inte på en maskad yta. drop-shadow ger rullen
+     samma lyft mot ljusa bakgrundsbilder som texten bredvid har. */
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.6));
+}
+
 /* Butikslänk + språkväxlare till höger i toppen */
 .logo-store {
   margin-left: 0.9rem;
