@@ -803,6 +803,13 @@
       const platser = PLATSER[list.length] ||
         list.map((_, i) => (((i + 0.5) / list.length) * 100).toFixed(0) + '%');
 
+      /* En ensam affisch ska stå still. Tonväxlingen är byggd för att
+         lämna över mellan flera: varje bild syns 1,1 s av sin cykel och
+         är borta resten. Med en enda bild finns ingen att lämna över
+         till, så den bara blinkade. Samma undantag som trumman ovanför
+         gör för en ensam logotyp. */
+      if (list.length === 1) box.classList.add('en-bild');
+
       /* Faller varenda bild bort ska rutan säga "Bilder kommer" igen.
          is-empty sattes bara när listan var tom, så en lista som pekade
          på en fil som inte finns — ett stavfel, en bild som inte hunnit

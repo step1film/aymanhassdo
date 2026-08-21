@@ -501,12 +501,12 @@ body.reduced-motion .h-panel::before { animation: none; }
   /* Startläge: mitt i rutan, så cirkeln finns redan innan man rört musen */
   --spot-x: 50vw;
   --spot-y: 50vh;
-  --spot-r: 70px;
+  --spot-r: 56px;
   /* Hålets radie. Ändra här. */
-  --spot-hole: 70px;
+  --spot-hole: 56px;
   /* Skenets radie — större än hålet, så ljuset faller av mjukt utanför
      kanten i stället för att sluta tvärt där hålet tar slut. */
-  --spot-glow: 150px;
+  --spot-glow: 120px;
 }
 /* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
    förut över hela sajten (body::after) och lade sig även på texten och
@@ -1056,6 +1056,11 @@ body.reduced-motion .fl-drum { animation: none; }
 }
 /* Står den still ska ändå alla synas — då bredvid varandra i stället
    för på sina fadingplatser, som annars hade legat över varandra. */
+/* En ensam affisch: ingen växling, den står still och syns alltid. */
+.film-slides.en-bild img {
+  animation: none;
+  opacity: 1;
+}
 body.reduced-motion .film-slides img {
   animation: none;
   opacity: 1;

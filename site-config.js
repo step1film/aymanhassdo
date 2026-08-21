@@ -167,8 +167,8 @@ window.STEP1FILM_FILMOGRAPHY = [
         "en": "In development"
       },
       "note": {
-        "sv": "Under research och utveckling. Bilder och mer om filmen kommer 2027.",
-        "en": "In research and development. Stills and more about the film in 2027."
+        "sv": "Under research och utveckling.",
+        "en": "In research and development."
       }
     },
     {
