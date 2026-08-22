@@ -892,8 +892,20 @@ body.reduced-motion .h-panel::after { animation: none; }
      sköts knappen ut i högerkanten, där den hamnade intill fokusenheten
      och knappt syntes. Nu står den strax efter texten, ungefär mitt i
      raden — linjerna löper fortfarande i full bredd. */
-  grid-template-columns: clamp(96px, 12vw, 150px) minmax(0, 1fr) minmax(0, 0.62fr);
-  gap: 0 clamp(1rem, 2.2vw, 2rem);
+  /* Textspalten har ett tak i ch, inte i fr. Med 1fr sträckte den sig
+     över all ledig bredd och knappen sköts ut i högerkanten, långt
+     från texten den hör till — mätt på 1600 px: texten slutade vid
+     690 och knappen stod först vid 1050. Med ett tak i teckenbredder
+     följer knappen texten, och taket är detsamma på varje rad så
+     knapparna står i linje. justify-content packar spalterna åt
+     vänster; linjerna löper fortfarande i full bredd.
+
+     Taket måste stå som minmax(0, 46ch) — INTE min(46ch, 1fr). fr får
+     inte förekomma i min(), och den skrivningen fick webbläsaren att
+     krympa miniatyrspalten till 3 px. */
+  grid-template-columns: clamp(96px, 12vw, 150px) minmax(0, 46ch) max-content;
+  justify-content: start;
+  gap: 0 clamp(0.8rem, 1.6vw, 1.4rem);
   padding: clamp(0.5rem, 1vh, 0.85rem) 0;
   border-top: 1px solid var(--line);
   align-items: center;
@@ -1767,6 +1779,35 @@ body.reduced-motion .tb-card { animation: none; }
 .contact-row--static:hover .cr-val { opacity: 1; }
 
 /* =====================================================
+   INNEHÅLLET MITT I PANELEN
+   =====================================================
+   Rubriken står kvar överst; det som följer läggs mitt i den höjd som
+   blir över i stället för att hänga i överkanten.
+
+   Överallt "safe center", aldrig bara "center". Ett centrerat flex-
+   innehåll som blir högre än sin behållare svämmar åt BÅDA håll, och
+   det som hamnar ovanför överkanten går inte att rulla fram — de
+   första raderna hade blivit oåtkomliga på låga fönster. Med safe
+   faller den tillbaka till överkanten precis när det inte får plats. */
+
+/* Panel 01 — biografin */
+.about-scroll { justify-content: safe center; }
+
+/* Panel 02 — filmlistan */
+.films-list { justify-content: safe center; }
+
+/* Panel 03 — vad vi kan göra. Raderna stod utspridda över hela höjden
+   (space-between); nu samlade i mitten med sitt egna radavstånd. */
+.awards-list { justify-content: safe center; }
+
+/* Panel 04 — CV:t. Spalterna är olika långa, så de centreras var för
+   sig i stället för som ett block: annars hade den korta spalten
+   hängt kvar i överkanten bredvid den långa. */
+.cv-block { justify-content: safe center; }
+
+/* Panel 05 (kontakt) centrerar redan sitt innehåll. */
+
+/* =====================================================
    FOOTER
    ===================================================== */
 #footer { background: var(--bg); border-top: 1px solid var(--line); padding: 2.5rem clamp(1.25rem, 7vw, 7rem); position: relative; z-index: 2; }
@@ -2203,7 +2244,11 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
    på 1280×800 klipptes sista filmens rader bort utan att det syntes,
    för .cvb-list döljer överskottet i stället för att rulla. */
 @media (max-height: 820px) {
-  .cv-grid--film .cvb-row { padding: 0.16rem 0; }
+  /* 0.16 räckte inte längre sedan den sjätte filmen fick ett årtal:
+     årsraden lade till höjd och listan klipptes 8 px på 1366x768.
+     .cvb-list döljer överskottet i stället för att rulla, så det syns
+     inte att sista raden är kapad — därav den snålare luften här. */
+  .cv-grid--film .cvb-row { padding: 0.1rem 0; }
   .cv-grid--film .cvb-role { font-size: 0.88rem; line-height: 1.25; }
   .cv-grid--film .cvb-where { font-size: 0.72rem; line-height: 1.3; }
   .cv-grid--film .cvb-note { font-size: 0.66rem; line-height: 1.4; }
