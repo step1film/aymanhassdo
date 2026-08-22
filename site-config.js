@@ -251,8 +251,8 @@ window.STEP1FILM_SELECTED = [
     "year": "",
     "what": "Bergmanveckan",
     "where": {
-      "sv": "Talangveckan · Gotland",
-      "en": "Talent week · Gotland"
+      "sv": "Talangveckan · Fårö",
+      "en": "Talent week · Fårö"
     }
   },
   {

@@ -1005,6 +1005,7 @@
       if (box.hidden) return;
       box.hidden = true;
       scen.textContent = '';                 // river iframe:en → filmen slutar
+      box.classList.remove('visar-bild');
       document.body.classList.remove('tb-open');
       if (sistaKnapp) { sistaKnapp.focus(); sistaKnapp = null; }
     }
@@ -1038,6 +1039,56 @@
         oppna(knapp.dataset.watch, knapp);
       });
     });
+
+    /* --- Affischerna i stort format ---
+       Rutorna på panel 02 visar affischerna i miniatyr, runt 50 px
+       breda. Ett klick lägger den i samma ruta som trailern, bara med
+       en bild i stället för en film. Rutan får en klass så att den
+       kan formas efter bilden: en stående affisch behöver inte
+       trailerns 16:9. */
+    function oppnaBild(kalla, alt, ruta) {
+      sistaKnapp = ruta || null;
+      titel.textContent = alt || '';
+      const img = document.createElement('img');
+      img.src = kalla;
+      img.alt = alt || '';
+      scen.textContent = '';
+      scen.appendChild(img);
+      box.classList.add('visar-bild');
+      box.hidden = false;
+      document.body.classList.add('tb-open');
+      box.querySelector('.tb-close').focus();
+    }
+
+    document.querySelectorAll('.film-slides').forEach(ruta => {
+      /* Vilken affisch som syns just nu: de tonar in och ut, så den
+         med högst genomskinlighet är den man faktiskt tittar på. */
+      const synlig = () => {
+        const bilder = [...ruta.querySelectorAll('img')];
+        if (!bilder.length) return null;
+        return bilder.reduce((a, b) =>
+          parseFloat(getComputedStyle(b).opacity) >= parseFloat(getComputedStyle(a).opacity) ? b : a);
+      };
+      const oppnaSynlig = (e) => {
+        const bild = synlig();
+        if (!bild) return;                    // tom ruta — låt klicket vara
+        e.preventDefault();
+        oppnaBild(bild.currentSrc || bild.src, bild.alt || titelForRuta(ruta), ruta);
+      };
+      ruta.addEventListener('click', oppnaSynlig);
+      ruta.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') oppnaSynlig(e);
+      });
+      ruta.tabIndex = 0;
+      ruta.setAttribute('role', 'button');
+    });
+
+    /* Rubriken på filmen rutan hör till — blir bildens namn i stort format. */
+    function titelForRuta(ruta) {
+      const rad = ruta.closest('.film-item');
+      const h = rad && rad.querySelector('.film-title');
+      return h ? h.textContent.trim() : '';
+    }
     box.querySelectorAll('[data-tb-close]').forEach(el => el.addEventListener('click', stang));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') stang(); });
   }

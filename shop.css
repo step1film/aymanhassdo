@@ -23,6 +23,15 @@
   --ff-display: 'Bebas Neue', Impact, sans-serif;
   --ff-body:    'Inter', system-ui, sans-serif;
 
+  /* Samma typskala som startsidan (style.css). Butiken och sajten ska
+     sätta en etikett lika stort — värdena är medvetet identiska och
+     ska ändras på båda ställena om de ändras. */
+  --fs-micro: clamp(0.72rem, 0.62vw, 0.8rem);
+  --fs-label: clamp(0.82rem, 0.72vw, 0.92rem);
+  --fs-note:  clamp(0.88rem, 0.82vw, 1rem);
+  --fs-body:  clamp(0.95rem, 0.92vw, 1.08rem);
+  --fs-lead:  clamp(1.02rem, 1.05vw, 1.2rem);
+
   --nav-h: 64px;
   --ease:  cubic-bezier(0.16, 1, 0.3, 1);
   --radius: 4px;
@@ -127,7 +136,7 @@ a.logo-text:hover span, a.logo-text:focus-visible span { color: var(--white); }
 .logo-text small {
   display: block;
   font-family: var(--ff-body);
-  font-size: 0.52rem;
+  font-size: var(--fs-micro);
   letter-spacing: 0.42em;
   color: var(--text-dim);
   margin-top: 3px;
