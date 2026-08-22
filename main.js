@@ -353,38 +353,6 @@
       if (prevBtn) prevBtn.disabled = scrolledIn <= 0;
       if (nextBtn) nextBtn.disabled = scrolledIn >= TOTAL * vh;
 
-      /* Under själva svepet stängs pekaren av på panelerna. Annars
-         glider en inkommande panels textruta in under muspekaren mitt
-         i rörelsen och börjar äta hjulet — svepet fryser halvvägs och
-         två paneler blir stående bredvid varandra. */
-      const kvot = scrolledIn / vh;
-      const stillastaende = Math.abs(kvot - Math.round(kvot)) < 0.01;
-      hSticky.classList.toggle('sveper', !stillastaende);
-
-      /* Och när man släpper hjulet: lägg svepet på närmaste hela panel
-         i stället för att låta det stå kvar där det råkade hamna. */
-      clearTimeout(snapTimer);
-      snapTimer = setTimeout(snapTillPanel, 160);
-    }
-
-    /* Lägger svepet på närmaste hela panel. Utan det fryser bilden där
-       man råkade sluta rulla — mätt: 1,73 respektive 1,87 steg av 5 i
-       två vanliga fall, alltså mitt emellan två paneler båda gångerna. */
-    let snapTimer = null, snapPagar = false;
-    function snapTillPanel() {
-      if (!wideMode || snapPagar) return;
-      const vh = window.innerHeight;
-      const inne = -hWrapper.getBoundingClientRect().top;
-      if (inne < 0 || inne > TOTAL * vh) return;        // utanför svepet
-      const mal = Math.round(inne / vh);
-      if (Math.abs(inne / vh - mal) < 0.004) return;    // redan på plats
-      snapPagar = true;
-      window.scrollTo({
-        top: hWrapper.offsetTop + mal * vh,
-        behavior: prefersReducedMotion ? 'auto' : 'smooth'
-      });
-      // Släpp spärren när den egna rullningen hunnit landa
-      setTimeout(() => { snapPagar = false; }, 700);
     }
 
     /* --- Mobile: sync nav dots via IntersectionObserver --- */
@@ -418,11 +386,40 @@
       }
     }
 
+    /* Egen rullning för pilarna i stället för behavior: 'smooth'.
+       Webbläsarens egen är avpassad för långa dokument och tar drygt en
+       sekund över en skärmhöjd — svepet drivs av rullningen, så det blev
+       trögt att bläddra. Här är längden fast och kurvan bromsar bara i
+       slutet, så bilden kommer igång direkt.
+
+       Rör användaren hjulet mitt i rörelsen avbryts den: den egna
+       rullningen ska aldrig slåss mot handen. */
+    let rullAnim = null;
+    function rullaTill(top) {
+      if (rullAnim) { cancelAnimationFrame(rullAnim); rullAnim = null; }
+      if (prefersReducedMotion) { window.scrollTo(0, top); return; }
+      const start = window.scrollY;
+      const avstand = top - start;
+      if (!avstand) return;
+      const langd = 560;                          // ms, oavsett avstånd
+      const t0 = performance.now();
+      const kurva = (t) => 1 - Math.pow(1 - t, 3);
+      const steg = (nu) => {
+        const p = Math.min(1, (nu - t0) / langd);
+        window.scrollTo(0, start + avstand * kurva(p));
+        rullAnim = p < 1 ? requestAnimationFrame(steg) : null;
+      };
+      rullAnim = requestAnimationFrame(steg);
+    }
+    const avbryt = () => { if (rullAnim) { cancelAnimationFrame(rullAnim); rullAnim = null; } };
+    window.addEventListener('wheel', avbryt, { passive: true });
+    window.addEventListener('touchstart', avbryt, { passive: true });
+
     /* idx -1 = showreelen, 0…TOTAL-1 = panelerna. */
     function goToPanel(idx) {
       idx = Math.max(-1, Math.min(TOTAL - 1, idx));
       if (wideMode) {
-        window.scrollTo({ top: hWrapper.offsetTop + (idx + 1) * window.innerHeight, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        rullaTill(hWrapper.offsetTop + (idx + 1) * window.innerHeight);
       } else if (idx < 0) {
         const hero = document.getElementById('hero');
         if (hero) hero.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
@@ -535,22 +532,40 @@
     el.setAttribute('aria-hidden', 'true');
     document.body.appendChild(el);
 
-    /* Ljushålet i panelernas mörka lager följer markören. Radien ligger
-       i CSS (--spot-r) så den går att ändra på ett ställe. */
+    /* Ljushålet och det varma skenet följer markören. Radien ligger i
+       CSS (--spot-r, --spot-glow) så den går att ändra på ett ställe. */
     const rot = document.documentElement;
+    const sticky = document.getElementById('h-sticky');
 
     let x = 0, y = 0, väntar = false;
     function måla() {
       väntar = false;
-      // Positionen sitter i CSS-variabler — ingen layout räknas om
-      rot.style.setProperty('--spot-x', x + 'px');
-      rot.style.setProperty('--spot-y', y + 'px');
+
+      /* Koordinaterna räknas från #h-sticky, inte från fönstret. Hålet
+         och skenet målas inuti det lagret, och lagret ligger i fönstrets
+         hörn bara så länge det är fastklistrat. Rullar man förbi svepet
+         släpper det taget och glider uppåt — med fönsterkoordinater blev
+         skenet då kvar en bit ifrån markören, vilket syntes tydligast
+         längst ned på sidan. */
+      const r = sticky ? sticky.getBoundingClientRect() : { left: 0, top: 0 };
+      rot.style.setProperty('--spot-x', (x - r.left) + 'px');
+      rot.style.setProperty('--spot-y', (y - r.top) + 'px');
+
+      // Själva filmmärket är position:fixed och ska ha fönstrets mått
       el.style.transform = `translate3d(${x}px,${y}px,0)`;
     }
 
+    function begar() {
+      if (!väntar) { väntar = true; requestAnimationFrame(måla); }
+    }
+
+    /* Även rullning flyttar lagret under en stillastående mus, så
+       skenet måste räknas om då också — inte bara när musen rör sig. */
+    window.addEventListener('scroll', begar, { passive: true });
+
     window.addEventListener('mousemove', (e) => {
       x = e.clientX; y = e.clientY;
-      if (!väntar) { väntar = true; requestAnimationFrame(måla); }
+      begar();
       if (!el.classList.contains('visible')) el.classList.add('visible');
       // Röd ton när man pekar på något klickbart
       const påLänk = !!(e.target && e.target.closest &&
