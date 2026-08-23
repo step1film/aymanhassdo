@@ -540,26 +540,6 @@ body.reduced-motion .h-panel::before { animation: none; }
   .h-panel::before { animation: none; }
 }
 
-/* Registrerade som tal, annars går de inte att tona — en custom
-   property är annars bara en textsträng för webbläsaren, och en
-   gradient som byter värde hoppar. Saknas stöd byts de direkt i
-   stället, vilket fortfarande ger svagare sken i rörelse. */
-@property --glow-1 { syntax: '<number>'; initial-value: 0.48; inherits: true; }
-@property --glow-2 { syntax: '<number>'; initial-value: 0.28; inherits: true; }
-@property --glow-3 { syntax: '<number>'; initial-value: 0.10; inherits: true; }
-
-/* Medan musen rör sig dämpas skenet. Ett fullt lyst sken som följer
-   varje ryck läser som tungt — ögat hinner se att det släpar efter.
-   Tillbaka till fullt när handen stannar. */
-:root.markor-ror {
-  --glow-1: 0.28;
-  --glow-2: 0.16;
-  --glow-3: 0.05;
-}
-:root {
-  transition: --glow-1 0.2s linear, --glow-2 0.2s linear, --glow-3 0.2s linear;
-}
-
 /* =====================================================
    MARKÖRENS LJUSHÅL
    =====================================================
@@ -582,12 +562,7 @@ body.reduced-motion .h-panel::before { animation: none; }
   --spot-hole: 38px;
   /* Skenets radie — större än hålet, så ljuset faller av mjukt utanför
      kanten i stället för att sluta tvärt där hålet tar slut. */
-  --spot-glow: 82px;
-  /* Skenets tre alfasteg. Egna egenskaper för att de ska kunna tonas —
-     se @property nedan. */
-  --glow-1: 0.48;
-  --glow-2: 0.28;
-  --glow-3: 0.10;
+  --spot-glow: 70px;
 }
 /* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
    förut över hela sajten (body::after) och lade sig även på texten och
@@ -618,37 +593,44 @@ body.reduced-motion .h-panel::after { animation: none; }
    masken en radial-gradient med noll radie, och Safari tolkade den som
    helt genomskinlig — hela det mörka lagret försvann och texten stod
    direkt mot bakgrundsbilden. */
+/* Ljuset som följer markören.
+   -----------------------------------------------------
+   En egen liten ruta per panel, flyttad med transform från main.js.
+   Låg förut som en mask på mörkerlagret plus en gradient på
+   .panel-inner, båda styrda av CSS-variabler som skrevs på <html>
+   varje musrörelse. En ärvd custom property på rotelementet räknar om
+   stilen för hela dokumentet: mätt 549 ms mot 37 ms utan. Transformer
+   rör inte stilen alls.
+
+   mix-blend-mode: screen lyser upp det som ligger under — mörkerlagret
+   och fotot — i stället för att skära ett hål i mörkret. Rutan ligger
+   mellan mörkret och texten, så texten behåller sin färg. */
 @media (hover: hover) and (pointer: fine) {
-  .h-panel::after {
-    -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
-                          transparent 0%, transparent 42%, #000 100%);
-            mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y),
-                          transparent 0%, transparent 42%, #000 100%);
+  .panel-spot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--spot-glow) * 2);
+    height: calc(var(--spot-glow) * 2);
+    margin: calc(var(--spot-glow) * -1) 0 0 calc(var(--spot-glow) * -1);
+    z-index: 1;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    /* Tungstenvarmt och svagt. Färgen är densamma hela vägen ut —
+       tonas alfat ned ojämnt drar mitten mot vitt och käglan ser kall
+       ut i stället för svagare. */
+    background: radial-gradient(circle closest-side,
+                  rgba(255, 168, 96, 0.36) 0%,
+                  rgba(255, 158, 84, 0.24) 38%,
+                  rgba(255, 148, 72, 0.09) 70%,
+                  transparent 100%);
+    will-change: transform;
+    transform: translate3d(-9999px, -9999px, 0);
   }
-
-  /* Skenet från markören — glödlampsvarmt, som en tungstenlampa på ett
-     filmset. Hålet ovanför tar bara bort mörkret och lämnar fotot som
-     det är, alltså kallt och blått; färgen måste läggas till.
-
-     Den ligger som bakgrund på .panel-inner, inte som eget skikt: en
-     bakgrund målas under elementets egna barn, så skenet hamnar över
-     det mörka lagret men under texten — och texten behåller sin färg.
-
-     background-origin: border-box är nödvändig. Utan den räknas
-     gradientens koordinater från paddingkanten, och .panel-inner har
-     flera centimeter padding — skenet hade legat snett i förhållande
-     till markören, mer ju smalare fönstret är. */
-  .panel-inner {
-    background-image: radial-gradient(circle var(--spot-glow) at var(--spot-x) var(--spot-y),
-                        rgba(255, 176, 104, var(--glow-1)) 0%,
-                        rgba(255, 148, 68,  var(--glow-2)) 45%,
-                        rgba(255, 130, 50,  var(--glow-3)) 70%,
-                        transparent 100%);
-    background-origin: border-box;
-    background-clip: border-box;
-    background-repeat: no-repeat;
-  }
+  /* Texten över ljuset. Mörkerlagret ligger på 0, ljuset på 1. */
+  .panel-inner { z-index: 2; }
 }
+
 /* Innehållet måste ligga över det mörka lagret */
 .panel-inner { position: relative; z-index: 1; }
 
@@ -1266,6 +1248,9 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
    överskottsbredd går till texten — fotot behöver inte mer, och en
    bredare bild hade bara kortat textraderna. */
 .about-portrait {
+  /* Några pixlar åt vänster, så spalten landar mot den mörka kanten i
+     bakgrundsfotot i stället för att sväva strax innanför den. */
+  margin-right: clamp(10px, 1.2vw, 22px);
   /* Smalare än förut (var 21vw/300): porträttet delar raden med
      biografin nu, och varje pixel spalten tar blir en textrad till
      på höjden. 250 px räcker för fotot och håller adressen på en rad. */
@@ -1348,7 +1333,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 .about-quote,
 .about-sign {
   font-family: var(--ff-body);
-  font-size: clamp(0.78rem, 0.95vw, 1.02rem);
+  font-size: clamp(0.76rem, 0.88vw, 0.95rem);
   font-weight: 300;
   /* 1.75 i stället för 1.85: texten ligger i full bredd nu och delar
      panelen med mediaraden under. De två pixlarna per rad är skillnaden
@@ -1548,7 +1533,12 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   gap: 0.3rem;
   margin-top: 0.6rem;
 }
-.am-label { font-size: var(--fs-micro); letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim); }
+/* Röd som standard, vit när man pekar på blocket — tvärtom mot
+   resten av adressraden, så etiketten och adressen byter plats i
+   färg när man hovrar. */
+.am-label { font-size: var(--fs-micro); letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent); transition: color 0.25s; }
+.about-write:hover .am-label,
+.about-write:focus-visible .am-label { color: var(--white); }
 .am-val { font-size: var(--fs-note); color: var(--white); transition: color 0.25s; }
 .about-write:hover .am-val,
 .about-write:focus-visible .am-val { color: var(--accent); }
@@ -2362,7 +2352,10 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
      först i högerspalten tillsammans med urval och media, men fyra
      grupper i en smal spalt radbröt sönder raderna och sprängde
      höjden — mätt: 14 till 66 px över på varje fönsterstorlek. */
-  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  /* Ordningen är utbildning · filmer · urval och media. Filmspalten
+     ligger i mitten och behöver mest bredd — den har en not per film,
+     och de radbryter till två rader så fort spalten blir smal. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 3.5vw, 4rem);
 }
 /* Graderna ligger högre än förut — den gamla panelen skulle rymma

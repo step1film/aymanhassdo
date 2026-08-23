@@ -532,53 +532,52 @@
     el.setAttribute('aria-hidden', 'true');
     document.body.appendChild(el);
 
-    /* Ljushålet och det varma skenet följer markören. Radien ligger i
-       CSS (--spot-r, --spot-glow) så den går att ändra på ett ställe. */
-    const rot = document.documentElement;
+    /* Ljuset som följer markören.
+       -----------------------------------------------------
+       Låg förut som CSS-variabler på <html>: --spot-x/y skrevs varje
+       musrörelse, och en ÄRVD custom property på rotelementet tvingar
+       webbläsaren att räkna om stilen för HELA dokumentet. Mätt med
+       Chromes egna räknare över 80 musrörelser: 549 ms stilomräkning.
+       Utan den skrivningen: 37 ms. Det var det som kändes tungt — inte
+       ritandet, som kostade lika mycket med som utan skenet.
+
+       Nu är ljuset en egen liten ruta per panel som flyttas med
+       transform. Transformer går på kompositorn: ingen stilomräkning,
+       ingen layout. Rutan ligger över panelens mörkerlager men under
+       texten och lyser upp med mix-blend-mode: screen — det ersätter
+       både det gamla hålet i mörkret och det varma skenet. */
+    const spotar = [];
+    document.querySelectorAll('.h-panel').forEach(panel => {
+      const d = document.createElement('div');
+      d.className = 'panel-spot';
+      d.setAttribute('aria-hidden', 'true');
+      panel.appendChild(d);
+      spotar.push(d);
+    });
+
     const sticky = document.getElementById('h-sticky');
 
-    let x = 0, y = 0, väntar = false;
-    function måla() {
-      väntar = false;
-
-      /* Koordinaterna räknas från #h-sticky, inte från fönstret. Hålet
-         och skenet målas inuti det lagret, och lagret ligger i fönstrets
-         hörn bara så länge det är fastklistrat. Rullar man förbi svepet
-         släpper det taget och glider uppåt — med fönsterkoordinater blev
-         skenet då kvar en bit ifrån markören, vilket syntes tydligast
-         längst ned på sidan. */
+    let x = 0, y = 0, vantar = false;
+    function mala() {
+      vantar = false;
+      /* Koordinaterna raknas fran #h-sticky, inte fonstret. Rutorna
+         ligger inuti det lagret, och lagret sitter i fonstrets horn bara
+         sa lange det ar fastklistrat. */
       const r = sticky ? sticky.getBoundingClientRect() : { left: 0, top: 0 };
-      rot.style.setProperty('--spot-x', (x - r.left) + 'px');
-      rot.style.setProperty('--spot-y', (y - r.top) + 'px');
-
-      // Själva filmmärket är position:fixed och ska ha fönstrets mått
-      el.style.transform = `translate3d(${x}px,${y}px,0)`;
+      const tr = 'translate3d(' + (x - r.left) + 'px,' + (y - r.top) + 'px,0)';
+      for (const d of spotar) d.style.transform = tr;
+      el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
     }
 
     function begar() {
-      if (!väntar) { väntar = true; requestAnimationFrame(måla); }
+      if (!vantar) { vantar = true; requestAnimationFrame(mala); }
     }
 
-    /* Skenet dämpas medan musen rör sig och tänds igen när den stannar.
-       Ett stort, fullt lyst sken som följer varje ryck läser som tungt
-       — ögat hinner uppfatta att det släpar. Svagare i rörelse gör
-       samma rörelse lättare utan att käglan försvinner. Klassen sitter
-       på <html>, så både hålet och skenet kan reagera. */
-    let stannaTimer = null;
-    function iRorelse() {
-      rot.classList.add('markor-ror');
-      clearTimeout(stannaTimer);
-      stannaTimer = setTimeout(() => rot.classList.remove('markor-ror'), 140);
-    }
-
-    /* Även rullning flyttar lagret under en stillastående mus, så
-       skenet måste räknas om då också — inte bara när musen rör sig. */
     window.addEventListener('scroll', begar, { passive: true });
 
     window.addEventListener('mousemove', (e) => {
       x = e.clientX; y = e.clientY;
       begar();
-      iRorelse();
       if (!el.classList.contains('visible')) el.classList.add('visible');
       // Röd ton när man pekar på något klickbart
       const påLänk = !!(e.target && e.target.closest &&
