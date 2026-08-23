@@ -559,6 +559,18 @@
       if (!väntar) { väntar = true; requestAnimationFrame(måla); }
     }
 
+    /* Skenet dämpas medan musen rör sig och tänds igen när den stannar.
+       Ett stort, fullt lyst sken som följer varje ryck läser som tungt
+       — ögat hinner uppfatta att det släpar. Svagare i rörelse gör
+       samma rörelse lättare utan att käglan försvinner. Klassen sitter
+       på <html>, så både hålet och skenet kan reagera. */
+    let stannaTimer = null;
+    function iRorelse() {
+      rot.classList.add('markor-ror');
+      clearTimeout(stannaTimer);
+      stannaTimer = setTimeout(() => rot.classList.remove('markor-ror'), 140);
+    }
+
     /* Även rullning flyttar lagret under en stillastående mus, så
        skenet måste räknas om då också — inte bara när musen rör sig. */
     window.addEventListener('scroll', begar, { passive: true });
@@ -566,6 +578,7 @@
     window.addEventListener('mousemove', (e) => {
       x = e.clientX; y = e.clientY;
       begar();
+      iRorelse();
       if (!el.classList.contains('visible')) el.classList.add('visible');
       // Röd ton när man pekar på något klickbart
       const påLänk = !!(e.target && e.target.closest &&
@@ -757,6 +770,7 @@
     function ritaCV() {
       ritaLista('[data-selected]', window.STEP1FILM_SELECTED);
       ritaLista('[data-media]', window.STEP1FILM_MEDIA);
+      ritaLista('[data-education]', window.STEP1FILM_EDUCATION);
 
       document.querySelectorAll('[data-filmography-full]').forEach(box => {
         box.textContent = '';

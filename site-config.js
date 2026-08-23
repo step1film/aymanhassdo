@@ -58,10 +58,9 @@
                          panel 02, och biblioteket i Vaggeryd står kvar under
                          STEP1FILM_CV.
 
-   STEP1FILM_EDUCATION   Utbildning. Ligger kvar som underlag men visas
-                         inte längre någonstans — spalten togs bort från
-                         både Drömmen och CV-panelen. Sparad så att den
-                         går att ta in igen utan att skrivas om.
+   STEP1FILM_EDUCATION   Utbildning. Visas i CV-panelens högerspalt,
+                         under I media. Samma form som de andra
+                         listorna där: år, namn och en rad under.
 
    STEP1FILM_CV          Erfarenhet. Visas inte heller just nu.
 
@@ -167,8 +166,8 @@ window.STEP1FILM_FILMOGRAPHY = [
         "en": "In development"
       },
       "note": {
-        "sv": "Under research och utveckling.",
-        "en": "In research and development."
+        "sv": "Under research och utveckling. Samproduktion med Northern Shadows Films.",
+        "en": "In research and development. Co-production with Northern Shadows Films."
       }
     },
     {
@@ -288,94 +287,63 @@ window.STEP1FILM_MEDIA = [
 
 window.STEP1FILM_EDUCATION = [
   {
-    "year": {
-      "sv": "Sep–okt 2024",
-      "en": "Sep–Oct 2024"
-    },
+    "year": "2020–2023",
+    "what": "Cinematography / Filmfoto",
+    "where": {
+      "sv": "Kandidatstudier · Egypten, distans",
+      "en": "Bachelor studies · Egypt, distance"
+    }
+  },
+  {
+    "year": "2016–2018",
+    "what": "Dokumentärfilm",
+    "where": {
+      "sv": "Ölands folkhögskola, Öland",
+      "en": "Öland Folk High School, Öland"
+    }
+  },
+  {
+    "year": "2024",
     "what": {
       "sv": "Samordning och projektansökningar",
-      "en": "Coordination and grant applications"
+      "en": "Coordination and project applications"
     },
     "where": {
-      "sv": "Intensivkurs på distans · Tornedalens folkhögskola",
-      "en": "Intensive course, distance · Tornedalen folk high school"
-    }
-  },
-  {
-    "year": "2020–2023",
-    "what": {
-      "sv": "Kandidat, filmfoto",
-      "en": "Bachelor, cinematography"
-    },
-    "where": {
-      "sv": "Egypten · distans",
-      "en": "Egypt · distance"
-    }
-  },
-  {
-    "year": "2016–2017",
-    "what": {
-      "sv": "Dokumentärfilm",
-      "en": "Documentary film"
-    },
-    "where": {
-      "sv": "Ölands folkhögskola · Öland, Sverige",
-      "en": "Ölands folk high school · Öland, Sweden"
-    }
-  },
-  {
-    "year": "2016",
-    "what": {
-      "sv": "Manusskrivarveckan",
-      "en": "Screenwriting week"
-    },
-    "where": {
-      "sv": "Workshop arrangerad av Råfilm",
-      "en": "Workshop organised by Råfilm"
+      "sv": "Intensivkurs · Tornedalens folkhögskola, distans",
+      "en": "Intensive course · Tornedalen Folk High School, distance"
     }
   },
   {
     "year": "2013–2015",
     "what": {
-      "sv": "Media och produktion, svenska",
-      "en": "Media and production, Swedish"
+      "sv": "Media och produktion & SVA",
+      "en": "Media and production & Swedish as a second language"
     },
     "where": {
-      "sv": "Fenix · Vaggeryd",
-      "en": "Fenix · Vaggeryd"
+      "sv": "Fenix, Vaggeryd",
+      "en": "Fenix, Vaggeryd"
+    }
+  },
+  {
+    "year": "2016",
+    "what": {
+      "sv": "Manusskrivande",
+      "en": "Screenwriting"
+    },
+    "where": {
+      "sv": "Workshop · Råfilm",
+      "en": "Workshop · Råfilm"
     }
   },
   {
     "year": "2007–2009",
     "what": {
-      "sv": "Musikinstitutet",
-      "en": "Music Institute"
+      "sv": "Musikutbildning",
+      "en": "Music studies"
     },
     "where": {
-      "sv": "Damaskus, Syrien",
-      "en": "Damascus, Syria"
-    }
-  },
-  {
-    "year": "2007",
-    "what": {
-      "sv": "Gymnasium",
-      "en": "Upper secondary school"
-    },
-    "where": {
-      "sv": "Al-Hasakah, Syrien",
-      "en": "Al-Hasakah, Syria"
-    }
-  },
-  {
-    "year": "2005",
-    "what": {
-      "sv": "Kortare IT-kurser",
-      "en": "Short IT courses"
-    },
-    "where": {
-      "sv": "Syrien",
-      "en": "Syria"
+      "sv": "Music Institute, Damaskus, Syrien",
+      "en": "Music Institute, Damascus, Syria"
     }
   }
 ];

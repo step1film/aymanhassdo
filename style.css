@@ -540,6 +540,26 @@ body.reduced-motion .h-panel::before { animation: none; }
   .h-panel::before { animation: none; }
 }
 
+/* Registrerade som tal, annars går de inte att tona — en custom
+   property är annars bara en textsträng för webbläsaren, och en
+   gradient som byter värde hoppar. Saknas stöd byts de direkt i
+   stället, vilket fortfarande ger svagare sken i rörelse. */
+@property --glow-1 { syntax: '<number>'; initial-value: 0.48; inherits: true; }
+@property --glow-2 { syntax: '<number>'; initial-value: 0.28; inherits: true; }
+@property --glow-3 { syntax: '<number>'; initial-value: 0.10; inherits: true; }
+
+/* Medan musen rör sig dämpas skenet. Ett fullt lyst sken som följer
+   varje ryck läser som tungt — ögat hinner se att det släpar efter.
+   Tillbaka till fullt när handen stannar. */
+:root.markor-ror {
+  --glow-1: 0.28;
+  --glow-2: 0.16;
+  --glow-3: 0.05;
+}
+:root {
+  transition: --glow-1 0.2s linear, --glow-2 0.2s linear, --glow-3 0.2s linear;
+}
+
 /* =====================================================
    MARKÖRENS LJUSHÅL
    =====================================================
@@ -563,6 +583,11 @@ body.reduced-motion .h-panel::before { animation: none; }
   /* Skenets radie — större än hålet, så ljuset faller av mjukt utanför
      kanten i stället för att sluta tvärt där hålet tar slut. */
   --spot-glow: 82px;
+  /* Skenets tre alfasteg. Egna egenskaper för att de ska kunna tonas —
+     se @property nedan. */
+  --glow-1: 0.48;
+  --glow-2: 0.28;
+  --glow-3: 0.10;
 }
 /* Det mörka lagret OCH filmkornet i ett och samma skikt. Kornet låg
    förut över hela sajten (body::after) och lade sig även på texten och
@@ -615,9 +640,9 @@ body.reduced-motion .h-panel::after { animation: none; }
      till markören, mer ju smalare fönstret är. */
   .panel-inner {
     background-image: radial-gradient(circle var(--spot-glow) at var(--spot-x) var(--spot-y),
-                        rgba(255, 176, 104, 0.48) 0%,
-                        rgba(255, 148, 68,  0.28) 45%,
-                        rgba(255, 130, 50,  0.10) 70%,
+                        rgba(255, 176, 104, var(--glow-1)) 0%,
+                        rgba(255, 148, 68,  var(--glow-2)) 45%,
+                        rgba(255, 130, 50,  var(--glow-3)) 70%,
                         transparent 100%);
     background-origin: border-box;
     background-clip: border-box;
@@ -750,12 +775,14 @@ body.reduced-motion .h-panel::after { animation: none; }
   align-items: center;
   gap: 0.6rem;
   z-index: 10;
-  padding: 0.85rem 0.6rem;
+  padding: 0.7rem 0.55rem;
   border: 1px solid var(--line);
   border-radius: 3px;
-  background: rgba(10,10,10,0.42);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  /* Genomskinlig. Rutan hade en egen mörk botten som lade sig ovanpå
+     panelens mörkerlager och blev en tydlig låda mot bakgrunden. Nu
+     följer den panelen: när svepet mörknar mellan sidorna mörknar
+     rutan med, eftersom det är panelen bakom som syns igenom. */
+  background: transparent;
   font-family: var(--ff-display);
   user-select: none;
 }
@@ -1208,7 +1235,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 }
 .film-meta { display: flex; flex-wrap: wrap; gap: 0.3rem 0.75rem; margin-bottom: 0.25rem; }
 .film-year  { font-size: var(--fs-label); letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; }
-.film-type, .film-fest { font-size: var(--fs-label); letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; }
+.film-type, .film-fest { font-size: var(--fs-micro); letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; }
 .film-title {
   font-family: var(--ff-display);
   font-size: clamp(1.1rem, 2vw, 1.6rem);
@@ -1278,7 +1305,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   filter: grayscale(0.35) contrast(1.04);
 }
 .portrait-cap {
-  font-size: var(--fs-micro);
+  font-size: clamp(0.62rem, 0.55vw, 0.7rem);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -1528,7 +1555,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 /* Pitchtexten under porträttet, kopplad till adressraden */
 .about-pitch {
   display: block;
-  font-size: var(--fs-note);
+  font-size: var(--fs-label);
   line-height: 1.65;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -1656,7 +1683,9 @@ body.reduced-motion .tb-card { animation: none; }
 .award-row {
   display: grid;
   grid-template-columns: 2.6rem minmax(0, 20ch) minmax(0, 46ch);
-  justify-content: start;
+  /* Centrerad i sidled. Packad åt vänster lämnade den halva panelen
+     tom åt höger. */
+  justify-content: center;
   gap: 0 clamp(1rem, 1.8vw, 1.6rem);
   align-items: baseline;
   padding: clamp(0.45rem, 0.95vh, 0.75rem) 0;
@@ -1892,7 +1921,7 @@ body.reduced-motion .tb-card { animation: none; }
 /* =====================================================
    FOOTER
    ===================================================== */
-#footer { background: var(--bg); border-top: 1px solid var(--line); padding: 2.5rem clamp(1.25rem, 7vw, 7rem); position: relative; z-index: 2; }
+#footer { background: var(--bg); border-top: 1px solid var(--line); padding: 1.3rem clamp(1.25rem, 7vw, 7rem); position: relative; z-index: 2; }
 .foot-inner { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; }
 .foot-col { display: flex; flex-direction: column; gap: 0.4rem; }
 .foot-col--right { align-items: flex-end; }
@@ -2329,7 +2358,11 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
      speltid och en not per film — medan urvalsspalten bara har namn och
      en rad under. Var 1.5/1 förut, vilket lät noterna radbryta till två
      rader och sköt listan över kanten på lägre fönster. */
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  /* Tre spalter: filmerna, urvalen och utbildningen. Utbildningen låg
+     först i högerspalten tillsammans med urval och media, men fyra
+     grupper i en smal spalt radbröt sönder raderna och sprängde
+     höjden — mätt: 14 till 66 px över på varje fönsterstorlek. */
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1.05fr);
   gap: clamp(1.5rem, 3.5vw, 4rem);
 }
 /* Graderna ligger högre än förut — den gamla panelen skulle rymma
@@ -2341,8 +2374,12 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
    knappt att läsa. */
 .cv-grid--film .cvb-year { margin-bottom: 0; font-size: var(--fs-label); }
 .cv-grid--film .cvb-role { font-size: clamp(1rem, 1.35vh, 1.24rem); line-height: 1.3; }
-.cv-grid--film .cvb-where { font-size: var(--fs-note); line-height: 1.45; }
-.cv-grid--film .cvb-note { font-size: var(--fs-note); line-height: 1.55; max-width: none; margin-top: 0.2rem; }
+.cv-grid--film .cvb-where { font-size: var(--fs-label); line-height: 1.45; }
+.cv-grid--film .cvb-note { font-size: var(--fs-label); line-height: 1.5; max-width: none; margin-top: 0.12rem; }
+/* Filmspalten tätare: raderna hör ihop tre och tre (år, titel, format)
+   och ska läsas som en post, inte som tre fristående rader. */
+.cv-grid--film .cvb-body { gap: 0.05rem; }
+.cv-grid--film .cvb-row { padding-top: 0.28rem; padding-bottom: 0.28rem; }
 .cv-grid--film .cvb-head { font-size: clamp(0.78rem, 1.15vh, 1.1rem); padding-bottom: 0.4rem; }
 
 /* Låga fönster: luften mellan raderna dras ned före textgraderna,
@@ -2607,7 +2644,9 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
    specificitet vinner den regel som står sist. Låg blocket här
    tidigare fick det inget genomslag. */
 @media (min-width: 901px) and (max-height: 730px) {
-  .cv-block { gap: 0.22rem; }
-  .cvb-head { padding-bottom: 0.2rem; }
+  .cv-block { gap: 0.18rem; }
+  .cvb-head { padding-bottom: 0.16rem; }
   .cvb-row { padding: 0.02rem 0; }
+  .cv-grid--film .cvb-row { padding-top: 0.02rem; padding-bottom: 0.02rem; }
+  .cvb-sub { margin-top: 0.4rem; padding-bottom: 0.16rem; }
 }

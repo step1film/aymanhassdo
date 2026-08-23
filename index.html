@@ -541,6 +541,13 @@
                   <h4 class="cvb-sub" data-i18n="cvMedia">In the media</h4>
                   <div class="cvb-list" data-media></div>
                 </div>
+                <div class="cv-block">
+                  <!-- Egen spalt: med fyra grupper blev högerspalten
+                       överfull och utbildningen radbröts sönder. -->
+                  <h3 class="cvb-head" data-i18n="cvEducation">Education</h3>
+                  <!-- Fylls från STEP1FILM_EDUCATION i site-config.js -->
+                  <div class="cvb-list" data-education></div>
+                </div>
               </div>
             </div>
           </section>
@@ -591,8 +598,6 @@
         <!-- Fokusenhet: läser av rullningen som en följefokus-handkontroll.
              Prickarna finns kvar som markeringar på skalan och går att klicka. -->
         <nav id="h-nav" class="focus-unit" data-i18n-aria="navAria" aria-label="Sektionsnavigering">
-          <span class="fu-brand" aria-hidden="true">FOCUS</span>
-
           <div class="fu-readout" aria-hidden="true">
             <span class="fu-mark" id="hCur">01</span>
             <span class="fu-of" id="fuTotal">/ 05</span>
@@ -613,7 +618,6 @@
           <div class="fu-dist" aria-hidden="true">
             <span class="fu-num" id="fuDist">0.6</span><span class="fu-unit">m</span>
           </div>
-          <span class="h-nav-label fu-label" id="hLabel" aria-hidden="true">The Filmmaker</span>
         </nav>
 
         <div class="h-arrows">
