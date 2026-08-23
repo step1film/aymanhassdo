@@ -624,7 +624,12 @@ body.reduced-motion .h-panel::after { animation: none; }
                   rgba(255, 158, 84, 0.24) 38%,
                   rgba(255, 148, 72, 0.09) 70%,
                   transparent 100%);
-    will-change: transform;
+    /* Lampan tonas ned medan markören rör sig och tänds igen när den
+       står still. Opacity och transform är båda kompositoregenskaper —
+       övergången kostar ingen stilomräkning av dokumentet. */
+    opacity: 1;
+    transition: opacity 220ms ease;
+    will-change: transform, opacity;
     transform: translate3d(-9999px, -9999px, 0);
   }
   /* Texten över ljuset. Mörkerlagret ligger på 0, ljuset på 1. */
@@ -664,7 +669,7 @@ body.reduced-motion .h-panel::after { animation: none; }
      mycket av panelen spelaren tar. Det hänger på fönstrets höjd:
      panelen är en skärm hög och rutan ska aldrig tränga undan
      biografin ovanför. */
-  --media-h: clamp(95px, 13vh, 150px);
+  --media-h: clamp(95px, 11.6vh, 138px);
 }
 
 /* Översta raden: biografin till vänster, porträttspalten till höger.
@@ -1290,7 +1295,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   filter: grayscale(0.35) contrast(1.04);
 }
 .portrait-cap {
-  font-size: clamp(0.62rem, 0.55vw, 0.7rem);
+  font-size: clamp(0.56rem, 0.5vw, 0.64rem);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -1314,7 +1319,10 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
    då åt den upp hjulet i stället för att sidan bytte panel. Texten
    ska rymmas — graderna nedan är satta så att den gör det. */
 .about-scroll {
-  flex: 1;
+  /* flex: 1 förut. Då fyllde rutan ut hela spalten och tryckte ned
+     signaturen till foten, med ett tomrum mellan citatet och den.
+     Den ska sluta där texten slutar. */
+  flex: 0 1 auto;
   min-height: 0;
   overflow: hidden;
   display: flex;
@@ -1354,6 +1362,8 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 .about-sign {
   color: var(--white);
   letter-spacing: 0.06em;
+  /* Ligger utanför den klippande rutan och krymper inte bort. */
+  flex: 0 0 auto;
 }
 
 /* --- Klippspelaren: först i mediaraden under texten --- */
@@ -1444,15 +1454,22 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 .reel-dot.active { background: var(--accent); }
 .reel-dot:hover:not(.active) { background: var(--line-s); }
 
-/* Låga fönster (bärbara skärmar upp till ~1024 px höga): mediaraden krymper så
+/* Låga fönster (bärbara skärmar upp till ~1060 px höga): mediaraden krymper så
    att biografin får plats. Bilderna är fortfarande läsbara i den
    storleken, och alternativet — att de sista styckena hamnar under
    kanten — är sämre. Rullningen i .about-scroll finns kvar som
    säkerhet för de allra lägsta fönstren. */
-@media (min-width: 901px) and (max-height: 1024px) {
-  .about-cols { --media-h: clamp(76px, 10vh, 110px); }
-  .about-scroll { gap: 0.55em; }
-  .about-lead, .about-body, .about-quote, .about-sign { line-height: 1.6; }
+@media (min-width: 901px) and (max-height: 1060px) {
+  /* Mediaraden kortare och luften mellan styckena mindre. Budgeten här
+     var satt innan signaturen fanns, och den sista raden — /Ayman H. —
+     hamnade under kanten på i stort sett varje bärbar skärm i det här
+     höjdbandet. Graden är orörd; det är radavståndet och luften som ger
+     tillbaka pixlarna, för de kostar minst läsbarhet. */
+  .about-cols { --media-h: clamp(66px, 8vh, 84px); }
+  .about-scroll { gap: 0.26em; }
+  /* Mildare variant av samma sak som i bandet under. */
+  .about-reel { gap: 8px; }
+  .about-lead, .about-body, .about-quote, .about-sign { line-height: 1.5; }
   .about-pitch { font-size: 0.68rem; line-height: 1.5; }
   /* Porträttspalten smalare här också — bredden den lämnar ifrån sig
      blir textrader, och det är höjden som är knapp på låga fönster. */
@@ -1463,31 +1480,43 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   .portrait-cap { white-space: normal; line-height: 1.4; }
 }
 
-/* Riktigt låga fönster (1366×768 och nedåt). Panelen är en skärm hög
+/* Riktigt låga fönster (1440×900 och nedåt). Panelen är en skärm hög
    och ska rymma rubrik, biografi, porträtt OCH klippspelaren med plats
    åt bläddringspilarna under. Här räcker inte höjden till allt: fotot
    får ett hårdare tak och pitchtexten vid sidan av det utgår — den
    säger samma sak som formuläret på panel 05. Kvar blir bildtexten
    och adressen, som är det man faktiskt behöver här. */
-@media (min-width: 901px) and (max-height: 810px) {
-  .about-cols { --media-h: clamp(62px, 8.5vh, 86px); }
+@media (min-width: 901px) and (max-height: 900px) {
+  .about-cols { --media-h: clamp(52px, 6.8vh, 70px); }
   .about-portrait { flex-basis: clamp(118px, 11vw, 150px); }
   .about-pitch { display: none; }
-  .about-scroll { gap: 0.24em; }
+  .about-scroll { gap: 0.18em; }
   .about-lead, .about-body, .about-quote, .about-sign {
     font-size: clamp(0.78rem, 0.9vw, 0.88rem);
     line-height: 1.4;
   }
-  /* Spelaren får ett lägre golv här — 170 px kostar höjd som texten
-     behöver mer, och 150 räcker för att titeln inte ska brytas. */
-  .about-reel { flex-basis: clamp(150px, calc(var(--media-h) * 16 / 9), 34vw); }
+  /* Här är det GOLVET som kostar höjd, inte texten. Så fort golvet slår
+     i kopplas --media-h ur: bredden blir 150 px och rutan därmed 84 px
+     hög via 16:9, oavsett vad --media-h säger. 124 px ger 70 px i
+     stället, och luften mellan spelarens delar halveras — tillsammans
+     ~29 px som biografin och signaturen behöver bättre. */
+  .about-reel {
+    flex-basis: clamp(124px, calc(var(--media-h) * 16 / 9), 34vw);
+    gap: 6px;
+  }
+  /* Titeln bryts på fyra rader i den smalare baren och klämmer ihop
+     pilarna. Prickarna och pilarna räcker för att bläddra. Titeln bar
+     flex: 1 och höll isär pilarna — utan den får baren dela på plats
+     i stället, så de står kvar i var sitt hörn under rutan. */
+  .reel-title { display: none; }
+  .reel-bar { justify-content: space-between; }
 }
 
 /* Allra lägsta fönstren. Biografin är sajtens längsta text och det är
    den enda som inte ryms av sig själv — resten av panelerna klarar sig
    på sina egna regler. Utan rullning måste den krympa i stället, för
    det som inte får plats i en ruta utan rullning går inte att nå. */
-@media (min-width: 901px) and (max-height: 730px) {
+@media (min-width: 901px) and (max-height: 810px) {
   .about-cols { --media-h: clamp(46px, 6.2vh, 62px); }
   /* Lägre golv för spelaren här — 170 kostar 12 px höjd som texten
      behöver mer. Klippets titel utgår i stället för att brytas på
@@ -1506,7 +1535,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
      väger tyngre — klippen finns kvar på Vimeo-kanalen, länkad från
      panel 02. Samma avvägning som noterna i CV:t. */
   .about-media { display: none; }
-  .portrait-cap { font-size: var(--fs-micro); }
+  .portrait-cap { font-size: clamp(0.54rem, 0.5vw, 0.6rem); }
 }
 
 /* Direktadressen till Ayman — bara här på drömsidan.
@@ -2553,6 +2582,9 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
     padding-right: 0;
   }
   .about-scroll > * + * { margin-top: 0.9em; }
+  /* Signaturen ligger utanför .about-scroll och får sin luft här —
+     stapeln är display: block på telefon, så flex-gap gäller inte. */
+  .about-sign { margin-top: 0.9em; }
 
   /* Bredden sitter på bilden nu, inte på spalten — den är upplöst.
      Höjdtaket från bredskärmsläget bort: här står bilden i ett
@@ -2562,7 +2594,9 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
      sjön bakom. Här får den brödtextens ljusgrå och lite mer luft. */
   .portrait-cap {
     white-space: normal;
-    font-size: var(--fs-micro);
+    /* Egen grad i stället för --fs-micro: bildtexten är en not under
+       fotot och ska inte väga lika tungt som sidans övriga småtext. */
+    font-size: clamp(0.64rem, 2.6vw, 0.72rem);
     letter-spacing: 0.1em;
     line-height: 1.5;
     color: var(--text);

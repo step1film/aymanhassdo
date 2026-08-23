@@ -401,7 +401,12 @@
       const start = window.scrollY;
       const avstand = top - start;
       if (!avstand) return;
-      const langd = 560;                          // ms, oavsett avstånd
+      /* 950 ms i stället för 560. Bläddrar man med pilarna eller
+         tangentbordet är svepet det man tittar på — då ska det hinna
+         läsas som en rörelse mellan två bilder, inte som ett hopp.
+         Hjulet rullar fortfarande i sin egen takt; det här gäller bara
+         den egna rullningen. */
+      const langd = 950;                          // ms, oavsett avstånd
       const t0 = performance.now();
       const kurva = (t) => 1 - Math.pow(1 - t, 3);
       const steg = (nu) => {
@@ -573,11 +578,30 @@
       if (!vantar) { vantar = true; requestAnimationFrame(mala); }
     }
 
+    /* Lampan ska lysa svagare medan man rör markören och stå full styrka
+       när den vilar — som en lampa man svänger med handen.
+
+       Dämpningen sätts som opacity direkt på de fem skenrutorna. Det är
+       en kompositoregenskap: den kostar ingen stilomräkning av
+       dokumentet, till skillnad från den gamla klassväxlingen på <html>
+       som var halva orsaken till att markören kändes trög. Skrivningen
+       sker dessutom bara vid övergången rör sig ⇄ still, inte varje
+       bildruta — CSS-övergången sköter tonandet däremellan. */
+    const DAMPAD = '0.5';
+    let rorSig = false, stillTimer = 0;
+    function sattSken(v) { for (const d of spotar) d.style.opacity = v; }
+    function rorelse() {
+      if (!rorSig) { rorSig = true; sattSken(DAMPAD); }
+      clearTimeout(stillTimer);
+      stillTimer = setTimeout(() => { rorSig = false; sattSken('1'); }, 140);
+    }
+
     window.addEventListener('scroll', begar, { passive: true });
 
     window.addEventListener('mousemove', (e) => {
       x = e.clientX; y = e.clientY;
       begar();
+      rorelse();
       if (!el.classList.contains('visible')) el.classList.add('visible');
       // Röd ton när man pekar på något klickbart
       const påLänk = !!(e.target && e.target.closest &&
