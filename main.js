@@ -386,6 +386,65 @@
       }
     }
 
+    /* Biografin sitter i en ruta som inte rullar — panel 01 är exakt en
+       skärm hög och hjulet ska byta panel, inte rulla inuti texten. Då
+       måste texten rymmas, och det går inte att garantera i CSS ensamt:
+       graden hänger på webbläsarens grundgrad, som användaren själv får
+       ställa, och radbrytningarna på språket.
+
+       Så vi mäter i stället. Ryms inte texten krymper vi --bio-skala i
+       små steg tills den gör det. Vid grundgrad 16 ryms den redan och
+       faktorn står kvar på 1 — den här koden gör då ingenting.
+
+       Faktorn sätts på .about-cols, inte på <html>: en ärvd variabel på
+       rotelementet tvingar omräkning av hela dokumentet. Här gäller det
+       ett par dussin noder, och bara när fönstret ändrar storlek. */
+    const bioRuta = document.querySelector('.about-scroll');
+    const bioCols = document.querySelector('.about-cols');
+    let bioPagar = false;
+    function passaBiografin() {
+      if (!bioRuta || !bioCols || bioPagar) return;
+      bioPagar = true;
+      bioCols.style.removeProperty('--bio-skala');
+      /* Golv på 0,72. Vid webbläsarens grundgrad 22 px landar det på
+         drygt 12 px — samma grad som panelen ändå visar på ett litet
+         fönster, alltså inget nytt läsbarhetsproblem. Under det golvet
+         väger vi över: då är beskuren text det mindre onda.
+         Att läsa scrollHeight tvingar fram ny layout, så varje varv
+         mäter resultatet av föregående steg. */
+      let skala = 1;
+      while (skala > 0.72 && bioRuta.scrollHeight > bioRuta.clientHeight + 1) {
+        skala -= 0.02;
+        bioCols.style.setProperty('--bio-skala', skala.toFixed(2));
+      }
+      bioPagar = false;
+    }
+    passaBiografin();
+    /* Igen när typsnitten laddat: mätningen ovan sker på reservsnittet,
+       och radbrytningarna flyttar sig när det riktiga kommer in. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(passaBiografin).catch(() => {});
+    }
+    let bioTimer = 0;
+    const bioSnart = () => { clearTimeout(bioTimer); bioTimer = setTimeout(passaBiografin, 120); };
+    window.addEventListener('resize', bioSnart);
+    /* Språkbytet byter ut hela texten, och andra lyssnare ritar om delar
+       av panelen efter oss. Ett varv till på nästa bildruta fångar det
+       som hunnit flytta sig. */
+    document.addEventListener('s1f:langchange', () => {
+      passaBiografin();
+      requestAnimationFrame(passaBiografin);
+      bioSnart();
+    });
+    /* Sista skyddsnätet: ändrar rutan storlek av något annat skäl —
+       en sen bild, en omritad spalt — mäter vi om. Vi bevakar
+       .about-content, vars höjd sätts av panelen och alltså inte av
+       vår egen krympning, så observatören kan inte trigga sig själv. */
+    const bioBox = document.querySelector('.about-content');
+    if (bioBox && window.ResizeObserver) {
+      new ResizeObserver(bioSnart).observe(bioBox);
+    }
+
     /* Egen rullning för pilarna i stället för behavior: 'smooth'.
        Webbläsarens egen är avpassad för långa dokument och tar drygt en
        sekund över en skärmhöjd — svepet drivs av rullningen, så det blev
