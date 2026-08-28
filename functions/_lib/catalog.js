@@ -45,7 +45,7 @@ const SHIP_COUNTRIES = ['SE'];
 const CATALOG = {
   "reel-mugg": {
     "name": "Director's Morning",
-    "price": 175,
+    "price": 299,
     "variants": {
       "black|one": 5415345254
     }
@@ -83,7 +83,7 @@ const CATALOG = {
   },
   "rolling-backpack": {
     "name": "ROLLING BACKPACK",
-    "price": 529,
+    "price": 649,
     "variants": {
       "navy|one": 5415353196,
       "pink|one": 5415329629
@@ -213,7 +213,7 @@ const CATALOG = {
   },
   "step1-jersey": {
     "name": "STEP1 JERSEY",
-    "price": 429,
+    "price": 549,
     "variants": {
       "pastel|XS": 5415333024,
       "pastel|S": 5415333025,

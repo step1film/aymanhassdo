@@ -283,7 +283,7 @@
           "Adjustable shoulder straps"
         ]
       },
-      "price": 529,
+      "price": 649,
       "colors": [
         "navy",
         "pink"
@@ -393,7 +393,7 @@
           "Sleeveless"
         ]
       },
-      "price": 429,
+      "price": 549,
       "colors": [
         "pastel"
       ],
@@ -894,7 +894,7 @@
           "Volume: 15 oz (approx. 440 ml)"
         ]
       },
-      "price": 175,
+      "price": 299,
       "colors": [
         "black"
       ],
