@@ -17,9 +17,11 @@
   const CONFIG = {
     currency: 'kr',
     contactEmail: 'shop@step1film.se',
-    // Swish number is shown at checkout as info only for now.
-    // Leave empty to hide until you have a business number.
-    swishNumber: '',
+    /* Handelsnumret som betalningarna går till. Visas under
+       Swish-alternativet i kassan så kunden ser vart pengarna går.
+       Samma nummer ligger som SWISH_PAYEE_ALIAS på servern — det är
+       serverns värde som styr betalningen, det här är bara text. */
+    swishNumber: '123 154 04 59',
 
     // Frakt: fast avgift per order (kr). Sätt freeOver för att ge
     // fri frakt över ett visst ordervärde (0 = alltid frakt).
@@ -39,7 +41,7 @@
     payments: {
       apiBase: 'https://step1film.netlify.app/.netlify/functions',
       card: true,    // Stripe: kort + Klarna
-      swish: false   // Swish Handel — väntar på avtal med banken
+      swish: false   // Swish Handel — numret är inlagt, väntar på certifikatet
     },
 
     /* -----------------------------------------------------
@@ -175,7 +177,7 @@
         "sv": "Filmfavorit",
         "en": "Film favourite"
       },
-      "price": 899,
+      "price": 699,
       "colors": [
         "black",
         "lightpink"
@@ -281,7 +283,7 @@
           "Adjustable shoulder straps"
         ]
       },
-      "price": 779,
+      "price": 529,
       "colors": [
         "navy",
         "pink"
@@ -345,10 +347,10 @@
         "sv": "Trend",
         "en": "Trending"
       },
-      "price": 599,
+      "price": 499,
       "sizePrices": {
-        "13\"": 599,
-        "15\"": 699
+        "13\"": 499,
+        "15\"": 599
       },
       "colors": [
         "pastel"
@@ -391,7 +393,7 @@
           "Sleeveless"
         ]
       },
-      "price": 529,
+      "price": 429,
       "colors": [
         "pastel"
       ],
@@ -525,7 +527,7 @@
         "sv": "Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.",
         "en": "You always know how the film ends — own it. A cosy hoodie for those who've seen it all."
       },
-      "price": 799,
+      "price": 629,
       "colors": [
         "natural",
         "lightpink",
@@ -646,10 +648,10 @@
           "Available for 13\" and 15\""
         ]
       },
-      "price": 549,
+      "price": 449,
       "sizePrices": {
-        "13\"": 549,
-        "15\"": 649
+        "13\"": 449,
+        "15\"": 549
       },
       "colors": [
         "silver"
@@ -679,7 +681,7 @@
         "sv": "Sätt på dig Step1-kepsen och något händer — idéerna börjar rulla. Bär den och du bär med dig Step1. Broderad logga, vit mesh, justerbar. One size.",
         "en": "Put on the Step1 cap and something happens — the ideas start rolling. Wear it and you carry Step1 with you. Embroidered logo, white mesh, adjustable. One size."
       },
-      "price": 379,
+      "price": 299,
       "colors": [
         "navy",
         "silver",
@@ -824,7 +826,7 @@
         "sv": "\"Reserved for vision.\" Håll huvudet varmt och blicken skarp — för idéernas timmar. \"Inspirerad av Smålands skogar.\" One size.",
         "en": "\"Reserved for vision.\" Keep your head warm and your eye sharp — for the hours of ideas. \"Inspired by the forests of Småland.\" One size."
       },
-      "price": 429,
+      "price": 349,
       "colors": [
         "olive",
         "black",
@@ -892,7 +894,7 @@
           "Volume: 15 oz (approx. 440 ml)"
         ]
       },
-      "price": 299,
+      "price": 175,
       "colors": [
         "black"
       ],
@@ -1896,6 +1898,12 @@
     const swishOpt = wrap.querySelector('[data-pay="swish"]');
     cardOpt.style.display = CONFIG.payments.card ? '' : 'none';
     swishOpt.style.display = CONFIG.payments.swish ? '' : 'none';
+    /* Numret under Swish-raden: kunden ska kunna se vart pengarna går
+       innan appen öppnas. Tomt nummer lämnar raden som den är. */
+    if (CONFIG.swishNumber) {
+      const d = swishOpt.querySelector('.pay-desc');
+      if (d) d.textContent = t('paySwishDesc') + ' · ' + CONFIG.swishNumber;
+    }
 
     // Se till att ett tillgängligt alternativ är valt
     const checked = wrap.querySelector('input[name="payMethod"]:checked');
@@ -2080,7 +2088,11 @@
       const method = selectedPayMethod();
       if (method === 'swish' && CONFIG.payments.swish) return payWithSwish(recipient);
       if (CONFIG.payments.card) return payWithCard(recipient);
-      return payWithSwish(recipient);
+      /* Bara Swish påslaget: valet spelar ingen roll, det finns ett
+         betalsätt. Är BÅDA avstängda tar vi mejlbeställningen nedan i
+         stället — förut hamnade vi i Swish ändå och kunden möttes av
+         ett serverfel. */
+      if (CONFIG.payments.swish) return payWithSwish(recipient);
     }
 
     const lines = cart.map((item) => {

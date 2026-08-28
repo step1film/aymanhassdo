@@ -45,7 +45,7 @@ const SHIP_COUNTRIES = ['SE'];
 const CATALOG = {
   "reel-mugg": {
     "name": "Director's Morning",
-    "price": 299,
+    "price": 175,
     "variants": {
       "black|one": 5415345254
     }
@@ -59,10 +59,10 @@ const CATALOG = {
   },
   "take-one-sleeve": {
     "name": "TAKE ONE SLEEVE",
-    "price": 599,
+    "price": 499,
     "sizePrices": {
-      "13\"": 599,
-      "15\"": 699
+      "13\"": 499,
+      "15\"": 599
     },
     "variants": {
       "pastel|13\"": 5415334461,
@@ -71,10 +71,10 @@ const CATALOG = {
   },
   "static-reel-sleeve": {
     "name": "GLITCH SLEEVE",
-    "price": 549,
+    "price": 449,
     "sizePrices": {
-      "13\"": 549,
-      "15\"": 649
+      "13\"": 449,
+      "15\"": 549
     },
     "variants": {
       "silver|13\"": 5415374045,
@@ -83,7 +83,7 @@ const CATALOG = {
   },
   "rolling-backpack": {
     "name": "ROLLING BACKPACK",
-    "price": 779,
+    "price": 529,
     "variants": {
       "navy|one": 5415353196,
       "pink|one": 5415329629
@@ -91,7 +91,7 @@ const CATALOG = {
   },
   "spoiler-hoodie": {
     "name": "SPOILER HOODIE",
-    "price": 799,
+    "price": 629,
     "variants": {
       "natural|S": 5415690062,
       "natural|M": 5415690063,
@@ -109,7 +109,7 @@ const CATALOG = {
   },
   "24fps-hoodie": {
     "name": "24FPS HOODIE",
-    "price": 899,
+    "price": 699,
     "variants": {
       "black|S": 5415343283,
       "black|M": 5415343284,
@@ -125,7 +125,7 @@ const CATALOG = {
   },
   "reel-trucker-cap": {
     "name": "STEP1 FAN",
-    "price": 379,
+    "price": 299,
     "variants": {
       "navy|one": 5415344277,
       "silver|one": 5415344278,
@@ -142,7 +142,7 @@ const CATALOG = {
   },
   "directors-beanie": {
     "name": "DIRECTOR'S BEANIE",
-    "price": 429,
+    "price": 349,
     "variants": {
       "olive|one": 5415347439,
       "black|one": 5415347436,
@@ -213,7 +213,7 @@ const CATALOG = {
   },
   "step1-jersey": {
     "name": "STEP1 JERSEY",
-    "price": 529,
+    "price": 429,
     "variants": {
       "pastel|XS": 5415333024,
       "pastel|S": 5415333025,

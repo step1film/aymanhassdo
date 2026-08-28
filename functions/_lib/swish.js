@@ -80,8 +80,14 @@ function swishRequest(method, path, body) {
  *   m-commerce (då öppnas Swish-appen direkt på telefonen).
  * @returns {Promise<{id:string, token:string|null}>}
  */
+/* Handelsnumret betalningarna går till. Ett Swish-handelsnummer är
+   inte en hemlighet — det står på kvitton och skyltar — så det ligger
+   som förval här. Miljövariabeln vinner om den är satt, så numret kan
+   bytas utan en ny deploy. */
+const PAYEE_ALIAS = '1231540459';
+
 async function createPaymentRequest(p) {
-  const payee = process.env.SWISH_PAYEE_ALIAS;
+  const payee = process.env.SWISH_PAYEE_ALIAS || PAYEE_ALIAS;
   if (!payee) throw new Error('SWISH_PAYEE_ALIAS saknas i serverns miljövariabler.');
 
   const instructionId = randomUUID().replace(/-/g, '').toUpperCase();
@@ -133,4 +139,4 @@ function normalisePhone(input) {
   return n;
 }
 
-module.exports = { createPaymentRequest, getPaymentRequest, normalisePhone, swishHost };
+module.exports = { createPaymentRequest, getPaymentRequest, normalisePhone, swishHost, PAYEE_ALIAS };

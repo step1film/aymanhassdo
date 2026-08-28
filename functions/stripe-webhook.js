@@ -18,6 +18,14 @@ const Stripe = require('stripe');
 const { priceCart, SHIP_COUNTRIES } = require('./_lib/catalog');
 const { fulfilOrder } = require('./_lib/fulfil');
 
+/* Stripe kan skicka samma händelse mer än en gång — vid omförsök, och
+   i sällsynta fall två gånger direkt. Vi svarar alltid 200, så
+   omförsöken är få, men en dubblett skulle annars bli en andra
+   Printful-order på samma betalning. Setet lever så länge
+   funktionsinstansen gör; för skarp drift hör det hemma i en KV-store,
+   se PAYMENTS_SETUP.md. */
+const handledEvents = new Set();
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
@@ -40,6 +48,10 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: 'ignored' };
   }
 
+  if (handledEvents.has(stripeEvent.id)) {
+    return { statusCode: 200, body: 'ok (redan hanterad)' };
+  }
+
   const session = stripeEvent.data.object;
   if (session.payment_status !== 'paid') {
     console.log('[stripe-webhook] Session ej betald ännu:', session.id);
@@ -53,6 +65,22 @@ exports.handler = async (event) => {
 
     // Räkna om priserna på servern igen — metadata är bara referens.
     const cart = priceCart(compact.map(([id, color, size, qty]) => ({ id, color, size, qty })));
+
+    /* Kontrollera att kunden betalat det ordern kostar nu. Sessionen
+       skapades med serverns priser, så det stämmer i normalfallet —
+       men ändras ett pris medan en kassa står öppen betalar kunden det
+       gamla priset och vi hade tryckt ordern för det nya. Kunden HAR
+       betalat, så vi svarar 200 och lägger ordern för hand. */
+    const paidOre = Number(session.amount_total);
+    const vantatOre = Math.round(cart.total * 100);
+    if (Number.isFinite(paidOre) && Math.abs(paidOre - vantatOre) > 1) {
+      console.warn(`[stripe-webhook] ⚠️ MANUELL HANTERING: order ${md.reference} betalades `
+        + `med ${paidOre / 100} kr men kostar ${cart.total} kr enligt katalogen. `
+        + `Ingen Printful-order lagd — kontrollera priset och lägg ordern för hand `
+        + `eller återbetala mellanskillnaden.`);
+      handledEvents.add(stripeEvent.id);
+      return { statusCode: 200, body: 'ok (beloppet stämmer inte, manuell hantering)' };
+    }
 
     // Stripe kan ha samlat in en annan leveransadress — den vinner.
     const sd = session.shipping_details || session.customer_details;
@@ -80,6 +108,7 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: 'ok (utländsk adress, manuell hantering)' };
     }
 
+    handledEvents.add(stripeEvent.id);
     await fulfilOrder({
       reference: md.reference || session.client_reference_id || session.id,
       recipient,

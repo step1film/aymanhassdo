@@ -5,7 +5,16 @@ Butiken är förberedd för två betalsätt:
 | Betalsätt | Går via | Status |
 |---|---|---|
 | **Kort + Klarna** | Stripe | Kod klar — kräver Stripe-konto |
-| **Swish** | Swish Handel (din bank) | Kod klar — kräver Swish Handel-avtal |
+| **Swish** | Swish Handel (din bank) | Kod klar, numret inlagt — kräver certifikat |
+
+**Swish-numret 123 154 04 59** ligger inlagt både i butiken (visas under
+Swish-alternativet i kassan) och på servern som förval i
+`functions/_lib/swish.js`. Det som återstår är certifikatet: Swish
+Commerce API kräver ömsesidig TLS, alltså en `.p12`-fil från banken.
+Utan den svarar Swish inte alls, och därför står `payments.swish` kvar
+på `false` i `shop.js` — annars hade kunden mötts av ett serverfel i
+kassan. När certifikatet ligger i `SWISH_CERT_P12` är det en rad som
+ska ändras.
 
 > **Just nu är betalning avstängd.** Butiken skickar en mejlbeställning som
 > tidigare tills du fyllt i uppgifterna nedan och slagit på den. Ingenting
@@ -95,7 +104,7 @@ det går inte att skapa själv online.
    Kopiera hela strängen.
 4. Lägg in i Netlify:
 ```
-SWISH_PAYEE_ALIAS   = 1231234567        (ditt handelsnummer)
+SWISH_PAYEE_ALIAS   = 1231540459        (STEP1FILM:s handelsnummer, 123 154 04 59)
 SWISH_CERT_P12      = <base64-strängen>
 SWISH_CERT_PASSWORD = <lösenordet>
 SWISH_ENV           = test              (byt till production när det funkar)
