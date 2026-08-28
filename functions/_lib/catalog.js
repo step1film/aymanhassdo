@@ -45,7 +45,7 @@ const SHIP_COUNTRIES = ['SE'];
 const CATALOG = {
   "reel-mugg": {
     "name": "Director's Morning",
-    "price": 299,
+    "price": 175,
     "variants": {
       "black|one": 5415345254
     }
