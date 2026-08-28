@@ -184,3 +184,32 @@ aldrig; den ber Netlify-funktionerna göra jobbet, och de har nyckeln.
 Kommer du på att lösenordet läckt: byt `ADMIN_PASSWORD` **och**
 `ADMIN_SECRET` i Netlify och deploya om. Alla inloggade sessioner
 slutar då gälla direkt.
+
+---
+
+## Byta lösenord
+
+Lösenordet ligger bara hos Netlify, aldrig i koden. Byte sker därför
+helt i Netlifys gränssnitt — ingen ny commit behövs.
+
+1. **Netlify → Site settings → Environment variables.**
+2. Ändra `ADMIN_PASSWORD` till det nya lösenordet.
+3. Ändra **även** `ADMIN_SECRET` till en ny slumpsträng:
+
+   ```
+   openssl rand -base64 48
+   ```
+
+   Utan det steget fortsätter alla redan inloggade sessioner att gälla
+   i upp till ett dygn — även den som eventuellt kom över det gamla
+   lösenordet. Sessionsnyckeln är signerad med `ADMIN_SECRET`, och när
+   den byts blir varenda utfärdad nyckel ogiltig på en gång.
+4. **Deploys → Trigger deploy → Deploy site.** Miljövariabler läses in
+   när funktionerna startar, så de måste startas om för att det nya
+   värdet ska gälla.
+5. Logga in på nytt på step1film.se/admin och kontrollera att det gamla
+   lösenordet inte längre fungerar.
+
+Byt vid minsta tvivel: om lösenordet skickats i ett meddelande, legat i
+en anteckning på en delad dator, eller om någon som haft det inte
+längre ska ha det.
