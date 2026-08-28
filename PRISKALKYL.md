@@ -47,7 +47,7 @@ Alla priser i butiken är nu räknade mot avlästa Printfulsiffror.
 |---|---:|---:|---:|---:|---:|---:|
 | 24FPS HOODIE | 699 | 349 | 65 | **+183** | 24 % | 461 |
 | SPOILER HOODIE | 649 | 285 | 65 | **+209** | 29 % | 378 |
-| ROLLING BACKPACK | 649 | 285 | 65 | **+209** | 29 % | 378 |
+| ROLLING BACKPACK | 649 | 375 | 102 | **+82** | 11 % | 543 |
 | TAKE ONE SLEEVE 15" | 599 | 225 | 65 | **+230** | 34 % | 300 |
 | STEP1 JERSEY | 549 | 259 | 40 | **+183** | 29 % | 312 |
 | GLITCH SLEEVE 15" | 549 | 215 | 65 | **+202** | 32 % | 287 |
