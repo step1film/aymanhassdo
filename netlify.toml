@@ -17,6 +17,24 @@
   publish = "."
   functions = "functions"
 
+  # Bygg BARA när serversidan ändrats.
+  # -----------------------------------------------------
+  # Netlifys gratisplan har en pott krediter i månaden, och varje
+  # produktionsbygge äter av den. Kunderna möter GitHub Pages, inte
+  # Netlify — det enda som MÅSTE vara färskt här är functions/, som
+  # tar betalt och räknar priser. En textändring på startsidan behöver
+  # alltså inget bygge.
+  #
+  # Netlify kör kommandot före varje bygge: avslutar det med 0 hoppas
+  # bygget över. `git diff --quiet` gör precis det när inget i listan
+  # ändrats sedan förra bygget. Saknas CACHED_COMMIT_REF (första
+  # bygget) misslyckas kommandot, och då byggs det — rätt håll att
+  # falla åt.
+  #
+  # OBS: priserna ligger i functions/_lib/catalog.js och omfattas
+  # därför alltid. Ändras ett pris byggs det om.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- functions package.json package-lock.json netlify.toml"
+
 # _archive/ är sparad kod, inte sidor — servera den aldrig.
 # (GitHub Pages hoppar redan över mappar som börjar med _.)
 [[redirects]]
