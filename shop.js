@@ -52,20 +52,30 @@
 
        ⚠️ ATT ÖPPNA IGEN: sätt raden nedan till false. Det är allt.
 
-       VARFÖR DEN ÄR STÄNGD (2026-08-01):
+       VARFÖR DEN ÄR STÄNGD (2026-08-28):
        Sajten ligger på GitHub Pages och uppdateras direkt, men
-       priskontrollen som DEBITERAR kunden är en Netlify-funktion —
-       och Netlify har pausat alla deployer sedan kontots krediter tog
-       slut. Servern kör därför en version från före den senaste
-       prisändringen. Följden: tio produkter skulle debiteras 10–160 kr
-       för lite, STEP1 JERSEY fanns inte alls i den versionen och gav
-       felmeddelande i kassan, och landspärren mot utlandsorder saknas.
+       priskontrollen som DEBITERAR kunden är en Netlify-funktion — och
+       Netlifys produktionsdeployer är pausade sedan gratisplanens
+       krediter tog slut. Servern kör därför en äldre version av
+       priskatalogen än den butiken visar.
 
-       Ingen kund hade hunnit handla när det upptäcktes.
+       Ingen kund kan handla under tiden, eftersom den här flaggan
+       ligger i filen som kunden laddar. Risken är alltså inte fel
+       debitering — den är att butiken inte kan öppnas.
 
-       Öppna igen när Netlify visat en lyckad deploy — kontrollera på
-       Deploys-sidan att den översta raden säger "Published" med ett
-       färskt commit-id, inte "Skipped". Då stämmer priserna igen. */
+       SÅ HÄR ÖPPNAR DU:
+       1. Uppgradera Netlify till Pro (beslutat 2026-08-28). Pausen
+          släpper direkt och deployerna börjar gå igenom igen.
+       2. Kontrollera på Netlifys Deploys-sida att den översta raden
+          säger "Published" med ett färskt commit-id.
+       3. Kontrollera att priserna stämmer: functions/_lib/catalog.js
+          och PRODUCTS här i filen ska vara identiska. PRISKALKYL.md
+          har hela listan.
+       4. Sätt raden nedan till false.
+
+       Bygget hoppas numera över när bara sajten ändrats, se
+       netlify.toml — det var ett dussin onödiga produktionsbyggen om
+       dagen som tömde potten på två dygn. */
     kassaStangd: true
   };
 
