@@ -679,7 +679,10 @@ body.reduced-motion .h-panel::after { animation: none; }
      panelen är en skärm hög och rutan ska aldrig tränga undan
      biografin ovanför. */
   --media-h: clamp(95px, 11.6vh, 138px);
-  --bio-grad: clamp(0.76rem, 0.88vw, 0.95rem);
+  /* Graden höjd ett snäpp: spalten är bredare nu, så texten går på
+     färre rader och har råd att växa. main.js krymper ändå tillbaka
+     om den inte skulle rymmas. */
+  --bio-grad: clamp(0.85rem, 1.02vw, 1.15rem);
 }
 
 /* Översta raden: biografin till vänster, porträttspalten till höger.
@@ -1417,13 +1420,18 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
      står den på 1 och allt är som förut. */
   font-size: calc(var(--bio-grad) * var(--bio-skala, 1));
   font-weight: 300;
-  /* 1.75 i stället för 1.85: texten ligger i full bredd nu och delar
-     panelen med mediaraden under. De två pixlarna per rad är skillnaden
-     mellan att hela biografin syns och att de sista styckena hamnar
-     under kanten. */
-  line-height: 1.75;
+  /* 1.62 i stället för 1.75. Panelen är en skärm hög och rullar inte,
+     så höjden är given: raden mellan raderna är det enda som kan bli
+     grad i stället. Tätare rader ger färre pixlar per rad, och de
+     pixlarna går rakt in i teckengraden — texten blir större utan att
+     något stycke hamnar under kanten. */
+  line-height: 1.62;
   text-wrap: pretty;
-  max-width: 92ch;
+  /* Bredare spalt. Taket låg på 92ch och lämnade ett tomt fält mellan
+     texten och porträttet på breda skärmar; raderna blev korta och
+     många, och höjdanpassningen fick krympa graden för att allt skulle
+     rymmas. Bredare rader betyder färre rader — och större text. */
+  max-width: 112ch;
 }
 .about-lead  { color: var(--white); }
 .about-body  { color: var(--text); }
@@ -1563,7 +1571,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
    säger samma sak som formuläret på panel 05. Kvar blir bildtexten
    och adressen, som är det man faktiskt behöver här. */
 @media (min-width: 901px) and (max-height: 900px) {
-  .about-cols { --media-h: clamp(52px, 6.8vh, 70px); --bio-grad: clamp(0.78rem, 0.9vw, 0.88rem); }
+  .about-cols { --media-h: clamp(52px, 6.8vh, 70px); --bio-grad: clamp(0.86rem, 1.02vw, 1.08rem); }
   .about-portrait { flex-basis: clamp(118px, 11vw, 150px); }
   .about-pitch { display: none; }
   .about-scroll { gap: 0.18em; }
@@ -1601,7 +1609,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   .reel-title { display: none; }
   .about-portrait { flex-basis: clamp(104px, 9.5vw, 130px); }
   .about-scroll { gap: 0.26em; }
-  .about-cols { --bio-grad: clamp(0.76rem, 0.88vw, 0.84rem); }
+  .about-cols { --bio-grad: clamp(0.84rem, 0.98vw, 1.02rem); }
   .about-lead, .about-body, .about-quote, .about-sign { line-height: 1.4; }
   /* Klippspelaren utgår på de allra lägsta fönstren. Den och
      biografin får inte plats samtidigt vid läsbar grad, och texten
@@ -2775,7 +2783,7 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
      sköt ned det som faktiskt är sidans innehåll. */
   .about-pitch { display: none; }
 
-  .about-cols { --bio-grad: 0.9rem; }
+  .about-cols { --bio-grad: 0.95rem; }
   .about-lead, .about-body, .about-quote, .about-sign {
     line-height: 1.75;
     max-width: none;
