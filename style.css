@@ -1477,18 +1477,14 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
      filmen mitt i svepet. Pilarna under rutan byter klipp i stället. */
   pointer-events: none;
 }
-/* YouTube ritar rubrik och kanalnamn överst och sin logga nederst i
-   spelaren. Det går inte att stänga av med parametrar — modestbranding
-   och showinfo gör ingenting längre. Bilden förstoras därför en aning
-   i rutan, så att listerna hamnar utanför kanten. Vimeo-klippen körs
-   redan rena med background=1 och rörs inte. */
-.reel-frame--yt iframe {
-  position: absolute;
-  width: 136%;
-  height: 136%;
-  top: -18%;
-  left: -18%;
-}
+/* Klippet tonar in i stället för att slås på. YouTube visar sin rubrik
+   och sin logga under de första ögonblicken innan bilden kommit i
+   gång, och Vimeo börjar med en svart ruta — bägge göms bakom
+   instoningen, så rutan går direkt från panelens mörker till rörlig
+   bild. Ingen förstoring: bilden ligger i rutan i sin egen storlek. */
+.reel-frame iframe { opacity: 0; transition: opacity 0.5s ease; }
+.reel-frame iframe.ar-inne { opacity: 1; }
+body.reduced-motion .reel-frame iframe { transition: none; }
 .reel-empty {
   position: absolute;
   inset: 0;

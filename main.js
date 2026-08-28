@@ -1303,7 +1303,8 @@
           ? 'https://www.youtube.com/embed/' + id
             + '?autoplay=1&mute=1&loop=1&playlist=' + id
             + '&controls=0&rel=0&modestbranding=1&playsinline=1'
-            + '&iv_load_policy=3&disablekb=1&fs=0'
+            + '&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1'
+            + (location.origin.startsWith('http') ? '&origin=' + encodeURIComponent(location.origin) : '')
           : 'https://player.vimeo.com/video/' + id
             + '?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1'
             + (k.hash ? '&h=' + encodeURIComponent(k.hash) : '');
@@ -1313,12 +1314,35 @@
         frame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
         frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
         frame.setAttribute('loading', 'lazy');
-        /* Rutan får veta vilken tjänst som spelar: YouTube-bilden
-           förstoras i CSS så att spelarens egna lister hamnar utanför
-           kanten. */
         scen.classList.toggle('reel-frame--yt', ytKlipp);
         scen.textContent = '';
         scen.appendChild(frame);
+
+        /* En YouTube-spelare som inte kommer i gång står kvar med
+           rubrik, kanalnamn och en stor knapp mitt i rutan — det är
+           det läget som syns, inte spelarens knappar under körning.
+           Vi startar den därför själva. Spelaren tar emot kommandon
+           via postMessage när enablejsapi=1 är satt, och det behövs
+           inget skript från YouTube — vilket är tur, för
+           säkerhetsheadern släpper bara in våra egna. Två försök:
+           ett direkt när ramen laddat och ett strax efter, för de
+           gånger spelaren inte hunnit lyssna. */
+        if (ytKlipp) {
+          const kommando = (func) => {
+            try {
+              frame.contentWindow.postMessage(
+                JSON.stringify({ event: 'command', func: func, args: [] }), '*');
+            } catch (e) { /* ramen hann bytas ut — strunt i det */ }
+          };
+          const starta = () => { kommando('mute'); kommando('playVideo'); };
+          frame.addEventListener('load', () => { starta(); setTimeout(starta, 700); });
+        }
+
+        /* Tona in när spelaren hunnit visa bild. Timern går oavsett om
+           load-händelsen kommer, så rutan kan aldrig bli stående tom. */
+        const visa = () => frame.classList.add('ar-inne');
+        if (prefersReducedMotion) visa();
+        else setTimeout(visa, ytKlipp ? 1400 : 500);
       }
 
       function visa(i, auto) {
