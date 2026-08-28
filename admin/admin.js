@@ -197,7 +197,7 @@
       'stillsSoon', 'f1Type', 'f1Syn', 'f2Type', 'f2Title', 'f2Syn', 'f3Type', 'f3Title', 'f3Syn',
       'labSign', 'f4Type', 'f4Title', 'f4Syn', 'f5Year', 'f5Type', 'f5Syn', 'storeAria',
       'ctaWatch', 'ctaFilms', 'ctaSoon', 'ctaShopping', 'watchAria', 'closeTrailer']],
-    ['Panel 01 — Drömmen', ['p2Title', 'portraitCap', 'aboutP1', 'aboutP2', 'aboutP3', 'aboutP4',
+    ['Panel 01 — Drömmen', ['p2Title', 'portraitCap', 'aboutP1', 'aboutP2', 'aboutP3', 'aboutP4', 'aboutP5',
       'aboutQuote', 'aboutPitch', 'aboutMail', 'reelHead', 'reelSoon', 'reelPrev', 'reelNext', 'reelList']],
     ['Panel 03 — Vad vi kan göra', ['p3Title', 'p3Meta', 'p3Intro',
       'aw1', 'aw1d', 'aw2', 'aw2d', 'aw3', 'aw3d', 'aw4', 'aw4d', 'aw5', 'aw5d', 'aw6', 'aw6d']],
