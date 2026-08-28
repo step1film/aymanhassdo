@@ -260,6 +260,28 @@
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
 
+    /* --- Nederkanten ---
+       Footern ligger numera i svepstacken, absolut placerad längst ned
+       i bilden, och bottenstapeln (pilar + fokusenhet) kliver upp
+       ovanför remsan när den sveper in. Kontaktpanelen lämnar plats för
+       båda. Höjderna går inte att skriva i CSS — de beror på typsnitt,
+       språk och fönsterhöjd — så vi mäter dem och lägger ut dem som
+       variabler på #h-sticky, där stapeln och panelen ärver dem. */
+    const footEl = document.getElementById('footer');
+    const dockEl = document.querySelector('.h-dock');
+    let footH = -1, dockH = -1;
+    function matBotten() {
+      if (!wideMode) return;
+      if (footEl) {
+        const h = footEl.offsetHeight;
+        if (h !== footH) { footH = h; hSticky.style.setProperty('--foot-h', h + 'px'); }
+      }
+      if (dockEl) {
+        const h = dockEl.offsetHeight;
+        if (h !== dockH) { dockH = h; hSticky.style.setProperty('--dock-h', h + 'px'); }
+      }
+    }
+
     /* --- Fokusenheten ---
        Rullningen 0–1 läses av som ett fokusavstånd: närgränsen 0,6 m
        vid showreelen, oändligt längst ned. Kurvan är hyperbolisk som
@@ -272,7 +294,9 @@
     const enhetEl = document.querySelector('.fu-unit');
     function visaFokus(p) {
       p = Math.max(0, Math.min(1, p));
-      if (idxEl) idxEl.style.top = (p * 100).toFixed(2) + '%';
+      /* Skalan ligger ned i bottenstapeln och står upp vid kanten på
+         telefon — indexstrecket glider åt det håll skalan pekar. */
+      if (idxEl) idxEl.style[wideMode ? 'left' : 'top'] = (p * 100).toFixed(2) + '%';
       if (!distEl) return;
       // 1/avstånd rör sig linjärt — det är så en fokusskala är graderad
       const d = 1 / ((1 / NARA) * (1 - p) + (1 / (FJARRAN * 3)) * p);
@@ -339,6 +363,18 @@
         const progress = mjuk((scrolledIn - i * vh) / vh);
         panel.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
         if (i === 0) reportCover(progress);
+        /* Footern följer sista panelens svepkant, inte rullningen
+           under den: remsan skjuts in från sidan i samma rörelse och
+           landar som en avslutning på bilden. Klippet sitter på
+           footern, så texten står stilla på sin plats och blottas —
+           den glider aldrig in snett. */
+        if (i === TOTAL - 1) {
+          if (footEl) footEl.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
+          /* Stapeln kliver upp ovanför remsan när den börjar synas, och
+             sätter sig igen när man rullar tillbaka. Bara den här
+             panelen har lämnat plats för båda. */
+          if (dockEl) dockEl.classList.toggle('ar-lyft', progress > 0.06);
+        }
       });
 
       /* Fokusräknaren följer samma kurva som svepet — annars hade
@@ -359,6 +395,8 @@
     function setupMobileNav() {
       // Reset any inline clip-paths applied in desktop mode
       panels.forEach(p => { p.style.clipPath = ''; });
+      if (footEl) footEl.style.clipPath = '';
+      if (dockEl) dockEl.classList.remove('ar-lyft');
 
       const io = new IntersectionObserver(entries => {
         entries.forEach(entry => {
@@ -419,14 +457,20 @@
       }
       bioPagar = false;
     }
+    matBotten();
     passaBiografin();
     /* Igen när typsnitten laddat: mätningen ovan sker på reservsnittet,
        och radbrytningarna flyttar sig när det riktiga kommer in. */
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(passaBiografin).catch(() => {});
+      document.fonts.ready.then(() => { matBotten(); passaBiografin(); }).catch(() => {});
     }
     let bioTimer = 0;
-    const bioSnart = () => { clearTimeout(bioTimer); bioTimer = setTimeout(passaBiografin, 120); };
+    /* Bottenhöjderna mäts före texten: de styr panelens nedre marginal,
+       och biografin passas in mot den ytan som blir kvar. */
+    const bioSnart = () => {
+      clearTimeout(bioTimer);
+      bioTimer = setTimeout(() => { matBotten(); passaBiografin(); }, 120);
+    };
     window.addEventListener('resize', bioSnart);
     /* Språkbytet byter ut hela texten, och andra lyssnare ritar om delar
        av panelen efter oss. Ett varv till på nästa bildruta fångar det
@@ -443,6 +487,14 @@
     const bioBox = document.querySelector('.about-content');
     if (bioBox && window.ResizeObserver) {
       new ResizeObserver(bioSnart).observe(bioBox);
+    }
+    /* Footern och stapeln byter höjd vid språkbyte och radbrytning.
+       De mäts om när det händer — variablerna de skriver styr bara
+       placering och marginal, så de kan inte trigga sig själva. */
+    if (window.ResizeObserver) {
+      const bottenOgat = new ResizeObserver(() => matBotten());
+      if (footEl) bottenOgat.observe(footEl);
+      if (dockEl) bottenOgat.observe(dockEl);
     }
 
     /* Egen rullning för pilarna i stället för behavior: 'smooth'.

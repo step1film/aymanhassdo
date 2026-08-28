@@ -601,58 +601,68 @@
 
         </div><!-- #h-track -->
 
-        <!-- Fokusenhet: läser av rullningen som en följefokus-handkontroll.
-             Prickarna finns kvar som markeringar på skalan och går att klicka. -->
-        <nav id="h-nav" class="focus-unit" data-i18n-aria="navAria" aria-label="Sektionsnavigering">
-          <div class="fu-readout" aria-hidden="true">
-            <span class="fu-mark" id="hCur">01</span>
-            <span class="fu-of" id="fuTotal">/ 05</span>
+        <!-- Bottenpanelen: pilarna överst, fokusenheten liggande under dem.
+             Fokusenheten satt förut lodrätt vid högerkanten; nu ligger hela
+             styrningen samlad i mitten, ovanför footern. -->
+        <div class="h-dock">
+          <div class="h-arrows">
+            <button class="h-arrow h-arrow--prev" id="hPrev" type="button" data-i18n-aria="prevSection" aria-label="Föregående sektion">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+            </button>
+            <button class="h-arrow h-arrow--next" id="hNext" type="button" data-i18n-aria="nextSection" aria-label="Nästa sektion">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+                <polyline points="9,6 15,12 9,18"></polyline>
+              </svg>
+            </button>
           </div>
 
-          <div class="fu-scale">
-            <div class="fu-rail" aria-hidden="true"></div>
-            <div class="fu-index" id="fuIndex" aria-hidden="true"></div>
-            <div class="h-nav-dots">
-              <button class="h-dot active" data-i="0" data-i18n-aria="navAbout" aria-label="Filmskaparen" aria-current="true" type="button"></button>
-              <button class="h-dot" data-i="1" data-i18n-aria="navFilms" aria-label="Filmer" type="button"></button>
-              <button class="h-dot" data-i="2" data-i18n-aria="navPractice" aria-label="Verksamhet" type="button"></button>
-              <button class="h-dot" data-i="3" data-i18n-aria="navPress" aria-label="Press" type="button"></button>
-              <button class="h-dot" data-i="4" data-i18n-aria="navContact" aria-label="Kontakt" type="button"></button>
+          <!-- Fokusenhet: läser av rullningen som en följefokus-handkontroll.
+               Prickarna finns kvar som markeringar på skalan och går att klicka. -->
+          <nav id="h-nav" class="focus-unit" data-i18n-aria="navAria" aria-label="Sektionsnavigering">
+            <div class="fu-readout" aria-hidden="true">
+              <span class="fu-mark" id="hCur">01</span>
+              <span class="fu-of" id="fuTotal">/ 05</span>
+            </div>
+
+            <div class="fu-scale">
+              <div class="fu-rail" aria-hidden="true"></div>
+              <div class="fu-index" id="fuIndex" aria-hidden="true"></div>
+              <div class="h-nav-dots">
+                <button class="h-dot active" data-i="0" data-i18n-aria="navAbout" aria-label="Filmskaparen" aria-current="true" type="button"></button>
+                <button class="h-dot" data-i="1" data-i18n-aria="navFilms" aria-label="Filmer" type="button"></button>
+                <button class="h-dot" data-i="2" data-i18n-aria="navPractice" aria-label="Verksamhet" type="button"></button>
+                <button class="h-dot" data-i="3" data-i18n-aria="navPress" aria-label="Press" type="button"></button>
+                <button class="h-dot" data-i="4" data-i18n-aria="navContact" aria-label="Kontakt" type="button"></button>
+              </div>
+            </div>
+
+            <div class="fu-dist" aria-hidden="true">
+              <span class="fu-num" id="fuDist">0.6</span><span class="fu-unit">m</span>
+            </div>
+          </nav>
+        </div><!-- .h-dock -->
+
+
+        <!-- Footern ligger i svepstacken, inte under den: den klipps in
+             från sidan tillsammans med sista panelen och lägger sig som en
+             avslutande remsa i nederkanten av bilden. -->
+        <footer id="footer">
+          <div class="foot-inner">
+            <div class="foot-col">
+              <span class="foot-brand"><i class="logo-reel" aria-hidden="true"></i>STEP<em>1</em>FILM</span>
+              <span class="foot-copy" data-i18n="footCopy">© 2026 STEP1FILM · Småland, Sweden</span>
+            </div>
+            <div class="foot-col foot-col--right">
+              <a class="foot-link" href="mailto:info@step1film.se">info@step1film.se</a>
             </div>
           </div>
-
-          <div class="fu-dist" aria-hidden="true">
-            <span class="fu-num" id="fuDist">0.6</span><span class="fu-unit">m</span>
-          </div>
-        </nav>
-
-        <div class="h-arrows">
-          <button class="h-arrow h-arrow--prev" id="hPrev" type="button" data-i18n-aria="prevSection" aria-label="Föregående sektion">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
-              <polyline points="15,18 9,12 15,6"></polyline>
-            </svg>
-          </button>
-          <button class="h-arrow h-arrow--next" id="hNext" type="button" data-i18n-aria="nextSection" aria-label="Nästa sektion">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
-              <polyline points="9,6 15,12 9,18"></polyline>
-            </svg>
-          </button>
-        </div>
+        </footer>
 
       </div><!-- #h-sticky -->
     </div><!-- #h-wrapper -->
 
-    <footer id="footer">
-      <div class="foot-inner">
-        <div class="foot-col">
-          <span class="foot-brand"><i class="logo-reel" aria-hidden="true"></i>STEP<em>1</em>FILM</span>
-          <span class="foot-copy" data-i18n="footCopy">© 2026 STEP1FILM · Småland, Sweden</span>
-        </div>
-        <div class="foot-col foot-col--right">
-          <a class="foot-link" href="mailto:info@step1film.se">info@step1film.se</a>
-        </div>
-      </div>
-    </footer>
 
   </main>
 
