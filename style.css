@@ -2039,7 +2039,7 @@ body.reduced-motion .tb-card { animation: none; }
     z-index: 6;
     border-top: 0;
     border-left: 1px solid var(--line);
-    padding: clamp(1rem, 3vh, 2rem) 0;
+    padding: clamp(1rem, 3vh, 2rem) clamp(0.4rem, 0.5vw, 0.7rem);
     /* Utanför bild tills sista svepet drar in den. main.js skriver
        translateX under rullningen; det här är utgångsläget. */
     transform: translateX(100%);
@@ -2069,6 +2069,11 @@ body.reduced-motion .tb-card { animation: none; }
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     height: 100%;
+    /* Bredden är blockmåttet när skrivriktningen står upp, och auto
+       gav den innehållets bredd — raderna hamnade vid ena kanten i
+       stället för mitt i remsan. Med full bredd har align-items något
+       att centrera mot. */
+    width: 100%;
     flex-direction: row-reverse;
     flex-wrap: nowrap;
     align-items: center;
@@ -2090,6 +2095,9 @@ body.reduced-motion .tb-card { animation: none; }
     margin-right: 0;
     margin-bottom: 0.42em;
     vertical-align: middle;
+    /* Halvvarvet på remsan vänder även rullen upp och ned. Bokstäverna
+       ska följa med — märket ska inte. Här vrids den tillbaka. */
+    transform: rotate(180deg);
   }
 }
 @media (min-width: 901px) and (min-height: 560px) and (max-height: 880px) {

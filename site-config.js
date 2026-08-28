@@ -288,7 +288,10 @@ window.STEP1FILM_MEDIA = [
 window.STEP1FILM_EDUCATION = [
   {
     "year": "2020–2023",
-    "what": "Cinematography / Filmfoto",
+    "what": {
+      "sv": "Cinematography / Filmfoto",
+      "en": "Cinematography"
+    },
     "where": {
       "sv": "Kandidatstudier · Egypten, distans",
       "en": "Bachelor studies · Egypt, distance"
@@ -296,7 +299,10 @@ window.STEP1FILM_EDUCATION = [
   },
   {
     "year": "2016–2018",
-    "what": "Dokumentärfilm",
+    "what": {
+      "sv": "Dokumentärfilm",
+      "en": "Documentary film"
+    },
     "where": {
       "sv": "Ölands folkhögskola, Öland",
       "en": "Öland Folk High School, Öland"
