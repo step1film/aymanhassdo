@@ -55,7 +55,7 @@ märkta som sådana.
 | ACTION DAD CAP | 399 | 155 | 40 | **+171** | 177 | avläst |
 | DIRECTOR'S BEANIE | 349 | 174 | 40 | **+114** | 202 | avläst |
 | STEP1 FAN (keps) | 299 | 164 | 40 | **+85** | 189 | avläst |
-| DIRECTOR'S MORNING | 175 | 99 | 54 | **+41** | 122 | avläst |
+| DIRECTOR'S MORNING | 299 | 99 | 54 | **+136** | 122 | avläst |
 | ROLLING BACKPACK | 649 | 360 | 80 | +119 | 495 | gissad |
 | STEP1 JERSEY | 549 | 310 | 65 | +107 | 411 | gissad |
 | LIL' DIRECTOR TEE | 399 | 140 | 55 | +171 | 177 | gissad |
@@ -66,32 +66,35 @@ märkta som sådana.
 
 ---
 
-## Muggen tillbaka på 175 kr
+## Regeln: priset går bara uppåt
 
-Den höjdes till 299 i förra omgången på en gissning: att en 15-ozmugg
-kostar omkring 130 kr att trycka och 90 kr att skicka. De avlästa
-siffrorna säger 99 kr och 54 kr — gissningen låg 44 % för högt.
+När en avläsning visar att en produkt tål ett lägre pris **sänks det
+inte**. Priset står kvar på den nivå som ger bäst vinst, och avläsningen
+används bara till att upptäcka priser som är för låga.
 
-**Vid 175 kr blir det 41 kr kvar.** Det är tunt men positivt, och det är
-priset du bad om, så det står kvar. Nollpriset ligger på 122 kr.
+Muggen är exemplet. Den höjdes till 299 kr på en gissning: att en
+15-ozmugg kostar omkring 130 kr att trycka och 90 kr att skicka. De
+avlästa siffrorna säger 99 och 54 — gissningen låg 44 % för högt, och
+muggen hade burit sitt ursprungliga pris på 175 kr med 41 kr kvar.
 
-Att veta: en retur kostar dig hela tryckkostnaden, 153 kr. Det är fyra
-sålda muggar för att ta igen en enda retur.
+**Priset står kvar på 299 kr**, där det ger 136 kr i stället för 41.
+Nollpriset ligger på 122 kr, så marginalen är god.
+
+Detsamma gäller ryggsäcken och jerseyn när deras siffror kommer: visar
+de att 529 och 429 hade gått ihop, står 649 och 549 kvar ändå.
 
 ---
 
 ## Två priser står kvar på en gissning
 
-**ROLLING BACKPACK (649)** och **STEP1 JERSEY (549)** höjdes från dina
-529 och 429 för att gissningen sa att de bara lämnade 26 respektive
-14 kr. Muggen visade att gissningarna kan ligga rejält fel åt det
-pessimistiska hållet.
-
-Skicka Printfulsiffrorna för de två, så räknar jag om — bär de dina
-ursprungliga priser sätter jag tillbaka dem.
+**ROLLING BACKPACK (649)** och **STEP1 JERSEY (549)** höjdes från 529
+och 429 för att gissningen sa att de bara lämnade 26 respektive 14 kr.
+Ligger de verkliga kostnaderna lägre — vilket muggen visade att de kan
+göra — blir marginalen bara bättre. Priserna står kvar.
 
 **AWESOME MUGG (249)** lämnar 56 kr på en gissning som troligen är för
-hög, av samma skäl som Director's Morning. Den är också värd att läsa av.
+hög, av samma skäl som Director's Morning. Den är värd att läsa av: är
+kostnaden lägre är produkten mer lönsam än tabellen säger.
 
 ---
 
@@ -105,7 +108,7 @@ paketet, och då läser kunden ett annat pris än det hen betalade.
 | SPOILER HOODIE | 649 | 629 |
 | DIRECTOR'S BEANIE | 285 | 349 |
 | STEP1 FAN | 349 | 299 |
-| DIRECTOR'S MORNING | 229 | 175 |
+| DIRECTOR'S MORNING | 229 | 299 |
 | 24FPS HOODIE | 407–441 | 699 |
 | ACTION DAD CAP | 349 | 399 |
 | TAKE ONE SLEEVE | 499–599 | 499–599 ✔ |

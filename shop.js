@@ -894,7 +894,7 @@
           "Volume: 15 oz (approx. 440 ml)"
         ]
       },
-      "price": 175,
+      "price": 299,
       "colors": [
         "black"
       ],
