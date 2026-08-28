@@ -46,8 +46,8 @@ Alla priser i butiken är nu räknade mot avlästa Printfulsiffror.
 | Produkt | Pris | Vara | Frakt | **Kvar** | Marginal | Nollpris |
 |---|---:|---:|---:|---:|---:|---:|
 | 24FPS HOODIE | 699 | 349 | 65 | **+183** | 24 % | 461 |
-| ROLLING BACKPACK | 649 | 375 | 102 | **+82** | 11 % | 543 |
-| SPOILER HOODIE | 629 | 285 | 65 | **+193** | 27 % | 378 |
+| SPOILER HOODIE | 649 | 285 | 65 | **+209** | 29 % | 378 |
+| ROLLING BACKPACK | 649 | 285 | 65 | **+209** | 29 % | 378 |
 | TAKE ONE SLEEVE 15" | 599 | 225 | 65 | **+230** | 34 % | 300 |
 | STEP1 JERSEY | 549 | 259 | 40 | **+183** | 29 % | 312 |
 | GLITCH SLEEVE 15" | 549 | 215 | 65 | **+202** | 32 % | 287 |
@@ -66,7 +66,7 @@ Alla priser i butiken är nu räknade mot avlästa Printfulsiffror.
 
 ¹ Inte avläst för sig — samma produkt som Icon Stickers.
 
-**Ingen produkt ligger minus.** Snittet är 142 kr per order och lägsta
+**Ingen produkt ligger minus.** Snittet är 143 kr per order och lägsta
 marginalen 11 % (ryggsäcken). Alla priser står som de ligger.
 
 ### Ryggsäcken hade gått back
@@ -125,14 +125,13 @@ lägga in.
 ## Retail price i Printful stämmer inte
 
 Priset i Printful debiterar ingen — men det kan hamna på följesedeln i
-paketet, och då läser kunden ett annat pris än det hen betalade. Elva
-av arton skiljer sig.
+paketet, och då läser kunden ett annat pris än det hen betalade. Tio av arton skiljer sig.
 
 | Produkt | I Printful | I butiken |
 |---|---:|---:|
 | 24FPS HOODIE | 407–441 | 699 |
 | ROLLING BACKPACK | 699 | 649 |
-| SPOILER HOODIE | 649 | 629 |
+| SPOILER HOODIE | 649 | 649 ✔ |
 | STEP1 JERSEY | 429 | 549 |
 | ACTION DAD CAP | 349 | 399 |
 | LIL' DIRECTOR TEE | 299 | 399 |

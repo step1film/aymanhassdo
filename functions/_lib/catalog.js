@@ -91,7 +91,7 @@ const CATALOG = {
   },
   "spoiler-hoodie": {
     "name": "SPOILER HOODIE",
-    "price": 629,
+    "price": 649,
     "variants": {
       "natural|S": 5415690062,
       "natural|M": 5415690063,

@@ -527,7 +527,7 @@
         "sv": "Du vet alltid hur filmen slutar — äg det. Skön hoodie för den som sett allt.",
         "en": "You always know how the film ends — own it. A cosy hoodie for those who've seen it all."
       },
-      "price": 629,
+      "price": 649,
       "colors": [
         "natural",
         "lightpink",
