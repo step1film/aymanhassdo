@@ -582,7 +582,7 @@
         "sv": "Ingen film blir till utan sitt crew. Bär laget — en unisex-tee som är skön och klädsam på alla.",
         "en": "No film happens without its crew. Wear the team — a unisex tee that's comfortable and flattering on everyone."
       },
-      "price": 289,
+      "price": 349,
       "colors": [
         "heather",
         "yellow",

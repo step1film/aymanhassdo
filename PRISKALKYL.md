@@ -41,30 +41,53 @@ räknas tvärtom på den **högre** änden — dyraste storleken i serien.
 
 ## Sortimentet
 
-Tio produkter är avlästa i Printful. Sex är fortfarande gissade och
+Femton produkter är avlästa i Printful. Tre är fortfarande gissade och
 märkta som sådana.
 
 | Produkt | Pris | Vara | Frakt | **Kvar** | Nollpris | Källa |
 |---|---:|---:|---:|---:|---:|:--|
 | 24FPS HOODIE | 699 | 349 | 65 | **+183** | 461 | avläst |
+| ROLLING BACKPACK | 649 | 375 | 102 | **+82** | 543 | avläst |
 | SPOILER HOODIE | 629 | 285 | 65 | **+193** | 378 | avläst |
 | TAKE ONE SLEEVE 15" | 599 | 225 | 65 | **+230** | 300 | avläst |
-| TAKE ONE SLEEVE 13" | 499 | 225 | 65 | **+153** | 300 | avläst |
+| STEP1 JERSEY | 549 | 259 | 40 | **+183** | 312 | avläst |
 | GLITCH SLEEVE 15" | 549 | 215 | 65 | **+202** | 287 | avläst |
+| TAKE ONE SLEEVE 13" | 499 | 225 | 65 | **+153** | 300 | avläst |
 | GLITCH SLEEVE 13" | 449 | 215 | 65 | **+125** | 287 | avläst |
 | ACTION DAD CAP | 399 | 155 | 40 | **+171** | 177 | avläst |
-| DIRECTOR'S BEANIE | 349 | 174 | 40 | **+114** | 202 | avläst |
-| STEP1 FAN (keps) | 299 | 164 | 40 | **+85** | 189 | avläst |
-| DIRECTOR'S MORNING | 299 | 99 | 54 | **+136** | 122 | avläst |
-| ROLLING BACKPACK | 649 | 360 | 80 | +119 | 495 | gissad |
-| STEP1 JERSEY | 549 | 310 | 65 | +107 | 411 | gissad |
 | LIL' DIRECTOR TEE | 399 | 140 | 55 | +171 | 177 | gissad |
+| DIRECTOR'S BEANIE | 349 | 174 | 40 | **+114** | 202 | avläst |
+| CREW TEE (dold) | 349 | 175 | 46 | **+107** | 211 | avläst |
+| AD1 BEANIE (dold) | 309 | 174 | 40 | +83 | 202 | gissad |
+| DIRECTOR'S MORNING | 299 | 99 | 54 | **+136** | 122 | avläst |
+| STEP1 FAN | 299 | 164 | 40 | **+85** | 189 | avläst |
 | AWESOME MUGG | 249 | 110 | 85 | +56 | 177 | gissad |
-| ICON / GEAR STICKERS | 99 | 30 | 35 | +70 | 8 | gissad |
+| ICON STICKERS | 99 | 29 | 31 | **+75** | 2 | avläst |
+| GEAR STICKERS | 99 | 29 | 31 | **+75** | 2 | avläst¹ |
+
+¹ Samma produkt som Icon Stickers.
 
 **Ingen produkt ligger minus.**
 
----
+### Ryggsäcken hade gått back
+
+Den höjdes från 529 till 649 på en gissning. Avläsningen visar att
+gissningen var för mild: ryggsäcken kostar 375 kr att tillverka och
+**102 kr att skicka** — dubbelt mot ett plagg, för att den är skrymmande.
+**På 529 kr hade varje såld ryggsäck kostat dig 11 kr.** Nollpriset
+ligger på 543 kr, alltså över det gamla priset.
+
+### Jerseyn kostade mindre än gissat
+
+258,52 kr och 40 kr i frakt mot gissade 310 och 65. På 549 kr blir det
+183 kr kvar i stället för de 107 tabellen sa tidigare. Priset står kvar
+enligt regeln nedan.
+
+### CREW TEE höjd från 289 till 349
+
+Produkten är dold i butiken, så ingen har kunnat köpa den. På 289 kr
+hade den lämnat 60 kr; på 349 blir det 107. 349 är också priset som
+redan står i Printful. Säg till om du vill ha tillbaka 289.
 
 ## Regeln: priset går bara uppåt
 
@@ -85,18 +108,17 @@ de att 529 och 429 hade gått ihop, står 649 och 549 kvar ändå.
 
 ---
 
-## Två priser står kvar på en gissning
+## Tre priser står kvar på en gissning
 
-**ROLLING BACKPACK (649)** och **STEP1 JERSEY (549)** höjdes från 529
-och 429 för att gissningen sa att de bara lämnade 26 respektive 14 kr.
-Ligger de verkliga kostnaderna lägre — vilket muggen visade att de kan
-göra — blir marginalen bara bättre. Priserna står kvar.
+**LIL' DIRECTOR TEE (399)**, **AWESOME MUGG (249)** och den dolda
+**AD1 BEANIE (309)** är inte avlästa. Awesome Mugg är den enda som ser
+tunn ut, och gissningen är sannolikt för hög — Director's Morning
+visade sig kosta 99 kr att trycka, inte 130. Läs av den när du har
+vägen förbi.
 
-**AWESOME MUGG (249)** lämnar 56 kr på en gissning som troligen är för
-hög, av samma skäl som Director's Morning. Den är värd att läsa av: är
-kostnaden lägre är produkten mer lönsam än tabellen säger.
-
----
+**ON SET CAP** finns inte i butiken än (den väntar på bilder), men
+siffrorna är avlästa: 155 kr + 40 kr frakt. På 349 kr skulle den lämna
+133 kr. Variant-id:na ligger sparade i katalogen.
 
 ## Retail price i Printful stämmer inte
 
@@ -105,24 +127,23 @@ paketet, och då läser kunden ett annat pris än det hen betalade.
 
 | Produkt | I Printful | I butiken |
 |---|---:|---:|
+| 24FPS HOODIE | 407–441 | 699 |
+| ROLLING BACKPACK | 699 | 649 |
 | SPOILER HOODIE | 649 | 629 |
+| STEP1 JERSEY | 429 | 549 |
+| ACTION DAD CAP | 349 | 399 |
 | DIRECTOR'S BEANIE | 285 | 349 |
 | STEP1 FAN | 349 | 299 |
 | DIRECTOR'S MORNING | 229 | 299 |
-| 24FPS HOODIE | 407–441 | 699 |
-| ACTION DAD CAP | 349 | 399 |
 | TAKE ONE SLEEVE | 499–599 | 499–599 ✔ |
+| CREW TEE | 349 | 349 ✔ |
+| ICON STICKERS | 99 | 99 ✔ |
 
 Rätta dem i Printful, eller stäng av priser på följesedeln.
 
----
-
 ## Kvar att läsa av
 
-Rolling Backpack · Step1 Jersey · Awesome Mugg · Lil' Director Tee ·
-Icon Stickers · Gear Stickers · (och de dolda: Crew Tee, AD1 Beanie)
-
----
+Lil' Director Tee · Awesome Mugg · AD1 Beanie (dold)
 
 ## Övrigt att räkna med
 

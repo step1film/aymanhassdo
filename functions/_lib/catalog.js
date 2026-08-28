@@ -180,7 +180,7 @@ const CATALOG = {
   },
   "crew-tee": {
     "name": "CREW TEE",
-    "price": 289,
+    "price": 349,
     "variants": {
       "heather|S": 5415681066,
       "heather|M": 5415681067,
