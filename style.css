@@ -2057,23 +2057,40 @@ body.reduced-motion .tb-card { animation: none; }
 
 /* I den lodräta remsan står texten på högkant: skrivriktningen vrids,
    inte enskilda rader med transform, så radbrytning och avstånd
-   fortsätter att fungera som vanligt. Märket överst, adressen nederst. */
+   fortsätter att fungera som vanligt.
+
+   Hela innehållet vrids sedan ett halvt varv, så raderna läses nedifrån
+   och upp — samma håll som texten på en filmrulles rygg. Vändningen
+   kastar om ordningen, så spalterna och raderna i dem läggs baklänges
+   (row-reverse): efter vridningen står märket överst och adressen
+   nederst igen. */
 @media (min-width: 901px) and (min-height: 560px) {
   .foot-inner {
     writing-mode: vertical-rl;
+    transform: rotate(180deg);
     height: 100%;
+    flex-direction: row-reverse;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     gap: clamp(1rem, 3vh, 2rem);
   }
-  .foot-col { flex-direction: row; align-items: center; gap: clamp(0.7rem, 1.6vh, 1.2rem); }
+  .foot-col { flex-direction: row-reverse; align-items: center; gap: clamp(0.7rem, 1.6vh, 1.2rem); }
   .foot-col--right { align-items: center; }
   .foot-brand { font-size: 1rem; }
   .foot-copy, .foot-link { letter-spacing: 0.18em; }
   /* Remsan är smal: en radbrytning skulle lägga en andra spalt bredvid
      den första i stället för att bryta neråt. Raderna hålls ihop. */
   .foot-brand, .foot-copy, .foot-link { white-space: nowrap; }
+  /* Rullen är satt för en vågrät rad: luften ligger åt höger och
+     sänkningen är mätt mot versalhöjden. När raden står upp går
+     radriktningen neråt i stället — luften flyttas dit, och rullen
+     centreras i remsans bredd. */
+  .foot-brand .logo-reel {
+    margin-right: 0;
+    margin-bottom: 0.42em;
+    vertical-align: middle;
+  }
 }
 @media (min-width: 901px) and (min-height: 560px) and (max-height: 880px) {
   #footer { width: clamp(52px, 4.4vw, 72px); }
