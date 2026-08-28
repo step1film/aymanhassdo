@@ -255,8 +255,12 @@
       d.setAttribute('data-i18n-aria', 'nav' + panels[i].id.charAt(0).toUpperCase() + panels[i].id.slice(1));
     });
     if (totalEl) totalEl.textContent = '/ ' + fmt(TOTAL - 1);
-    // En skärm för showreelen + en per panel
-    hWrapper.style.height = ((TOTAL + 1) * 100) + 'vh';
+    /* En skärm för showreelen, en per panel — och en sista bit till
+       footern. Remsan har ett eget svep efter att alla sidor är inne:
+       den kommer in från högerkanten som en panel till, i stället för
+       att blottas samtidigt som den sista. */
+    const FOT_STEG = 0.6;
+    hWrapper.style.height = ((TOTAL + 1 + FOT_STEG) * 100) + 'vh';
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
 
@@ -363,19 +367,18 @@
         const progress = mjuk((scrolledIn - i * vh) / vh);
         panel.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
         if (i === 0) reportCover(progress);
-        /* Footern följer sista panelens svepkant, inte rullningen
-           under den: remsan skjuts in från sidan i samma rörelse och
-           landar som en avslutning på bilden. Klippet sitter på
-           footern, så texten står stilla på sin plats och blottas —
-           den glider aldrig in snett. */
-        if (i === TOTAL - 1) {
-          if (footEl) footEl.style.clipPath = `inset(0 0 0 ${(1 - progress) * 100}%)`;
-          /* Stapeln kliver upp ovanför remsan när den börjar synas, och
-             sätter sig igen när man rullar tillbaka. Bara den här
-             panelen har lämnat plats för båda. */
-          if (dockEl) dockEl.classList.toggle('ar-lyft', progress > 0.06);
-        }
       });
+
+      /* Footern sveper in sist och för sig själv: alla sidor är inne,
+         och först därefter kommer remsan in från högerkanten, med
+         samma kurva som panelerna. Klippet sitter på remsan, aldrig på
+         texten — raderna står stilla på sin plats och blottas av
+         kanten, i stället för att glida in snett. */
+      const fotP = mjuk((scrolledIn - TOTAL * vh) / (FOT_STEG * vh));
+      if (footEl) footEl.style.clipPath = `inset(0 0 0 ${(1 - fotP) * 100}%)`;
+      /* Stapeln kliver upp ovanför remsan när den börjar synas, och
+         sätter sig igen när man rullar tillbaka. */
+      if (dockEl) dockEl.classList.toggle('ar-lyft', fotP > 0.02);
 
       /* Fokusräknaren följer samma kurva som svepet — annars hade
          siffran glidit jämnt medan bilden rörde sig ojämnt. */
@@ -387,7 +390,7 @@
       setActive(panelIdx);
 
       if (prevBtn) prevBtn.disabled = scrolledIn <= 0;
-      if (nextBtn) nextBtn.disabled = scrolledIn >= TOTAL * vh;
+      if (nextBtn) nextBtn.disabled = scrolledIn >= (TOTAL + FOT_STEG) * vh - 1;
 
     }
 
@@ -531,11 +534,14 @@
     window.addEventListener('wheel', avbryt, { passive: true });
     window.addEventListener('touchstart', avbryt, { passive: true });
 
-    /* idx -1 = showreelen, 0…TOTAL-1 = panelerna. */
+    /* idx -1 = showreelen, 0…TOTAL-1 = panelerna, TOTAL = footersteget.
+       Footersteget finns bara i svepläget; på telefon ligger remsan
+       sist i flödet och nås genom att rulla. */
     function goToPanel(idx) {
-      idx = Math.max(-1, Math.min(TOTAL - 1, idx));
+      idx = Math.max(-1, Math.min(wideMode ? TOTAL : TOTAL - 1, idx));
       if (wideMode) {
-        rullaTill(hWrapper.offsetTop + (idx + 1) * window.innerHeight);
+        const steg = idx === TOTAL ? TOTAL + FOT_STEG : idx + 1;
+        rullaTill(hWrapper.offsetTop + steg * window.innerHeight);
       } else if (idx < 0) {
         const hero = document.getElementById('hero');
         if (hero) hero.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
@@ -568,7 +574,10 @@
 
     function currentIdx() {
       if (wideMode) {
-        return Math.min(TOTAL - 1, Math.max(-1, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight) - 1));
+        const steg = -hWrapper.getBoundingClientRect().top / window.innerHeight;
+        // Förbi sista panelen står vi i footersteget
+        if (steg >= TOTAL + 0.02) return TOTAL;
+        return Math.min(TOTAL - 1, Math.max(-1, Math.floor(steg) - 1));
       }
       // Mobile: showreelen först, annars den panel som ligger närmast mitten
       const hero = document.getElementById('hero');
