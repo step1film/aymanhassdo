@@ -780,16 +780,10 @@ body.reduced-motion .h-panel::after { animation: none; }
   align-items: center;
   gap: 0.3rem;
   z-index: 10;
-  transition: bottom 0.45s var(--ease);
   /* Stapeln ligger över panelerna. Bara knapparna själva ska ta emot
      mus, resten av ytan hör till panelen bakom. */
   pointer-events: none;
 }
-/* Sista panelen tar med sig footerremsan in, och då kliver stapeln upp
-   ovanför den. Bara den panelen har lämnat plats för både remsan och
-   stapeln — de andra behöver sina sista rader. */
-.h-dock.ar-lyft { bottom: calc(var(--foot-h, 0px) + clamp(0.4rem, 1vh, 0.7rem)); }
-body.reduced-motion .h-dock { transition: none; }
 
 #h-nav {
   position: relative;
@@ -815,15 +809,6 @@ body.reduced-motion .h-dock { transition: none; }
   text-indent: 0.34em;
   color: var(--text-dim);
 }
-
-.fu-readout {
-  display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
-  line-height: 1;
-}
-.fu-mark { font-size: 0.95rem; color: var(--white); letter-spacing: 0.06em; }
-.fu-of   { font-size: var(--fs-micro); color: var(--text-dim); letter-spacing: 0.12em; }
 
 /* --- Skalan, liggande --- */
 .fu-scale {
@@ -935,7 +920,6 @@ body.reduced-motion .h-dock { transition: none; }
   .fu-scale { height: 18px; width: clamp(120px, 15vw, 190px); }
   .fu-index { height: 13px; }
   .fu-index::before { bottom: 13px; }
-  .fu-mark { font-size: 0.86rem; }
   .fu-num  { font-size: 0.76rem; }
 }
 
@@ -1888,9 +1872,12 @@ body.reduced-motion .tb-card { animation: none; }
   justify-content: center;
   align-items: center;
   gap: clamp(1.2rem, 2.6vh, 2rem);
-  /* Footerremsan sveper in här och stapeln kliver upp ovanför den.
-     Höjderna mäts i JS och läggs ut som variabler på #h-sticky. */
-  padding-bottom: calc(var(--foot-h, 0px) + var(--dock-h, 0px) + clamp(0.4rem, 1vh, 0.8rem));
+  /* Formuläret ligger mitt i panelen, alltså rakt ovanför bottenstapeln,
+     och måste sluta ovanför den. Footerremsan står lodrätt vid
+     högerkanten och tar bredd i stället — därav padding-right. Måtten
+     mäts i JS och läggs ut som variabler på #h-sticky. */
+  padding-bottom: calc(var(--dock-h, 0px) + clamp(0.4rem, 1vh, 0.8rem));
+  padding-right: max(clamp(1.5rem, 7vw, 7rem), calc(var(--foot-w, 0px) + 1.5rem));
 }
 /* Rubriken en bit mot mitten — inte ända ut i kanten */
 .panel-inner--contact .panel-head {
@@ -2026,14 +2013,13 @@ body.reduced-motion .tb-card { animation: none; }
    ===================================================== */
 /* Footern hör till svepet, inte till flödet under det.
    Förut låg den efter #h-wrapper och kom underifrån när man rullade
-   förbi sista panelen. Nu ligger den i svepstacken, absolut placerad
-   i nederkanten av bilden, och klipps in från sidan i samma rörelse
-   som sista panelen — som en avslutande remsa på bilden.
+   förbi sista panelen. Nu är den vriden ett kvarts varv: en lodrät
+   svart remsa längs högerkanten som glider in utifrån när sviten är
+   slut. Rörelsen fortsätter alltså åt samma håll som svepen — sidorna
+   kommer från höger, och sist kommer footern samma väg.
 
-   Klippet ligger på footern själv, aldrig på texten: raderna står
-   still på sin plats och blottas av svepkanten. Att flytta dem hade
-   fått dem att glida in snett; nu ligger de rätt hela vägen, även
-   när remsan bara syns till hälften. */
+   Remsan börjar under toppraden så att språkvalet och butikslänken
+   ligger fritt ovanför den. */
 #footer {
   background: var(--bg);
   border-top: 1px solid var(--line);
@@ -2044,14 +2030,20 @@ body.reduced-motion .tb-card { animation: none; }
 @media (min-width: 901px) and (min-height: 560px) {
   #footer {
     position: absolute;
-    left: 0; right: 0; bottom: 0;
+    right: 0;
+    top: var(--nav-h);
+    bottom: 0;
+    left: auto;
+    width: clamp(58px, 5vw, 84px);
     /* Över panelerna (z-index 1–5), under bottenstyrningen (10) */
     z-index: 6;
-    /* Remsan ligger på bilden och tar höjd från panelen ovanför, så
-       den hålls låg: raderna ställer sig på en rad i stället för att
-       staplas. */
-    padding-block: clamp(0.55rem, 1.4vh, 0.9rem);
-    clip-path: inset(0 0 0 100%);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+    padding: clamp(1rem, 3vh, 2rem) 0;
+    /* Utanför bild tills sista svepet drar in den. main.js skriver
+       translateX under rullningen; det här är utgångsläget. */
+    transform: translateX(100%);
+    will-change: transform;
   }
 }
 .foot-inner { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; }
@@ -2063,16 +2055,29 @@ body.reduced-motion .tb-card { animation: none; }
 .foot-link { font-size: var(--fs-micro); letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); transition: color 0.25s; }
 .foot-link:hover { color: var(--white); }
 
-/* På bredskärm ligger footern som en remsa på bilden. Den ska vara låg —
-   höjden tas från panelen ovanför — så raderna ställer sig bredvid
-   varandra i stället för att staplas. */
+/* I den lodräta remsan står texten på högkant: skrivriktningen vrids,
+   inte enskilda rader med transform, så radbrytning och avstånd
+   fortsätter att fungera som vanligt. Märket överst, adressen nederst. */
 @media (min-width: 901px) and (min-height: 560px) {
-  .foot-inner { align-items: center; }
-  .foot-col { flex-direction: row; align-items: baseline; gap: clamp(0.8rem, 1.6vw, 1.6rem); }
+  .foot-inner {
+    writing-mode: vertical-rl;
+    height: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1rem, 3vh, 2rem);
+  }
+  .foot-col { flex-direction: row; align-items: center; gap: clamp(0.7rem, 1.6vh, 1.2rem); }
+  .foot-col--right { align-items: center; }
+  .foot-brand { font-size: 1rem; }
+  .foot-copy, .foot-link { letter-spacing: 0.18em; }
+  /* Remsan är smal: en radbrytning skulle lägga en andra spalt bredvid
+     den första i stället för att bryta neråt. Raderna hålls ihop. */
+  .foot-brand, .foot-copy, .foot-link { white-space: nowrap; }
 }
 @media (min-width: 901px) and (min-height: 560px) and (max-height: 880px) {
-  #footer { padding-block: 0.45rem; }
-  .foot-brand { font-size: 0.95rem; }
+  #footer { width: clamp(52px, 4.4vw, 72px); }
+  .foot-brand { font-size: 0.9rem; }
 }
 
 /* =====================================================
@@ -2265,8 +2270,7 @@ body.reduced-motion .tb-card { animation: none; }
     gap: 0.45rem;
     padding: 0.5rem 0.35rem;
   }
-  .fu-brand, .h-nav-label, .fu-of { display: none; }
-  .fu-mark { font-size: 0.8rem; }
+  .fu-brand, .h-nav-label { display: none; }
   .fu-num  { font-size: 0.72rem; }
   .fu-scale { height: 26vh; width: 20px; align-items: stretch; justify-content: center; }
   .fu-rail {
@@ -2293,8 +2297,10 @@ body.reduced-motion .tb-card { animation: none; }
   .h-nav-dots { inset: 0 auto 0 0; flex-direction: column; }
 
   /* Footern tillbaka i flödet: svepet finns inte här, panelerna
-     stackas, och remsan hör hemma sist i dokumentet. */
-  #footer { position: static; clip-path: none !important; }
+     stackas, och remsan hör hemma sist i dokumentet — vågrätt, som
+     vilken sidfot som helst. */
+  #footer { position: static; width: auto; transform: none !important; }
+  .foot-inner { writing-mode: horizontal-tb; height: auto; }
 
   /* Footer wrap */
   .foot-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }

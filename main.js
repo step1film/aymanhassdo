@@ -257,28 +257,30 @@
     if (totalEl) totalEl.textContent = '/ ' + fmt(TOTAL - 1);
     /* En skärm för showreelen, en per panel — och en sista bit till
        footern. Remsan har ett eget svep efter att alla sidor är inne:
-       den kommer in från högerkanten som en panel till, i stället för
-       att blottas samtidigt som den sista. */
-    const FOT_STEG = 0.6;
+       den glider in från högerkanten som en avslutande spalt, i stället
+       för att komma underifrån. Steget är kortare än en panels: remsan
+       är smal och rör sig bara sin egen bredd, så en hel skärmhöjd
+       rullning hade känts som att inget hände. */
+    const FOT_STEG = 0.35;
     hWrapper.style.height = ((TOTAL + 1 + FOT_STEG) * 100) + 'vh';
     let lastPanelIdx = -1;
     let wideMode = isWideScreen();
 
-    /* --- Nederkanten ---
-       Footern ligger numera i svepstacken, absolut placerad längst ned
-       i bilden, och bottenstapeln (pilar + fokusenhet) kliver upp
-       ovanför remsan när den sveper in. Kontaktpanelen lämnar plats för
-       båda. Höjderna går inte att skriva i CSS — de beror på typsnitt,
-       språk och fönsterhöjd — så vi mäter dem och lägger ut dem som
-       variabler på #h-sticky, där stapeln och panelen ärver dem. */
+    /* --- Kanterna ---
+       Footern ligger i svepstacken som en lodrät remsa vid högerkanten,
+       och bottenstapeln (pilar + fokusenhet) står kvar i nederkanten.
+       Kontaktpanelen lämnar plats för båda. Måtten går inte att skriva
+       i CSS — de beror på typsnitt, språk och fönsterstorlek — så vi
+       mäter dem och lägger ut dem som variabler på #h-sticky, där
+       stapeln och panelen ärver dem. */
     const footEl = document.getElementById('footer');
     const dockEl = document.querySelector('.h-dock');
-    let footH = -1, dockH = -1;
+    let footW = -1, dockH = -1;
     function matBotten() {
       if (!wideMode) return;
       if (footEl) {
-        const h = footEl.offsetHeight;
-        if (h !== footH) { footH = h; hSticky.style.setProperty('--foot-h', h + 'px'); }
+        const w = footEl.offsetWidth;
+        if (w !== footW) { footW = w; hSticky.style.setProperty('--foot-w', w + 'px'); }
       }
       if (dockEl) {
         const h = dockEl.offsetHeight;
@@ -369,16 +371,13 @@
         if (i === 0) reportCover(progress);
       });
 
-      /* Footern sveper in sist och för sig själv: alla sidor är inne,
-         och först därefter kommer remsan in från högerkanten, med
-         samma kurva som panelerna. Klippet sitter på remsan, aldrig på
-         texten — raderna står stilla på sin plats och blottas av
-         kanten, i stället för att glida in snett. */
+      /* Footern kommer sist och för sig själv: alla sidor är inne, och
+         först därefter glider remsan in från högerkanten med samma
+         kurva som svepen. Den är vriden ett kvarts varv och står som
+         en avslutande spalt vid kanten — rörelsen håller sig åt samma
+         håll som resten av sviten. */
       const fotP = mjuk((scrolledIn - TOTAL * vh) / (FOT_STEG * vh));
-      if (footEl) footEl.style.clipPath = `inset(0 0 0 ${(1 - fotP) * 100}%)`;
-      /* Stapeln kliver upp ovanför remsan när den börjar synas, och
-         sätter sig igen när man rullar tillbaka. */
-      if (dockEl) dockEl.classList.toggle('ar-lyft', fotP > 0.02);
+      if (footEl) footEl.style.transform = `translateX(${((1 - fotP) * 100).toFixed(2)}%)`;
 
       /* Fokusräknaren följer samma kurva som svepet — annars hade
          siffran glidit jämnt medan bilden rörde sig ojämnt. */
@@ -398,8 +397,7 @@
     function setupMobileNav() {
       // Reset any inline clip-paths applied in desktop mode
       panels.forEach(p => { p.style.clipPath = ''; });
-      if (footEl) footEl.style.clipPath = '';
-      if (dockEl) dockEl.classList.remove('ar-lyft');
+      if (footEl) { footEl.style.clipPath = ''; footEl.style.transform = ''; }
 
       const io = new IntersectionObserver(entries => {
         entries.forEach(entry => {
