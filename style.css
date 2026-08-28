@@ -979,6 +979,32 @@ body.reduced-motion .h-dock { transition: none; }
   transition: border-color 0.3s;
 }
 .film-item:last-child { border-bottom: 1px solid var(--line); }
+
+/* Listan mitt i panelen på bredskärm. Raderna är lika breda oavsett
+   fönster — ruta, text med tak i teckenbredder, knapp — så på en bred
+   skärm blev hela högerhalvan tom och linjerna löpte ut i ingenting.
+   align-self: center låter listan bli precis så bred som raderna
+   behöver och lägger den i mitten, så den tomma ytan delas lika på
+   båda sidor. Rubriken står kvar i vänsterkanten. */
+/* Listan mitt i panelen. Raderna är lika breda oavsett fönster — ruta,
+   text med tak i teckenbredder, knapp — så på en bred skärm blev hela
+   högerhalvan tom och linjerna löpte ut i ingenting. align-self: center
+   låter listan bli precis så bred som raderna behöver och lägger den i
+   mitten, så den tomma ytan delas lika på båda sidor. Rubriken står
+   kvar i vänsterkanten.
+
+   Mitt i panelen ligger listan rakt ovanför bottenstapeln, så sista
+   raden måste sluta ovanför den; vänsterställd låg den bredvid stapeln
+   och kunde gå längre ned. Under 740 px höjd finns inte den höjden att
+   ge — där står listan kvar till vänster, och på så låga fönster är
+   den tomma ytan ändå liten. */
+@media (min-width: 901px) and (min-height: 740px) {
+  .films-list { align-self: center; width: fit-content; max-width: 100%; }
+  .panel-inner--films {
+    gap: clamp(0.6rem, 1.2vh, 1rem);
+    padding-bottom: calc(clamp(0.4rem, 1vh, 0.8rem) + var(--dock-h, 0px));
+  }
+}
 .film-item:hover,
 .film-item:focus-within { border-color: var(--line-s); }
 
@@ -2329,13 +2355,25 @@ body.reduced-motion .ld-num { animation: none !important; }
    spalter — texten pressades till 129 px och beskrivningarna
    försvann. Samma brytpunkt som isWideScreen() i main.js.
    ===================================================== */
+/* Listan ligger mitt i panelen, alltså rakt ovanför bottenstapeln, och
+   måste sluta ovanför den. Under 1000 px höjd räcker inte utrymmet till
+   fem rader i full storlek: luften mellan raderna och miniatyrspalten
+   dras ihop innan textgraderna rörs. */
+@media (min-width: 901px) and (min-height: 740px) and (max-height: 1000px) {
+  .film-item {
+    padding: 0.18rem 0;
+    grid-template-columns: clamp(90px, 10vw, 128px) minmax(0, 46ch) max-content;
+  }
+  .film-syn { line-height: 1.4; }
+}
+
 @media (min-width: 901px) and (max-height: 880px) {
   .film-item {
-    padding: 0.3rem 0;
+    padding: 0.2rem 0;
     /* Miniatyrspalten krymper här; textens tak och knappspalten är
        desamma som i grundregeln, annars sköts knappen ut i
        högerkanten igen. */
-    grid-template-columns: clamp(74px, 8vw, 104px) minmax(0, 42ch) max-content;
+    grid-template-columns: clamp(70px, 7.6vw, 98px) minmax(0, 42ch) max-content;
   }
   .film-thumb { aspect-ratio: 16 / 9; }
   .film-syn { display: none; }
@@ -2353,13 +2391,16 @@ body.reduced-motion .ld-num { animation: none !important; }
    Lite mindre luft mellan raderna räcker — beskrivningarna får vara kvar.
    Även den här bara i svepläget, av samma skäl som ovan. */
 @media (min-width: 901px) and (min-height: 881px) and (max-height: 960px) {
+  /* Snålare sedan listan lades i mitten: den ligger nu rakt ovanför
+     bottenstapeln och måste sluta ovanför den, så luften mellan
+     raderna dras ned ytterligare. Beskrivningarna får vara kvar. */
   .film-item {
-    padding: 0.34rem 0;
+    padding: 0.16rem 0;
     grid-template-columns: clamp(90px, 9vw, 118px) minmax(0, 44ch) max-content;
   }
   .film-thumb { aspect-ratio: 16 / 9; }
-  .film-num, .film-meta { margin-bottom: 0.1rem; }
-  .film-syn { line-height: 1.45; }
+  .film-num, .film-meta { margin-bottom: 0.05rem; }
+  .film-syn { line-height: 1.35; }
   .panel-inner--films .panel-head { margin-bottom: 0.4rem; }
 }
 
