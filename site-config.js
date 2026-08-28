@@ -96,7 +96,8 @@ window.STEP1FILM_REEL = [
     "title": "THE MIND’S EYE — trailer"
   },
   {
-    "id": "529274561",
+    "provider": "youtube",
+    "id": "bjhwxw4vfQc",
     "title": "Fusion — Vem kan segla & Ya Msafer"
   },
   {
@@ -104,7 +105,8 @@ window.STEP1FILM_REEL = [
     "title": "NYA ORD — trailer, 2015"
   },
   {
-    "id": "1174493683",
+    "provider": "youtube",
+    "id": "a4XVJgNGd8Q",
     "title": "Värnamo Filmhistoriska Vänner"
   }
 ];

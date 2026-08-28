@@ -500,6 +500,9 @@
        vimeo.com/469092414/c2727eaa5d   ← olistad, andra delen är nyckeln
        player.vimeo.com/video/469092414?h=c2727eaa5d
      Fältet tar emot alla tre, och en naken siffra.
+
+     YouTube-adresser går lika bra — klippspelaren på panel 01 spelar
+     båda tjänsterna, och fältet skriver vilken det blev i raden under.
   ===================================================== */
   function tolkaVimeo(text) {
     const s = String(text || '').trim();
@@ -510,15 +513,26 @@
     return { id: m[1], hash: h ? h[1] : '' };
   }
 
-  /** Ett fält där man klistrar in en Vimeo-adress; id och nyckel fylls i själva. */
+  /* YouTube-id är elva tecken och kan komma i tre former: watch?v=,
+     youtu.be/ och /embed/. Bara id:t sparas — allt annat i länken är
+     spårparametrar som inte hör hemma i inställningarna. */
+  function tolkaYoutube(text) {
+    const s = String(text || '').trim();
+    const m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
+    return m ? { id: m[1] } : null;
+  }
+
+  /** Ett fält där man klistrar in en Vimeo- eller YouTube-adress;
+      tjänst, id och eventuell nyckel fylls i själva. */
   function videoFalt(etikett, obj, hjalp) {
     const w = el('div');
-    const rad = falt(etikett, () => obj.id ? vimeoAdress(obj) : '', () => {}, 'innehall', { hjalp });
+    const rad = falt(etikett, () => obj.id ? videoAdress(obj) : '', () => {}, 'innehall', { hjalp });
     const f = rad._falt;
     const svar = el('p', 'hjalp');
     const visa = () => {
+      const tjanst = obj.provider === 'youtube' ? 'YouTube' : 'Vimeo';
       svar.textContent = obj.id
-        ? `Id ${obj.id}` + (obj.hash ? ` · nyckel ${obj.hash}` : '')
+        ? `${tjanst} · id ${obj.id}` + (obj.hash ? ` · nyckel ${obj.hash}` : '')
         : 'Tomt — rutan visar "Trailer kommer".';
       svar.style.color = '';
     };
@@ -526,15 +540,19 @@
     f.addEventListener('input', () => {
       const v = f.value.trim();
       if (!v) { obj.id = ''; obj.hash = ''; markera('innehall'); visa(); return; }
-      const t = tolkaVimeo(v);
+      /* YouTube först: en YouTube-länk innehåller aldrig vimeo.com, men
+         en ren sifferrad tolkas som ett Vimeo-id och ska inte fastna i
+         YouTube-mönstret. */
+      const y = tolkaYoutube(v);
+      const t = y || tolkaVimeo(v);
       if (!t) {
-        svar.textContent = 'Det där ser inte ut som en Vimeo-adress. Klistra in hela länken.';
+        svar.textContent = 'Det där ser inte ut som en Vimeo- eller YouTube-adress. Klistra in hela länken.';
         svar.style.color = '#ff8f8f';
         return;
       }
       obj.id = t.id;
       if (t.hash) obj.hash = t.hash; else delete obj.hash;
-      obj.provider = 'vimeo';
+      obj.provider = y ? 'youtube' : 'vimeo';
       markera('innehall');
       visa();
     });
@@ -544,6 +562,9 @@
   }
 
   const vimeoAdress = o => 'https://vimeo.com/' + o.id + (o.hash ? '/' + o.hash : '');
+  const videoAdress = o => (o.provider === 'youtube'
+    ? 'https://www.youtube.com/watch?v=' + o.id
+    : vimeoAdress(o));
 
   function ritaVideo() {
     const box = $('#videoLista');
@@ -556,7 +577,7 @@
     const srKropp = el('div', 'kort-kropp');
     srKropp.style.display = 'block';
     srKropp.style.paddingTop = '0.9rem';
-    srKropp.appendChild(videoFalt('Vimeo-adress', sr, 'Klistra in hela adressen från Vimeo.'));
+    srKropp.appendChild(videoFalt('Vimeo- eller YouTube-adress', sr, 'Klistra in hela adressen från Vimeo eller YouTube.'));
     srKropp.appendChild(falt('Bildformat', () => sr.aspect, v => {
       const n = parseFloat(v);
       if (Number.isFinite(n) && n > 0.2 && n < 5) sr.aspect = n;
@@ -572,7 +593,7 @@
     const trKropp = el('div', 'kort-kropp');
     trKropp.style.display = 'block';
     trKropp.style.paddingTop = '0.9rem';
-    trKropp.appendChild(videoFalt('Vimeo-adress', tr, 'Är filmen olistad måste nyckeln följa med — klistra in hela adressen så tas den med automatiskt.'));
+    trKropp.appendChild(videoFalt('Vimeo- eller YouTube-adress', tr, 'Är filmen olistad på Vimeo måste nyckeln följa med — klistra in hela adressen så tas den med automatiskt.'));
     trKropp.appendChild(falt('Titel', () => tr.title, v => { tr.title = v; }, 'innehall',
       { hjalp: 'Visas överst i trailerrutan och läses av skärmläsare.' }));
     trBox.appendChild(trKropp);
@@ -588,9 +609,9 @@
       hallare.textContent = '';
       if (!klipp.length) hallare.appendChild(el('div', 'tom', 'Inga klipp än.'));
       klipp.forEach((k, i) => {
-        const kk = kort({ titel: k.title || 'Namnlöst klipp', under: k.id ? vimeoAdress(k) : 'Ingen adress' });
+        const kk = kort({ titel: k.title || 'Namnlöst klipp', under: k.id ? videoAdress(k) : 'Ingen adress' });
         kk.draggable = true;
-        kk._kropp.appendChild(videoFalt('Vimeo-adress', k, 'Hela adressen. Olistade filmer får sin nyckel automatiskt.'));
+        kk._kropp.appendChild(videoFalt('Vimeo- eller YouTube-adress', k, 'Hela adressen. Olistade Vimeo-filmer får sin nyckel automatiskt.'));
         kk._kropp.appendChild(falt('Titel', () => k.title, v => { k.title = v; kk._titel.textContent = v || 'Namnlöst klipp'; }, 'innehall',
           { hjalp: 'Står under rutan.' }));
         kk._kropp.appendChild(listVerktyg(klipp, i, 'innehall', rita, 'klippet'));

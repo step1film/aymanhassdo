@@ -1289,12 +1289,22 @@
 
       function bygg(i) {
         const k = klipp[i];
-        /* background=1 ger en ren bild utan Vimeos knappar — klippet är
-           ett smakprov, inte en spelare man ska styra. loop=1 finns med
-           för klipp som är kortare än SEKUNDER. */
-        const src = 'https://player.vimeo.com/video/' + encodeURIComponent(k.id)
-          + '?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1'
-          + (k.hash ? '&h=' + encodeURIComponent(k.hash) : '');
+        /* Klippen kan ligga på Vimeo eller YouTube. Fältet provider i
+           STEP1FILM_REEL avgör; utan fält gäller Vimeo, som förut.
+
+           Båda spelas som bakgrundsbild: ljudlöst, i loop och utan
+           knappar — klippet är ett smakprov, inte en spelare man ska
+           styra. loop=1 finns med för klipp som är kortare än
+           SEKUNDER, och YouTube kräver playlist för att loopa ett
+           ensamt klipp. */
+        const id = encodeURIComponent(k.id);
+        const src = k.provider === 'youtube'
+          ? 'https://www.youtube.com/embed/' + id
+            + '?autoplay=1&mute=1&loop=1&playlist=' + id
+            + '&controls=0&rel=0&modestbranding=1&playsinline=1'
+          : 'https://player.vimeo.com/video/' + id
+            + '?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1'
+            + (k.hash ? '&h=' + encodeURIComponent(k.hash) : '');
         const frame = document.createElement('iframe');
         frame.src = src;
         frame.title = k.title || 'Klipp';
