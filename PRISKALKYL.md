@@ -41,33 +41,33 @@ räknas tvärtom på den **högre** änden — dyraste storleken i serien.
 
 ## Sortimentet
 
-Femton produkter är avlästa i Printful. Tre är fortfarande gissade och
-märkta som sådana.
+Alla priser i butiken är nu räknade mot avlästa Printfulsiffror.
 
-| Produkt | Pris | Vara | Frakt | **Kvar** | Nollpris | Källa |
-|---|---:|---:|---:|---:|---:|:--|
-| 24FPS HOODIE | 699 | 349 | 65 | **+183** | 461 | avläst |
-| ROLLING BACKPACK | 649 | 375 | 102 | **+82** | 543 | avläst |
-| SPOILER HOODIE | 629 | 285 | 65 | **+193** | 378 | avläst |
-| TAKE ONE SLEEVE 15" | 599 | 225 | 65 | **+230** | 300 | avläst |
-| STEP1 JERSEY | 549 | 259 | 40 | **+183** | 312 | avläst |
-| GLITCH SLEEVE 15" | 549 | 215 | 65 | **+202** | 287 | avläst |
-| TAKE ONE SLEEVE 13" | 499 | 225 | 65 | **+153** | 300 | avläst |
-| GLITCH SLEEVE 13" | 449 | 215 | 65 | **+125** | 287 | avläst |
-| ACTION DAD CAP | 399 | 155 | 40 | **+171** | 177 | avläst |
-| LIL' DIRECTOR TEE | 399 | 140 | 55 | +171 | 177 | gissad |
-| DIRECTOR'S BEANIE | 349 | 174 | 40 | **+114** | 202 | avläst |
-| CREW TEE (dold) | 349 | 175 | 46 | **+107** | 211 | avläst |
-| AD1 BEANIE (dold) | 309 | 174 | 40 | +83 | 202 | gissad |
-| DIRECTOR'S MORNING | 299 | 99 | 54 | **+136** | 122 | avläst |
-| STEP1 FAN | 299 | 164 | 40 | **+85** | 189 | avläst |
-| AWESOME MUGG | 249 | 110 | 85 | +56 | 177 | gissad |
-| ICON STICKERS | 99 | 29 | 31 | **+75** | 2 | avläst |
-| GEAR STICKERS | 99 | 29 | 31 | **+75** | 2 | avläst¹ |
+| Produkt | Pris | Vara | Frakt | **Kvar** | Marginal | Nollpris |
+|---|---:|---:|---:|---:|---:|---:|
+| 24FPS HOODIE | 699 | 349 | 65 | **+183** | 24 % | 461 |
+| ROLLING BACKPACK | 649 | 375 | 102 | **+82** | 11 % | 543 |
+| SPOILER HOODIE | 629 | 285 | 65 | **+193** | 27 % | 378 |
+| TAKE ONE SLEEVE 15" | 599 | 225 | 65 | **+230** | 34 % | 300 |
+| STEP1 JERSEY | 549 | 259 | 40 | **+183** | 29 % | 312 |
+| GLITCH SLEEVE 15" | 549 | 215 | 65 | **+202** | 32 % | 287 |
+| TAKE ONE SLEEVE 13" | 499 | 225 | 65 | **+153** | 26 % | 300 |
+| GLITCH SLEEVE 13" | 449 | 215 | 65 | **+125** | 24 % | 287 |
+| ACTION DAD CAP | 399 | 155 | 40 | **+171** | 36 % | 177 |
+| LIL' DIRECTOR TEE | 399 | 109 | 40 | **+217** | 45 % | 117 |
+| DIRECTOR'S BEANIE | 349 | 174 | 40 | **+114** | 27 % | 202 |
+| CREW TEE (dold) | 349 | 175 | 46 | **+107** | 25 % | 211 |
+| AD1 BEANIE (dold) | 309 | 174 | 40 | **+83** | 21 % | 202 |
+| DIRECTOR'S MORNING | 299 | 99 | 54 | **+136** | 36 % | 122 |
+| STEP1 FAN | 299 | 164 | 40 | **+85** | 23 % | 189 |
+| AWESOME MUGG | 249 | 65 | 47 | **+139** | 42 % | 69 |
+| ICON STICKERS | 99 | 29 | 31 | **+75** | 42 % | 2 |
+| GEAR STICKERS¹ | 99 | 29 | 31 | **+75** | 42 % | 2 |
 
-¹ Samma produkt som Icon Stickers.
+¹ Inte avläst för sig — samma produkt som Icon Stickers.
 
-**Ingen produkt ligger minus.**
+**Ingen produkt ligger minus.** Snittet är 142 kr per order och lägsta
+marginalen 11 % (ryggsäcken). Alla priser står som de ligger.
 
 ### Ryggsäcken hade gått back
 
@@ -75,13 +75,16 @@ Den höjdes från 529 till 649 på en gissning. Avläsningen visar att
 gissningen var för mild: ryggsäcken kostar 375 kr att tillverka och
 **102 kr att skicka** — dubbelt mot ett plagg, för att den är skrymmande.
 **På 529 kr hade varje såld ryggsäck kostat dig 11 kr.** Nollpriset
-ligger på 543 kr, alltså över det gamla priset.
+ligger på 543 kr, alltså över det gamla priset. Den är fortfarande
+sortimentets tunnaste produkt.
 
-### Jerseyn kostade mindre än gissat
+### Tre som var bättre än gissat
 
-258,52 kr och 40 kr i frakt mot gissade 310 och 65. På 549 kr blir det
-183 kr kvar i stället för de 107 tabellen sa tidigare. Priset står kvar
-enligt regeln nedan.
+Awesome Mugg kostar 65 kr att trycka, inte 110 — den lämnar 139 kr på
+249, inte 56 som tabellen sa. Lil' Director Tee kostar 109 och lämnar
+217 kr, sortimentets bästa marginal. Jerseyn kostar 259 i stället för
+310. Priserna står kvar; en produkt som tål ett lägre pris ska inte
+säljas billigare.
 
 ### CREW TEE höjd från 289 till 349
 
@@ -108,22 +111,22 @@ de att 529 och 429 hade gått ihop, står 649 och 549 kvar ändå.
 
 ---
 
-## Tre priser står kvar på en gissning
+## Kvar att läsa av
 
-**LIL' DIRECTOR TEE (399)**, **AWESOME MUGG (249)** och den dolda
-**AD1 BEANIE (309)** är inte avlästa. Awesome Mugg är den enda som ser
-tunn ut, och gissningen är sannolikt för hög — Director's Morning
-visade sig kosta 99 kr att trycka, inte 130. Läs av den när du har
-vägen förbi.
+**Gear Stickers.** Den enda produkten som inte lästs av för sig.
+Den är samma dekalark som Icon Stickers, så siffrorna är rimliga
+— men läs av den när du ändå är inne.
 
 **ON SET CAP** finns inte i butiken än (den väntar på bilder), men
 siffrorna är avlästa: 155 kr + 40 kr frakt. På 349 kr skulle den lämna
-133 kr. Variant-id:na ligger sparade i katalogen.
+133 kr. Variant-id:na ligger sparade i katalogen, så den är snabb att
+lägga in.
 
 ## Retail price i Printful stämmer inte
 
 Priset i Printful debiterar ingen — men det kan hamna på följesedeln i
-paketet, och då läser kunden ett annat pris än det hen betalade.
+paketet, och då läser kunden ett annat pris än det hen betalade. Elva
+av arton skiljer sig.
 
 | Produkt | I Printful | I butiken |
 |---|---:|---:|
@@ -132,18 +135,17 @@ paketet, och då läser kunden ett annat pris än det hen betalade.
 | SPOILER HOODIE | 649 | 629 |
 | STEP1 JERSEY | 429 | 549 |
 | ACTION DAD CAP | 349 | 399 |
+| LIL' DIRECTOR TEE | 299 | 399 |
 | DIRECTOR'S BEANIE | 285 | 349 |
+| AD1 BEANIE | 285 | 309 |
 | STEP1 FAN | 349 | 299 |
 | DIRECTOR'S MORNING | 229 | 299 |
+| AWESOME MUGG | 229 | 249 |
 | TAKE ONE SLEEVE | 499–599 | 499–599 ✔ |
 | CREW TEE | 349 | 349 ✔ |
 | ICON STICKERS | 99 | 99 ✔ |
 
 Rätta dem i Printful, eller stäng av priser på följesedeln.
-
-## Kvar att läsa av
-
-Lil' Director Tee · Awesome Mugg · AD1 Beanie (dold)
 
 ## Övrigt att räkna med
 
