@@ -1298,10 +1298,12 @@
            SEKUNDER, och YouTube kräver playlist för att loopa ett
            ensamt klipp. */
         const id = encodeURIComponent(k.id);
-        const src = k.provider === 'youtube'
+        const ytKlipp = k.provider === 'youtube';
+        const src = ytKlipp
           ? 'https://www.youtube.com/embed/' + id
             + '?autoplay=1&mute=1&loop=1&playlist=' + id
             + '&controls=0&rel=0&modestbranding=1&playsinline=1'
+            + '&iv_load_policy=3&disablekb=1&fs=0'
           : 'https://player.vimeo.com/video/' + id
             + '?background=1&autoplay=1&muted=1&loop=1&autopause=0&playsinline=1'
             + (k.hash ? '&h=' + encodeURIComponent(k.hash) : '');
@@ -1311,6 +1313,10 @@
         frame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
         frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
         frame.setAttribute('loading', 'lazy');
+        /* Rutan får veta vilken tjänst som spelar: YouTube-bilden
+           förstoras i CSS så att spelarens egna lister hamnar utanför
+           kanten. */
+        scen.classList.toggle('reel-frame--yt', ytKlipp);
         scen.textContent = '';
         scen.appendChild(frame);
       }

@@ -1471,6 +1471,23 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   height: 100%;
   border: 0;
   display: block;
+  /* Klippet är ett smakprov, inte en spelare man ska styra. Rutan tar
+     inte emot mus: annars lägger YouTube ut sin rubrik, sin logga och
+     sina knappar så fort markören är i närheten, och ett klick pausar
+     filmen mitt i svepet. Pilarna under rutan byter klipp i stället. */
+  pointer-events: none;
+}
+/* YouTube ritar rubrik och kanalnamn överst och sin logga nederst i
+   spelaren. Det går inte att stänga av med parametrar — modestbranding
+   och showinfo gör ingenting längre. Bilden förstoras därför en aning
+   i rutan, så att listerna hamnar utanför kanten. Vimeo-klippen körs
+   redan rena med background=1 och rörs inte. */
+.reel-frame--yt iframe {
+  position: absolute;
+  width: 136%;
+  height: 136%;
+  top: -18%;
+  left: -18%;
 }
 .reel-empty {
   position: absolute;
