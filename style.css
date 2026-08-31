@@ -1886,11 +1886,15 @@ body.reduced-motion .tb-card { animation: none; }
   align-items: center;
   gap: clamp(1.2rem, 2.6vh, 2rem);
   /* Formuläret ligger mitt i panelen, alltså rakt ovanför bottenstapeln,
-     och måste sluta ovanför den. Footerremsan står lodrätt vid
-     högerkanten och tar bredd i stället — därav padding-right. Måtten
-     mäts i JS och läggs ut som variabler på #h-sticky. */
+     och måste sluta ovanför den. Måttet mäts i JS och läggs ut som
+     variabel på #h-sticky.
+
+     Någon marginal åt höger behövs inte längre: footerremsan lägger
+     sig inte över panelen utan knuffar hela stacken åt vänster när
+     den kommer in, så avståndet till den håller sig av sig självt.
+     Reservationen låg kvar hela tiden och sköt formuläret ur mitten
+     även på de skärmar där remsan inte syntes. */
   padding-bottom: calc(var(--dock-h, 0px) + clamp(0.4rem, 1vh, 0.8rem));
-  padding-right: max(clamp(1.5rem, 7vw, 7rem), calc(var(--foot-w, 0px) + 1.5rem));
 }
 /* Rubriken en bit mot mitten — inte ända ut i kanten */
 .panel-inner--contact .panel-head {
@@ -2057,6 +2061,28 @@ body.reduced-motion .tb-card { animation: none; }
        translateX under rullningen; det här är utgångsläget. */
     transform: translateX(100%);
     will-change: transform;
+  }
+
+  /* Remsan lade sig förut ovanpå bilden och åt upp en spalt av den:
+     en svart ruta klistrad över högerkanten. Nu knuffar den i stället.
+     main.js skriver --foot-shift under sista svepet — lika många
+     pixlar som remsan hunnit in — och hela svepstacken flyttar sig
+     precis så långt åt vänster. Ytan som lämnas vid högerkanten är
+     exakt remsans plats, så de två rör sig som ett stycke: bilden åt
+     vänster, remsan in i hålet efter den.
+
+     Bilderna är satta med cover, så bredden de tappar tas igen i
+     beskärningen — ingen kant blottas. #h-sticky klipper det som
+     går utanför till vänster. */
+  #h-track {
+    transform: translate3d(calc(var(--foot-shift, 0px) * -1), 0, 0);
+    will-change: transform;
+  }
+
+  /* Bottenstapeln står mitt i bilden, inte mitt i fönstret. När
+     remsan tar sin spalt är mitten en halv remsbredd åt vänster. */
+  .h-dock {
+    transform: translateX(-50%) translateX(calc(var(--foot-shift, 0px) * -0.5));
   }
 }
 .foot-inner { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; }

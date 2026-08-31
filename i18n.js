@@ -253,7 +253,14 @@
    så det är svenska sökord den ska rankas på — och en svensk besökare
    ska inte behöva byta språk först. Engelskan finns ett klick bort och
    sparas när den väljs, så internationella besökare slipper välja om.
-   HÅLL I SYNK med lang-attributet i index.html. */
+   HÅLL I SYNK med lang-attributet i index.html.
+
+   De svenska strängarna står dessutom skrivna i index.html och
+   store.html. Skriptet skriver samma text en gång till vid
+   inladdning — det syns inte, och poängen är den som inte kör
+   skriptet: en sökmotors första avläsning ska möta svenska på en
+   sida som säger lang="sv", inte engelska. Ändras en svensk text
+   här bör motsvarande rad i HTML-filen ändras med den. */
   let lang = localStorage.getItem('s1f_lang');
   if (lang !== 'sv' && lang !== 'en') lang = 'sv';
 

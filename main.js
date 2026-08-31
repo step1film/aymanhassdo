@@ -269,18 +269,27 @@
     /* --- Kanterna ---
        Footern ligger i svepstacken som en lodrät remsa vid högerkanten,
        och bottenstapeln (pilar + fokusenhet) står kvar i nederkanten.
-       Kontaktpanelen lämnar plats för båda. Måtten går inte att skriva
-       i CSS — de beror på typsnitt, språk och fönsterstorlek — så vi
-       mäter dem och lägger ut dem som variabler på #h-sticky, där
-       stapeln och panelen ärver dem. */
+       Måtten går inte att skriva i CSS — de beror på typsnitt, språk
+       och fönsterstorlek — så vi mäter dem här.
+
+       Remsans bredd blir sträckan svepstacken knuffas åt vänster när
+       remsan kommer in (--foot-shift nedan). Stapelns höjd läggs ut
+       som --dock-h på #h-sticky; kontaktpanelen lämnar plats för den. */
     const footEl = document.getElementById('footer');
     const dockEl = document.querySelector('.h-dock');
     let footW = -1, dockH = -1;
+    /* Hur långt remsan kommit in, 0–1. Rullningen skriver den; måtten
+       nedan läser den, så knuffen räknas om när remsan byter bredd —
+       annars hade den suttit kvar på gammal bredd till nästa rullning. */
+    let fotInne = 0;
+    function skrivFotKnuff() {
+      hSticky.style.setProperty('--foot-shift', ((footW > 0 ? footW : 0) * fotInne).toFixed(2) + 'px');
+    }
     function matBotten() {
       if (!wideMode) return;
       if (footEl) {
         const w = footEl.offsetWidth;
-        if (w !== footW) { footW = w; hSticky.style.setProperty('--foot-w', w + 'px'); }
+        if (w !== footW) { footW = w; skrivFotKnuff(); }
       }
       if (dockEl) {
         const h = dockEl.offsetHeight;
@@ -378,6 +387,12 @@
          håll som resten av sviten. */
       const fotP = mjuk((scrolledIn - TOTAL * vh) / (FOT_STEG * vh));
       if (footEl) footEl.style.transform = `translateX(${((1 - fotP) * 100).toFixed(2)}%)`;
+      /* Remsan lägger sig inte över bilden — den knuffar den. Samma
+         kurva, samma sträcka: stacken går lika många pixlar åt vänster
+         som remsan kommit in från höger, så ytan remsan tar är den
+         bilden just lämnat. CSS läser måttet på #h-track. */
+      fotInne = fotP;
+      skrivFotKnuff();
 
       /* Fokusräknaren följer samma kurva som svepet — annars hade
          siffran glidit jämnt medan bilden rörde sig ojämnt. */
@@ -398,6 +413,9 @@
       // Reset any inline clip-paths applied in desktop mode
       panels.forEach(p => { p.style.clipPath = ''; });
       if (footEl) { footEl.style.clipPath = ''; footEl.style.transform = ''; }
+      // Knuffen hör till det liggande svepet — här står footern i flödet
+      fotInne = 0;
+      hSticky.style.removeProperty('--foot-shift');
 
       const io = new IntersectionObserver(entries => {
         entries.forEach(entry => {

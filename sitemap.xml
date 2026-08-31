@@ -4,12 +4,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://step1film.se/</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+  <!-- Butiken heter /store. Adressen /shop.html står kvar i
+       netlify.toml som omdirigering för gamla länkar, men sajten
+       ligger på GitHub Pages — där finns ingen sådan regel, och
+       ingen fil med det namnet. Den raden pekade alltså sökmotorn
+       rakt in i en 404. Här står adressen som store.html själv
+       anger som canonical. -->
   <url>
-    <loc>https://step1film.se/shop.html</loc>
+    <loc>https://step1film.se/store</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

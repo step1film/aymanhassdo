@@ -49,6 +49,27 @@ Det är inte fusk: texten säger samma sak som resten av sidan. Att göma
 text som säger *något annat* än sidan visar heter cloaking och ger
 straff. Skriv aldrig in något i den taggen som inte stämmer med sidan.
 
+### Svenskan står i filen, inte bara i webbläsaren
+
+Texterna byts av `i18n.js` när sidan laddas, och svenska är standard.
+Men *källkoden* var skriven på engelska: `<html lang="sv">` överst och
+"The Dream", "Selected Works", "Let's Work" i själva taggarna. Google
+kör visserligen JavaScript och såg svenskan till slut, men den första
+avläsningen — den som går snabbast och sker oftast — läste en engelsk
+sida som utgav sig för att vara svensk. Detsamma gällde alla robotar
+som inte kör JavaScript alls, och förhandsvisningarna när någon delar
+länken.
+
+Nu står de svenska strängarna i `index.html` från början, precis som i
+`store.html`. Språkväljaren fungerar likadant som förut: engelskan
+ligger kvar i `i18n.js` och läggs på med ett klick.
+
+⚠️ Ändrar du en text i admin → Texter ändras `i18n.js`. Den svenska
+raden i `index.html` följer **inte** med automatiskt — den är bara
+utgångsläget som visas innan skriptet hunnit köra. Skiljer de sig åt
+syns admin-texten på skärmen, men Google kan hinna läsa den gamla.
+Säg till när en text ändrats, så skriver jag om båda.
+
 ### Typsnitten flyttade hem
 
 Låg hos Google Fonts och jsdelivr, ligger nu i `assets/fonts/`.
@@ -76,7 +97,11 @@ ligger ovanpå en sida som redan ritats.
 
 ### Övrigt
 
-- `sitemap.xml` med `lastmod` på alla sex sidor
+- `sitemap.xml` med `lastmod` på alla sex sidor. Butiksraden pekade
+  på `/shop.html` — det gamla namnet. Omdirigeringen från det namnet
+  står i `netlify.toml`, men sajten ligger på GitHub Pages, som inte
+  läser den filen: sökmotorn skickades alltså till en 404. Raden lyder
+  nu `/store`, samma adress som butikens egen `canonical`.
 - `robots.txt` släpper in allt utom `/admin/` och `/_archive/`
 - Varje sida har egen titel, beskrivning och `canonical`
 - Butiken har `Product`-schema med pris och lagerstatus på 14 produkter
@@ -146,6 +171,19 @@ sajten mindre trovärdig för både Google och den som läser.
 Allt går att ändra i admin → Texter.
 
 ### 4. En egen sida per tjänst
+
+**Det här är svaret på frågan om varför hela sajten syns som en enda
+träff.** Google indexerar adresser, inte avsnitt. `#films` och
+`#about` är samma adress som `/` — panelerna sveper in med JavaScript
+utan att adressen ändras, så det finns bara ett dokument att indexera.
+Att lägga in länkar till `#films` hade inte ändrat det: en sökmotor
+gör aldrig en egen träff av ett ankare. (Innehållet i panelerna läses
+däremot — de ligger alla i HTML:en från början, bara dolda med
+`clip-path`. Ingenting är gömt för Google.)
+
+Startsidan kan alltså bara ranka på *en* huvudsökning, och den är satt
+till "filmproduktion Småland / Jönköpings län". Vill du ha fler
+sökningar behövs fler adresser:
 
 En ensidig webbplats kan bara ranka på ett fåtal sökningar. Vill du på
 allvar synas på "reklamfilm Jönköping" och "dokumentärfilm Småland"
