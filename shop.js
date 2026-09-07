@@ -4,9 +4,11 @@
    variant selection, cart (localStorage), SV/EN i18n,
    and a lightweight checkout (order request via e-mail).
 
-   Payment provider (Swish / Stripe) is intentionally NOT
-   wired yet — it will be added once the site moves to its
-   own domain. See CONFIG.contactEmail for the order sink.
+   Payment (Stripe for card/Klarna, Swish Handel) is wired up
+   in CONFIG.payments. The checkout asks the server which
+   methods are actually configured and shows only those; with
+   no server reachable it falls back to an e-mail order to
+   CONFIG.contactEmail. See PAYMENTS_SETUP.md.
    ===================================================== */
 (function () {
   'use strict';
@@ -35,13 +37,21 @@
        GitHub Pages men funktionerna körs hos Netlify. Full
        adress krävs — en relativ sökväg hade letat på fel värd.
 
-       card/swish slås på när respektive konto är klart.
-       Är båda false faller butiken tillbaka på mejlbeställning.
+       'auto' = servern bestämmer. Kassan frågar endpointen
+       payment-methods vilka nycklar som faktiskt ligger på plats
+       och visar bara de betalsätt som fungerar. Swish tänds alltså
+       av sig själv den dag certifikatet läggs in — ingen ändring
+       här behövs, och ett halvkopplat betalsätt kan aldrig visas
+       för en kund.
+
+       true/false tvingar på eller av oavsett vad servern säger.
+       false är nödbromsen. Går servern inte att nå faller butiken
+       tillbaka på mejlbeställning som förut.
     --------------------------------------------------- */
     payments: {
       apiBase: 'https://step1film.netlify.app/.netlify/functions',
-      card: true,    // Stripe: kort + Klarna
-      swish: false   // Swish Handel — numret är inlagt, väntar på certifikatet
+      card: 'auto',  // Stripe: kort + Klarna
+      swish: 'auto'  // Swish Handel — tänds när certifikatet finns på servern
     },
 
     /* -----------------------------------------------------
@@ -1212,7 +1222,7 @@
       swishOpenApp: 'Öppna Swish',
       swishScan: 'Skanna QR-koden med Swish-appen',
       swishDeclined: 'Betalningen avbröts eller nekades.',
-      swishTimeout: 'Betalningen tog för lång tid. Försök igen.',
+      swishTimeout: 'Vi ser ingen genomförd betalning. Har du redan godkänt i Swish — vänta en stund och kolla mejlen innan du betalar igen.',
       payError: 'Något gick fel med betalningen. Försök igen.',
       thanksPaid: 'Tack! Din betalning är genomförd och ordern skickas till tryck.',
       placeOrder: 'Skicka beställning',
@@ -1264,7 +1274,7 @@
       swishOpenApp: 'Open Swish',
       swishScan: 'Scan the QR code with the Swish app',
       swishDeclined: 'The payment was cancelled or declined.',
-      swishTimeout: 'The payment timed out. Please try again.',
+      swishTimeout: "We can't see a completed payment. If you already approved it in Swish, wait a moment and check your email before paying again.",
       payError: 'Something went wrong with the payment. Please try again.',
       thanksPaid: 'Thank you! Your payment went through and the order is going to print.',
       placeOrder: 'Place order',
@@ -1894,6 +1904,8 @@
     checkoutView.style.display = 'block';
     renderCheckout();
     renderPayMethods();
+    // Servern kan svara efter att kassan öppnats — rita om betalvalen då
+    probePayments().then(renderPayMethods);
   }
 
   /** Visar betalvalen om betalning är aktiverad (annars mejlbeställning). */
@@ -1906,8 +1918,9 @@
 
     const cardOpt = wrap.querySelector('[data-pay="card"]');
     const swishOpt = wrap.querySelector('[data-pay="swish"]');
-    cardOpt.style.display = CONFIG.payments.card ? '' : 'none';
-    swishOpt.style.display = CONFIG.payments.swish ? '' : 'none';
+    if (!cardOpt || !swishOpt) return;
+    cardOpt.style.display = payOn('card') ? '' : 'none';
+    swishOpt.style.display = payOn('swish') ? '' : 'none';
     /* Numret under Swish-raden: kunden ska kunna se vart pengarna går
        innan appen öppnas. Tomt nummer lämnar raden som den är. */
     if (CONFIG.swishNumber) {
@@ -1950,7 +1963,47 @@
      BETALNING — Stripe (kort/Klarna) och Swish
   ----------------------------------------------------- */
   const payApi = () => (CONFIG.payments.apiBase || '').replace(/\/$/, '');
-  const payEnabled = () => Boolean(payApi() && (CONFIG.payments.card || CONFIG.payments.swish));
+
+  /* Vad servern svarat att den klarar. Tomt tills probePayments()
+     hunnit fråga — och stannar tomt om servern inte svarar, så en
+     nedsläckt Netlify ger mejlbeställning i stället för en kassa som
+     kraschar mitt i betalningen. */
+  const payAvail = { card: false, swish: false };
+  let payProbe = null;
+
+  /** Är betalsättet påslaget just nu? 'auto' = det servern sa. */
+  function payOn(method) {
+    const v = CONFIG.payments[method];
+    if (v === true || v === false) return v;
+    return Boolean(payAvail[method]);
+  }
+
+  const payEnabled = () => Boolean(payApi() && (payOn('card') || payOn('swish')));
+
+  /** Frågar servern vilka betalsätt som är färdigkopplade. Körs en gång. */
+  function probePayments() {
+    if (payProbe) return payProbe;
+    const base = payApi();
+    const asks = CONFIG.payments.card === 'auto' || CONFIG.payments.swish === 'auto';
+    if (!base || !asks) { payProbe = Promise.resolve(); return payProbe; }
+
+    payProbe = (async () => {
+      try {
+        // Hänger servern ska kassan inte hänga med den
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 6000);
+        const res = await fetch(`${base}/payment-methods`, { signal: ctrl.signal });
+        clearTimeout(timer);
+        if (!res.ok) return;
+        const d = await res.json();
+        payAvail.card = Boolean(d.card);
+        payAvail.swish = Boolean(d.swish);
+        // Numret i kassan ska vara det servern faktiskt tar betalt till
+        if (d.swishNumber) CONFIG.swishNumber = d.swishNumber;
+      } catch { /* ingen kontakt → betalning förblir av, mejlbeställning gäller */ }
+    })();
+    return payProbe;
+  }
 
   // Kundvagn i det format servern förväntar sig (utan priser — de räknas på servern)
   function cartPayload() {
@@ -2023,7 +2076,9 @@
       const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
       if (isMobile && data.token) {
         const back = encodeURIComponent(window.location.href);
-        openEl.href = `swish://paymentrequest?token=${data.token}&callbackurl=${back}`;
+        // Token kommer från servern, men kodas ändå — inget okodat värde
+        // ska kunna smyga in extra parametrar i app-länken.
+        openEl.href = `swish://paymentrequest?token=${encodeURIComponent(data.token)}&callbackurl=${back}`;
         openEl.style.display = 'inline-block';
         openEl.click();
       } else if (data.qr) {
@@ -2034,21 +2089,31 @@
 
       // Polla status tills betalt / nekat / timeout (~3 min)
       const deadline = Date.now() + 180000;
+      const ask = async () => {
+        const r = await fetch(`${payApi()}/swish-complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: data.id, items: cartPayload(), recipient, lang })
+        });
+        return r.json().catch(() => ({}));
+      };
+
       const poll = async () => {
         if (Date.now() > deadline) {
+          /* Tiden är ute — men fråga EN gång till innan vi säger till
+             kunden att försöka igen. Godkändes betalningen i sista
+             sekunden ska ingen betala två gånger för samma order. */
+          let last = {};
+          try { last = await ask(); } catch { /* ingen kontakt */ }
           pending.style.display = 'none';
           setPayBusy(false);
+          if (last.status === 'PAID') { finishPaidOrder(); return; }
           showToast(t('swishTimeout'));
           return;
         }
         let s = {};
         try {
-          const r = await fetch(`${payApi()}/swish-complete`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: data.id, items: cartPayload(), recipient, lang })
-          });
-          s = await r.json().catch(() => ({}));
+          s = await ask();
         } catch { /* nätverksglapp — försök igen */ }
 
         if (s.status === 'PAID') {
@@ -2096,13 +2161,13 @@
       const recipient = recipientPayload();
       if (!recipient.address1 || !recipient.zip || !recipient.city) { showToast(t('required')); return; }
       const method = selectedPayMethod();
-      if (method === 'swish' && CONFIG.payments.swish) return payWithSwish(recipient);
-      if (CONFIG.payments.card) return payWithCard(recipient);
+      if (method === 'swish' && payOn('swish')) return payWithSwish(recipient);
+      if (payOn('card')) return payWithCard(recipient);
       /* Bara Swish påslaget: valet spelar ingen roll, det finns ett
          betalsätt. Är BÅDA avstängda tar vi mejlbeställningen nedan i
          stället — förut hamnade vi i Swish ändå och kunden möttes av
          ett serverfel. */
-      if (CONFIG.payments.swish) return payWithSwish(recipient);
+      if (payOn('swish')) return payWithSwish(recipient);
     }
 
     const lines = cart.map((item) => {
@@ -2335,6 +2400,8 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
     renderCart();
     updateCartCount();
     handlePaymentReturn();
+    // Fråga servern vilka betalsätt som fungerar innan kunden når kassan
+    probePayments();
   }
 
   /* -----------------------------------------------------

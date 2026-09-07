@@ -17,6 +17,27 @@ const Stripe = require('stripe');
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 
 
+/* Betalsätten hos Stripe.
+   -----------------------------------------------------
+   Stod förut hårdkodat som ['card','klarna']. Problemet: är Klarna
+   inte godkänt på kontot avvisar Stripe HELA sessionen — och då
+   fungerar inte kortbetalningen heller, fast den var klar. Nu styrs
+   listan av en miljövariabel, så ett betalsätt kan tas bort eller
+   läggas till utan en ny deploy.
+
+   Stripe har numera även Swish (SEK, engångsbetalningar). Det är ett
+   alternativ till Swish Handel för den som inte vill vänta på
+   bankens certifikat — slå på Swish i Stripe Dashboard och lägg till
+   'swish' här. Se PAYMENTS_SETUP.md. */
+const ALLOWED_METHODS = ['card', 'klarna', 'swish', 'link', 'paypal'];
+const DEFAULT_METHODS = ['card', 'klarna'];
+
+function paymentMethods() {
+  const raw = String(process.env.STRIPE_PAYMENT_METHODS || '').toLowerCase();
+  const list = raw.split(',').map((m) => m.trim()).filter((m) => ALLOWED_METHODS.includes(m));
+  return list.length ? [...new Set(list)] : DEFAULT_METHODS;
+}
+
 exports.handler = async (event) => {
   const cors = corsHeaders(event, 'POST, OPTIONS');
   if (isForeignOrigin(event)) {
@@ -64,8 +85,7 @@ exports.handler = async (event) => {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      // Kort + Klarna. (Swish stöds inte av Stripe — se swish-create-payment.js)
-      payment_method_types: ['card', 'klarna'],
+      payment_method_types: paymentMethods(),
       line_items,
       customer_email: recipient.email,
       client_reference_id: reference,

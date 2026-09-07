@@ -11,7 +11,44 @@
 const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const { priceCart, validateRecipient } = require('./_lib/catalog');
-const { createPaymentRequest, normalisePhone } = require('./_lib/swish');
+const { createPaymentRequest, normalisePhone, isValidPayerAlias, swishConfigured } = require('./_lib/swish');
+
+
+/* -----------------------------------------------------
+   SPÄRR MOT MISSBRUK
+   -----------------------------------------------------
+   En betalningsförfrågan med telefonnummer plingar RAKT i
+   någons Swish-app. Utan spärr kunde endpointen användas för
+   att spamma främmande människor med förfrågningar i STEP1:s
+   namn — en färdig grund för bluffbetalningar.
+
+   Räknaren lever i funktionsinstansen. Den stoppar inte en
+   angripare med tusen IP-adresser, men den stoppar allt som
+   går genom en och samma, och den kostar ingenting. Ett
+   riktigt skydd hör hemma i en KV-store — se PAYMENTS_SETUP.md.
+--------------------------------------------------- */
+const HITS = new Map();          // nyckel → tidsstämplar
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_IP = 8;
+const MAX_PER_PHONE = 3;
+
+function rateLimited(key, max) {
+  if (!key) return false;
+  const now = Date.now();
+  const times = (HITS.get(key) || []).filter((t) => now - t < WINDOW_MS);
+  times.push(now);
+  HITS.set(key, times);
+  // Håll kartan liten även om instansen lever länge
+  if (HITS.size > 500) {
+    for (const [k, v] of HITS) if (!v.length || now - v[v.length - 1] > WINDOW_MS) HITS.delete(k);
+  }
+  return times.length > max;
+}
+
+function clientIp(event) {
+  const h = event.headers || {};
+  return h['x-nf-client-connection-ip'] || (h['x-forwarded-for'] || '').split(',')[0].trim() || '';
+}
 
 
 exports.handler = async (event) => {
@@ -22,6 +59,14 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors, body: '' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: cors, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  /* Är Swish inte färdigkopplat ska kunden få veta det HÄR, innan
+     kassan låtsas starta en betalning. Kassan frågar payment-methods
+     och döljer alternativet, men den som kommer förbi ändå ska mötas
+     av ett begripligt svar. */
+  if (!swishConfigured()) {
+    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'Swish är inte aktiverat i butiken just nu.' }) };
   }
 
   let payload;
@@ -36,6 +81,17 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
   }
 
+  /* Telefonnumret avgör om förfrågan skickas till en app. Går det inte
+     att tolka som ett svenskt mobilnummer skickas ingenting någonstans
+     — kunden får QR-koden i stället. */
+  const rawPhone = payload.phone || recipient.phone || '';
+  const payerAlias = rawPhone ? normalisePhone(rawPhone) : '';
+  const usePayer = isValidPayerAlias(payerAlias);
+
+  if (rateLimited(clientIp(event), MAX_PER_IP) || (usePayer && rateLimited('tel:' + payerAlias, MAX_PER_PHONE))) {
+    return { statusCode: 429, headers: cors, body: JSON.stringify({ error: 'För många försök. Vänta en stund och prova igen.' }) };
+  }
+
   const reference = 'S1F' + Date.now().toString(36).toUpperCase();
 
   try {
@@ -43,8 +99,8 @@ exports.handler = async (event) => {
       amount: cart.total,
       reference,
       message: 'STEP1 STORE',
-      // Om kunden angett telefonnummer: skicka förfrågan direkt till appen
-      payerAlias: payload.phone ? normalisePhone(payload.phone) : undefined
+      // Om kunden angett ett giltigt mobilnummer: skicka förfrågan direkt till appen
+      payerAlias: usePayer ? payerAlias : undefined
     });
 
     // QR-kod för datoranvändare (Swish publika QR-API, inget certifikat krävs)
@@ -75,6 +131,9 @@ exports.handler = async (event) => {
       })
     };
   } catch (err) {
-    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
+    /* Swish svar kan innehålla felkoder och detaljer om vårt konto.
+       Kunden ska se något begripligt; detaljen stannar i loggen. */
+    console.error('[swish-create-payment]', String((err && err.message) || err));
+    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte starta Swish-betalningen. Försök igen.' }) };
   }
 };

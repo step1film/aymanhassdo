@@ -11,7 +11,7 @@
 const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const { priceCart, validateRecipient } = require('./_lib/catalog');
-const { getPaymentRequest } = require('./_lib/swish');
+const { getPaymentRequest, swishConfigured } = require('./_lib/swish');
 const { fulfilOrder } = require('./_lib/fulfil');
 
 
@@ -39,11 +39,17 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Betalnings-id saknas.' }) };
   }
 
+  if (!swishConfigured()) {
+    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'Swish är inte aktiverat i butiken just nu.' }) };
+  }
+
   let payment;
   try {
     payment = await getPaymentRequest(paymentId);
   } catch (err) {
-    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
+    // Detaljen (Swish-felkod, vårt konto) stannar i loggen.
+    console.error('[swish-complete] Kunde inte hämta status:', String((err && err.message) || err));
+    return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Kunde inte hämta betalstatus. Försök igen.' }) };
   }
 
   const status = payment.status;
