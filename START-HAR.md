@@ -85,12 +85,23 @@ köra igång det ena först.
 - [x] **4.1** ✅ Stripe-konto klart. ⬜ Klarna återstår att aktivera under *Payment methods*.
 - [x] **4.2** ✅ `STRIPE_SECRET_KEY` satt (testnyckel).
 - [x] **4.3** ✅ Webhook skapad mot `stripe-webhook`, händelse `checkout.session.completed`.
+- [ ] **4.3b** 🙋 Lägg till två händelser till på samma webhook:
+      `checkout.session.async_payment_succeeded` och
+      `checkout.session.async_payment_failed`. De gäller betalsätt som
+      bekräftas i efterhand — utan dem kan en kund betala utan att
+      ordern skapas.
 - [x] **4.4** ✅ `STRIPE_WEBHOOK_SECRET` satt.
 
 **Swish**
 - [ ] **4.5** 🙋 Teckna **Swish Handel** hos din bank (tar några dagar — starta tidigt).
 - [ ] **4.6** 🙋 Banken ger dig ett certifikat (`.p12`). Koda det: `base64 -i swish.p12 | tr -d '\n'`
 - [ ] **4.7** 🙋 Miljövariabler: `SWISH_PAYEE_ALIAS`, `SWISH_CERT_P12`, `SWISH_CERT_PASSWORD`, och `SWISH_ENV` = `test`.
+      Det är allt som behövs — Swish dyker upp i kassan av sig själv, ingen kodändring.
+- [ ] **4.7b** 🙋 *Alternativ medan du väntar på banken:* Stripe har egen
+      Swish. Slå på Swish i Stripe Dashboard och sätt miljövariabeln
+      `STRIPE_PAYMENT_METHODS` = `card,klarna,swish`. Dyrare per köp
+      (Stripes avgift, pengarna landar hos Stripe), men fungerar direkt.
+      Se PAYMENTS_SETUP.md.
 
 **Orderbekräftelse till kunden**
 
@@ -110,7 +121,13 @@ villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
 > kan skriva till kunden för hand. Men kunden får inget kvitto.
 
 **Slå på**
-- [x] **4.8** ✅ `apiBase` satt och `card: true` i `shop.js`. Swish står kvar avstängd tills bankavtalet finns.
+- [x] **4.8** ✅ Sköter sig själv. `CONFIG.payments` i `shop.js` står på
+      `'auto'`: kassan frågar servern (`payment-methods`) vilka nycklar
+      som finns och visar bara de betalsätt som fungerar hela vägen.
+      Swish tänds alltså av sig själv när certifikatet läggs in — och
+      kort visas bara när BÅDA Stripe-nycklarna finns. Kontrollera när
+      som helst med:
+      `curl https://step1film.netlify.app/.netlify/functions/payment-methods`
 - [x] **4.9** ✅ Två testköp gjorda. Utkast i Printful med rätt produkt, färg, storlek och adress.
 
 ---
