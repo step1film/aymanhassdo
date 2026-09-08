@@ -12,8 +12,8 @@
      SWISH_CERT_PASSWORD – lösenord till .p12
      SWISH_ENV           – 'test' (MSS) eller 'production'
      API_URL             – där funktionerna körs (Netlify). Swish ringer
-                           tillbaka hit. Sätts bara när sajten ligger på
-                           en annan värd än funktionerna.
+                           tillbaka hit. Behövs bara om funktionerna ligger
+                           på en annan adress än den Netlify själv sätter.
      SITE_URL            – sajtens adress. Används som reserv om API_URL
                            inte är satt (allt på samma värd).
 
@@ -31,6 +31,31 @@ const HOSTS = {
 
 function swishHost() {
   return HOSTS[process.env.SWISH_ENV === 'production' ? 'production' : 'test'];
+}
+
+/* Swish Handel tar bara belopp inom det här spannet. Kontrollen görs
+   här också, inte bara hos Swish, så kunden möts av ett begripligt
+   fel i kassan i stället för ett rått API-svar. */
+const MIN_AMOUNT = 1;
+const MAX_AMOUNT = 150000;
+
+/** Adressen Swish ska ringa tillbaka till — dit FUNKTIONERNA ligger.
+    Netlify sätter URL automatiskt, så en callback hamnar rätt även om
+    SITE_URL pekar på GitHub Pages där butiken visas. */
+function apiBaseUrl() {
+  return (process.env.API_URL || process.env.URL || process.env.SITE_URL || '').replace(/\/$/, '');
+}
+
+/** true när servern har allt som krävs för en Swish-betalning.
+    Används av payment-methods.js: saknas något visas inte Swish alls
+    i kassan, i stället för att kunden möts av ett serverfel. */
+function swishConfigured() {
+  return Boolean(process.env.SWISH_CERT_P12 && (process.env.SWISH_PAYEE_ALIAS || PAYEE_ALIAS) && apiBaseUrl());
+}
+
+/** Swish kräver landsnummer utan inledande nolla: 46 + svenskt mobilnummer. */
+function isValidPayerAlias(n) {
+  return /^467\d{8}$/.test(String(n || ''));
 }
 
 /** Bygger TLS-optionerna från certifikatet i miljövariabeln. */
@@ -94,18 +119,29 @@ async function createPaymentRequest(p) {
   // Callbacken måste peka dit FUNKTIONERNA ligger — inte dit sajten ligger.
   // Ligger butiken på GitHub Pages och funktionerna på Netlify är det två
   // olika adresser, och då är API_URL den som gäller.
-  const api = (process.env.API_URL || process.env.SITE_URL || '').replace(/\/$/, '');
+  const api = apiBaseUrl();
   if (!api) throw new Error('API_URL (eller SITE_URL) saknas i serverns miljövariabler.');
+
+  /* Beloppet kommer från catalog.js, aldrig från webbläsaren — men en
+     tom vagn eller ett räknefel ska inte bli en betalningsförfrågan. */
+  const amount = Number(p.amount);
+  if (!Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
+    throw new Error(`Ogiltigt belopp: ${p.amount}`);
+  }
 
   const body = {
     payeeAlias: payee,
-    amount: p.amount.toFixed(2),
+    amount: amount.toFixed(2),
     currency: 'SEK',
     callbackUrl: `${api}/.netlify/functions/swish-callback`,
     payeePaymentReference: p.reference.replace(/[^A-Za-z0-9]/g, '').slice(0, 35),
     message: (p.message || 'STEP1 STORE').slice(0, 50)
   };
-  if (p.payerAlias) body.payerAlias = p.payerAlias;
+  /* Skickas payerAlias går förfrågan RAKT ut till den telefonen. Ett
+     felskrivet nummer hade landat hos en främling som ombeds betala vår
+     order — därför måste formatet stämma, annars körs QR-flödet i
+     stället (kunden skannar själv och inget skickas till någon). */
+  if (p.payerAlias && isValidPayerAlias(p.payerAlias)) body.payerAlias = p.payerAlias;
 
   const res = await swishRequest('PUT', `/swish-cpcapi/api/v2/paymentrequests/${instructionId}`, body);
 
@@ -139,4 +175,7 @@ function normalisePhone(input) {
   return n;
 }
 
-module.exports = { createPaymentRequest, getPaymentRequest, normalisePhone, swishHost, PAYEE_ALIAS };
+module.exports = {
+  createPaymentRequest, getPaymentRequest, normalisePhone, isValidPayerAlias,
+  swishConfigured, swishHost, apiBaseUrl, PAYEE_ALIAS, MIN_AMOUNT, MAX_AMOUNT
+};

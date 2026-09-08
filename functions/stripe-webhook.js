@@ -23,8 +23,18 @@ const { fulfilOrder } = require('./_lib/fulfil');
    omförsöken är få, men en dubblett skulle annars bli en andra
    Printful-order på samma betalning. Setet lever så länge
    funktionsinstansen gör; för skarp drift hör det hemma i en KV-store,
-   se PAYMENTS_SETUP.md. */
-const handledEvents = new Set();
+   se PAYMENTS_SETUP.md.
+
+   Nyckeln är SESSIONENS id, inte händelsens: samma köp kan komma in
+   som två olika händelser (completed och async_payment_succeeded för
+   betalsätt som bekräftas i efterhand). Två händelse-id:n hade sett
+   olika ut och blivit två ordrar — sessions-id:t är samma köp. */
+const handledSessions = new Set();
+
+/* checkout.session.completed  – betalt direkt (kort, Klarna, Swish)
+   async_payment_succeeded     – betalsätt som bekräftas i efterhand
+   async_payment_failed        – samma sak, men betalningen gick inte igenom */
+const PAID_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded'];
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
@@ -44,17 +54,28 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Ogiltig signatur' };
   }
 
-  if (stripeEvent.type !== 'checkout.session.completed') {
+  if (stripeEvent.type === 'checkout.session.async_payment_failed') {
+    const s = stripeEvent.data.object;
+    console.warn(`[stripe-webhook] Betalningen misslyckades för session ${s.id} `
+      + `(order ${(s.metadata && s.metadata.reference) || '—'}). Ingen order lagd.`);
+    return { statusCode: 200, body: 'ok (betalning misslyckades)' };
+  }
+
+  if (!PAID_EVENTS.includes(stripeEvent.type)) {
     return { statusCode: 200, body: 'ignored' };
   }
 
-  if (handledEvents.has(stripeEvent.id)) {
+  const session = stripeEvent.data.object;
+
+  if (handledSessions.has(session.id)) {
     return { statusCode: 200, body: 'ok (redan hanterad)' };
   }
 
-  const session = stripeEvent.data.object;
+  /* Betalsätt som bekräftas i efterhand kommer hit som 'unpaid'. Då
+     händer ingenting nu — async_payment_succeeded kommer när pengarna
+     är på plats, och först då skapas ordern. */
   if (session.payment_status !== 'paid') {
-    console.log('[stripe-webhook] Session ej betald ännu:', session.id);
+    console.log('[stripe-webhook] Session ej betald ännu:', session.id, session.payment_status);
     return { statusCode: 200, body: 'not paid' };
   }
 
@@ -78,7 +99,7 @@ exports.handler = async (event) => {
         + `med ${paidOre / 100} kr men kostar ${cart.total} kr enligt katalogen. `
         + `Ingen Printful-order lagd — kontrollera priset och lägg ordern för hand `
         + `eller återbetala mellanskillnaden.`);
-      handledEvents.add(stripeEvent.id);
+      handledSessions.add(session.id);
       return { statusCode: 200, body: 'ok (beloppet stämmer inte, manuell hantering)' };
     }
 
@@ -105,10 +126,11 @@ exports.handler = async (event) => {
         + `${SHIP_COUNTRIES.join(', ')}. Ingen Printful-order lagd. `
         + `Kontakta kunden om utrikesfrakt eller återbetala.\n`
         + JSON.stringify(recipient));
+      handledSessions.add(session.id);
       return { statusCode: 200, body: 'ok (utländsk adress, manuell hantering)' };
     }
 
-    handledEvents.add(stripeEvent.id);
+    handledSessions.add(session.id);
     await fulfilOrder({
       reference: md.reference || session.client_reference_id || session.id,
       recipient,
