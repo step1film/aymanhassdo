@@ -33,7 +33,8 @@ visas för en kund. `CONFIG.payments` i `shop.js` står på `'auto'`;
 
 ```
   Kassan öppnas ──► payment-methods  (vilka betalsätt är kopplade?)
-        │
+                └─► shipping-rates   (vad kostar frakten dit?)
+        │              └── Printful svarar inte? → fast pris
   Kund fyller i kassan
         │
         ├── Kort/Klarna ──► Stripe Checkout ──► kunden betalar
@@ -53,6 +54,39 @@ storlek och antal* — aldrig priser. Servern räknar alltid om summan från
 `functions/_lib/catalog.js`. Printful-ordern skapas först när
 betalningen är **bekräftad av Stripe eller Swish**, aldrig direkt från
 webbläsaren.
+
+---
+
+## Frakten
+
+Frakten hämtas live från Printful för kundens land och det som ligger i
+vagnen (`functions/_lib/shipping.js`). Kassan visar den innan kunden
+betalar, och servern räknar fram den på nytt när betalningen skapas —
+siffran webbläsaren visat kan aldrig bli den som debiteras.
+
+**Svarar inte Printful tas det fasta priset.** Nätverksfel, timeout
+(5 sekunder), svar utanför 2xx, tomt svar, saknad token, eller en rad
+utan Printful-id — alla leder till reservpriset, och varje gång loggas
+en rad som börjar `[shipping] FALLBACK`. Sök på den i *Functions → Logs*
+för att se hur ofta det händer. En utebliven order kostar mer än några
+kronors felräknad frakt, så kassan stannar aldrig på en frakt.
+
+**Kunden betalar aldrig mer än standardfrakten.** `frakt-leverans.html`
+lovar högst 79 kr, och Printful tar mer än så för vissa varor
+(ryggsäcken 102 kr). Blir live-priset högre står vi för mellanskillnaden;
+blir det lägre får kunden det lägre. `SHIPPING_CAP_TO_STANDARD=false`
+tar bort taket — men då måste frakt-leverans.html skrivas om först.
+
+**Beloppskontrollen är byggd för rörlig frakt.** Webhooken och
+`swish-complete` räknar om *varorna* ur katalogen — det är facit — och
+kontrollerar sedan att skillnaden mellan betalt belopp och varorna är en
+frakt i spannet 0–`SHIPPING_MAX_SEK`. Att jämföra mot ett fast totalbelopp
+hade gett falsklarm så fort Printful ändrat sitt pris mellan kassan och
+webhooken. Betalar kunden mindre än vad varorna kostar — det farliga
+fallet — fångas det fortfarande.
+
+Alla siffror styrs av miljövariabler, se `.env.example`. Inget är
+hårdkodat på mer än ett ställe.
 
 ---
 
@@ -278,6 +312,8 @@ Fyll i valet i `company.js` → `orgNr`.
 | `functions/_lib/catalog.js` | Serverns priskatalog + validering (aldrig lita på klienten) |
 | `functions/_lib/fulfil.js` | Skapar Printful-ordern efter bekräftad betalning |
 | `functions/_lib/swish.js` | Swish-API med klientcertifikat (mTLS) |
+| `functions/_lib/shipping.js` | Frakt live från Printful, med fast pris som reserv |
+| `functions/shipping-rates.js` | Fraktpriset till kassan (bara för att visa) |
 | `functions/payment-methods.js` | Säger vilka betalsätt som är färdigkopplade |
 | `functions/create-checkout-session.js` | Startar Stripe Checkout (kort + Klarna) |
 | `functions/stripe-webhook.js` | Tar emot Stripes bekräftelse → skapar ordern |

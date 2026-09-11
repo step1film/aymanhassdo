@@ -8,10 +8,11 @@
    ===================================================== */
 'use strict';
 
-const { corsHeaders, isForeignOrigin } = require('./_lib/http');
+const { corsHeaders, isForeignOrigin, skapaSpärr, clientIp } = require('./_lib/http');
 
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 const { createPaymentRequest, normalisePhone, isValidPayerAlias, swishConfigured } = require('./_lib/swish');
+const { resolveShipping } = require('./_lib/shipping');
 
 
 /* -----------------------------------------------------
@@ -22,33 +23,12 @@ const { createPaymentRequest, normalisePhone, isValidPayerAlias, swishConfigured
    att spamma främmande människor med förfrågningar i STEP1:s
    namn — en färdig grund för bluffbetalningar.
 
-   Räknaren lever i funktionsinstansen. Den stoppar inte en
-   angripare med tusen IP-adresser, men den stoppar allt som
-   går genom en och samma, och den kostar ingenting. Ett
-   riktigt skydd hör hemma i en KV-store — se PAYMENTS_SETUP.md.
+   Själva räknaren ligger i _lib/http.js och delas med de
+   andra endpointerna.
 --------------------------------------------------- */
-const HITS = new Map();          // nyckel → tidsstämplar
-const WINDOW_MS = 10 * 60 * 1000;
+const spärrad = skapaSpärr({ windowMs: 10 * 60 * 1000, max: 8 });
 const MAX_PER_IP = 8;
 const MAX_PER_PHONE = 3;
-
-function rateLimited(key, max) {
-  if (!key) return false;
-  const now = Date.now();
-  const times = (HITS.get(key) || []).filter((t) => now - t < WINDOW_MS);
-  times.push(now);
-  HITS.set(key, times);
-  // Håll kartan liten även om instansen lever länge
-  if (HITS.size > 500) {
-    for (const [k, v] of HITS) if (!v.length || now - v[v.length - 1] > WINDOW_MS) HITS.delete(k);
-  }
-  return times.length > max;
-}
-
-function clientIp(event) {
-  const h = event.headers || {};
-  return h['x-nf-client-connection-ip'] || (h['x-forwarded-for'] || '').split(',')[0].trim() || '';
-}
 
 
 exports.handler = async (event) => {
@@ -81,6 +61,11 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
   }
 
+  /* Frakten hämtas live för kundens land. Svarar inte Printful blir
+     det standardpriset — kassan stannar aldrig på en frakt. */
+  const frakt = await resolveShipping({ lines: cart.lines, subtotal: cart.subtotal, recipient });
+  cart = priceCart(payload.items, { shipping: frakt.amount });
+
   /* Telefonnumret avgör om förfrågan skickas till en app. Går det inte
      att tolka som ett svenskt mobilnummer skickas ingenting någonstans
      — kunden får QR-koden i stället. */
@@ -88,7 +73,7 @@ exports.handler = async (event) => {
   const payerAlias = rawPhone ? normalisePhone(rawPhone) : '';
   const usePayer = isValidPayerAlias(payerAlias);
 
-  if (rateLimited(clientIp(event), MAX_PER_IP) || (usePayer && rateLimited('tel:' + payerAlias, MAX_PER_PHONE))) {
+  if (spärrad(clientIp(event), MAX_PER_IP) || (usePayer && spärrad('tel:' + payerAlias, MAX_PER_PHONE))) {
     return { statusCode: 429, headers: cors, body: JSON.stringify({ error: 'För många försök. Vänta en stund och prova igen.' }) };
   }
 
@@ -127,7 +112,8 @@ exports.handler = async (event) => {
         token: result.token,
         qr,
         reference,
-        amount: cart.total
+        amount: cart.total,
+        shipping: cart.shipping
       })
     };
   } catch (err) {
