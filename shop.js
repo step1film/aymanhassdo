@@ -642,8 +642,7 @@
           "assets/products/crew-tee-heather-3.webp",
           "assets/products/crew-tee-heather-4.webp"
         ]
-      },
-      "hidden": true
+      }
     },
     {
       "id": "static-reel-sleeve",

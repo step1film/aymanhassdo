@@ -194,8 +194,7 @@ const CATALOG = {
       "black|M": 5415681063,
       "black|L": 5415681064,
       "black|XL": 5415681065
-    },
-    "hidden": true
+    }
   },
   "icon-stickers": {
     "name": "ICON STICKERS",
