@@ -3368,7 +3368,10 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .sida-credits { max-width: 44rem; }
 .credit-rad {
   display: grid;
-  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  /* 11rem räckte inte för PRODUKTIONSKOORDINATOR — versaler med
+     0.22em spärr blir 187 px, och ordet sköt rakt in i namnet
+     bredvid. 14rem rymmer det längsta ordet i listan. */
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
   gap: 0.2rem 1.2rem;
   align-items: baseline;
   padding: 0.55rem 0;
@@ -3379,6 +3382,9 @@ body.sida #logo-mark > * { pointer-events: auto; }
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-dim);
+  /* Skyddsnät: en ännu längre rollbenämning bryts i stället för att
+     spilla över i namnspalten. */
+  overflow-wrap: anywhere;
 }
 .credit-namn { font-size: var(--fs-note); color: var(--white); }
 
