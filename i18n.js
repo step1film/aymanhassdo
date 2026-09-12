@@ -32,8 +32,9 @@
       "playShowreel": "SPELA SHOWREEL",
       "showreel": "Showreel",
       "enterSite": "Gå in på sidan",
-      "heroTag": "Filmproduktion i Småland och Jönköpings län.",
-      "heroSub": "Dokumentär · kortfilm · uppdragsfilm · utveckling",
+      "introPlace": "Filmproduktion i Småland och Jönköpings län.",
+      "introDoes": "Dokumentär · kortfilm · uppdragsfilm · utveckling",
+      "heroTag": "Stories from people",
       "p1Title": "Utvalda<br>arbeten",
       "p1Meta": "Dokumentär · Kortfilm · Reklam · Digitalt labb · Webbutik",
       "playTrailer": "Spela trailer",
@@ -174,8 +175,9 @@
       "playShowreel": "PLAY SHOWREEL",
       "showreel": "Showreel",
       "enterSite": "Enter site",
-      "heroTag": "Film production in Småland and Jönköping County.",
-      "heroSub": "Documentary · short film · commissioned film · development",
+      "introPlace": "Film production in Småland and Jönköping County.",
+      "introDoes": "Documentary · short film · commissioned film · development",
+      "heroTag": "Stories from people",
       "p1Title": "Selected<br>Works",
       "p1Meta": "Documentary · Short film · Commercial · Digital lab · Web shop",
       "playTrailer": "Play trailer",
@@ -371,6 +373,15 @@
     });
     document.querySelectorAll('[data-i18n-aria]').forEach(el => {
       el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+    });
+
+    /* Rader som bara hör hemma på svenska. Orten — Småland, Jönköpings
+       län — säger något för den som läser svenska och ingenting för den
+       som inte gör det, så den ska inte stå kvar i den engelska
+       versionen. Texten ligger kvar i DOM:en och byts som vanligt; det
+       är bara synligheten som följer språket. */
+    document.querySelectorAll('[data-i18n-sv-only]').forEach(el => {
+      el.hidden = lang !== 'sv';
     });
 
     document.querySelectorAll('.lang-toggle button').forEach(b => {

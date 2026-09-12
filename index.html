@@ -166,6 +166,14 @@
     <div class="ld-holes bot"  aria-hidden="true"></div>
     <div class="ld-scan"       aria-hidden="true"></div>
     <div class="ld-body">
+      <!-- Introts rubrik: vad bolaget heter, var det finns och vad det
+           gör. Ortraden bär data-i18n-sv-only — den visas bara när sidan
+           står på svenska och göms på engelska. -->
+      <div class="ld-head">
+        <p class="ld-mark" aria-hidden="true">STEP<span>1</span>FILM</p>
+        <p class="ld-ort" data-i18n="introPlace" data-i18n-sv-only>Filmproduktion i Småland och Jönköpings län.</p>
+        <p class="ld-gor" data-i18n="introDoes">Dokumentär · kortfilm · uppdragsfilm · utveckling</p>
+      </div>
       <div class="ld-ring-wrap">
         <svg class="ld-svg" viewBox="0 0 120 120" fill="none" aria-hidden="true">
           <circle class="ld-track"    cx="60" cy="60" r="50"></circle>
@@ -258,12 +266,11 @@
               <div class="hero-overlay" aria-hidden="true"></div>
             </div>
             <div class="hero-content">
-              <!-- Vad bolaget heter, var det finns och vad det gör — i den
-                   ordningen, på tre rader. Orten stod förut bara i en dold
-                   rad för sökmotorer; nu läser besökaren samma sak. -->
-              <h1 class="hero-name">STEP<span>1</span>FILM</h1>
-              <p class="hero-tag" data-i18n="heroTag">Filmproduktion i Småland och Jönköpings län.</p>
-              <p class="hero-sub" data-i18n="heroSub">Dokumentär · kortfilm · uppdragsfilm · utveckling</p>
+              <!-- Märket syns; resten av rubriken läses av sökmotorer och
+                   skärmläsare. Samma innebörd som sidan i övrigt — inget
+                   som göms för besökaren och visas för Google. -->
+              <h1 class="hero-name">STEP<span>1</span>FILM<span class="bara-uppläst"> — filmproduktion i Småland och Jönköpings län</span></h1>
+              <p class="hero-tag" data-i18n="heroTag">Stories from people</p>
             </div>
           </section>
 

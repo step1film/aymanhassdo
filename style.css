@@ -153,6 +153,50 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   position: relative; z-index: 1;
 }
 
+/* Introts rubrik, ovanför nedräkningen: märket, orten och vad vi gör.
+   Samma lockup som i heron och sidfoten — vitt med röd etta. */
+.ld-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: center;
+  /* Nedräkningen står redan i mitten av skärmen och luften mellan
+     dem hör till .ld-body:s gap; här bara lite extra andrum under. */
+  margin-bottom: 0.4rem;
+  max-width: min(38rem, 88vw);
+}
+.ld-mark {
+  font-family: var(--ff-display);
+  font-size: clamp(1.9rem, min(7vw, 8vh), 3.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  font-weight: 400;
+}
+.ld-mark span { color: var(--accent); }
+/* Orten. En mening, alltså brödtextens typsnitt och versalgemener —
+   versaler med spärr läser man inte, man stavar sig igenom dem.
+   Göms helt på engelska (data-i18n-sv-only i i18n.js). */
+.ld-ort {
+  font-family: var(--ff-body);
+  font-weight: 300;
+  font-size: clamp(0.85rem, min(3.4vw, 1.35vh + 0.5rem), 1.05rem);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+/* Uppräkningen. Den ÄR en etikett och får versalerna och spärren. */
+.ld-gor {
+  font-family: var(--ff-display);
+  font-size: clamp(0.62rem, min(2.6vw, 0.82rem), 0.82rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-wrap: balance;
+}
+
 .ld-ring-wrap {
   position: relative;
   width: clamp(140px, 22vw, 200px);
@@ -207,6 +251,21 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .ld-skip:hover { border-color: var(--white); color: var(--white); background: rgba(255,255,255,0.03); }
 .ld-skip svg { width: 12px; height: 12px; }
+
+/* Låga fönster — i praktiken en telefon i liggande läge. Rubriken
+   ovanför nedräkningen lade till tre rader på en skärm som bara är
+   390 px hög: märket hamnade i överkanten och "ROLL · LJUD · TAGNING"
+   gick in i hoppa-över-knappen. Allt dras ihop; inget tas bort. */
+@media (max-height: 620px) {
+  .ld-body { gap: 0.9rem; }
+  .ld-head { gap: 0.3rem; margin-bottom: 0; }
+  .ld-mark { font-size: clamp(1.2rem, 5.6vh, 2rem); }
+  .ld-ring-wrap { width: clamp(84px, 26vh, 130px); height: clamp(84px, 26vh, 130px); }
+  .ld-label { letter-spacing: 0.32em; }
+  /* Knappen står fast i hörnet och krockade med etiketten under
+     ringen. Mindre och tätare intill kanten. */
+  .ld-skip { bottom: 0.8rem; right: 0.9rem; padding: 0.45rem 0.8rem; }
+}
 /* =====================================================
    PAGE
    ===================================================== */
@@ -452,39 +511,25 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Underrubriken. Liten och spärrad så den läser som en signatur under
    märket, inte som en andra rubrik. Sitter tätt inpå: märket har
    line-height 0.95 och lämnar redan luft under baslinjen. */
-/* Rad två: en mening, inte en etikett. Den stod i versaler med 0.26em
-   spärr när den bara var tre ord ("Stories from people"); en hel
-   mening satt så blir en rad man stavar sig igenom. Brödtextens
-   typsnitt, versalgemener och en spärr som bara ger luft. */
 .hero-tag {
-  margin-top: 0.7rem;
-  font-family: var(--ff-body);
-  font-weight: 300;
-  font-size: clamp(0.92rem, 1.45vw, 1.18rem);
-  letter-spacing: 0.03em;
-  line-height: 1.45;
+  margin-top: 0.15rem;
+  font-family: var(--ff-display);
+  /* Golvet låg på 0.62rem, vilket blev 9,9 px på en telefon — sajtens
+     minsta text, och den står direkt under ordmärket. Spärren på 0.3em
+     gör versaler ännu glesare att läsa, så den behöver mer grad än en
+     vanlig etikett, inte mindre. */
+  font-size: clamp(0.82rem, 1.3vw, 1rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
   color: var(--text);
-  text-wrap: balance;
-  /* Meningen ska bryta som en mening, inte löpa tvärs över en
-     1440-skärm. 42ch rymmer den på en rad på bred skärm och låter
-     den brytas av sig själv på en telefon. */
-  max-width: 42ch;
-  margin-inline: auto;
 }
 
-/* Rad tre: uppräkningen av vad vi gör. Den ÄR en etikett och får
-   behålla versalerna och spärren — men 0.42em sköt isär fyra ord till
-   något som inte gick att läsa i ett svep. */
 .hero-sub {
-  margin-top: 0.55rem;
-  font-family: var(--ff-display);
-  font-size: clamp(0.72rem, 1.05vw, 0.88rem);
-  letter-spacing: 0.22em;
+  margin-top: 0.9rem;
+  font-size: var(--fs-note);
+  letter-spacing: 0.42em;
   text-transform: uppercase;
-  /* Stod i --text-dim (#888) och försvann mot ljusa bildrutor i
-     showreelen bakom. Brödtextens grå håller sig läsbar mot båda. */
-  color: var(--text);
-  text-wrap: balance;
+  color: var(--text-dim);
 }
 
 /* =====================================================
@@ -2456,7 +2501,7 @@ body.reduced-motion .tb-card { animation: none; }
 }
 
 @media (max-width: 480px) {
-  .hero-eyebrow { letter-spacing: 0.3em; }
+  .hero-eyebrow, .hero-sub { letter-spacing: 0.3em; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
 }
@@ -2484,17 +2529,7 @@ body.reduced-motion .tb-card { animation: none; }
      högre upp), så bredden är det hårda taket — höjdledet håller det
      nere när telefonen ligger. */
   .hero-name { font-size: clamp(2.1rem, min(9vw, 14vh), 5rem); }
-  .hero-tag  { font-size: clamp(0.85rem, min(3.8vw, 3.4vh), 1.05rem); margin-top: 0.5rem; }
-  .hero-sub  {
-    font-size: clamp(0.64rem, min(2.9vw, 2.6vh), 0.8rem);
-    letter-spacing: 0.18em;
-    margin-top: 0.45rem;
-  }
-  /* Fyra ord med spärr fyllde raden kant till kant på 390 px och
-     gick in under den fasta fokusenheten vid högerkanten. Med luft åt
-     sidorna bryter uppräkningen på två rader av sig själv — ett ch-mått
-     hade varit fel här, spärren gör varje tecken bredare än ett ch. */
-  .hero-content { padding-left: 1.5rem; padding-right: 3rem; }
+  .hero-tag  { font-size: clamp(0.7rem, min(3.2vw, 2.6vh), 0.9rem); letter-spacing: 0.22em; }
 
   /* Sektionssiffran (01, 02 …) och panelrubriken. Siffran låg på
      4rem = 64 px som golv och tog en fjärdedel av en telefonskärm. */
