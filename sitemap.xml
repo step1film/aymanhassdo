@@ -4,9 +4,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://step1film.se/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <!-- Egna sidor med eget innehåll. De ligger som mappar med en
+       index.html i, inte som lösa .html-filer: GitHub Pages serverar
+       en mapp på sin adress med snedstreck, utan någon omdirigering
+       att hålla i synk. Adressen är skiftlägeskänslig — /Birdsofpassage/
+       med stort B är den som finns. -->
+  <url>
+    <loc>https://step1film.se/Birdsofpassage/</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://step1film.se/om-step1/</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <!-- Butiken heter /store. Adressen /shop.html står kvar i
        netlify.toml som omdirigering för gamla länkar, men sajten

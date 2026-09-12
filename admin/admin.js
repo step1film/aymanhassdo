@@ -192,15 +192,25 @@
   ===================================================== */
   const TEXTGRUPPER = [
     ['Hero och ramverk', ['skip', 'homeAria', 'storeLink', 'storeLinkAria', 'skipIntro', 'skipIntroAria',
-      'loaderLabel', 'rotateTitle', 'rotateBody', 'rotateStay', 'playShowreel', 'showreel', 'enterSite', 'heroTag']],
-    ['Panel 02 — Utvalda arbeten', ['p1Title', 'p1Meta', 'trailerSoon', 'playTrailer', 'logosSoon', 'postersSoon',
-      'stillsSoon', 'f1Type', 'f1Syn', 'f2Type', 'f2Title', 'f2Syn', 'f3Type', 'f3Title', 'f3Syn',
+      'loaderLabel', 'rotateTitle', 'rotateBody', 'rotateStay', 'playShowreel', 'showreel', 'enterSite',
+      'heroTag', 'heroSub']],
+    ['Panel 01 — Vad vi gör', ['p3Title', 'p3Meta', 'p3Intro',
+      'doMake', 'doMake1', 'doMake2', 'doMake3', 'doMake4',
+      'doDev', 'doDev1', 'doDev2', 'doDev3', 'doDev4']],
+    ['Panel 02 — Utvalda arbeten', ['p1Title', 'p1Meta', 'playTrailer', 'logosSoon', 'postersSoon',
+      'f1Type', 'f1Syn', 'f2Type', 'f2Title', 'f2Syn', 'f3Type', 'f3Title', 'f3Syn',
       'labSign', 'f4Type', 'f4Title', 'f4Syn', 'f5Year', 'f5Type', 'f5Syn', 'storeAria',
-      'ctaWatch', 'ctaFilms', 'ctaSoon', 'ctaShopping', 'watchAria', 'closeTrailer']],
-    ['Panel 01 — Drömmen', ['p2Title', 'portraitCap', 'aboutP1', 'aboutP2', 'aboutP3', 'aboutP4', 'aboutP5',
-      'aboutQuote', 'aboutPitch', 'aboutMail', 'reelHead', 'reelSoon', 'reelPrev', 'reelNext', 'reelList']],
-    ['Panel 03 — Vad vi kan göra', ['p3Title', 'p3Meta', 'p3Intro',
-      'aw1', 'aw1d', 'aw2', 'aw2d', 'aw3', 'aw3d', 'aw4', 'aw4d', 'aw5', 'aw5d', 'aw6', 'aw6d']],
+      'ctaRead', 'readAria', 'ctaFilms', 'ctaShopping', 'closeTrailer']],
+    ['Panel 03 — Varför vi finns', ['p2Title', 'portraitCap', 'aboutP3', 'aboutStoryHead', 'aboutShort2',
+      'aboutQuote', 'aboutMore', 'aboutMoreAria', 'aboutPitch', 'aboutMail',
+      'reelHead', 'reelSoon', 'reelPrev', 'reelNext', 'reelList']],
+    ['Sidan Om STEP1FILM', ['omKicker', 'omTitle', 'omWhy', 'aboutShort1',
+      'aboutP1', 'aboutP2', 'aboutP4', 'aboutP5']],
+    ['Sidan Birds of Passage', ['bopBack', 'bopKicker', 'bopUnder', 'bopFStatus', 'bopVStatus',
+      'bopFYear', 'bopFFormat', 'bopVFormat', 'bopFRuntime', 'bopFCoprod',
+      'bopTrailer', 'bopPlay', 'bopPlayAria', 'bopSynopsis', 'bopSyn1', 'bopSyn2',
+      'bopStills', 'bopCredits', 'bopCDirector', 'bopCProd', 'bopCCoprod',
+      'bopContact', 'bopContactNote']],
     ['Panel 04 — CV', ['p4Title', 'p4Meta', 'cvFilms', 'cvSelected', 'cvMedia', 'cvRuntime',
       'pq1', 'pq1a', 'pq1m', 'pq2', 'pq2a', 'pq2m', 'pq3', 'pq3m']],
     ['Panel 05 — Kontakt', ['p5Title', 'contactIntro', 'cfName', 'cfEmail', 'cfLink', 'cfOptional',
@@ -586,7 +596,7 @@
     box.appendChild(srBox);
 
     /* --- Trailer --- */
-    box.appendChild(el('h3', 'grupp-rubrik', 'Trailer — panel 02, Birds of Passage'));
+    box.appendChild(el('h3', 'grupp-rubrik', 'Trailer — Birds of Passage (panel 02 och filmens egen sida)'));
     const emb = S.innehall.STEP1FILM_EMBEDS || (S.innehall.STEP1FILM_EMBEDS = {});
     const tr = emb['film-001'] || (emb['film-001'] = { provider: 'vimeo', id: '', title: '' });
     const trBox = el('div', 'kort');
@@ -628,8 +638,8 @@
 
     /* --- Affischer --- */
     box.appendChild(el('h3', 'grupp-rubrik', 'Affischer och stillbilder — panel 02'));
-    const post = S.innehall.STEP1FILM_POSTERS || (S.innehall.STEP1FILM_POSTERS = { shorts: [], mammor: [] });
-    [['shorts', '003 Filmer — affischer'], ['mammor', '002 Jag som har två mammor — stillbilder']].forEach(([n, etikett]) => {
+    const post = S.innehall.STEP1FILM_POSTERS || (S.innehall.STEP1FILM_POSTERS = { birds: [], shorts: [], mammor: [] });
+    [['shorts', '003 Filmer — affischer'], ['mammor', '002 Jag som har två mammor — stillbilder'], ['birds', '001 Birds of Passage — bilder på filmens egen sida']].forEach(([n, etikett]) => {
       const lista = post[n] || (post[n] = []);
       const w = el('div', 'kort');
       const kropp = el('div', 'kort-kropp');

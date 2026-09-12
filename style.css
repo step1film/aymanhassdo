@@ -452,25 +452,39 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Underrubriken. Liten och spärrad så den läser som en signatur under
    märket, inte som en andra rubrik. Sitter tätt inpå: märket har
    line-height 0.95 och lämnar redan luft under baslinjen. */
+/* Rad två: en mening, inte en etikett. Den stod i versaler med 0.26em
+   spärr när den bara var tre ord ("Stories from people"); en hel
+   mening satt så blir en rad man stavar sig igenom. Brödtextens
+   typsnitt, versalgemener och en spärr som bara ger luft. */
 .hero-tag {
-  margin-top: 0.15rem;
-  font-family: var(--ff-display);
-  /* Golvet låg på 0.62rem, vilket blev 9,9 px på en telefon — sajtens
-     minsta text, och den står direkt under ordmärket. Spärren på 0.3em
-     gör versaler ännu glesare att läsa, så den behöver mer grad än en
-     vanlig etikett, inte mindre. */
-  font-size: clamp(0.82rem, 1.3vw, 1rem);
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
+  margin-top: 0.7rem;
+  font-family: var(--ff-body);
+  font-weight: 300;
+  font-size: clamp(0.92rem, 1.45vw, 1.18rem);
+  letter-spacing: 0.03em;
+  line-height: 1.45;
   color: var(--text);
+  text-wrap: balance;
+  /* Meningen ska bryta som en mening, inte löpa tvärs över en
+     1440-skärm. 42ch rymmer den på en rad på bred skärm och låter
+     den brytas av sig själv på en telefon. */
+  max-width: 42ch;
+  margin-inline: auto;
 }
 
+/* Rad tre: uppräkningen av vad vi gör. Den ÄR en etikett och får
+   behålla versalerna och spärren — men 0.42em sköt isär fyra ord till
+   något som inte gick att läsa i ett svep. */
 .hero-sub {
-  margin-top: 0.9rem;
-  font-size: var(--fs-note);
-  letter-spacing: 0.42em;
+  margin-top: 0.55rem;
+  font-family: var(--ff-display);
+  font-size: clamp(0.72rem, 1.05vw, 0.88rem);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  /* Stod i --text-dim (#888) och försvann mot ljusa bildrutor i
+     showreelen bakom. Brödtextens grå håller sig läsbar mot båda. */
+  color: var(--text);
+  text-wrap: balance;
 }
 
 /* =====================================================
@@ -1449,6 +1463,26 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   flex: 0 0 auto;
 }
 
+/* Vidare till hela berättelsen. Startsidans version är kortad, och
+   den här länken är vägen till resten — den får därför inte heller
+   kunna klippas bort. Pilen ligger i ::after så texten kan bytas av
+   i18n utan att pilen följer med i strängen. */
+.about-more {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin-top: 0.9em;
+  font-family: var(--ff-display);
+  font-size: var(--fs-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.15em;
+  transition: border-color 0.25s, color 0.25s;
+}
+.about-more::after { content: ' →'; }
+.about-more:hover { border-bottom-color: var(--accent); }
+
 /* --- Klippspelaren: först i mediaraden under texten --- */
 .about-reel {
   /* Bredden är 16:9 av rutans höjd, så spelaren skalar med panelen.
@@ -1776,6 +1810,23 @@ body.reduced-motion .tb-card { animation: none; }
    utvecklar tillsammans med filmskapare. Inga beskrivningar —
    raderna är korta och ska läsas som en meny, inte som text. */
 .panel-inner--do { gap: clamp(1rem, 2.4vh, 2rem); }
+
+/* Positioneringen: en mening om vad STEP1FILM är, mellan rubriken och
+   listorna. Ljusare än brödtext och bredare radavstånd — den ska läsas
+   som en devis, inte som ingressen till ett stycke. */
+.panel-intro {
+  font-family: var(--ff-body);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 1.45vw, 1.22rem);
+  line-height: 1.6;
+  color: var(--white);
+  max-width: 46ch;
+  text-wrap: pretty;
+  /* Centrerad över listorna, som dem. */
+  margin-inline: auto;
+  text-align: center;
+  margin-top: calc(-1 * clamp(0.4rem, 1vh, 0.9rem));
+}
 
 .do-groups {
   display: grid;
@@ -2316,6 +2367,13 @@ body.reduced-motion .tb-card { animation: none; }
     padding: 0.55rem 1.1rem;
   }
 
+  .panel-intro {
+    font-size: clamp(0.88rem, min(3.8vw, 3.6vh), 1.05rem);
+    text-align: left;
+    margin-inline: 0;
+    margin-top: 0;
+  }
+
   /* Vad vi gör: spalterna får bryta själva. auto-fit lägger två
      bredvid varandra så länge de får minst 15rem var — på en
      surfplatta gör de det, på en telefon blir det en spalt. */
@@ -2398,7 +2456,7 @@ body.reduced-motion .tb-card { animation: none; }
 }
 
 @media (max-width: 480px) {
-  .hero-eyebrow, .hero-sub { letter-spacing: 0.3em; }
+  .hero-eyebrow { letter-spacing: 0.3em; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
 }
@@ -2426,7 +2484,17 @@ body.reduced-motion .tb-card { animation: none; }
      högre upp), så bredden är det hårda taket — höjdledet håller det
      nere när telefonen ligger. */
   .hero-name { font-size: clamp(2.1rem, min(9vw, 14vh), 5rem); }
-  .hero-tag  { font-size: clamp(0.7rem, min(3.2vw, 2.6vh), 0.9rem); letter-spacing: 0.22em; }
+  .hero-tag  { font-size: clamp(0.85rem, min(3.8vw, 3.4vh), 1.05rem); margin-top: 0.5rem; }
+  .hero-sub  {
+    font-size: clamp(0.64rem, min(2.9vw, 2.6vh), 0.8rem);
+    letter-spacing: 0.18em;
+    margin-top: 0.45rem;
+  }
+  /* Fyra ord med spärr fyllde raden kant till kant på 390 px och
+     gick in under den fasta fokusenheten vid högerkanten. Med luft åt
+     sidorna bryter uppräkningen på två rader av sig själv — ett ch-mått
+     hade varit fel här, spärren gör varje tecken bredare än ett ch. */
+  .hero-content { padding-left: 1.5rem; padding-right: 3rem; }
 
   /* Sektionssiffran (01, 02 …) och panelrubriken. Siffran låg på
      4rem = 64 px som golv och tog en fjärdedel av en telefonskärm. */
@@ -3072,4 +3140,264 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   body { cursor: auto; }
   button, a, .h-dot, .h-arrow { cursor: pointer; }
   #film-cursor { display: none; }
+}
+
+/* =====================================================
+   UNDERSIDOR — /Birdsofpassage/ och /om-step1/
+   =====================================================
+   Startsidan är en enda skärm som sveper i sidled. De här sidorna
+   är motsatsen: vanliga dokument som rullar lodrätt, med samma
+   färger, typsnitt och ordmärke. De delar tokens och ordmärke med
+   startsidan och lägger bara till det som behövs för löpande text.
+
+   Startsidan gömmer muspekaren och ritar en egen (main.js). Det
+   skriptet körs inte här, så pekaren måste tillbaka — annars står
+   besökaren utan markör. */
+body.sida {
+  cursor: auto;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+body.sida button, body.sida a { cursor: pointer; }
+
+/* Ordmärket ligger fast överst, som på startsidan, men med en egen
+   botten: här rullar text under det hela vägen ned. */
+body.sida #logo-mark {
+  background: linear-gradient(180deg, rgba(10,10,10,0.96) 0%, rgba(10,10,10,0.82) 60%, transparent 100%);
+  pointer-events: none;
+}
+body.sida #logo-mark > * { pointer-events: auto; }
+
+.sida-wrap {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + clamp(2rem, 7vh, 5rem)) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem);
+}
+
+/* --- Sidhuvud: tillbakalänk, etikett, titel, fakta --- */
+.sida-back {
+  display: inline-block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.25s;
+  margin-bottom: clamp(1.4rem, 4vh, 2.6rem);
+}
+.sida-back:hover { color: var(--accent); }
+
+.sida-etikett {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+.sida-titel {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: clamp(2rem, min(7vw, 8vh), 4.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+.sida-titel em { color: var(--accent); font-style: normal; }
+.sida-under {
+  margin-top: 0.9rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+
+/* Statusraden: filmens läge just nu, som en rad små etiketter. */
+.sida-fakta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem clamp(0.8rem, 2vw, 1.6rem);
+  margin-top: clamp(1.2rem, 3vh, 2rem);
+  padding-top: clamp(0.9rem, 2vh, 1.3rem);
+  border-top: 1px solid var(--line);
+}
+.fakta-post { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.fakta-etikett {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.fakta-varde {
+  font-family: var(--ff-display);
+  font-size: clamp(0.92rem, 1.4vw, 1.1rem);
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+/* Pågående-märket: fylld punkt före texten, som en inspelningslampa. */
+.fakta-varde--pa { color: var(--accent); display: flex; align-items: center; gap: 0.45rem; }
+.fakta-varde--pa::before {
+  content: '';
+  width: 0.55em; height: 0.55em;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+/* --- Avsnitt --- */
+.sida-block { margin-top: clamp(2.4rem, 7vh, 4.5rem); }
+.sida-rubrik {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: clamp(0.5rem, 1.2vh, 0.8rem);
+  margin-bottom: clamp(1rem, 2.4vh, 1.6rem);
+  border-bottom: 1px solid var(--line);
+}
+.sida-text { max-width: 68ch; }
+.sida-text p {
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.sida-text p + p { margin-top: 1.1em; }
+.sida-text p.lead { color: var(--white); }
+.sida-cite {
+  margin-top: 1.4em;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--accent);
+  color: var(--white);
+  font-weight: 500;
+}
+.sida-sign { margin-top: 0.9em; color: var(--white); letter-spacing: 0.06em; }
+
+/* --- Trailerrutan --- */
+.sida-trailer {
+  position: relative;
+  /* Full spaltbredd blev 666 px hög på en 1440-skärm och sköt ned
+     allt annat under vecket. En trailer behöver inte vara störst på
+     sidan för att synas. */
+  max-width: 56rem;
+  aspect-ratio: 16 / 9;
+  background: #101010;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.sida-trailer iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.trailer-play {
+  color: var(--white);
+  opacity: 0.8;
+  transition: opacity 0.25s, transform 0.35s var(--ease);
+  display: grid;
+  place-items: center;
+  gap: 0.7rem;
+}
+.trailer-play:hover { opacity: 1; transform: scale(1.04); }
+.trailer-play svg { width: clamp(44px, 7vw, 72px); height: clamp(44px, 7vw, 72px); }
+.trailer-play span {
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+/* Utan video-id finns ingen ruta alls — inget "trailer kommer". */
+.sida-trailer[hidden], .sida-block[hidden] { display: none; }
+
+/* --- Bildgalleri. Tomt = blocket göms helt av page.js. --- */
+.sida-bilder {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(0.6rem, 1.6vw, 1rem);
+}
+.sida-bilder img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: #101010;
+}
+
+/* --- Medverkande --- */
+/* En spalt, som en eftertext. Två spalter bröt läsordningen: med tre
+   rader hamnade tredje raden under den första i stället för efter
+   den andra. */
+.sida-credits { max-width: 44rem; }
+.credit-rad {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 0.2rem 1.2rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--line);
+}
+.credit-roll {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.credit-namn { font-size: var(--fs-note); color: var(--white); }
+
+/* --- Avslutande uppmaning --- */
+.sida-cta {
+  margin-top: clamp(2.4rem, 7vh, 4.5rem);
+  padding-top: clamp(1.4rem, 3vh, 2rem);
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem clamp(1.2rem, 3vw, 2.4rem);
+}
+.sida-knapp {
+  display: inline-block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white);
+  border: 1px solid var(--line-s);
+  padding: 0.7rem 1.4rem;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+.sida-knapp:hover { border-color: var(--accent); color: var(--accent); }
+.sida-cta-text { font-size: var(--fs-note); color: var(--text-dim); }
+
+/* --- Sidfot --- */
+.sida-foot {
+  border-top: 1px solid var(--line);
+  padding: 1.4rem clamp(1.25rem, 5vw, 4rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem 2rem;
+}
+
+/* Telefon: färre spalter, tätare rader. */
+@media (max-width: 700px) {
+  .credit-rad { grid-template-columns: minmax(0, 1fr); }
+  .sida-fakta { gap: 0.9rem 1.4rem; }
+}
+
+/* --- Om STEP1FILM: porträttet överst --- */
+.om-portratt { max-width: 30rem; }
+.om-bild {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+.om-bildtext {
+  margin-top: 0.6rem;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }

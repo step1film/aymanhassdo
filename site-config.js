@@ -67,8 +67,14 @@
    STEP1FILM_POSTERS     Affischerna på panel 02. De tonar in och ut, var
                          och en på sin plats: en i mitten, två delar
                          rutan, tre står vänster/mitten/höger. Fler än
-                         tre går men börjar trängas. Tom lista ger
-                         "Bilder kommer".
+                         tre går men börjar trängas. Tom lista ger en
+                         tom ruta — ingen platshållartext.
+
+                         Nyckeln "birds" är stillbilderna på filmens egen
+                         sida, step1film.se/Birdsofpassage/. De visas i ett
+                         rutnät där, inte som affischer på panel 02. Är
+                         listan tom försvinner hela bildavsnittet på den
+                         sidan.
 
    Fält som finns i två språk skrivs { sv: '…', en: '…' }. Ett fält som
    är samma på båda språken får stå som en vanlig sträng.
@@ -407,6 +413,7 @@ window.STEP1FILM_CV = [
 ];
 
 window.STEP1FILM_POSTERS = {
+  "birds": [],
   "shorts": [
     "assets/films/posters/nya-ord.jpg",
     "assets/films/posters/minds-eye.jpg",

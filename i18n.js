@@ -32,7 +32,8 @@
       "playShowreel": "SPELA SHOWREEL",
       "showreel": "Showreel",
       "enterSite": "Gå in på sidan",
-      "heroTag": "Stories from people",
+      "heroTag": "Filmproduktion i Småland och Jönköpings län.",
+      "heroSub": "Dokumentär · kortfilm · uppdragsfilm · utveckling",
       "p1Title": "Utvalda<br>arbeten",
       "p1Meta": "Dokumentär · Kortfilm · Reklam · Digitalt labb · Webbutik",
       "playTrailer": "Spela trailer",
@@ -54,10 +55,8 @@
       "f5Type": "Merch · Tryck",
       "f5Syn": "Allt är designat för STEP1 STORE och trycks först när du beställer. Färska varor — och inget blir över.",
       "storeAria": "STEP1 Store — merch, kepsar och muggar",
-      "ctaWatch": "Se trailern",
       "ctaFilms": "Filmer",
       "ctaShopping": "Handla",
-      "watchAria": "Se trailern till Birds of Passage",
       "closeTrailer": "Stäng trailern",
       "p2Title": "Varför<br>vi finns",
       "portraitCap": "Foto: Joel Arvidsson · Småland, Sverige",
@@ -67,6 +66,38 @@
       "aboutP4": "Om du har en idé du tror starkt på men inte vet hur du ska ta nästa steg, eller saknar ett nätverk inom filmbranschen, hjälper vi gärna till. Vi kan vägleda dig genom processen, hjälpa dig lägga upp en plan, och koppla ihop dig, så långt det är möjligt, med rätt personer för din film.",
       "aboutP5": "Att göra film är en resa som sällan görs ensam. Om vi kan bidra med vår kunskap, erfarenhet eller våra kontakter, gör vi det gärna. Tveka inte att höra av dig: ett enkelt samtal kan vara starten på din nästa film.",
       "aboutStoryHead": "Berättelsen bakom",
+      "aboutShort1": "STEP1FILM är ett filmproduktions- och utvecklingsbolag i Småland. Vi gör egna filmer och hjälper andra att ta sitt första steg — från idé till färdig film.",
+      "aboutShort2": "Bakom bolaget står Ayman Hassdo. Han föddes i nordöstra Syrien, kom till Sverige när kriget tvingade honom att lämna, och byggde STEP1FILM som ett sätt att ge tillbaka av det han själv fick hjälp med.",
+      "aboutMore": "Läs hela berättelsen",
+      "aboutMoreAria": "Läs hela berättelsen om STEP1FILM",
+      "omKicker": "Om bolaget",
+      "omTitle": "Om STEP<em>1</em>FILM",
+      "omWhy": "Varför vi finns",
+      "bopBack": "← Till startsidan",
+      "bopKicker": "Långfilmsdokumentär · STEP1FILM",
+      "bopUnder": "En långfilmsdokumentär i produktion, i samproduktion med Story AB.",
+      "bopFStatus": "Status",
+      "bopVStatus": "I produktion",
+      "bopFYear": "År",
+      "bopFFormat": "Format",
+      "bopVFormat": "Långfilmsdokumentär",
+      "bopFRuntime": "Speltid",
+      "bopFCoprod": "Samproduktion",
+      "bopTrailer": "Trailer",
+      "bopPlay": "Spela trailern",
+      "bopPlayAria": "Spela trailern till Birds of Passage",
+      "bopSynopsis": "Synopsis",
+      "bopSyn1": "Synopsis publiceras när filmen kommit längre i produktionen.",
+      "bopSyn2": "Vill du veta mer om projektet innan dess går det bra att höra av sig direkt.",
+      "bopStills": "Bilder",
+      "bopCredits": "Medverkande",
+      "bopCDirector": "Regi",
+      "bopCProd": "Produktion",
+      "bopCCoprod": "Samproduktion",
+      "bopContact": "Skriv till Ayman",
+      "bopContactNote": "Frågor om filmen, visningar eller samarbete.",
+      "ctaRead": "Läs om",
+      "readAria": "Läs om Birds of Passage",
       "aboutQuote": "Avslutningsvis vill jag dela något jag lärt mig: ”Om dina drömmar inte skrämmer dig, är de kanske inte stora nog.”",
       "aboutPitch": "Pitcha din idé i några rader — var projektet står, vad det handlar om och en länk till ditt material. Sedan tar vi ett onlinemöte och lägger en plan. ;)",
       "reelHead": "Klipp",
@@ -76,7 +107,7 @@
       "reelList": "Välj klipp",
       "p3Title": "Vad vi gör",
       "p3Meta": "Från första samtalet till färdig mix",
-      "p3Intro": "Skicka ett mejl med var projektet står, vad det handlar om och en länk till rörligt material om det finns. Sedan tar vi ett onlinemöte och bestämmer en plan tillsammans.",
+      "p3Intro": "Ett filmproduktions- och utvecklingsbolag som hjälper berättelser att ta sitt första steg.",
       "aboutMail": "Skriv till Ayman",
       "doMake": "Vi gör",
       "doMake1": "Dokumentär",
@@ -143,7 +174,8 @@
       "playShowreel": "PLAY SHOWREEL",
       "showreel": "Showreel",
       "enterSite": "Enter site",
-      "heroTag": "Stories from people",
+      "heroTag": "Film production in Småland and Jönköping County.",
+      "heroSub": "Documentary · short film · commissioned film · development",
       "p1Title": "Selected<br>Works",
       "p1Meta": "Documentary · Short film · Commercial · Digital lab · Web shop",
       "playTrailer": "Play trailer",
@@ -165,10 +197,8 @@
       "f5Type": "Merch · Print",
       "f5Syn": "Everything is designed for STEP1 STORE and printed only when you order. Fresh pieces — and nothing left over.",
       "storeAria": "STEP1 Store — merch, caps and mugs",
-      "ctaWatch": "Watch",
       "ctaFilms": "Films",
       "ctaShopping": "Shop",
-      "watchAria": "Watch the Birds of Passage trailer",
       "closeTrailer": "Close the trailer",
       "p2Title": "Why<br>we exist",
       "portraitCap": "Photo by Joel Arvidsson · Småland, Sweden",
@@ -178,6 +208,38 @@
       "aboutP4": "If you have an idea you believe in strongly but don’t know how to take the next step, or lack a network in the film industry, we’d be glad to help. We can guide you through the process, help you build a plan, and connect you, as much as possible, with the right people for your film.",
       "aboutP5": "Filmmaking is a journey rarely completed alone. If we can contribute our knowledge, experience or connections, we’d be happy to. Don’t hesitate to reach out: a simple conversation could be the start of your next film.",
       "aboutStoryHead": "The story behind",
+      "aboutShort1": "STEP1FILM is a film production and development company in Småland, Sweden. We make our own films and help others take their first step — from idea to finished film.",
+      "aboutShort2": "Behind the company is Ayman Hassdo. He was born in north-eastern Syria, came to Sweden when war forced him to leave, and built STEP1FILM as a way of giving back what he was once helped with.",
+      "aboutMore": "Read the full story",
+      "aboutMoreAria": "Read the full story of STEP1FILM",
+      "omKicker": "About the company",
+      "omTitle": "About STEP<em>1</em>FILM",
+      "omWhy": "Why we exist",
+      "bopBack": "← Back to the start page",
+      "bopKicker": "Feature-length documentary · STEP1FILM",
+      "bopUnder": "A feature-length documentary in production, co-produced with Story AB.",
+      "bopFStatus": "Status",
+      "bopVStatus": "In production",
+      "bopFYear": "Year",
+      "bopFFormat": "Format",
+      "bopVFormat": "Feature-length documentary",
+      "bopFRuntime": "Running time",
+      "bopFCoprod": "Co-production",
+      "bopTrailer": "Trailer",
+      "bopPlay": "Play the trailer",
+      "bopPlayAria": "Play the Birds of Passage trailer",
+      "bopSynopsis": "Synopsis",
+      "bopSyn1": "The synopsis will be published as the film moves further into production.",
+      "bopSyn2": "If you would like to know more about the project before then, you are welcome to get in touch.",
+      "bopStills": "Stills",
+      "bopCredits": "Credits",
+      "bopCDirector": "Director",
+      "bopCProd": "Production",
+      "bopCCoprod": "Co-production",
+      "bopContact": "Write to Ayman",
+      "bopContactNote": "Questions about the film, screenings or collaboration.",
+      "ctaRead": "Read more",
+      "readAria": "Read about Birds of Passage",
       "aboutQuote": "Finally, I’d like to share something I’ve learned: “If your dreams don’t scare you, they’re probably not big enough.”",
       "aboutPitch": "Pitch your idea in a few lines — where the project stands, what it is about, and a link to your material. Then we have an online meeting and make a plan. ;)",
       "reelHead": "Clips",
@@ -187,7 +249,7 @@
       "reelList": "Choose clip",
       "p3Title": "What we do",
       "p3Meta": "From first call to final mix",
-      "p3Intro": "Send an email with where your project stands, what it is about, and a link to any footage you already have. Then we have an online meeting and make a plan together.",
+      "p3Intro": "A film production and development company that helps stories take their first step.",
       "aboutMail": "Write to Ayman",
       "doMake": "We make",
       "doMake1": "Documentary",
@@ -255,8 +317,43 @@
    skriptet: en sökmotors första avläsning ska möta svenska på en
    sida som säger lang="sv", inte engelska. Ändras en svensk text
    här bör motsvarande rad i HTML-filen ändras med den. */
-  let lang = localStorage.getItem('s1f_lang');
-  if (lang !== 'sv' && lang !== 'en') lang = 'sv';
+  /* -----------------------------------------------------
+     VILKET SPRÅK BESÖKAREN MÖTS AV
+     -----------------------------------------------------
+     Har besökaren själv tryckt SV eller EN gäller det valet, alltid.
+     Först när inget val finns lagrat gissar vi: är besökaren i
+     Sverige blir det svenska, annars engelska.
+
+     Gissningen görs på enhetens tidszon, inte på en IP-uppslagning.
+     Tidszonen finns redan i webbläsaren — ingen förfrågan lämnar
+     sajten, ingen tjänst att betala för, ingenting att vänta på, och
+     inga personuppgifter som passerar en tredje part. Europe/Stockholm
+     är Sveriges enda zon, så träffen är exakt.
+
+     Saknas tidszonen (mycket gamla webbläsare) faller vi tillbaka på
+     webbläsarens språklista. Den säger vad besökaren läser, inte var
+     hen är — sämre för frågan "är jag i Sverige?", men bättre än
+     ingenting.
+
+     Obs: den serverade HTML:en är och förblir svensk, och sidan säger
+     lang="sv" tills skriptet kört. Det betyder att en sökmotor som
+     kör JavaScript från en server utanför Sverige nu får se den
+     engelska texten. Vill du att Google alltid ska läsa svenska är
+     det det här blocket som ska bort. */
+  function gissaSprak() {
+    try {
+      const zon = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (zon) return zon === 'Europe/Stockholm' ? 'sv' : 'en';
+    } catch {}
+    const listan = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || ''];
+    return listan.some(l => String(l).toLowerCase().startsWith('sv')) ? 'sv' : 'en';
+  }
+
+  let lang = null;
+  try { lang = localStorage.getItem('s1f_lang'); } catch {}
+  if (lang !== 'sv' && lang !== 'en') lang = gissaSprak();
 
   const t = key => {
     const dict = STRINGS[lang] || STRINGS.sv;
@@ -298,7 +395,7 @@
   function setLang(l) {
     if (l !== 'sv' && l !== 'en') return;
     lang = l;
-    localStorage.setItem('s1f_lang', l);
+    try { localStorage.setItem('s1f_lang', l); } catch {}
     apply();
   }
 
