@@ -25,9 +25,9 @@
                          2.00 univisium   · 1.78 vanlig 16:9
 
    STEP1FILM_EMBEDS      Trailern på panel 02 (film-001). Tom id-sträng
-                         ger texten "Trailer kommer" i stället.
+                         lämnar rutan tom — ingen platshållartext.
 
-   STEP1FILM_REEL        Klippspelaren på panel 01. Varje klipp spelar
+   STEP1FILM_REEL        Klippspelaren på panel 03. Varje klipp spelar
                          30 sekunder och lämnar sedan över till nästa.
                          Längden sitter i SEKUNDER i main.js.
 

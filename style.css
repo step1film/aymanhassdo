@@ -328,7 +328,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* ---- Hero ----
    Ligger som understa lagret i samma wipe-stack som panelerna,
-   så att panel 01 sveper in horisontellt över showreelen i
+   så att första panelen sveper in horisontellt över showreelen i
    stället för att skjuta upp den vertikalt. */
 #hero {
   position: absolute;
@@ -495,7 +495,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   will-change: clip-path;
 }
 
-/* Ordningen är panel 01 = drömmen, 02 = utvalda arbeten.
+/* Ordningen är panel 01 = vad vi gör, 02 = utvalda arbeten,
+   03 = varför vi finns. Företaget först, personen sedan.
    z-index avgör vem som sveper in över vem.
 
    Varje panel har tre skikt, i den ordning de målas:
@@ -506,13 +507,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
    Bilden sitter på ::before och inte på panelen själv, för att den ska
    gå att flytta med transform. Panelen kan inte transformeras — den
    bär clip-path som styr svepet. */
-#about   { z-index: 1; clip-path: inset(0 0 0 0%);   }
-/* På breda skärmar startar även panel 01 utanför bild och sveper in
+#awards  { z-index: 1; clip-path: inset(0 0 0 0%);   }
+/* På breda skärmar startar även första panelen utanför bild och sveper in
    över showreelen. Samma brytpunkt som isWideScreen() i main.js.
    På smala skärmar stackas panelerna vertikalt och 01 ska synas direkt. */
-@media (min-width: 901px) and (min-height: 560px) { #about { clip-path: inset(0 0 0 100%); } }
+@media (min-width: 901px) and (min-height: 560px) { #awards { clip-path: inset(0 0 0 100%); } }
 #films   { z-index: 2; clip-path: inset(0 0 0 100%); }
-#awards  { z-index: 3; clip-path: inset(0 0 0 100%); }
+#about   { z-index: 3; clip-path: inset(0 0 0 100%); }
 #press   { z-index: 4; clip-path: inset(0 0 0 100%); }
 #contact { z-index: 5; clip-path: inset(0 0 0 100%); }
 
@@ -557,7 +558,7 @@ body.reduced-motion .h-panel::before { animation: none; }
    är. --spot-x/y sätts av main.js, --spot-r är hålets storlek. */
 :root {
   /* Höjt från 0.60. Bakgrundsbilderna är olika ljusa, och på de
-     ljusaste — sjön på panel 01, dimman på panel 05 — låg texten
+     ljusaste — sjön på panel 03, dimman på panel 05 — låg texten
      nästan i samma ton som vattnet bakom. 0.74 håller kontrasten
      uppe på alla fem utan att bilderna försvinner. */
   --panel-dim: 0.74;
@@ -1419,6 +1420,20 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
 }
 .about-lead  { color: var(--white); }
 .about-body  { color: var(--text); }
+
+/* Mellanrubrik i biografin. Texten går numera varför → vem: först
+   varför STEP1FILM finns, sedan berättelsen bakom. Rubriken markerar
+   skarven, i etikettens format så att den inte konkurrerar med
+   panelrubriken. */
+.about-sub {
+  font-family: var(--ff-display);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 0.4em;
+}
 .about-quote {
   color: var(--white);
   font-weight: 500;          /* tjockare, men samma grad */
@@ -1755,65 +1770,60 @@ body.reduced-motion .tb-card { animation: none; }
 .tb-stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* =====================================================
-   PRACTICE PANEL (was AWARDS — now disciplines list)
-   ===================================================== */
-.panel-intro {
-  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
-  color: var(--text-dim);
-  max-width: 58ch;
-  line-height: 1.8;
-  text-wrap: pretty;
-  margin-top: calc(-1 * clamp(0.8rem, 1.6vh, 1.4rem));
-}
+   PANEL 01 — VAD VI GÖR
+   =====================================================
+   Två listor sida vid sida: det vi producerar, och det vi
+   utvecklar tillsammans med filmskapare. Inga beskrivningar —
+   raderna är korta och ska läsas som en meny, inte som text. */
+.panel-inner--do { gap: clamp(1rem, 2.4vh, 2rem); }
 
-.awards-list { display: flex; flex-direction: column; flex: 1; justify-content: space-between; overflow: hidden; min-height: 0; }
-/* Nummer · tjänst · beskrivning.
-
-   Spalterna var 1fr och 1.6fr, alltså andelar av hela bredden — på en
-   bred skärm hamnade beskrivningen långt ute till höger och tappade
-   kontakten med tjänsten den hör till. Måtten är i teckenbredder nu,
-   så beskrivningen står strax efter namnet oavsett fönster, och lika
-   på varje rad.
-
-   Strecken mellan raderna är borta. De gjorde listan till en tabell;
-   luften mellan raderna räcker för att skilja dem åt. */
-.award-row {
+.do-groups {
   display: grid;
-  grid-template-columns: 2.6rem minmax(0, 20ch) minmax(0, 46ch);
-  /* Centrerad i sidled. Packad åt vänster lämnade den halva panelen
-     tom åt höger. */
+  grid-template-columns: repeat(2, minmax(0, 26ch));
+  /* Centrerad i sidled, som filmlistan och CV:t. Packad åt vänster
+     lämnade den halva panelen tom. */
   justify-content: center;
-  gap: 0 clamp(1rem, 1.8vw, 1.6rem);
-  align-items: baseline;
-  padding: clamp(0.45rem, 0.95vh, 0.75rem) 0;
-  transition: transform 0.4s var(--ease);
-}
-/* Ingen avslutande linje heller — strecken mellan raderna är borta. */
-.award-row:hover { border-color: var(--line-s); }
-.aw-year   { font-family: var(--ff-display); font-size: var(--fs-label); letter-spacing: 0.18em; color: var(--accent); }
-.aw-name   { font-family: var(--ff-display); font-size: clamp(0.95rem, 1.6vw, 1.3rem); color: var(--white); letter-spacing: 0.04em; }
-/* Förklaringarna låg på --text-dim (#888) och drunknade mot den mörka
-   bakgrundsbilden. De är panelens egentliga innehåll och ska gå att
-   läsa — därför brödtextens ljusgrå, en nyans under rubrikvitt. */
-.aw-detail { font-size: var(--fs-note); color: var(--text); line-height: 1.7; }
-
-/* Jämnhöga rader: förklaringarna är olika långa, och space-between
-   sköt isär raderna i olika grad. Här sitter de tätt i stället, och
-   varje förklaring får exakt två rader — då blir alla lika höga. */
-/* Tätt hopsatt lista, en bit ovanför mitten — helt centrerad hamnade
-   den för långt ned när rubriken tar plats högst upp. */
-.awards-list--even { justify-content: flex-start; padding-top: clamp(0.5rem, 2vh, 1.6rem); }
-.awards-list--even .award-row {
-  padding: clamp(0.4rem, 1vh, 0.75rem) 0;
-  align-items: start;
-}
-.awards-list--even .aw-year { padding-top: 0.2em; }
-.awards-list--even .aw-detail {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  align-content: safe center;
+  gap: clamp(1.4rem, 3vh, 2.4rem) clamp(2rem, 6vw, 5rem);
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
-  min-height: 3.4em;   /* 2 rader × 1.7 radavstånd */
+}
+
+.dg-head {
+  font-family: var(--ff-display);
+  font-size: clamp(0.92rem, 1.5vw, 1.2rem);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: clamp(0.35rem, 0.9vh, 0.7rem);
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.7rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.dg-list { display: flex; flex-direction: column; }
+.dg-item {
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  gap: 0 clamp(0.7rem, 1.4vw, 1.1rem);
+  align-items: baseline;
+  padding: clamp(0.4rem, 1vh, 0.8rem) 0;
+}
+.dg-num {
+  font-family: var(--ff-display);
+  font-size: var(--fs-label);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  opacity: 0.7;
+}
+.dg-name {
+  font-family: var(--ff-display);
+  font-size: clamp(0.98rem, 1.6vw, 1.35rem);
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  color: var(--white);
+  text-wrap: balance;
 }
 
 /* =====================================================
@@ -2008,15 +2018,14 @@ body.reduced-motion .tb-card { animation: none; }
    första raderna hade blivit oåtkomliga på låga fönster. Med safe
    faller den tillbaka till överkanten precis när det inte får plats. */
 
-/* Panel 01 — biografin */
+/* Panel 03 — biografin */
 .about-scroll { justify-content: safe center; }
 
 /* Panel 02 — filmlistan */
 .films-list { justify-content: safe center; }
 
-/* Panel 03 — vad vi kan göra. Raderna stod utspridda över hela höjden
-   (space-between); nu samlade i mitten med sitt egna radavstånd. */
-.awards-list { justify-content: safe center; }
+/* Panel 01 — vad vi gör. Listorna samlas i mitten av panelen. */
+.do-groups { align-content: safe center; }
 
 /* Panel 04 — CV:t. Spalterna är olika långa, så de centreras var för
    sig i stället för som ett block: annars hade den korta spalten
@@ -2307,9 +2316,15 @@ body.reduced-motion .tb-card { animation: none; }
     padding: 0.55rem 1.1rem;
   }
 
-  /* Practice list: collapse the detail column under the name on small screens */
-  .award-row { grid-template-columns: 2.5rem 1fr; gap: 0.25rem 1rem; padding: 0.9rem 0; }
-  .aw-detail { grid-column: 2; font-size: 0.72rem; }
+  /* Vad vi gör: spalterna får bryta själva. auto-fit lägger två
+     bredvid varandra så länge de får minst 15rem var — på en
+     surfplatta gör de det, på en telefon blir det en spalt. */
+  .do-groups {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: clamp(1.4rem, 4vh, 2.2rem) clamp(1.5rem, 5vw, 3rem);
+    overflow: visible;
+  }
+  .dg-item { padding: 0.5rem 0; }
 
   /* Contact: stacked rows */
   .contact-row { grid-template-columns: 1fr; gap: 0.15rem; padding: 0.9rem 0; }
@@ -2383,19 +2398,57 @@ body.reduced-motion .tb-card { animation: none; }
 }
 
 @media (max-width: 480px) {
-  /* 12vw sköt ut namnet utanför skärmkanten på 390 px — 9.5vw får plats */
-  .hero-name { font-size: clamp(1.9rem, 9.5vw, 6rem); }
   .hero-eyebrow, .hero-sub { letter-spacing: 0.3em; }
   .film-item { grid-template-columns: 78px 1fr; }
   .film-thumb { aspect-ratio: 4 / 3; }
-
 }
 
-/* Hover-capable / pointer guard for mobile (no custom cursor on touch) */
-@media (hover: none), (pointer: coarse) {
-  body { cursor: auto; }
-  button, a, .h-dot, .h-arrow { cursor: pointer; }
-  #film-cursor { display: none; }
+/* =====================================================
+   TYPOGRAFI PÅ TELEFON — stående OCH liggande
+   =====================================================
+   Display-graderna växte med bredden (10vw, 4.5vw …). Det fungerar
+   på en dator, där ett bredare fönster också är ett högre fönster.
+   På en telefon är det inte sant: vrider man den blir bredden 844 px
+   och höjden 390 px, och samma vw-tal gav plötsligt en 84 px hög
+   sektionssiffra på en skärm som bara är 390 px hög. Stående var
+   problemet det motsatta — golvet i clamp() (4rem för siffran) låg
+   kvar oavsett hur smal skärmen var.
+
+   Lösningen är samma på båda håll: taket läser BÅDA måtten,
+   min(Xvw, Yvh), och golvet sänks. Då krymper rubrikerna när skärmen
+   läggs ned i stället för att växa, och de blir aldrig större än den
+   yta som faktiskt finns.
+
+   Blocket står efter 480px-blocket ovan med flit: samma specificitet,
+   och den som står sist vinner. */
+@media (max-width: 900px), (max-height: 559px) {
+  /* Ordmärket i showreelen. Får aldrig radbrytas (white-space: nowrap
+     högre upp), så bredden är det hårda taket — höjdledet håller det
+     nere när telefonen ligger. */
+  .hero-name { font-size: clamp(2.1rem, min(9vw, 14vh), 5rem); }
+  .hero-tag  { font-size: clamp(0.7rem, min(3.2vw, 2.6vh), 0.9rem); letter-spacing: 0.22em; }
+
+  /* Sektionssiffran (01, 02 …) och panelrubriken. Siffran låg på
+     4rem = 64 px som golv och tog en fjärdedel av en telefonskärm. */
+  .panel-num   { font-size: clamp(1.75rem, min(7vw, 7.5vh), 3.4rem); }
+  .panel-title { font-size: clamp(1.5rem, min(6.6vw, 6.5vh), 2.6rem); }
+  .panel-meta  {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    padding-bottom: 0.15rem;
+    /* margin-left: auto sköt metaraden ut i högerkanten, där den
+       hamnade under den fasta fokusenheten. Här ligger den i stället
+       direkt efter rubriken. */
+    margin-left: 0;
+  }
+  .panel-head { gap: 0.5rem 0.9rem; align-items: baseline; }
+
+  /* Rubrikerna i filmlistan och tjänstelistorna följer samma logik. */
+  .film-title { font-size: clamp(1rem, min(4.4vw, 4.6vh), 1.5rem); }
+  .film-syn   { font-size: clamp(0.7rem, min(3vw, 3.2vh), 0.82rem); }
+  .dg-head    { font-size: clamp(0.8rem, min(3.4vw, 3.6vh), 1.05rem); }
+  .dg-name    { font-size: clamp(0.92rem, min(4vw, 4.2vh), 1.25rem); }
+  .about-sub  { font-size: clamp(0.72rem, min(3.2vw, 3.4vh), 0.88rem); }
 }
 
 /* =====================================================
@@ -2486,16 +2539,15 @@ body.reduced-motion .ld-num { animation: none !important; }
    deras .film-item-regler på samma specificitet. */
 @media (min-width: 901px) and (max-height: 730px) {
   .film-item { padding: 0.16rem 0; }
-  .award-row { padding: 0.18rem 0; }
-  .aw-name { font-size: clamp(0.86rem, 1.3vw, 1.05rem); }
+  .dg-item { padding: 0.18rem 0; }
+  .dg-name { font-size: clamp(0.88rem, 1.3vw, 1.08rem); }
   .cv-grid--film .cvb-row { padding: 0.04rem 0; }
   .cv-grid--film .cvb-role { font-size: 0.88rem; line-height: 1.16; }
   .cv-grid--film .cvb-where { font-size: 0.78rem; line-height: 1.25; }
-  /* Panel 03 har ingen egen modifierare, så rubrikluften dras ned på
+  /* Panelerna delar rubrikluft här, så den dras ned på
      alla paneler här — det är bara de allra lägsta fönstren. */
   .panel-inner .panel-head { margin-bottom: 0.2rem; }
   .panel-inner { padding-top: calc(var(--nav-h) + 1.2rem); }
-  .aw-detail { line-height: 1.35; }
   .cv-grid--film .cvb-year { font-size: 0.72rem; }
 }
 
@@ -2790,10 +2842,10 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
 }
 
 /* =====================================================
-   CV-SPALTEN PÅ PANEL 01 — smal, så året står över texten
+   BIOGRAFIN PÅ PANEL 03 — en spalt på telefon
    ===================================================== */
 @media (max-width: 900px), (max-height: 559px) {
-  /* ---- Panel 01 på telefon ----
+  /* ---- Panel 03 på telefon ----
      De tre spalterna blir en enda, i läsordning: porträtt → bildtext
      → biografin → adressen. `display: contents` löser upp
      porträttspalten så att adressraden kan hamna sist i stället för
@@ -2853,9 +2905,13 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
      sköt ned det som faktiskt är sidans innehåll. */
   .about-pitch { display: none; }
 
-  .about-cols { --bio-grad: 0.95rem; }
+  /* Graden låg på 0.95rem med radavstånd 1.75. Det blev en luftig
+     spalt som tog dubbelt så många skärmar som den behövde — och
+     lästes som stor text. Ett snäpp ned på båda håll: samma
+     läsbarhet, halva rullningen. */
+  .about-cols { --bio-grad: 0.92rem; }
   .about-lead, .about-body, .about-quote, .about-sign {
-    line-height: 1.75;
+    line-height: 1.6;
     max-width: none;
   }
 
@@ -2934,4 +2990,86 @@ body.reduced-motion .rh-screen { animation: none; transform: rotate(-90deg); }
   .cvb-row { padding: 0.02rem 0; }
   .cv-grid--film .cvb-row { padding-top: 0.02rem; padding-bottom: 0.02rem; }
   .cvb-sub { margin-top: 0.4rem; padding-bottom: 0.16rem; }
+}
+
+/* =====================================================
+   TELEFON I LIGGANDE LÄGE — sist i filen med flit
+   =====================================================
+   Här är höjden det som tar slut, inte bredden. Panelerna ligger kvar
+   i den stående stapeln (en panel per skärm), så all luft upptill och
+   nedtill går rakt av från den lästa ytan. Den dras in; graderna är
+   tagna i typografiblocket längre upp.
+
+   Blocket måste ligga EFTER blocken för smal skärm — biografins
+   stapel och listornas enspaltsläge har samma specificitet, och den
+   regel som står sist vinner. */
+@media (max-height: 559px) and (orientation: landscape) {
+  .panel-inner,
+  .panel-inner--about {
+    padding-top: calc(var(--nav-h) * 0.6 + 0.6rem);
+    padding-bottom: 1.6rem;
+    gap: 0.9rem;
+  }
+  /* Loggan får inte heller äta höjd när den bara har 390 px att dela på. */
+  #logo-mark { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+  /* Porträttet stod i en egen rad ovanför texten och tog en tredjedel
+     av skärmen. Liggande finns bredden — bilden flyttar ut i en egen
+     spalt till höger och texten löper bredvid, som på bred skärm.
+     Porträttspalten sätts ihop igen (den är display: contents i
+     stapelläget) så att bild, bildtext och adress följs åt. */
+  .about-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) min(200px, 26vw);
+    gap: clamp(0.8rem, 2vh, 1.4rem) clamp(1rem, 3vw, 2rem);
+    align-items: start;
+  }
+  .about-content  { display: block; grid-column: 1; grid-row: 1; }
+  .about-portrait { display: block; grid-column: 2; grid-row: 1; }
+  .portrait-side  { display: block; }
+  .portrait-img   { width: 100%; }
+  .portrait-cap   { margin-top: 0.4rem; }
+  .about-write    { margin-top: 1rem; padding-top: 0.7rem; }
+  /* Klipprutan är 16:9 av sin bredd. I full spaltbredd (758 px) blev
+     den 426 px hög — mer än hela skärmen. Här får den ett tak. */
+  .about-reel {
+    grid-column: 1 / -1;
+    margin-top: 0;
+    max-width: min(420px, 52vw);
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  /* Tjänstelistorna tillbaka i två spalter. En spalt (regeln för
+     smal skärm) sköt "Vi utvecklar" under skärmkanten trots att
+     bredden fanns. */
+  .do-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem clamp(1.5rem, 5vw, 3.5rem);
+  }
+  .dg-item { padding: 0.3rem 0; }
+
+  /* Biografin ett snäpp till: liggande är höjden det knappa måttet. */
+  .about-cols { --bio-grad: 0.88rem; }
+  .about-lead, .about-body, .about-quote, .about-sign { line-height: 1.5; }
+  .about-scroll > * + * { margin-top: 0.7em; }
+
+  /* Filmlistan: miniatyren mindre, texten får bredden. */
+  .film-item { grid-template-columns: 96px 1fr; }
+  .film-thumb { aspect-ratio: 16 / 9; }
+
+  /* CV:t i två spalter igen — enspaltsläget hör till den smala
+     skärmen, och här finns 844 px att dela på. */
+  .cv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem clamp(1.5rem, 4vw, 3rem); }
+  /* Spalterna är olika långa. Centrerade var för sig (regeln för bred
+     skärm) hängde den korta mitt i intet bredvid den långa — här
+     börjar båda i överkanten. */
+  .cv-block { justify-content: flex-start; }
+}
+
+/* Hover-capable / pointer guard for mobile (no custom cursor on touch) */
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+  button, a, .h-dot, .h-arrow { cursor: pointer; }
+  #film-cursor { display: none; }
 }

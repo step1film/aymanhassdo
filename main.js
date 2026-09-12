@@ -236,7 +236,7 @@
     const nextBtn = document.getElementById('hNext');
     if (!hWrapper || !hSticky || !panels.length) return;
 
-    const RESERV = { about: 'The Dream', films: 'Selected Works', awards: 'What We Do', press: 'Press', contact: 'Contact' };
+    const RESERV = { awards: 'What We Do', films: 'Selected Works', about: 'Why We Exist', press: 'Press', contact: 'Contact' };
     const LABELS = () => window.STEP1FILM_NAV_LABELS || RESERV;
     const TOTAL = panels.length;
     const fmt = n => String(n + 1).padStart(2, '0');
@@ -338,7 +338,7 @@
       if (labelEl) labelEl.textContent = LABELS()[panels[panelIdx].id] || '';
     }
 
-    /* Hur stor del av showreelen som täcks av panel 01 (0–1).
+    /* Hur stor del av showreelen som täcks av första panelen (0–1).
        Läses av hero-videon, som pausar när den är nästan helt dold. */
     let heroCover = -1;
     function reportCover(v) {
@@ -443,7 +443,7 @@
       }
     }
 
-    /* Biografin sitter i en ruta som inte rullar — panel 01 är exakt en
+    /* Biografin sitter i en ruta som inte rullar — panel 03 är exakt en
        skärm hög och hjulet ska byta panel, inte rulla inuti texten. Då
        måste texten rymmas, och det går inte att garantera i CSS ensamt:
        graden hänger på webbläsarens grundgrad, som användaren själv får
@@ -566,7 +566,7 @@
         if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
       }
     }
-    /* Hero-pilen, skip-länken och logotypen pekar på #films / #hero,
+    /* Hero-pilen, skip-länken och logotypen pekar på en panel eller #hero,
        som numera ligger absolut placerade i samma stack — webbläsarens
        eget ankarhopp landar då på fel ställe. Vi sköter hoppet själva,
        och flyttar tangentbordsfokus dit så skip-länken fortsatt fungerar. */
@@ -578,11 +578,14 @@
       focusEl.focus({ preventScroll: true });
       if (!had) focusEl.addEventListener('blur', () => focusEl.removeAttribute('tabindex'), { once: true });
     }
-    document.querySelectorAll('a[href="#about"]').forEach((a) => {
-      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(0, document.getElementById('about')); });
-    });
-    document.querySelectorAll('a[href="#films"]').forEach((a) => {
-      a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(1, document.getElementById('films')); });
+    /* Ankarlänkarna letar upp panelens plats i sviten i stället för att
+       bära ett fast nummer. Ordningen på panelerna har ändrats en gång
+       (företaget först, personen sedan) och kan ändras igen — då ska
+       inte länkarna behöva följa med. */
+    panels.forEach((panel, i) => {
+      document.querySelectorAll('a[href="#' + panel.id + '"]').forEach((a) => {
+        a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(i, panel); });
+      });
     });
     document.querySelectorAll('a[href="#hero"]').forEach((a) => {
       a.addEventListener('click', (e) => { e.preventDefault(); jumpTo(-1, document.getElementById('hero')); });
@@ -1267,7 +1270,7 @@
   }
 
   /* --------------------------------------------------
-     KLIPPSPELAREN — panel 01
+     KLIPPSPELAREN — panel 03
      Fyra Vimeo-klipp som man bläddrar mellan. Varje klipp spelar
      SEKUNDER sekunder och lämnar sedan över till nästa av sig själv.
      Klippen listas i STEP1FILM_REEL i site-config.js.
