@@ -3422,6 +3422,11 @@ body.sida #logo-mark > * { pointer-events: auto; }
 }
 /* Tillbakalänken står mot bild här, inte mot svart. --text-dim (#888)
    försvann i den mörka himlen; brödtextens grå håller sig. */
+/* Texten är centrerad i heron, men lyfts ett snäpp över mitten: en
+   bottenmarginal i en centrerad flexrad skjuter innehållet uppåt.
+   Horisonten ligger strax under mitten i bilden, och raderna ska
+   stå i himlen ovanför den — inte skära genom skogsranden. */
+.bop-hero-inner { margin-bottom: clamp(2.5rem, 11vh, 8rem); }
 .bop-hero-inner .sida-back {
   margin-bottom: clamp(1rem, 4vh, 2.2rem);
   color: var(--text);
@@ -3515,6 +3520,7 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-bild--v-stor { grid-column: 1 / 8; }
 .bop-bild--h-bred { grid-column: 6 / 13; }
 .bop-bild--mitt   { grid-column: 3 / 11; }
+.bop-bild--bred   { grid-column: 2 / 12; }
 .bop-bild--h-stor { grid-column: 4 / 13; }
 
 /* Två små i en stapel vid sidan av en stor. En stapel om två blir
