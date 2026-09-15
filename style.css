@@ -3601,7 +3601,10 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .stod-logo--gaze       { height: clamp(30px, 4.2vw, 46px); }
 .stod-logo--langmanska { height: clamp(32px, 4.5vw, 50px); }
 .stod-logo--region     { height: clamp(28px, 3.8vw, 42px); }
-.stod-logo--step1      { height: clamp(34px, 4.8vw, 54px); }
+/* STEP1FILM är byggd på höjden — rullen står över ordet — så samma
+   pixelhöjd som en wordmark bredvid ger ett mycket mindre ord. Den
+   får vara högre för att väga lika mycket. */
+.stod-logo--step1      { height: clamp(46px, 6.4vw, 74px); }
 
 /* --- Smal skärm: allt i en spalt, och luften dras in ---
    Splitlayouten och spaltplaceringen hör till bredden. På en telefon
