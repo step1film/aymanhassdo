@@ -3382,7 +3382,9 @@ body.sida #logo-mark > * { pointer-events: auto; }
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
+  /* Texten står mitt i bilden, inte i nederkanten. Bilden har en stor
+     tom himmel över horisonten, och den ytan är till för rubriken. */
+  align-items: center;
   overflow: hidden;
   isolation: isolate;
 }
@@ -3406,15 +3408,17 @@ body.sida #logo-mark > * { pointer-events: auto; }
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(8,8,8,0.72) 0%, transparent 22%),
-    linear-gradient(180deg, transparent 30%, rgba(8,8,8,0.62) 62%, rgba(8,8,8,0.92) 100%);
+    linear-gradient(180deg, rgba(8,8,8,0.72) 0%, transparent 20%),
+    /* Mörkast där texten står, alltså kring mitten — inte i botten,
+       dit den hörde när texten låg där. */
+    linear-gradient(180deg, transparent 12%, rgba(8,8,8,0.62) 45%, rgba(8,8,8,0.66) 72%, rgba(8,8,8,0.3) 100%);
   pointer-events: none;
 }
 .bop-hero-inner {
   width: 100%;
   max-width: 74rem;
   margin: 0 auto;
-  padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 8vh, 5rem);
+  padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 4rem) 2rem;
 }
 /* Tillbakalänken står mot bild här, inte mot svart. --text-dim (#888)
    försvann i den mörka himlen; brödtextens grå håller sig. */
@@ -3438,10 +3442,14 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-sida {
   max-width: 74rem;
   margin: 0 auto;
-  padding: clamp(3rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem);
+  padding: clamp(2.5rem, 7vh, 5rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(3.5rem, 12vh, 8rem);
+  /* Var clamp(3.5rem, 12vh, 8rem). Tolv procent av fönsterhöjden
+     mellan varje sektion blev 130 px tomt på en vanlig skärm, och med
+     en liten bild i raden ovanför lade sig det tomrummet till hennes
+     — hela skärmar utan innehåll. */
+  gap: clamp(2rem, 5vh, 3.5rem);
 }
 
 /* --- Delad skärm: text på ena sidan, bild eller trailer på den andra --- */
@@ -3457,6 +3465,11 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-split--omvand .bop-text  { order: 2; }
 .bop-split--omvand .bop-media { order: 1; }
 .bop-split--omvand { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+/* Trailern är sidans enda rörliga bild och tål att ta mer plats än en
+   stillbild. Texten bredvid är fyra rader — den behöver inte halva
+   skärmen. */
+.bop-split--trailer { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.45fr); }
+.bop-split--trailer .sida-trailer { max-width: none; }
 
 .bop-text { min-width: 0; }
 .bop-text .sida-rubrik { margin-bottom: clamp(0.9rem, 2.2vh, 1.4rem); }
@@ -3479,7 +3492,7 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-rad {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: clamp(1.2rem, 4vh, 2.5rem) clamp(0.8rem, 2vw, 1.6rem);
+  gap: clamp(0.8rem, 2vh, 1.3rem) clamp(0.8rem, 2vw, 1.6rem);
   align-items: start;
 }
 .bop-bild { margin: 0; min-width: 0; }
@@ -3494,20 +3507,27 @@ body.sida #logo-mark > * { pointer-events: auto; }
   border: 1px solid var(--line);
   background: #101010;
 }
-/* Bilden som fyller sin halva i en delad skärm */
-.bop-bild--fyll img { aspect-ratio: 3 / 2; }
+/* Bredderna. Ingen av dem har någon nedsänkning kvar: en bild som
+   skjuts ned lämnar ett hål lika högt som förskjutningen, och det var
+   de hålen som syntes mellan raderna. Variationen ligger i bredden
+   och i vilken spalt bilden börjar — inte i tomrum. */
+.bop-bild--full   { grid-column: 1 / -1; }
+.bop-bild--v-stor { grid-column: 1 / 8; }
+.bop-bild--h-bred { grid-column: 6 / 13; }
+.bop-bild--mitt   { grid-column: 3 / 11; }
+.bop-bild--h-stor { grid-column: 4 / 13; }
 
-.bop-bild--full      { grid-column: 1 / -1; }
-.bop-bild--v-stor    { grid-column: 1 / 8; }
-/* BoP 05 — den lilla. Smal spalt och nedsänkt, så raden inte blir två
-   lika höga rutor bredvid varandra. */
-.bop-bild--h-liten   { grid-column: 9 / 13; margin-top: clamp(2rem, 8vh, 5rem); }
-.bop-bild--mitt      { grid-column: 3 / 11; }
-.bop-bild--mitt-liten{ grid-column: 2 / 7; }
-.bop-bild--v-bred    { grid-column: 1 / 9; }
-.bop-bild--h-smal    { grid-column: 9 / 13; margin-top: clamp(3rem, 10vh, 6rem); }
-.bop-bild--h-stor    { grid-column: 5 / 13; margin-top: clamp(4rem, 14vh, 8rem); }
-.bop-bild--v-medel   { grid-column: 1 / 9; }
+/* Två små i en stapel vid sidan av en stor. En stapel om två blir
+   ungefär lika hög som den stora bredvid, så raden slutar jämnt —
+   en ensam liten bild hade lämnat skillnaden som tomrum. */
+.bop-stapel {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.8rem, 2vh, 1.3rem);
+  min-width: 0;
+}
+.bop-stapel--hoger   { grid-column: 9 / 13; }
+.bop-stapel--vanster { grid-column: 1 / 6; }
 
 /* --- Avslutet: medverkande och stödgivare --- */
 .bop-slut .sida-credits { max-width: 44rem; }
@@ -3566,11 +3586,11 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .bop-split--omvand .bop-media { order: 2; }
   .bop-text p { max-width: none; }
   .bop-rad { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
-  .bop-bild[class] { grid-column: 1 / -1; margin-top: 0; }
-  /* Den lilla får vara liten här också, men centrerad i stället för
-     förskjuten — en förskjutning syns inte i en enda spalt. */
-  .bop-bild--h-liten img,
-  .bop-bild--mitt-liten img { width: min(100%, 78%); margin-inline: auto; }
+  .bop-bild[class], .bop-stapel { grid-column: 1 / -1; margin-top: 0; }
+  /* Staplarna löses upp: i en enda spalt är de bara två bilder efter
+     varandra, som alla andra. De små får vara lite smalare än de
+     stora så att storleksskillnaden finns kvar. */
+  .bop-stapel img { width: min(100%, 82%); margin-inline: auto; }
   .bop-hero { min-height: auto; }
   .bop-hero-inner { padding-top: calc(var(--nav-h) + 6rem); }
 }

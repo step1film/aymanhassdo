@@ -117,7 +117,7 @@
   <main class="bop-sida">
 
     <!-- 01 — synopsis till vänster, trailern till höger -->
-    <section class="bop-split">
+    <section class="bop-split bop-split--trailer">
       <div class="bop-text">
         <h2 class="sida-rubrik" data-i18n="bopSynopsis">Synopsis</h2>
         <p class="lead" data-i18n="bopSyn1">Efter att ha kommit till Sverige som flykting från Syrien, och så småningom fått hit sin fru och sina barn, dras regissören Ayman Hassdo in i en infekterad vårdnadstvist där ingenting är som det ser ut.</p>
@@ -137,11 +137,11 @@
       </div>
     </section>
 
-    <!-- 02 — en bild i full bredd, som ett andetag -->
+    <!-- 02 — full bredd, som ett andetag efter synopsisen -->
     <section class="bop-rad">
       <figure class="bop-bild bop-bild--full">
         <img src="stills/bop-01.webp" alt="Birds of Passage 1"
-             width="1800" height="900" loading="lazy" decoding="async" />
+           width="1800" height="900" loading="lazy" decoding="async" />
       </figure>
     </section>
 
@@ -153,25 +153,33 @@
         <p data-i18n="bopStatus2">Vi söker finansiering för att färdigställa filmen och en producent som vill ansluta till teamet. Parallellt sätter vi samman gruppen som ska göra efterarbetet.</p>
       </div>
       <div class="bop-media">
-      <figure class="bop-bild bop-bild--fyll">
-        <img src="stills/bop-02.webp" alt="Birds of Passage 2"
-             width="1800" height="900" loading="lazy" decoding="async" />
-      </figure>
+        <figure class="bop-bild">
+          <img src="stills/bop-02.webp" alt="Birds of Passage 2"
+               width="1800" height="900" loading="lazy" decoding="async" />
+        </figure>
       </div>
     </section>
 
-    <!-- 04 — två olika stora bredvid varandra. BoP 05 är den lilla:
-         den står i en smal spalt och sänks ned, så att raden får ett
-         eget veck i stället för två lika höga rutor. -->
+    <!-- 04 — stor till vänster, två små staplade till höger.
+         Två små i en stapel blir ungefär lika höga som en stor
+         bredvid, så raden slutar jämnt. En ensam liten bild vid
+         sidan av en stor lämnar i stället ett tomrum lika högt
+         som skillnaden — och det var de hålen som syntes. -->
     <section class="bop-rad">
       <figure class="bop-bild bop-bild--v-stor">
         <img src="stills/bop-03.webp" alt="Birds of Passage 3"
              width="1800" height="900" loading="lazy" decoding="async" />
       </figure>
-      <figure class="bop-bild bop-bild--h-liten">
-        <img src="stills/bop-05.webp" alt="Birds of Passage 5"
-             width="1800" height="900" loading="lazy" decoding="async" />
-      </figure>
+      <div class="bop-stapel bop-stapel--hoger">
+        <figure class="bop-bild">
+          <img src="stills/bop-05.webp" alt="Birds of Passage 5"
+               width="1800" height="900" loading="lazy" decoding="async" />
+        </figure>
+        <figure class="bop-bild">
+          <img src="stills/bop-08.webp" alt="Birds of Passage 8"
+               width="1800" height="900" loading="lazy" decoding="async" />
+        </figure>
+      </div>
     </section>
 
     <!-- 05 — en centrerad, mindre bild -->
@@ -182,19 +190,25 @@
       </figure>
     </section>
 
-    <!-- 06 — stor till vänster, liten till höger -->
+    <!-- 06 — två små staplade till vänster, stor till höger -->
     <section class="bop-rad">
-      <figure class="bop-bild bop-bild--v-bred">
+      <div class="bop-stapel bop-stapel--vanster">
+        <figure class="bop-bild">
+          <img src="stills/bop-10.webp" alt="Birds of Passage 10"
+               width="1800" height="900" loading="lazy" decoding="async" />
+        </figure>
+        <figure class="bop-bild">
+          <img src="stills/bop-12.webp" alt="Birds of Passage 12"
+               width="1800" height="900" loading="lazy" decoding="async" />
+        </figure>
+      </div>
+      <figure class="bop-bild bop-bild--h-bred">
         <img src="stills/bop-06.webp" alt="Birds of Passage 6"
-             width="1800" height="900" loading="lazy" decoding="async" />
-      </figure>
-      <figure class="bop-bild bop-bild--h-smal">
-        <img src="stills/bop-08.webp" alt="Birds of Passage 8"
              width="1800" height="900" loading="lazy" decoding="async" />
       </figure>
     </section>
 
-    <!-- 07 — full bredd igen -->
+    <!-- 07 — full bredd -->
     <section class="bop-rad">
       <figure class="bop-bild bop-bild--full">
         <img src="stills/bop-09.webp" alt="Birds of Passage 9"
@@ -202,22 +216,10 @@
       </figure>
     </section>
 
-    <!-- 08 — liten i mitten, sedan en stor förskjuten åt höger -->
+    <!-- 08 — sista bilden, stor och förskjuten åt höger -->
     <section class="bop-rad">
-      <figure class="bop-bild bop-bild--mitt-liten">
-        <img src="stills/bop-10.webp" alt="Birds of Passage 10"
-             width="1800" height="900" loading="lazy" decoding="async" />
-      </figure>
       <figure class="bop-bild bop-bild--h-stor">
         <img src="stills/bop-11.webp" alt="Birds of Passage 11"
-             width="1800" height="900" loading="lazy" decoding="async" />
-      </figure>
-    </section>
-
-    <!-- 09 — sista bilden, medelstor till vänster -->
-    <section class="bop-rad">
-      <figure class="bop-bild bop-bild--v-medel">
-        <img src="stills/bop-12.webp" alt="Birds of Passage 12"
              width="1800" height="900" loading="lazy" decoding="async" />
       </figure>
     </section>
