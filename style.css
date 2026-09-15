@@ -3382,9 +3382,11 @@ body.sida #logo-mark > * { pointer-events: auto; }
   position: relative;
   min-height: 100svh;
   display: flex;
-  /* Texten står mitt i bilden, inte i nederkanten. Bilden har en stor
-     tom himmel över horisonten, och den ytan är till för rubriken. */
-  align-items: center;
+  /* Texten står högst upp, strax under ordmärket. Bilden har en stor
+     tom himmel över horisonten och den ytan är till för rubriken —
+     centrerad hamnade texten mitt i den himlen med lika mycket luft
+     över som under, och det lästes som lågt. */
+  align-items: flex-start;
   overflow: hidden;
   isolation: isolate;
 }
@@ -3407,18 +3409,24 @@ body.sida #logo-mark > * { pointer-events: auto; }
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(8,8,8,0.72) 0%, transparent 20%),
-    /* Mörkast där texten står, alltså kring mitten — inte i botten,
-       dit den hörde när texten låg där. */
-    linear-gradient(180deg, transparent 12%, rgba(8,8,8,0.62) 45%, rgba(8,8,8,0.66) 72%, rgba(8,8,8,0.3) 100%);
+  /* Mörkast där texten står, alltså överst, och sedan bort mot
+     landskapet. Toningen har flyttat två gånger nu — den hör ihop med
+     var raderna ligger, inte med bilden. */
+  background: linear-gradient(180deg,
+    rgba(8,8,8,0.86) 0%,
+    rgba(8,8,8,0.72) 30%,
+    rgba(8,8,8,0.42) 52%,
+    rgba(8,8,8,0.12) 70%,
+    transparent 85%);
   pointer-events: none;
 }
 .bop-hero-inner {
   width: 100%;
   max-width: 74rem;
   margin: 0 auto;
-  padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 4rem) 2rem;
+  /* Ordmärket ligger fast överst och är var(--nav-h) högt. Luften
+     under det är allt som skiljer tillbakalänken från det. */
+  padding: calc(var(--nav-h) + clamp(1rem, 4vh, 2.5rem)) clamp(1.25rem, 5vw, 4rem) 2rem;
 }
 /* Tillbakalänken står mot bild här, inte mot svart. --text-dim (#888)
    försvann i den mörka himlen; brödtextens grå håller sig. */
@@ -3426,7 +3434,7 @@ body.sida #logo-mark > * { pointer-events: auto; }
    bottenmarginal i en centrerad flexrad skjuter innehållet uppåt.
    Horisonten ligger strax under mitten i bilden, och raderna ska
    stå i himlen ovanför den — inte skära genom skogsranden. */
-.bop-hero-inner { margin-bottom: clamp(4rem, 20vh, 14rem); }
+.bop-hero-inner { margin-bottom: 0; }
 .bop-hero-inner .sida-back {
   margin-bottom: clamp(1rem, 4vh, 2.2rem);
   color: var(--text);
@@ -3630,8 +3638,22 @@ body.sida #logo-mark > * { pointer-events: auto; }
      varandra, som alla andra. De små får vara lite smalare än de
      stora så att storleksskillnaden finns kvar. */
   .bop-stapel img { width: min(100%, 82%); margin-inline: auto; }
-  .bop-hero { min-height: auto; }
-  .bop-hero-inner { padding-top: calc(var(--nav-h) + 6rem); }
+  /* Heron var min-height: auto när texten låg i nederkanten och rutan
+     fick sin höjd av texten. Toppjusterad behöver den en höjd att
+     tona i: utan den slutar det mörka skiktet strax under rubriken,
+     och faktaraden hamnar mot ljus himmel och horisont. */
+  .bop-hero { min-height: 78svh; }
+  .bop-hero-inner { padding-top: calc(var(--nav-h) + clamp(1rem, 4vh, 2.5rem)); }
+  /* Smal skärm ger kortare rader och mer text på höjden, så raderna
+     når längre ned i toningen. Den får hålla i sig längre här. */
+  .bop-hero::after {
+    background: linear-gradient(180deg,
+      rgba(8,8,8,0.88) 0%,
+      rgba(8,8,8,0.78) 42%,
+      rgba(8,8,8,0.5) 66%,
+      rgba(8,8,8,0.18) 82%,
+      transparent 95%);
+  }
 }
 
 /* --- Medverkande --- */
