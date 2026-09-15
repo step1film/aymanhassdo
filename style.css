@@ -2226,8 +2226,14 @@ body.reduced-motion .tb-card { animation: none; }
    kastar om ordningen, så spalterna och raderna i dem läggs baklänges
    (row-reverse): efter vridningen står märket överst och adressen
    nederst igen. */
+/* Alla reglerna nedan gäller startsidans footer, #footer — den som
+   ligger som en LODRÄT remsa vid högerkanten i svepläget. De stod
+   oprefixade förut och träffade därför även .sida-foot på
+   /Birdsofpassage/ och /om-step1/, som är en vanlig vågrät sidfot.
+   Halvvarvet som kompenserar remsans rotation vände då filmrullen
+   upp och ned på en footer som aldrig var vriden. */
 @media (min-width: 901px) and (min-height: 560px) {
-  .foot-inner {
+  #footer .foot-inner {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     height: 100%;
@@ -2242,18 +2248,18 @@ body.reduced-motion .tb-card { animation: none; }
     justify-content: space-between;
     gap: clamp(1rem, 3vh, 2rem);
   }
-  .foot-col { flex-direction: row-reverse; align-items: center; gap: clamp(0.7rem, 1.6vh, 1.2rem); }
-  .foot-col--right { align-items: center; }
-  .foot-brand { font-size: 1rem; }
-  .foot-copy, .foot-link { letter-spacing: 0.18em; }
+  #footer .foot-col { flex-direction: row-reverse; align-items: center; gap: clamp(0.7rem, 1.6vh, 1.2rem); }
+  #footer .foot-col--right { align-items: center; }
+  #footer .foot-brand { font-size: 1rem; }
+  #footer .foot-copy, #footer .foot-link { letter-spacing: 0.18em; }
   /* Remsan är smal: en radbrytning skulle lägga en andra spalt bredvid
      den första i stället för att bryta neråt. Raderna hålls ihop. */
-  .foot-brand, .foot-copy, .foot-link { white-space: nowrap; }
+  #footer .foot-brand, #footer .foot-copy, #footer .foot-link { white-space: nowrap; }
   /* Rullen är satt för en vågrät rad: luften ligger åt höger och
      sänkningen är mätt mot versalhöjden. När raden står upp går
      radriktningen neråt i stället — luften flyttas dit, och rullen
      centreras i remsans bredd. */
-  .foot-brand .logo-reel {
+  #footer .foot-brand .logo-reel {
     margin-right: 0;
     margin-bottom: 0.42em;
     vertical-align: middle;
@@ -2264,7 +2270,7 @@ body.reduced-motion .tb-card { animation: none; }
 }
 @media (min-width: 901px) and (min-height: 560px) and (max-height: 880px) {
   #footer { width: clamp(52px, 4.4vw, 72px); }
-  .foot-brand { font-size: 0.9rem; }
+  #footer .foot-brand { font-size: 0.9rem; }
 }
 
 /* =====================================================
@@ -3364,40 +3370,151 @@ body.sida #logo-mark > * { pointer-events: auto; }
 /* Utan video-id finns ingen ruta alls — inget "trailer kommer". */
 .sida-trailer[hidden], .sida-block[hidden] { display: none; }
 
-/* --- Herobilden på filmsidan, med stödgivarna på ---
-   Bilden ligger i filmens format och tar hela spaltbredden. Texten
-   står över den, och för att den ska gå att läsa oavsett bild ligger
-   en mörk toning emellan — inte över hela bilden, bara den nedre
-   tredjedelen där raderna står. */
+/* =====================================================
+   BIRDS OF PASSAGE — hero över hela skärmen
+   =====================================================
+   Bilden ligger som ett eget lager längst bak i sektionen och texten
+   ovanpå. Två skäl att inte använda background-image: en <img> kan
+   bära fetchpriority och laddas därmed före allt annat, och den kan
+   få aspect-ratio och width/height så att sidan aldrig hoppar till
+   när bilden kommer. */
 .bop-hero {
   position: relative;
-  margin-top: clamp(2rem, 6vh, 3.5rem);
-  border: 1px solid var(--line);
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
   overflow: hidden;
-  /* Egen stapelkontext: toningen ska ligga över bilden men under
-     texten, utan att någon av dem behöver ett z-index i tusental. */
   isolation: isolate;
 }
 .bop-hero-bild {
-  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -2;
   width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 1;
+  height: 100%;
   object-fit: cover;
+  /* Figuren står strax under mitten i bild. Med center hamnar hon
+     bakom faktaraden på ett lågt fönster; 50% 40% håller henne fri. */
+  object-position: 50% 40%;
 }
+/* Toningen är vad som gör texten läsbar. Utan den ligger ljusgrå
+   himmel bakom vit text. Mörkast i nederkanten där raderna står,
+   och en aning i överkanten så att ordmärket håller sig. */
 .bop-hero::after {
   content: '';
   position: absolute;
-  inset: 40% 0 0 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.88) 100%);
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(8,8,8,0.72) 0%, transparent 22%),
+    linear-gradient(180deg, transparent 30%, rgba(8,8,8,0.62) 62%, rgba(8,8,8,0.92) 100%);
   pointer-events: none;
 }
-.bop-hero-stod {
-  position: absolute;
-  left: clamp(1rem, 3vw, 2.4rem);
-  right: clamp(1rem, 3vw, 2.4rem);
-  bottom: clamp(0.9rem, 3vh, 1.8rem);
-  z-index: 1;
+.bop-hero-inner {
+  width: 100%;
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 8vh, 5rem);
+}
+/* Tillbakalänken står mot bild här, inte mot svart. --text-dim (#888)
+   försvann i den mörka himlen; brödtextens grå håller sig. */
+.bop-hero-inner .sida-back {
+  margin-bottom: clamp(1rem, 4vh, 2.2rem);
+  color: var(--text);
+}
+.bop-hero-inner .sida-back:hover { color: var(--accent); }
+.bop-hero-inner .sida-under { color: var(--white); }
+.bop-hero-inner .sida-fakta { border-top-color: var(--line-s); }
+
+/* =====================================================
+   BIRDS OF PASSAGE — sidans kropp
+   =====================================================
+   Sidan är byggd i sektioner i stället för som en löpande spalt med
+   ett bildgalleri sist. Text och bild turas om sida vid sida, och
+   bilderna får olika bredd, olika spalt och olika höjd så att inga
+   två rader ser likadana ut. Måtten står här i CSS och inte i ett
+   mönster som räknas fram: det är elva bilder, de är valda en och en,
+   och då ska de också placeras en och en. */
+.bop-sida {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 12vh, 8rem);
+}
+
+/* --- Delad skärm: text på ena sidan, bild eller trailer på den andra --- */
+.bop-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.6rem, 4vw, 3.5rem);
+  align-items: center;
+}
+/* Spegelvänd: bilden till vänster, texten till höger. Ordningen byts
+   med order och inte genom att flytta i HTML — läsordningen ska vara
+   densamma för en skärmläsare oavsett vilken sida bilden ligger på. */
+.bop-split--omvand .bop-text  { order: 2; }
+.bop-split--omvand .bop-media { order: 1; }
+.bop-split--omvand { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+
+.bop-text { min-width: 0; }
+.bop-text .sida-rubrik { margin-bottom: clamp(0.9rem, 2.2vh, 1.4rem); }
+.bop-text p {
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--text);
+  text-wrap: pretty;
+  max-width: 44ch;
+}
+.bop-text p + p { margin-top: 1.1em; }
+.bop-text p.lead { color: var(--white); }
+.bop-media { min-width: 0; }
+
+/* --- Bildrader ---
+   Tolv spalter att placera i. Varje bild får sin egen bredd och sin
+   egen startspalt; de som ligger på samma rad får dessutom olika
+   lodrät placering, så att raden får ett veck i stället för att stå
+   som två lika höga rutor. */
+.bop-rad {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(1.2rem, 4vh, 2.5rem) clamp(0.8rem, 2vw, 1.6rem);
+  align-items: start;
+}
+.bop-bild { margin: 0; min-width: 0; }
+.bop-bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* 2:1, samma bildformat som filmen är fotograferad i. Källa och ruta
+     är lika, så object-fit: cover beskär ingenting. */
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: #101010;
+}
+/* Bilden som fyller sin halva i en delad skärm */
+.bop-bild--fyll img { aspect-ratio: 3 / 2; }
+
+.bop-bild--full      { grid-column: 1 / -1; }
+.bop-bild--v-stor    { grid-column: 1 / 8; }
+/* BoP 05 — den lilla. Smal spalt och nedsänkt, så raden inte blir två
+   lika höga rutor bredvid varandra. */
+.bop-bild--h-liten   { grid-column: 9 / 13; margin-top: clamp(2rem, 8vh, 5rem); }
+.bop-bild--mitt      { grid-column: 3 / 11; }
+.bop-bild--mitt-liten{ grid-column: 2 / 7; }
+.bop-bild--v-bred    { grid-column: 1 / 9; }
+.bop-bild--h-smal    { grid-column: 9 / 13; margin-top: clamp(3rem, 10vh, 6rem); }
+.bop-bild--h-stor    { grid-column: 5 / 13; margin-top: clamp(4rem, 14vh, 8rem); }
+.bop-bild--v-medel   { grid-column: 1 / 9; }
+
+/* --- Avslutet: medverkande och stödgivare --- */
+.bop-slut .sida-credits { max-width: 44rem; }
+.bop-stod {
+  margin-top: clamp(2rem, 6vh, 3.5rem);
+  padding-top: clamp(1rem, 2.5vh, 1.6rem);
+  border-top: 1px solid var(--line);
 }
 .stod-etikett {
   display: block;
@@ -3406,74 +3523,57 @@ body.sida #logo-mark > * { pointer-events: auto; }
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 /* Namnen står på en rad med tunna avdelare mellan sig, och bryter
    till flera rader när bredden tar slut. */
 .stod-lista {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem clamp(0.8rem, 2vw, 1.5rem);
+  gap: 0.35rem clamp(0.9rem, 2vw, 1.5rem);
   list-style: none;
 }
 .stod-lista li {
   font-family: var(--ff-display);
-  font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+  font-size: clamp(0.85rem, 1.25vw, 1.05rem);
   letter-spacing: 0.08em;
   color: var(--white);
   display: flex;
   align-items: center;
-  gap: clamp(0.8rem, 2vw, 1.5rem);
+  gap: clamp(0.9rem, 2vw, 1.5rem);
 }
+/* Avdelaren hör till namnet före, men ritas i det efter — så
+   försvinner den av sig själv när raden bryts. Luften före den är
+   listans gap, luften efter är radens eget; samma mått på båda, så
+   strecket hamnar mitt emellan och inte klistrat på föregående namn. */
 .stod-lista li + li::before {
   content: '';
   width: 1px;
   height: 0.85em;
   background: var(--line-s);
-  /* Avdelaren hör till raden före, men ritas i den efter — den ska
-     försvinna av sig själv när raden bryts. */
-  margin-left: calc(-1 * clamp(0.8rem, 2vw, 1.5rem));
   flex: none;
 }
 
-/* --- Bildgalleri. Tomt = blocket göms helt av page.js. ---
-   Bilderna ska inte stå på rad som i ett kontaktkartotek. De ligger
-   i ett tolvspaltigt rutnät och får olika bredd och olika startspalt
-   efter ett mönster som upprepar sig var sjätte bild: stor vänster,
-   medel höger, två i bredd, full bredd, centrerad. Radavståndet är
-   tilltaget — det är luften som gör att en bild läses för sig och
-   inte som en av tolv.
-
-   Rutorna är 2:1, samma bildformat som filmen är fotograferad i.
-   Det är inte en godtycklig proportion: klipper man en 2:1-bild till
-   16:9 försvinner en femtedel i sidled, och i ett så brett format
-   ligger kompositionen ofta just där. Källa och ruta är lika, så
-   object-fit: cover beskär ingenting. */
-.sida-bilder {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: clamp(1.8rem, 6vh, 4rem) clamp(0.6rem, 1.6vw, 1.1rem);
-  align-items: start;
+/* --- Smal skärm: allt i en spalt, och luften dras in ---
+   Splitlayouten och spaltplaceringen hör till bredden. På en telefon
+   är en halv skärm 170 px, och en 2:1-bild där blir 85 px hög — då
+   syns ingenting av den. */
+@media (max-width: 860px) {
+  .bop-sida { gap: clamp(2.5rem, 8vh, 4rem); }
+  .bop-split,
+  .bop-split--omvand { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .bop-split--omvand .bop-text  { order: 1; }
+  .bop-split--omvand .bop-media { order: 2; }
+  .bop-text p { max-width: none; }
+  .bop-rad { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .bop-bild[class] { grid-column: 1 / -1; margin-top: 0; }
+  /* Den lilla får vara liten här också, men centrerad i stället för
+     förskjuten — en förskjutning syns inte i en enda spalt. */
+  .bop-bild--h-liten img,
+  .bop-bild--mitt-liten img { width: min(100%, 78%); margin-inline: auto; }
+  .bop-hero { min-height: auto; }
+  .bop-hero-inner { padding-top: calc(var(--nav-h) + 6rem); }
 }
-.sida-bilder img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 1;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  background: #101010;
-  /* Reserv: en bild som inte träffas av mönstret nedan tar hela
-     bredden i stället för att hamna i en enda spalt. */
-  grid-column: 1 / -1;
-}
-/* Mönstret. Bild 3 och 4 i varje varv ryms bredvid varandra och
-   hamnar därför på samma rad av sig själva — resten får en egen. */
-.sida-bilder img:nth-child(6n + 1) { grid-column: 1 / 10; }
-.sida-bilder img:nth-child(6n + 2) { grid-column: 6 / 13; }
-.sida-bilder img:nth-child(6n + 3) { grid-column: 1 / 7; }
-.sida-bilder img:nth-child(6n + 4) { grid-column: 7 / 13; }
-.sida-bilder img:nth-child(6n + 5) { grid-column: 1 / 13; }
-.sida-bilder img:nth-child(6n + 6) { grid-column: 3 / 11; }
 
 /* --- Medverkande --- */
 /* En spalt, som en eftertext. Två spalter bröt läsordningen: med tre

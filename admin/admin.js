@@ -642,8 +642,8 @@
 
     /* --- Affischer --- */
     box.appendChild(el('h3', 'grupp-rubrik', 'Affischer och stillbilder — panel 02'));
-    const post = S.innehall.STEP1FILM_POSTERS || (S.innehall.STEP1FILM_POSTERS = { birds: [], shorts: [], mammor: [] });
-    [['shorts', '003 Filmer — affischer'], ['mammor', '002 Jag som har två mammor — stillbilder'], ['birds', '001 Birds of Passage — bilder på filmens egen sida']].forEach(([n, etikett]) => {
+    const post = S.innehall.STEP1FILM_POSTERS || (S.innehall.STEP1FILM_POSTERS = { shorts: [], mammor: [] });
+    [['shorts', '003 Filmer — affischer'], ['mammor', '002 Jag som har två mammor — stillbilder']].forEach(([n, etikett]) => {
       const lista = post[n] || (post[n] = []);
       const w = el('div', 'kort');
       const kropp = el('div', 'kort-kropp');

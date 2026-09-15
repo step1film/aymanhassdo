@@ -264,7 +264,7 @@
       "bopCCoord": "Production coordinator",
       "bopCFolk": "Research in Syrian folk music",
       "bopFCoprod": "Co-production",
-      "bopSupportHead": "With support from",
+      "bopSupportHead": "With support",
       "bopTrailer": "Trailer",
       "bopPlay": "Play the trailer",
       "bopPlayAria": "Play the Birds of Passage trailer",

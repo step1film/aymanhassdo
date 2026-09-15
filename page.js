@@ -6,9 +6,13 @@
    dokument. Kvar blir två saker — trailerrutan och bildgalleriet —
    och båda läser samma listor i site-config.js som startsidan.
 
-   Tomt innehåll göms i stället för att visas som platshållare:
-   saknas video-id försvinner trailerrutan, och är bildlistan tom
-   försvinner hela galleriavsnittet. Ingen "trailer kommer". */
+   Bilderna låg förut i en lista i site-config.js och ritades ut som
+   ett galleri härifrån. De ligger nu direkt i sidan i stället: elva
+   bilder som var och en har sin egen plats och storlek i layouten,
+   och en sådan placering går inte att räkna fram ur en lista.
+
+   Kvar blir trailern. Saknas video-id göms rutan — ingen platshållare
+   som säger "trailer kommer". */
 (() => {
   'use strict';
 
@@ -56,51 +60,7 @@
      bild som inte går att ladda tas bort ur rutnätet i stället för
      att lämna en trasig ikon — filerna laddas upp efter hand, och
      en adress kan peka fel under tiden. */
-  /* Sökvägarna i site-config.js är skrivna som startsidan ser dem:
-     "assets/films/..." utan inledande snedstreck. Härifrån, på
-     /Birdsofpassage/, hade webbläsaren läst dem som
-     /Birdsofpassage/assets/... och fått 404 på varenda bild. Vi
-     lägger på rotens snedstreck. Hela adresser och sökvägar som
-     redan börjar med / lämnas som de är. */
-  function frånRoten(sokvag) {
-    const v = String(sokvag).trim();
-    if (/^([a-z]+:)?\/\//i.test(v) || v.startsWith('/')) return v;
-    return '/' + v.replace(/^\.?\//, '');
-  }
-
-  function initBilder() {
-    const block = document.querySelector('[data-bilder-block]');
-    const rutnat = document.querySelector('[data-bilder]');
-    if (!rutnat) return;
-
-    const nyckel = rutnat.getAttribute('data-bilder');
-    const lista = (window.STEP1FILM_POSTERS || {})[nyckel] || [];
-    const rena = lista.filter(s => typeof s === 'string' && s.trim());
-    if (!rena.length) { if (block) block.hidden = true; return; }
-    /* Avsnittet står hidden i HTML:en. Det är med flit: finns inga
-       bilder ska rubriken "Bilder" aldrig blinka förbi innan skriptet
-       hunnit gömma den. Nu vet vi att det finns bilder — visa det. */
-    if (block) block.hidden = false;
-
-    let kvar = rena.length;
-    const alt = rutnat.getAttribute('data-bilder-alt') || '';
-    rena.forEach((src, i) => {
-      const bild = new Image();
-      bild.src = frånRoten(src);
-      /* Numrerad alt-text, utan ett ord som måste översättas: sidan
-         finns på två språk och bilderna byter inte innehåll med dem. */
-      bild.alt = alt ? alt + ' ' + (i + 1) : '';
-      bild.loading = 'lazy';
-      bild.decoding = 'async';
-      bild.addEventListener('error', () => {
-        bild.remove();
-        if (--kvar === 0 && block) block.hidden = true;
-      });
-      rutnat.appendChild(bild);
-    });
-  }
-
-  function start() { initTrailer(); initBilder(); }
+  function start() { initTrailer(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
