@@ -739,10 +739,18 @@ body.reduced-motion .h-panel::after { animation: none; }
      panelen är en skärm hög och rutan ska aldrig tränga undan
      biografin ovanför. */
   --media-h: clamp(95px, 11.6vh, 138px);
-  /* Graden höjd ett snäpp: spalten är bredare nu, så texten går på
-     färre rader och har råd att växa. main.js krymper ändå tillbaka
-     om den inte skulle rymmas. */
-  --bio-grad: clamp(0.85rem, 1.02vw, 1.15rem);
+  /* Graden läser både bredd och höjd. Bredden ensam räckte så länge
+     texten var kortare; med bakgrundsstycket tillbaka blev den 303 px
+     på ett 1920×1080-fönster där ytan är 276, och de sista raderna
+     klipptes. Höjden är det som avgör hur mycket plats som finns —
+     panelen är exakt en skärm hög — så den ska vara med i måttet.
+
+     min() väljer det mindre: på ett brett men lågt fönster är det
+     höjden som stryper, på ett smalt och högt är det bredden.
+     main.js finjusterar därefter för de fall måttet inte täcker —
+     större grundgrad i webbläsaren, ett längre språk — men behöver
+     inte längre göra det på vanliga fönsterstorlekar. */
+  --bio-grad: clamp(0.85rem, min(1.02vw, 1.42vh), 1.15rem);
 }
 
 /* Översta raden: biografin till vänster, porträttspalten till höger.
@@ -1462,7 +1470,7 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
      webbläsaren, ett längre språk, en ovanlig fönsterproportion —
      krymper main.js den här faktorn tills den gör det. Utan skript
      står den på 1 och allt är som förut. */
-  font-size: calc(var(--bio-grad) * var(--bio-skala, 1));
+  font-size: var(--bio-grad);
   font-weight: 300;
   /* 1.62 i stället för 1.75. Panelen är en skärm hög och rullar inte,
      så höjden är given: raden mellan raderna är det enda som kan bli
@@ -1477,6 +1485,16 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
      rymmas. Bredare rader betyder färre rader — och större text. */
   max-width: 112ch;
 }
+/* Krympningen gäller BARA texten inne i den klippande rutan.
+   Den låg på citatet och signaturen också, och det gjorde mätningen
+   omöjlig: citatet är två rader vid full grad och en rad vid krympt,
+   och raden det tappar blir plats som texten ovanför får tillbaka.
+   Skriptet mätte alltså sitt eget resultat — det krympte till golvet
+   0,72, mätte att allt rymdes, och nästa omritning gav två rader igen
+   och tre klippta rader i texten. Citatet står utanför rutan, kan inte
+   klippas, och behöver därför ingen krympning. */
+.about-lead,
+.about-body { font-size: calc(var(--bio-grad) * var(--bio-skala, 1)); }
 .about-lead  { color: var(--white); }
 .about-body  { color: var(--text); }
 
@@ -3346,16 +3364,96 @@ body.sida #logo-mark > * { pointer-events: auto; }
 /* Utan video-id finns ingen ruta alls — inget "trailer kommer". */
 .sida-trailer[hidden], .sida-block[hidden] { display: none; }
 
+/* --- Herobilden på filmsidan, med stödgivarna på ---
+   Bilden ligger i filmens format och tar hela spaltbredden. Texten
+   står över den, och för att den ska gå att läsa oavsett bild ligger
+   en mörk toning emellan — inte över hela bilden, bara den nedre
+   tredjedelen där raderna står. */
+.bop-hero {
+  position: relative;
+  margin-top: clamp(2rem, 6vh, 3.5rem);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  /* Egen stapelkontext: toningen ska ligga över bilden men under
+     texten, utan att någon av dem behöver ett z-index i tusental. */
+  isolation: isolate;
+}
+.bop-hero-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+}
+.bop-hero::after {
+  content: '';
+  position: absolute;
+  inset: 40% 0 0 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.88) 100%);
+  pointer-events: none;
+}
+.bop-hero-stod {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2.4rem);
+  right: clamp(1rem, 3vw, 2.4rem);
+  bottom: clamp(0.9rem, 3vh, 1.8rem);
+  z-index: 1;
+}
+.stod-etikett {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+/* Namnen står på en rad med tunna avdelare mellan sig, och bryter
+   till flera rader när bredden tar slut. */
+.stod-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem clamp(0.8rem, 2vw, 1.5rem);
+  list-style: none;
+}
+.stod-lista li {
+  font-family: var(--ff-display);
+  font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+  letter-spacing: 0.08em;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+}
+.stod-lista li + li::before {
+  content: '';
+  width: 1px;
+  height: 0.85em;
+  background: var(--line-s);
+  /* Avdelaren hör till raden före, men ritas i den efter — den ska
+     försvinna av sig själv när raden bryts. */
+  margin-left: calc(-1 * clamp(0.8rem, 2vw, 1.5rem));
+  flex: none;
+}
+
 /* --- Bildgalleri. Tomt = blocket göms helt av page.js. ---
-   Två spalter, och rutorna är 2:1 — filmens eget bildformat. Det är
-   inte en godtycklig proportion: klipper man en 2:1-bild till 16:9
-   försvinner en femtedel av bilden i sidled, och det är ofta där
-   kompositionen ligger i ett så brett format. Här ligger källa och
-   ruta i samma proportion, så object-fit: cover beskär ingenting. */
+   Bilderna ska inte stå på rad som i ett kontaktkartotek. De ligger
+   i ett tolvspaltigt rutnät och får olika bredd och olika startspalt
+   efter ett mönster som upprepar sig var sjätte bild: stor vänster,
+   medel höger, två i bredd, full bredd, centrerad. Radavståndet är
+   tilltaget — det är luften som gör att en bild läses för sig och
+   inte som en av tolv.
+
+   Rutorna är 2:1, samma bildformat som filmen är fotograferad i.
+   Det är inte en godtycklig proportion: klipper man en 2:1-bild till
+   16:9 försvinner en femtedel i sidled, och i ett så brett format
+   ligger kompositionen ofta just där. Källa och ruta är lika, så
+   object-fit: cover beskär ingenting. */
 .sida-bilder {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.5rem, 1.4vw, 0.9rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(1.8rem, 6vh, 4rem) clamp(0.6rem, 1.6vw, 1.1rem);
+  align-items: start;
 }
 .sida-bilder img {
   width: 100%;
@@ -3364,7 +3462,18 @@ body.sida #logo-mark > * { pointer-events: auto; }
   object-fit: cover;
   border: 1px solid var(--line);
   background: #101010;
+  /* Reserv: en bild som inte träffas av mönstret nedan tar hela
+     bredden i stället för att hamna i en enda spalt. */
+  grid-column: 1 / -1;
 }
+/* Mönstret. Bild 3 och 4 i varje varv ryms bredvid varandra och
+   hamnar därför på samma rad av sig själva — resten får en egen. */
+.sida-bilder img:nth-child(6n + 1) { grid-column: 1 / 10; }
+.sida-bilder img:nth-child(6n + 2) { grid-column: 6 / 13; }
+.sida-bilder img:nth-child(6n + 3) { grid-column: 1 / 7; }
+.sida-bilder img:nth-child(6n + 4) { grid-column: 7 / 13; }
+.sida-bilder img:nth-child(6n + 5) { grid-column: 1 / 13; }
+.sida-bilder img:nth-child(6n + 6) { grid-column: 3 / 11; }
 
 /* --- Medverkande --- */
 /* En spalt, som en eftertext. Två spalter bröt läsordningen: med tre
@@ -3431,9 +3540,11 @@ body.sida #logo-mark > * { pointer-events: auto; }
 @media (max-width: 700px) {
   .credit-rad { grid-template-columns: minmax(0, 1fr); }
   .sida-fakta { gap: 0.9rem 1.4rem; }
-  /* En 2:1-bild i halv telefonbredd blir 85 px hög. Då syns ingenting
-     av den. En spalt i stället. */
-  .sida-bilder { grid-template-columns: minmax(0, 1fr); }
+  /* Mönstret hör till bredden. En 2:1-bild i halv telefonbredd blir
+     85 px hög, och då syns ingenting av den — här tar varje bild hela
+     bredden och får en egen rad. */
+  .sida-bilder { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .sida-bilder img:nth-child(n) { grid-column: 1 / -1; }
 }
 
 /* --- Om STEP1FILM: porträttet överst --- */

@@ -427,7 +427,6 @@ window.STEP1FILM_POSTERS = {
     "Birdsofpassage/stills/bop-04.webp",
     "Birdsofpassage/stills/bop-05.webp",
     "Birdsofpassage/stills/bop-06.webp",
-    "Birdsofpassage/stills/bop-07.webp",
     "Birdsofpassage/stills/bop-08.webp",
     "Birdsofpassage/stills/bop-09.webp",
     "Birdsofpassage/stills/bop-10.webp",

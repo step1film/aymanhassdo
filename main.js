@@ -336,6 +336,15 @@
       });
       if (curEl) curEl.textContent = fmt(panelIdx);
       if (labelEl) labelEl.textContent = LABELS()[panels[panelIdx].id] || '';
+      /* Passa in biografin när dess panel blir den aktuella. Höjderna
+         omkring den sätter sig långt efter att skriptet kört —
+         klippspelaren får sin ruta, typsnitten byts, bottenstapeln
+         mäts in — och en inpassning gjord före det är gjord på fel
+         siffra. Här vet vi att panelen ska visas nu. */
+      if (panels[panelIdx].id === 'about') {
+        passaBiografin();
+        requestAnimationFrame(() => passaBiografin(true));
+      }
     }
 
     /* Hur stor del av showreelen som täcks av första panelen (0–1).
@@ -459,20 +468,63 @@
     const bioRuta = document.querySelector('.about-scroll');
     const bioCols = document.querySelector('.about-cols');
     let bioPagar = false;
-    function passaBiografin() {
+    /* Räknar ut hur mycket biografin behöver krympa för att rymmas,
+       och gör det i flera korta pass i stället för i en slinga.
+
+       Varför inte en slinga: rutan är flex: 0 1 auto, alltså krymper
+       den med sin egen text, och att jämföra scrollHeight med
+       clientHeight blir att jämföra texten med sig själv — villkoret
+       är sant hela vägen ned till golvet. Och att sätta variabeln och
+       läsa av resultatet i samma omgång ger gamla siffror tillbaka:
+       webbläsaren har inte räknat om graden än. En slinga som mäter
+       efter varje steg mäter alltså fel varje steg.
+
+       Därför ett steg per bildruta. Varje pass läser färska mått,
+       rättar en gång, och lämnar över till nästa ruta. Två pass räcker
+       nästan alltid; taket är sex, så det kan aldrig löpa i väg. */
+    let bioVarv = 0;
+    function passaBiografin(finjustera) {
       if (!bioRuta || !bioCols || bioPagar) return;
       bioPagar = true;
-      bioCols.style.removeProperty('--bio-skala');
-      /* Golv på 0,72. Vid webbläsarens grundgrad 22 px landar det på
-         drygt 12 px — samma grad som panelen ändå visar på ett litet
-         fönster, alltså inget nytt läsbarhetsproblem. Under det golvet
-         väger vi över: då är beskuren text det mindre onda.
-         Att läsa scrollHeight tvingar fram ny layout, så varje varv
-         mäter resultatet av föregående steg. */
-      let skala = 1;
-      while (skala > 0.72 && bioRuta.scrollHeight > bioRuta.clientHeight + 1) {
-        skala -= 0.02;
-        bioCols.style.setProperty('--bio-skala', skala.toFixed(2));
+
+      /* Ett nytt försök börjar alltid om från full grad. En finjustering
+         bygger vidare på den grad passet före landade i. */
+      if (!finjustera) {
+        bioVarv = 0;
+        bioCols.style.removeProperty('--bio-skala');
+      }
+
+      /* Bara i svepläget. På smal skärm rullar sidan, rutan har
+         overflow: visible och ingenting kan klippas — då ska graden
+         vara den CSS anger och inget annat. */
+      if (!wideMode) { bioPagar = false; return; }
+
+      /* Ryms texten är rutan lika hög som texten; ryms den inte är
+         rutan klämd till precis den höjd som blir över när citatet,
+         signaturen och länken fått sitt. clientHeight är alltså ytan i
+         båda fallen, och scrollHeight är textens höjd oavsett vilket.
+
+         Att måttet håller sig hänger på att citatet och signaturen
+         inte längre krymper med texten — de står utanför den klippande
+         rutan och har egen grad. Ändras det är den här uträkningen
+         trasig igen. */
+      const yta = bioRuta.clientHeight;
+      const text = bioRuta.scrollHeight;
+      const nuvarande = parseFloat(bioCols.style.getPropertyValue('--bio-skala')) || 1;
+
+      if (yta > 0 && text > yta + 1 && nuvarande > 0.72 && bioVarv < 6) {
+        bioVarv++;
+        /* Texthöjd och grad följs åt nästan rakt av, så förhållandet
+           yta/text är nästan rätt direkt. Två procent avdrag täcker att
+           en rad kan brytas om på vägen. Golvet på 0,72 motsvarar drygt
+           12 px vid webbläsarens grundgrad 22 — samma grad som panelen
+           ändå visar på ett litet fönster. Under det väger vi över:
+           då är beskuren text det mindre onda. */
+        const ny = Math.max(0.72, nuvarande * (yta / text) - 0.02);
+        bioCols.style.setProperty('--bio-skala', ny.toFixed(2));
+        bioPagar = false;
+        requestAnimationFrame(() => passaBiografin(true));
+        return;
       }
       bioPagar = false;
     }
@@ -491,6 +543,53 @@
       bioTimer = setTimeout(() => { matBotten(); passaBiografin(); }, 120);
     };
     window.addEventListener('resize', bioSnart);
+    /* Mätningen ovan sker när skriptet kör. Panelens höjd är inte klar
+       då: bottenstapeln mäts in, klippspelaren får sin ruta, typsnitten
+       byts. Var och en av dem ändrar hur mycket plats texten har, och
+       en mätning gjord innan dess är gjord på fel siffra — på 1920×1080
+       hamnade den först på golvet 0,72 och sedan, efter nästa
+       omritning, på ingen krympning alls med tre klippta rader.
+
+       Så vi tittar på ytan i stället för att gissa när den är färdig.
+       .about-cols är flex: 1 i panelen: höjden kommer uppifrån och inte
+       från texten, så det finns ingen återkoppling — en krympning
+       ändrar inte det vi mäter. På smal skärm är den content-driven,
+       och där rullar sidan ändå, så vi låter den vara. */
+    /* Mätningen ovan sker när skriptet kör, och då är panelens höjd
+       inte klar: bottenstapeln mäts in, klippspelaren får sin ruta,
+       typsnitten byts ut. Var och en ändrar hur mycket plats texten
+       har, och en mätning gjord innan dess är gjord på fel siffra — på
+       1920×1080 hamnade den först på golvet 0,72, och efter nästa
+       omritning på ingen krympning alls med tre klippta rader.
+
+       En ResizeObserver duger inte här: allt som ändrar sig är
+       innehållets egen höjd, och innehållets höjd är just det
+       krympningen ändrar. Den skulle observera sitt eget resultat.
+       Därför mäter vi om vid några bestämda tillfällen i stället, tills
+       sidan har lagt sig. Fyra omräkningar av ett par dussin noder
+       kostar ingenting, och passaBiografin börjar alltid om från
+       skalan 1 — sista ordet är det som gäller. */
+    window.addEventListener('load', () => passaBiografin());
+    [250, 700, 1500].forEach(ms => setTimeout(() => passaBiografin(), ms));
+
+    /* Och en vakt på själva rutan. Höjderna omkring biografin sätter
+       sig långt efter att skriptet kört — klippspelaren får sin ruta,
+       typsnitten byts, bottenstapeln mäts in — och exakt när det sker
+       går inte att veta. Vakten ser i stället att rutan ändrat höjd och
+       rättar då, med färska mått.
+
+       Den kan inte löpa runt: den rättar bara nedåt och bara när texten
+       faktiskt är för hög, och en krympning som får texten att rymmas
+       gör att nästa varv inte gör någonting. bioVarv sätter ändå ett
+       tak, och nollställs bara av ett nytt försök från full grad. */
+    if (window.ResizeObserver && bioRuta) {
+      let vantar = false;
+      new ResizeObserver(() => {
+        if (vantar) return;
+        vantar = true;
+        requestAnimationFrame(() => { vantar = false; passaBiografin(true); });
+      }).observe(bioRuta);
+    }
     /* Språkbytet byter ut hela texten, och andra lyssnare ritar om delar
        av panelen efter oss. Ett varv till på nästa bildruta fångar det
        som hunnit flytta sig. */
