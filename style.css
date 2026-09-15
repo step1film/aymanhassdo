@@ -1526,25 +1526,15 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   flex: 0 0 auto;
 }
 
-/* Vidare till hela berättelsen. Startsidans version är kortad, och
-   den här länken är vägen till resten — den får därför inte heller
-   kunna klippas bort. Pilen ligger i ::after så texten kan bytas av
-   i18n utan att pilen följer med i strängen. */
-.about-more {
-  flex: 0 0 auto;
-  align-self: flex-start;
-  margin-top: 0.9em;
-  font-family: var(--ff-display);
-  font-size: var(--fs-label);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+/* Länken vidare till hela berättelsen ligger i texten, inte som en
+   knapp under den. Den ärver brödtextens grad och får bara färgen och
+   ett streck under — den ska läsas som en del av meningen. */
+.about-scroll a {
   color: var(--accent);
-  border-bottom: 1px solid transparent;
-  padding-bottom: 0.15em;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 45%, transparent);
   transition: border-color 0.25s, color 0.25s;
 }
-.about-more::after { content: ' →'; }
-.about-more:hover { border-bottom-color: var(--accent); }
+.about-scroll a:hover { border-bottom-color: var(--accent); color: var(--white); }
 
 /* --- Klippspelaren: först i mediaraden under texten --- */
 .about-reel {
@@ -3578,17 +3568,8 @@ body.sida #logo-mark > * { pointer-events: auto; }
      halva spalt där namnen stod som text. */
   grid-column: 1 / -1;
   margin-top: clamp(1.5rem, 5vh, 3rem);
-  padding-top: clamp(1rem, 2.5vh, 1.6rem);
+  padding-top: clamp(1.4rem, 4vh, 2.4rem);
   border-top: 1px solid var(--line);
-}
-.stod-etikett {
-  display: block;
-  font-family: var(--ff-display);
-  font-size: var(--fs-micro);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.6rem;
 }
 /* Logotyperna står på en rad och bryter neråt när bredden tar slut.
    Höjden är måttet, inte bredden: en logotyp är olika bred beroende på
