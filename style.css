@@ -3346,16 +3346,21 @@ body.sida #logo-mark > * { pointer-events: auto; }
 /* Utan video-id finns ingen ruta alls — inget "trailer kommer". */
 .sida-trailer[hidden], .sida-block[hidden] { display: none; }
 
-/* --- Bildgalleri. Tomt = blocket göms helt av page.js. --- */
+/* --- Bildgalleri. Tomt = blocket göms helt av page.js. ---
+   Två spalter, och rutorna är 2:1 — filmens eget bildformat. Det är
+   inte en godtycklig proportion: klipper man en 2:1-bild till 16:9
+   försvinner en femtedel av bilden i sidled, och det är ofta där
+   kompositionen ligger i ett så brett format. Här ligger källa och
+   ruta i samma proportion, så object-fit: cover beskär ingenting. */
 .sida-bilder {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
-  gap: clamp(0.6rem, 1.6vw, 1rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.5rem, 1.4vw, 0.9rem);
 }
 .sida-bilder img {
   width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
+  aspect-ratio: 2 / 1;
   object-fit: cover;
   border: 1px solid var(--line);
   background: #101010;
@@ -3426,6 +3431,9 @@ body.sida #logo-mark > * { pointer-events: auto; }
 @media (max-width: 700px) {
   .credit-rad { grid-template-columns: minmax(0, 1fr); }
   .sida-fakta { gap: 0.9rem 1.4rem; }
+  /* En 2:1-bild i halv telefonbredd blir 85 px hög. Då syns ingenting
+     av den. En spalt i stället. */
+  .sida-bilder { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* --- Om STEP1FILM: porträttet överst --- */

@@ -87,7 +87,9 @@
     rena.forEach((src, i) => {
       const bild = new Image();
       bild.src = frånRoten(src);
-      bild.alt = alt ? alt + ' — bild ' + (i + 1) : '';
+      /* Numrerad alt-text, utan ett ord som måste översättas: sidan
+         finns på två språk och bilderna byter inte innehåll med dem. */
+      bild.alt = alt ? alt + ' ' + (i + 1) : '';
       bild.loading = 'lazy';
       bild.decoding = 'async';
       bild.addEventListener('error', () => {

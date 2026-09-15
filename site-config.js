@@ -76,6 +76,13 @@
                          listan tom försvinner hela bildavsnittet på den
                          sidan.
 
+                         Filerna ligger i Birdsofpassage/stills/ och är
+                         webbanpassade: 1800×900 webp, runt 80 kB styck.
+                         Originalen (BoP (1).jpg och framåt, 2560×1280,
+                         omkring en megabyte var) ligger kvar i mappen
+                         ovanför men laddas aldrig av sidan. En ny bild
+                         skalas om på samma sätt och läggs sist i listan.
+
    Fält som finns i två språk skrivs { sv: '…', en: '…' }. Ett fält som
    är samma på båda språken får stå som en vanlig sträng.
    ===================================================== */
@@ -413,7 +420,20 @@ window.STEP1FILM_CV = [
 ];
 
 window.STEP1FILM_POSTERS = {
-  "birds": [],
+  "birds": [
+    "Birdsofpassage/stills/bop-01.webp",
+    "Birdsofpassage/stills/bop-02.webp",
+    "Birdsofpassage/stills/bop-03.webp",
+    "Birdsofpassage/stills/bop-04.webp",
+    "Birdsofpassage/stills/bop-05.webp",
+    "Birdsofpassage/stills/bop-06.webp",
+    "Birdsofpassage/stills/bop-07.webp",
+    "Birdsofpassage/stills/bop-08.webp",
+    "Birdsofpassage/stills/bop-09.webp",
+    "Birdsofpassage/stills/bop-10.webp",
+    "Birdsofpassage/stills/bop-11.webp",
+    "Birdsofpassage/stills/bop-12.webp"
+  ],
   "shorts": [
     "assets/films/posters/nya-ord.jpg",
     "assets/films/posters/minds-eye.jpg",
