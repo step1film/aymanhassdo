@@ -38,9 +38,14 @@
    något annat än adressen:
 
      [
+       {"adress":"ayman@step1film.se","losenord":"…","namn":"Ayman Hassdo"},
        {"adress":"info@step1film.se","losenord":"…","namn":"STEP1FILM"},
-       {"adress":"ayman@step1film.se","losenord":"…","namn":"Ayman Hassdo"}
+       {"adress":"shop@step1film.se","losenord":"…","namn":"STEP1FILM STORE"},
+       {"adress":"collaboration@step1film.se","losenord":"…","namn":"STEP1FILM"}
      ]
+
+   Ordningen i listan är den ordning brevlådorna står i väljaren,
+   och den första är den som öppnas när fliken laddas.
 
    ⚠️ Lösenorden här är brevlådornas riktiga lösenord och ger
    full åtkomst till posten. De ligger hos Netlify, aldrig i

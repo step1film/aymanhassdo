@@ -134,7 +134,7 @@ Funkar det är du igång.
 ## Mejlfliken
 
 Fliken **Mejl** är en inkorg för adresserna på step1film.se —
-`ayman@step1film.se`, `info@step1film.se` och vilka du nu har. Den
+`ayman@`, `info@`, `shop@`, `collaboration@` och vilka du nu har. Den
 läser och skickar mot brevlådorna hos **one.com** över IMAP och SMTP,
 alltså exakt samma vägar som mejlprogrammet i telefonen.
 
@@ -169,8 +169,16 @@ rad. `namn` är valfritt och blir avsändarnamnet mottagaren ser.
 adressen.
 
 ```json
-[{"adress":"ayman@step1film.se","losenord":"…","namn":"Ayman Hassdo"},{"adress":"info@step1film.se","losenord":"…","namn":"STEP1FILM"}]
+[{"adress":"ayman@step1film.se","losenord":"…","namn":"Ayman Hassdo"},{"adress":"info@step1film.se","losenord":"…","namn":"STEP1FILM"},{"adress":"shop@step1film.se","losenord":"…","namn":"STEP1FILM STORE"},{"adress":"collaboration@step1film.se","losenord":"…","namn":"STEP1FILM"}]
 ```
+
+Ordningen i listan är ordningen i väljaren, och den första brevlådan
+är den som öppnas när du går in på fliken.
+
+`shop@` och `collaboration@` är värda att ha med: butikens
+orderbekräftelser går ut från `shop@`, och formuläret *Samarbeta* på
+sajten landar i `collaboration@`. Har du dem här ser du svaren på
+samma ställe som allt annat i stället för att leta i flera program.
 
 ⚠️ **Lösenorden här är brevlådornas riktiga lösenord** och ger full
 åtkomst till posten. De ligger hos Netlify, aldrig i repot, och lämnar
