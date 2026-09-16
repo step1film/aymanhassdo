@@ -265,6 +265,16 @@ function htmlBody(order, t, lang) {
  * @param {{reference:string, recipient:object, lines:Array, shipping:number, total:number, lang?:string}} order
  * @returns {Promise<{ok:boolean, skipped?:boolean, reason?:string, id?:string}>}
  */
+/* EMAIL_FROM får skrivas som "STEP1FILM STORE <shop@step1film.se>".
+   SMTP-vägen slår upp avsändaren i MAIL_ACCOUNTS och behöver därför
+   den rena adressen. Saknas variabeln används butikens egen. */
+function avsandaradress() {
+  const rad = String(process.env.EMAIL_FROM || '').trim();
+  const inom = rad.match(/<([^>]+)>/);
+  const adress = inom ? inom[1] : rad;
+  return adress.includes('@') ? adress.trim() : COMPANY.email;
+}
+
 async function sendOrderConfirmation(order) {
   const to = order.recipient && order.recipient.email;
   if (!to) return { ok: false, skipped: true, reason: 'Kundens e-postadress saknas' };
@@ -272,21 +282,48 @@ async function sendOrderConfirmation(order) {
   const lang = order.lang === 'en' ? 'en' : 'sv';
   const t = T[lang];
 
+  const amne = t.subject(order.reference);
+  const text = textBody(order, t, lang);
+  const html = htmlBody(order, t, lang);
+
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
+
+  /* Ingen Resend-nyckel? Då går brevet via one.com i stället, från
+     brevlådan i MAIL_ACCOUNTS — samma väg som posten du skriver själv
+     i admin. Det kräver ingen ny leverantör och inga nya DNS-poster.
+     Resend vinner när båda finns: den är byggd för utskick och ger
+     loggar och studsar, medan one.com är en vanlig brevlåda med
+     dagliga gränser. */
   if (!apiKey || !from) {
-    // Inte påslaget än — logga så ordern går att bekräfta för hand.
-    console.warn(`[email] Ej konfigurerad (RESEND_API_KEY/EMAIL_FROM saknas). Bekräftelse till ${to} för ${order.reference} skickades INTE.`);
-    return { ok: false, skipped: true, reason: 'RESEND_API_KEY/EMAIL_FROM saknas' };
+    try {
+      const M = require('./mail');
+      if (M.konfigurerad()) {
+        const kvitto = await M.skickaBrev({
+          fran: M.avsandare(avsandaradress()),
+          till: to,
+          amne, text, html,
+          svaraTill: COMPANY.email,
+          hemligKopia: process.env.EMAIL_BCC || ''
+        });
+        return { ok: true, id: kvitto.id, via: 'smtp' };
+      }
+    } catch (err) {
+      /* Faller igenom till loggraden nedan. Ordern är redan lagd —
+         ett uteblivet kvitto får aldrig se ut som ett misslyckat köp. */
+      console.warn(`[email] SMTP misslyckades för ${order.reference}: ${String(err && err.message || err)}`);
+    }
+    console.warn(`[email] Ej konfigurerad (varken RESEND_API_KEY eller MAIL_ACCOUNTS). Bekräftelse till ${to} för ${order.reference} skickades INTE.`);
+    return { ok: false, skipped: true, reason: 'Ingen mejlleverantör konfigurerad' };
   }
 
   const body = {
     from,
     to: [to],
     reply_to: COMPANY.email,
-    subject: t.subject(order.reference),
-    text: textBody(order, t, lang),
-    html: htmlBody(order, t, lang)
+    subject: amne,
+    text,
+    html
   };
   if (process.env.EMAIL_BCC) body.bcc = [process.env.EMAIL_BCC];
 

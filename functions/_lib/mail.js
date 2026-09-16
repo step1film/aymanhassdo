@@ -90,6 +90,17 @@ const konfigurerad = () => KONTON.length > 0;
 /* Bara adresserna ut till webbläsaren — aldrig lösenorden. */
 const kontolista = () => KONTON.map(k => ({ adress: k.adress, namn: k.namn || '' }));
 
+/* Vilken brevlåda ska ett automatiskt brev gå ut från?
+   Den önskade om den finns, annars den första i listan. Ett kvitto som
+   kommer från fel avsändare är bättre än inget kvitto alls — och den
+   som satt EMAIL_FROM till en adress som inte är uppsatt ska inte
+   upptäcka det genom att kunderna slutar få brev. */
+const avsandare = (onskad) => {
+  const k = kontoFor(onskad);
+  if (k) return k.adress;
+  return KONTON.length ? KONTON[0].adress : '';
+};
+
 const kontoFor = (adress) => {
   const sokt = String(adress || '').trim().toLowerCase();
   return KONTON.find(k => k.adress.trim().toLowerCase() === sokt) || null;
@@ -229,13 +240,21 @@ async function las(konto, { mapp = 'INBOX', uid }) {
    SMTP skickar brevet men lämnar inget spår i brevlådan — det steget
    gör mejlprogram själva. Utan det hade ett svar skrivet här varit
    osynligt i telefonen. */
-async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
-  const post = nodemailer.createTransport({
+function smtp(konto, tidsgrans) {
+  return nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
     secure: SMTP_PORT === 465,
-    auth: { user: konto.anvandare || konto.adress, pass: konto.losenord }
+    auth: { user: konto.anvandare || konto.adress, pass: konto.losenord },
+    /* Sätts bara för automatiska brev. En hängande SMTP-uppkoppling
+       inne i Stripes webhook hade tagit ned hela anropet, och då
+       hade ordern sett ut att misslyckas fast den var betald. */
+    ...(tidsgrans ? { connectionTimeout: tidsgrans, greetingTimeout: tidsgrans, socketTimeout: tidsgrans } : {})
   });
+}
+
+async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
+  const post = smtp(konto);
 
   const brev = {
     from: konto.namn ? `${konto.namn} <${konto.adress}>` : konto.adress,
@@ -289,4 +308,34 @@ async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
   return { id: idRad ? idRad[1] : (kvitto.messageId || ''), iSkickat };
 }
 
-module.exports = { konfigurerad, kontolista, kontoFor, lista, las, skicka, hittaMapp };
+/* --- Automatiska brev ------------------------------------------------
+   Orderbekräftelsen och samarbetsförfrågan går samma väg som posten
+   du skriver själv: SMTP hos one.com, från en brevlåda som redan står
+   i MAIL_ACCOUNTS. Ingen ny leverantör, inga nya DNS-poster — SPF och
+   DKIM är redan utfärdade för one.coms servrar, så breven är signerade
+   från första dagen.
+
+   Skillnaden mot skicka() ovan: ingen kopia läggs i Skickat (en
+   orderbekräftelse hör hemma hos kunden, inte i din inkorg — använd
+   dold kopia om du vill ha den), brevet får ha HTML, och uppkopplingen
+   har en tidsgräns eftersom den sker mitt i ett serveranrop. */
+async function skickaBrev({ fran, till, amne, text, html, svaraTill, hemligKopia }) {
+  const konto = kontoFor(fran);
+  if (!konto) throw new Error(`Avsändaren ${fran} finns inte i MAIL_ACCOUNTS.`);
+
+  const post = smtp(konto, 7000);
+  const brev = {
+    from: konto.namn ? `${konto.namn} <${konto.adress}>` : konto.adress,
+    to: till,
+    subject: amne,
+    text
+  };
+  if (html) brev.html = html;
+  if (svaraTill) brev.replyTo = svaraTill;
+  if (hemligKopia) brev.bcc = hemligKopia;
+
+  const kvitto = await post.sendMail(brev);
+  return { id: kvitto.messageId || '' };
+}
+
+module.exports = { konfigurerad, kontolista, kontoFor, avsandare, lista, las, skicka, skickaBrev, hittaMapp };

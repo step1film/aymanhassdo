@@ -175,10 +175,13 @@ adressen.
 Ordningen i listan är ordningen i väljaren, och den första brevlådan
 är den som öppnas när du går in på fliken.
 
-`shop@` och `collaboration@` är värda att ha med: butikens
-orderbekräftelser går ut från `shop@`, och formuläret *Samarbeta* på
-sajten landar i `collaboration@`. Har du dem här ser du svaren på
-samma ställe som allt annat i stället för att leta i flera program.
+`shop@` och `collaboration@` är värda att ha med av två skäl. Dels ser
+du svaren på samma ställe som allt annat: butikens orderbekräftelser går
+ut från `shop@`, och formuläret *Samarbeta* landar i `collaboration@`.
+Dels **driver den här variabeln utskicken**. Butikens orderbekräftelse
+och samarbetsformuläret skickas via one.com från `shop@` så länge ingen
+Resend-nyckel finns — ingen extra leverantör behövs. Se START-HAR.md,
+del 4.
 
 ⚠️ **Lösenorden här är brevlådornas riktiga lösenord** och ger full
 åtkomst till posten. De ligger hos Netlify, aldrig i repot, och lämnar

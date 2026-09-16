@@ -16,6 +16,15 @@
 const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const TILL = 'collaboration@step1film.se';
+
+/* EMAIL_FROM får skrivas som "STEP1FILM <shop@step1film.se>". SMTP-vägen
+   slår upp avsändaren i MAIL_ACCOUNTS och behöver den rena adressen. */
+function avsandaradress() {
+  const rad = String(process.env.EMAIL_FROM || '').trim();
+  const inom = rad.match(/<([^>]+)>/);
+  const adress = inom ? inom[1] : rad;
+  return adress.includes('@') ? adress.trim() : TILL;
+}
 const RESEND_API = 'https://api.resend.com/emails';
 
 /** Escapar text som ska in i HTML — allt här kommer utifrån. */
@@ -72,10 +81,6 @@ exports.handler = async (event) => {
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
-  if (!apiKey || !from) {
-    console.warn(`[collab] Ej konfigurerad — förfrågan från ${epost} kunde inte skickas.\n${namn}\n${länk}\n${pitch}`);
-    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'E-post är inte påslagen ännu.' }) };
-  }
 
   const text = [
     `Ny projektförfrågan från step1film.se`,
@@ -96,6 +101,30 @@ exports.handler = async (event) => {
   <hr style="border:0;border-top:1px solid #e6e3de">
   <p style="white-space:pre-wrap">${esc(pitch)}</p>
 </div>`;
+
+  /* Utan Resend går förfrågan via one.com i stället, från brevlådan i
+     MAIL_ACCOUNTS — samma väg som posten du skriver i admin. Först när
+     ingendera finns svarar funktionen 503, och då visar sidan
+     mejladressen så besökaren kan skriva direkt. */
+  if (!apiKey || !from) {
+    try {
+      const M = require('./_lib/mail');
+      if (M.konfigurerad()) {
+        await M.skickaBrev({
+          fran: M.avsandare(avsandaradress()),
+          till: TILL,
+          amne: `Projektförfrågan — ${namn}`,
+          text, html,
+          svaraTill: epost
+        });
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true }) };
+      }
+    } catch (err) {
+      console.warn(`[collab] SMTP misslyckades för ${epost}: ${String(err && err.message || err)}`);
+    }
+    console.warn(`[collab] Ej konfigurerad — förfrågan från ${epost} kunde inte skickas.\n${namn}\n${länk}\n${pitch}`);
+    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'E-post är inte påslagen ännu.' }) };
+  }
 
   try {
     const res = await fetch(RESEND_API, {
