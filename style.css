@@ -3574,6 +3574,19 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-bild--bred   { grid-column: 2 / 12; }
 .bop-bild--h-stor { grid-column: 4 / 13; }
 
+/* Sista bilden, under den breda i samma rad. Stapeln bredvid får
+   sträcka sig över båda raderna, annars hamnar den här bilden under
+   stapeln i stället för under bilden den hör ihop med.
+
+   Reglerna ligger bakom en min-width: annars skulle de vinna över
+   enspaltsläget längre ned — en :has()-väljare väger tyngre än
+   klassen där, och bilderna hade hållit fast vid sina rader även när
+   raderna inte finns kvar. */
+@media (min-width: 861px) {
+  .bop-bild--h-under { grid-column: 7 / 13; grid-row: 2; }
+  .bop-rad:has(> .bop-bild--h-under) .bop-stapel { grid-row: 1 / 3; }
+}
+
 /* Två små i en stapel vid sidan av en stor. En stapel om två blir
    ungefär lika hög som den stora bredvid, så raden slutar jämnt —
    en ensam liten bild hade lämnat skillnaden som tomrum. */
@@ -3673,7 +3686,10 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .bop-rad { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
   .bop-slut { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .bop-slut-sida { position: static; }
-  .bop-bild[class], .bop-stapel { grid-column: 1 / -1; margin-top: 0; }
+  /* grid-row nollställs också: i en spalt ska bilderna följa på
+     varandra i dokumentets ordning, inte hålla fast vid raderna de
+     hade bredvid varandra. */
+  .bop-bild[class], .bop-stapel { grid-column: 1 / -1; grid-row: auto; margin-top: 0; }
   /* Staplarna löses upp: i en enda spalt är de bara två bilder efter
      varandra, som alla andra. De små får vara lite smalare än de
      stora så att storleksskillnaden finns kvar. */
