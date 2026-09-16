@@ -201,11 +201,15 @@
       'f1Type', 'f1Syn', 'f2Type', 'f2Title', 'f2Syn', 'f3Type', 'f3Title', 'f3Syn',
       'labSign', 'f4Type', 'f4Title', 'f4Syn', 'f5Year', 'f5Type', 'f5Syn', 'storeAria',
       'ctaRead', 'readAria', 'ctaFilms', 'ctaShopping', 'closeTrailer']],
-    ['Panel 03 — Varför vi finns', ['p2Title', 'portraitCap', 'aboutP3', 'aboutStoryHead', 'aboutShort2',
+    ['Panel 03 — Varför vi finns', ['p2Title', 'portraitCap', 'aboutP3', 'aboutP4', 'aboutStoryHead', 'aboutShort2',
       'aboutQuote', 'aboutPitch', 'aboutMail',
       'reelHead', 'reelSoon', 'reelPrev', 'reelNext', 'reelList']],
-    ['Sidan Om STEP1FILM', ['omKicker', 'omTitle', 'omWhy', 'aboutShort1',
-      'aboutP1', 'aboutP2', 'aboutP4', 'aboutP5']],
+    /* Biografin i full längd. Den hade en egen sida, /om-step1/, som är
+       borttagen — styckena visas alltså ingenstans just nu. De ligger
+       kvar därför att de är originaltexten, och för att en sida eller
+       en panel kan vilja ha dem igen. aboutP4 står däremot kvar på
+       panel 03 och redigeras där. */
+    ['Biografin i full längd (visas inte)', ['aboutP1', 'aboutP2', 'aboutP5']],
     ['Sidan Birds of Passage', ['bopBack', 'bopKicker', 'bopUnder',
       'bopFStatus', 'bopVStatus', 'bopFYear', 'bopFFormat', 'bopVFormat',
       'bopFRuntime', 'bopFRatio', 'bopFAudience', 'bopVAudience', 'bopFCoprod',

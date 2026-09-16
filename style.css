@@ -3768,17 +3768,3 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .sida-bilder img:nth-child(n) { grid-column: 1 / -1; }
 }
 
-/* --- Om STEP1FILM: porträttet överst --- */
-.om-portratt { max-width: 30rem; }
-.om-bild {
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--line);
-}
-.om-bildtext {
-  margin-top: 0.6rem;
-  font-size: var(--fs-micro);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
