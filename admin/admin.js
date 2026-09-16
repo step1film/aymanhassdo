@@ -139,6 +139,7 @@
     ritaVideo();
     ritaProdukter();
     ritaBilder();
+    mejlIgang();
     rop('Klart. Allt du sparar går ut på step1film.se.');
   }
 
@@ -878,6 +879,285 @@
     } catch (e) {
       status.textContent = e.message;
       status.className = 'bildrad-status fel';
+    }
+  }
+
+  /* =====================================================
+     MEJL
+     =====================================================
+     Inkorgen läses ur brevlådan hos one.com vid varje anrop.
+     Ingenting sparas här och ingenting cachas — post är
+     personlig, och den ska inte ligga kvar i en flik som
+     någon glömt öppen.
+
+     Fliken finns bara om servern säger att MAIL_ACCOUNTS är
+     satt. Är den inte det visas ingen flik alls, i stället för
+     en som bara kan säga att den inte fungerar.
+  ===================================================== */
+  const MEJL = { konto: '', brev: [], valt: null, laddar: false };
+
+  const mejlLista  = () => $('#mejlLista');
+  const mejlYta    = () => $('#mejlYta');
+  const mejlFlik   = () => $('.flik[data-flik="mejl"]');
+
+  function tomt(text) {
+    const d = el('div', 'mejl-tom', text);
+    return d;
+  }
+
+  /* Datum som i ett mejlprogram: klockslag i dag, veckodag den här
+     veckan, datum därefter. Ett fullt datum på varje rad säger
+     mindre än man tror. */
+  function narDa(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    const nu = new Date();
+    const samma = d.toDateString() === nu.toDateString();
+    if (samma) return d.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+    const dagar = (nu - d) / 86400000;
+    if (dagar < 7) return d.toLocaleDateString('sv-SE', { weekday: 'short' });
+    return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+  }
+
+  /* Brevets HTML kommer utifrån och är därför fientlig tills
+     motsatsen bevisats. Den tvättas i ett löst dokument som aldrig
+     kopplas till sidan: skript, stilar, ramar, formulär och
+     händelseattribut plockas bort, och kvar blir texten med sin
+     formatering. Länkar öppnas i ny flik och utan referrer.
+
+     Att visa brevet i en sandlådad iframe vore ännu strängare, men
+     då måste höjden mätas och skickas tillbaka, och en iframe utan
+     same-origin kan inte mäta sig själv. Det här räcker för en
+     inkorg som bara du är inloggad i. */
+  function renaHtml(html) {
+    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+    doc.querySelectorAll('script, style, iframe, object, embed, form, input, button, link, meta, base').forEach(n => n.remove());
+    doc.querySelectorAll('*').forEach(n => {
+      [...n.attributes].forEach(a => {
+        const namn = a.name.toLowerCase();
+        const varde = String(a.value || '').trim().toLowerCase();
+        if (namn.startsWith('on')) n.removeAttribute(a.name);
+        else if ((namn === 'href' || namn === 'src') && (varde.startsWith('javascript:') || varde.startsWith('data:text/html'))) {
+          n.removeAttribute(a.name);
+        }
+      });
+      if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+    });
+    return doc.body.innerHTML;
+  }
+
+  async function mejlHamta() {
+    if (MEJL.laddar) return;
+    MEJL.laddar = true;
+    const lista = mejlLista();
+    lista.textContent = '';
+    lista.appendChild(tomt('Hämtar …'));
+    try {
+      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto));
+      MEJL.brev = d.brev || [];
+      mejlRitaLista();
+    } catch (e) {
+      lista.textContent = '';
+      lista.appendChild(tomt(e.message));
+    } finally {
+      MEJL.laddar = false;
+    }
+  }
+
+  function mejlRitaLista() {
+    const lista = mejlLista();
+    lista.textContent = '';
+    if (!MEJL.brev.length) { lista.appendChild(tomt('Inga brev i inkorgen.')); return; }
+
+    MEJL.brev.forEach(b => {
+      const rad = el('button', 'brevrad');
+      rad.type = 'button';
+      rad.setAttribute('role', 'listitem');
+      if (!b.last) rad.classList.add('oläst');
+      if (MEJL.valt === b.uid) rad.classList.add('vald');
+
+      const topp = el('div', 'brevrad-topp');
+      topp.appendChild(el('span', 'brevrad-fran', b.franNamn || b.franAdress || '(okänd avsändare)'));
+      topp.appendChild(el('span', 'brevrad-datum', narDa(b.datum)));
+      rad.appendChild(topp);
+
+      const amne = el('span', 'brevrad-amne', b.amne);
+      if (b.bilagor) amne.appendChild(el('span', 'brevrad-gem', '  · bilaga'));
+      rad.appendChild(amne);
+
+      rad.onclick = () => mejlOppna(b.uid);
+      lista.appendChild(rad);
+    });
+  }
+
+  async function mejlOppna(uid) {
+    MEJL.valt = uid;
+    mejlRitaLista();
+    const yta = mejlYta();
+    yta.textContent = '';
+    yta.appendChild(tomt('Hämtar brevet …'));
+    try {
+      const b = await be('/mail-read?konto=' + encodeURIComponent(MEJL.konto) + '&uid=' + encodeURIComponent(uid));
+      mejlRitaBrev(b);
+      /* Raden är läst nu — markera den utan att hämta om listan. */
+      const post = MEJL.brev.find(x => x.uid === uid);
+      if (post && !post.last) { post.last = true; mejlRitaLista(); }
+    } catch (e) {
+      yta.textContent = '';
+      yta.appendChild(tomt(e.message));
+    }
+  }
+
+  function mejlRitaBrev(b) {
+    const yta = mejlYta();
+    yta.textContent = '';
+
+    const huvud = el('div', 'brev-huvud');
+    huvud.appendChild(el('h3', 'brev-amne', b.amne));
+
+    const fran = (b.fran && b.fran[0]) || {};
+    const r1 = el('div', 'brev-rad');
+    r1.appendChild(el('strong', '', fran.namn || fran.adress || '(okänd)'));
+    if (fran.namn && fran.adress) r1.appendChild(document.createTextNode('  ' + fran.adress));
+    huvud.appendChild(r1);
+
+    const till = (b.till || []).map(t => t.adress).filter(Boolean).join(', ');
+    if (till) huvud.appendChild(el('div', 'brev-rad', 'till ' + till));
+    if (b.datum) {
+      huvud.appendChild(el('div', 'brev-rad',
+        new Date(b.datum).toLocaleString('sv-SE', { dateStyle: 'full', timeStyle: 'short' })));
+    }
+
+    const verktyg = el('div', 'brev-verktyg');
+    const svara = el('button', 'knapp knapp--primar', 'Svara');
+    svara.type = 'button';
+    svara.onclick = () => mejlSkrivruta({
+      till: fran.adress || '',
+      amne: /^sv:/i.test(b.amne) ? b.amne : 'Sv: ' + b.amne,
+      svarPa: b.messageId || '',
+      citat: b.text || ''
+    });
+    verktyg.appendChild(svara);
+    huvud.appendChild(verktyg);
+    yta.appendChild(huvud);
+
+    const kropp = el('div', 'brev-kropp');
+    if (b.html) kropp.innerHTML = renaHtml(b.html);
+    else kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
+    yta.appendChild(kropp);
+
+    if (b.bilagor && b.bilagor.length) {
+      const box = el('div', 'brev-bilagor');
+      box.appendChild(el('span', '', b.bilagor.length + ' bilaga' + (b.bilagor.length > 1 ? 'or' : '') + ':'));
+      b.bilagor.forEach(f => box.appendChild(el('span', '', '· ' + f.namn + '  (' + Math.round(f.storlek / 1024) + ' kB)')));
+      /* Bilagorna listas men laddas inte ned. Att skicka en fil genom
+         en serverlös funktion innebär att hela filen ska rymmas i ett
+         svar, och gränsen är sex megabyte — en vanlig bildbilaga
+         spränger den. Öppna sådana i mejlprogrammet. */
+      box.appendChild(el('span', '', 'Bilagor öppnas i ditt vanliga mejlprogram.'));
+      yta.appendChild(box);
+    }
+  }
+
+  function mejlSkrivruta(forifyllt = {}) {
+    const yta = mejlYta();
+    yta.textContent = '';
+    const box = el('div', 'skriv');
+
+    const falt = (etikett, id, varde, typ) => {
+      const w = el('div');
+      const l = el('label', '', etikett); l.htmlFor = id; w.appendChild(l);
+      const i = typ === 'text' ? el('textarea') : el('input');
+      i.id = id;
+      if (typ !== 'text') i.type = 'text';
+      i.value = varde || '';
+      w.appendChild(i);
+      box.appendChild(w);
+      return i;
+    };
+
+    const till = falt('Till', 'mTill', forifyllt.till);
+    const amne = falt('Ämne', 'mAmne', forifyllt.amne);
+    /* Citatet under svaret, som i vilket mejlprogram som helst —
+       så mottagaren ser vad svaret gäller. */
+    const citat = forifyllt.citat
+      ? '\n\n\n--\n' + String(forifyllt.citat).split('\n').map(r => '> ' + r).join('\n')
+      : '';
+    const text = falt('Meddelande', 'mText', citat, 'text');
+
+    const fot = el('div', 'skriv-fot');
+    const skicka = el('button', 'knapp knapp--primar', 'Skicka');
+    skicka.type = 'button';
+    const avbryt = el('button', 'knapp', 'Avbryt');
+    avbryt.type = 'button';
+    const status = el('span', 'skriv-status', 'Skickas från ' + MEJL.konto);
+    fot.appendChild(skicka); fot.appendChild(avbryt); fot.appendChild(status);
+    box.appendChild(fot);
+    yta.appendChild(box);
+
+    till.focus();
+    if (forifyllt.till) text.focus();
+
+    avbryt.onclick = () => {
+      yta.textContent = '';
+      yta.appendChild(tomt('Välj ett brev i listan.'));
+    };
+
+    skicka.onclick = async () => {
+      skicka.disabled = true;
+      status.className = 'skriv-status';
+      status.textContent = 'Skickar …';
+      try {
+        const svar = await be('/mail-send', {
+          method: 'POST',
+          body: JSON.stringify({
+            konto: MEJL.konto,
+            till: till.value,
+            amne: amne.value,
+            text: text.value,
+            svarPa: forifyllt.svarPa || ''
+          })
+        });
+        rop(svar.iSkickat
+          ? 'Skickat. Kopian ligger i Skickat.'
+          : 'Skickat. Kopian kom inte in i Skickat — brevet är ändå ute.');
+        yta.textContent = '';
+        yta.appendChild(tomt('Skickat.'));
+      } catch (e) {
+        status.className = 'skriv-status fel';
+        status.textContent = e.message;
+        skicka.disabled = false;
+      }
+    };
+  }
+
+  /* Startas från start(). Svarar servern att fliken inte är igång
+     händer ingenting alls — knappen förblir gömd. */
+  async function mejlIgang() {
+    try {
+      const d = await be('/mail-list');
+      const konton = d.konton || [];
+      if (!konton.length) return;
+
+      const val = $('#mejlKonto');
+      val.textContent = '';
+      konton.forEach(k => {
+        const o = el('option', '', k.namn ? k.namn + '  ' + k.adress : k.adress);
+        o.value = k.adress;
+        val.appendChild(o);
+      });
+      MEJL.konto = konton[0].adress;
+      mejlFlik().hidden = false;
+
+      val.onchange = () => { MEJL.konto = val.value; MEJL.valt = null; mejlYta().textContent = ''; mejlHamta(); };
+      $('#mejlUppdatera').onclick = () => mejlHamta();
+      $('#mejlNytt').onclick = () => mejlSkrivruta();
+
+      mejlYta().appendChild(tomt('Välj ett brev i listan.'));
+      mejlHamta();
+    } catch {
+      /* 503 = MAIL_ACCOUNTS saknas. Fliken ska då inte finnas. */
     }
   }
 

@@ -48,6 +48,9 @@
       <button class="flik"        data-flik="video"     role="tab" type="button">Video</button>
       <button class="flik"        data-flik="produkter" role="tab" type="button">Produkter</button>
       <button class="flik"        data-flik="bilder"    role="tab" type="button">Bilder</button>
+      <!-- Mejlfliken göms tills servern svarat att MAIL_ACCOUNTS finns.
+           En flik som bara kan säga "inte igångsatt" är ingen flik. -->
+      <button class="flik"        data-flik="mejl"      role="tab" type="button" hidden>Mejl</button>
     </nav>
     <div class="topp-hoger">
       <span class="sparstatus" id="sparStatus" role="status" aria-live="polite"></span>
@@ -131,6 +134,28 @@
         </div>
       </div>
       <div id="bildYta"></div>
+    </section>
+
+    <!-- ---------- MEJL ---------- -->
+    <section class="del" data-del="mejl">
+      <div class="del-topp">
+        <div>
+          <h2>Mejl</h2>
+          <p class="hjalp">Posten läses direkt ur brevlådan hos one.com — ingenting sparas här.
+             Det du skickar hamnar också i Skickat, så det syns i telefonen som vanligt.</p>
+        </div>
+        <div class="del-verktyg">
+          <select class="sok" id="mejlKonto" aria-label="Välj brevlåda"></select>
+          <button class="knapp" type="button" id="mejlUppdatera">Uppdatera</button>
+          <button class="knapp knapp--primar" type="button" id="mejlNytt">Nytt mejl</button>
+        </div>
+      </div>
+
+      <div class="mejl">
+        <!-- Vänster: rubrikerna. Höger: brevet eller skrivrutan. -->
+        <div class="mejl-lista" id="mejlLista" role="list" aria-label="Brev i inkorgen"></div>
+        <div class="mejl-yta" id="mejlYta"></div>
+      </div>
     </section>
 
   </main>
