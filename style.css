@@ -290,6 +290,68 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .logo-text span { color: var(--accent); }
 
+/* =====================================================
+   ORDMÄRKET SOM LEKER — klick på loggan
+   =====================================================
+   Rullen snurrar ett varv och bokstäverna studsar upp en och en,
+   som när en filmrulle drar i gång och bilden hittar sitt läge.
+
+   Varje bokstav är ett eget element i HTML:en. De ligger som <em>
+   utom ettan, som är ett <span> — det är regeln ovanför som gör den
+   röd, och den ska den fortsätta vara. Elementen finns även när
+   ingenting händer; de ritas likadant som ren text, och kostar
+   ingenting förrän klassen 'rullar' sätts.
+
+   Bara transform och opacity rör sig. Båda går på kompositorn, så
+   leken kostar inget layoutarbete — resten av sidan räknas inte om
+   medan den pågår. */
+.logo-text .lm-l {
+  display: inline-block;
+  font-style: normal;   /* <em> ska inte kursivera märket */
+  will-change: transform;
+}
+
+@keyframes logo-rulle {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+/* Studsen: upp, ett litet översläng nedåt, och tillbaka. Kurvan gör
+   resten — den skjuter över målet på vägen upp. */
+@keyframes logo-studs {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-0.44em) scale(1.16); }
+  62%  { transform: translateY(0.07em) scale(0.95); }
+  82%  { transform: translateY(-0.04em) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.logo-text.rullar .logo-reel {
+  animation: logo-rulle 880ms cubic-bezier(0.22, 0.9, 0.2, 1);
+}
+.logo-text.rullar .lm-l {
+  animation: logo-studs 560ms cubic-bezier(0.24, 1.5, 0.32, 1) both;
+}
+/* Bokstäverna går i gång efter varandra, inte samtidigt. Rullen är
+   barn nummer ett, så bokstäverna är två till tio. Fördröjningen står
+   här i stället för i en inline-stil per bokstav — samma sak för
+   webbläsaren, en sak mindre i HTML:en. */
+.logo-text.rullar .lm-l:nth-child(2)  { animation-delay:  90ms; }
+.logo-text.rullar .lm-l:nth-child(3)  { animation-delay: 128ms; }
+.logo-text.rullar .lm-l:nth-child(4)  { animation-delay: 166ms; }
+.logo-text.rullar .lm-l:nth-child(5)  { animation-delay: 204ms; }
+.logo-text.rullar .lm-l:nth-child(6)  { animation-delay: 242ms; }
+.logo-text.rullar .lm-l:nth-child(7)  { animation-delay: 280ms; }
+.logo-text.rullar .lm-l:nth-child(8)  { animation-delay: 318ms; }
+.logo-text.rullar .lm-l:nth-child(9)  { animation-delay: 356ms; }
+.logo-text.rullar .lm-l:nth-child(10) { animation-delay: 394ms; }
+
+/* Den som bett om lugn rörelse får ingen lek. Skriptet hoppar över
+   den också, men regeln står kvar som ett andra lås. */
+@media (prefers-reduced-motion: reduce) {
+  .logo-text.rullar .logo-reel,
+  .logo-text.rullar .lm-l { animation: none; }
+}
+
 /* Filmrullen som märke. Samma fil som markören använder: PNG:en är
    svart på genomskinlig botten, så den läggs som mask över en färgad
    yta i stället för att ritas som bild — annars hade den varit svart
@@ -1526,15 +1588,6 @@ body.reduced-motion .fm-lager:nth-child(2) { display: none; }
   flex: 0 0 auto;
 }
 
-/* Länken vidare till hela berättelsen ligger i texten, inte som en
-   knapp under den. Den ärver brödtextens grad och får bara färgen och
-   ett streck under — den ska läsas som en del av meningen. */
-.about-scroll a {
-  color: var(--accent);
-  border-bottom: 1px solid color-mix(in oklab, var(--accent) 45%, transparent);
-  transition: border-color 0.25s, color 0.25s;
-}
-.about-scroll a:hover { border-bottom-color: var(--accent); color: var(--white); }
 
 /* --- Klippspelaren: först i mediaraden under texten --- */
 .about-reel {
