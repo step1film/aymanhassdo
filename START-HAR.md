@@ -132,6 +132,23 @@ villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
 
 ---
 
+## Kassan är öppen igen (2026-09-16)
+
+`kassaStangd` i `shop.js` står på `false`. Netlify är uppgraderat,
+deployerna publiceras, och priserna kontrollerades rad för rad: alla 16
+produkter, alla storlekspriser och frakten är identiska i `shop.js` och
+`functions/_lib/catalog.js`.
+
+**Butiken går att handla i — men servern kör fortfarande på Stripes
+testnyckel.** Kassan säger det rakt ut i en röd ruta, och riktiga kort
+avvisas av Stripe. Stegen nedan är det som gör den skarp på riktigt.
+
+Swish är av, och behövde inget handgrepp: `payment-methods` ser att
+certifikatet saknas och kassan visar bara kort. Den dagen certifikatet
+läggs in tänds Swish av sig själv.
+
+---
+
 ## Del 5 · Skarpt läge
 
 Gör bara detta när ett helt testköp gått igenom felfritt.
