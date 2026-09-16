@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
   <link rel="stylesheet" href="../assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin.css?v=2026-09-16" />
 </head>
 <body>
 
@@ -164,6 +164,10 @@
 <!-- Meddelanderuta -->
 <div id="rop" role="status" aria-live="polite" hidden></div>
 
-<script src="admin.js" defer></script>
+<!-- ?v= tvingar fram en ny hämtning när filerna ändrats. GitHub Pages
+     låter webbläsaren spara dem i tio minuter, och utan den här stämpeln
+     kan man sitta med en gammal adminsida långt efter en deploy.
+     Räkna upp datumet när admin.js eller admin.css ändras. -->
+<script src="admin.js?v=2026-09-16" defer></script>
 </body>
 </html>

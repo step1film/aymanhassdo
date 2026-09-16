@@ -1156,8 +1156,13 @@
 
       mejlYta().appendChild(tomt('Välj ett brev i listan.'));
       mejlHamta();
-    } catch {
-      /* 503 = MAIL_ACCOUNTS saknas. Fliken ska då inte finnas. */
+    } catch (e) {
+      /* Fliken ska gömmas när mejl inte är igångsatt — det är det
+         normala läget, inte ett fel. Men tyst ska det inte vara:
+         utan ett spår går det inte att skilja "avstängd" från
+         "funktionen är inte deployad" när man står och undrar var
+         fliken tog vägen. Raden syns i webbläsarens konsol. */
+      console.warn('[mejl] Fliken göms:', e && e.message);
     }
   }
 
