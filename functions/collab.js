@@ -74,9 +74,21 @@ exports.handler = async (event) => {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)) {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Ogiltig e-postadress.' }) };
   }
-  // Bara http(s) i länkfältet — inga javascript:-adresser i mejlet
-  if (länk && !/^https?:\/\//i.test(länk)) {
-    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Länken måste börja med http:// eller https://' }) };
+  /* Länkfältet. Ingen skriver "https://" när de fyller i en webbadress
+     för hand — de skriver step1film.se. Att avvisa det är att be
+     besökaren rätta sig efter en regel som finns för vår skull, inte
+     deras, så vi lägger till protokollet själva.
+
+     Det som fortfarande stoppas är adresser med ett ANNAT protokoll:
+     javascript:, data: och liknande har inget i ett mejl att göra. */
+  if (länk) {
+    if (/^https?:\/\//i.test(länk)) {
+      /* redan komplett */
+    } else if (/^[a-z][a-z0-9+.-]*:/i.test(länk)) {
+      return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Länken måste vara en webbadress.' }) };
+    } else {
+      länk = 'https://' + länk;
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY;

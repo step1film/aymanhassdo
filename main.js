@@ -1202,6 +1202,17 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(d)
         });
+        /* Servern kan säga exakt vad som är fel i formuläret — en
+           adress som ser konstig ut, ett fält som är för långt. Den
+           förklaringen är värd mer än ett allmänt "det gick inte", och
+           den ska inte följas av en mejladress: det är inget fel på
+           servern, det är fältet ovanför som behöver rättas. */
+        if (r.status === 400) {
+          let sagt = '';
+          try { sagt = (await r.json()).error || ''; } catch { /* inget svar att läsa */ }
+          säg(sagt || t('cfMissing', 'Fyll i namn, e-post och din idé.'), 'fel');
+          return;
+        }
         if (!r.ok) throw new Error(String(r.status));
         form.reset();
         säg(t('cfOk', 'Tack! Mejlet är skickat — du hör från oss.'), 'ok');
