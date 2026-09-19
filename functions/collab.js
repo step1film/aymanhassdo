@@ -16,6 +16,15 @@
 const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const TILL = 'collaboration@step1film.se';
+
+/* EMAIL_FROM får skrivas som "STEP1FILM <shop@step1film.se>". SMTP-vägen
+   slår upp avsändaren i MAIL_ACCOUNTS och behöver den rena adressen. */
+function avsandaradress() {
+  const rad = String(process.env.EMAIL_FROM || '').trim();
+  const inom = rad.match(/<([^>]+)>/);
+  const adress = inom ? inom[1] : rad;
+  return adress.includes('@') ? adress.trim() : TILL;
+}
 const RESEND_API = 'https://api.resend.com/emails';
 
 /** Escapar text som ska in i HTML — allt här kommer utifrån. */
@@ -65,17 +74,25 @@ exports.handler = async (event) => {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)) {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Ogiltig e-postadress.' }) };
   }
-  // Bara http(s) i länkfältet — inga javascript:-adresser i mejlet
-  if (länk && !/^https?:\/\//i.test(länk)) {
-    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Länken måste börja med http:// eller https://' }) };
+  /* Länkfältet. Ingen skriver "https://" när de fyller i en webbadress
+     för hand — de skriver step1film.se. Att avvisa det är att be
+     besökaren rätta sig efter en regel som finns för vår skull, inte
+     deras, så vi lägger till protokollet själva.
+
+     Det som fortfarande stoppas är adresser med ett ANNAT protokoll:
+     javascript:, data: och liknande har inget i ett mejl att göra. */
+  if (länk) {
+    if (/^https?:\/\//i.test(länk)) {
+      /* redan komplett */
+    } else if (/^[a-z][a-z0-9+.-]*:/i.test(länk)) {
+      return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Länken måste vara en webbadress.' }) };
+    } else {
+      länk = 'https://' + länk;
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
-  if (!apiKey || !from) {
-    console.warn(`[collab] Ej konfigurerad — förfrågan från ${epost} kunde inte skickas.\n${namn}\n${länk}\n${pitch}`);
-    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'E-post är inte påslagen ännu.' }) };
-  }
 
   const text = [
     `Ny projektförfrågan från step1film.se`,
@@ -96,6 +113,30 @@ exports.handler = async (event) => {
   <hr style="border:0;border-top:1px solid #e6e3de">
   <p style="white-space:pre-wrap">${esc(pitch)}</p>
 </div>`;
+
+  /* Utan Resend går förfrågan via one.com i stället, från brevlådan i
+     MAIL_ACCOUNTS — samma väg som posten du skriver i admin. Först när
+     ingendera finns svarar funktionen 503, och då visar sidan
+     mejladressen så besökaren kan skriva direkt. */
+  if (!apiKey || !from) {
+    try {
+      const M = require('./_lib/mail');
+      if (M.konfigurerad()) {
+        await M.skickaBrev({
+          fran: M.avsandare(avsandaradress()),
+          till: TILL,
+          amne: `Projektförfrågan — ${namn}`,
+          text, html,
+          svaraTill: epost
+        });
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ ok: true }) };
+      }
+    } catch (err) {
+      console.warn(`[collab] SMTP misslyckades för ${epost}: ${String(err && err.message || err)}`);
+    }
+    console.warn(`[collab] Ej konfigurerad — förfrågan från ${epost} kunde inte skickas.\n${namn}\n${länk}\n${pitch}`);
+    return { statusCode: 503, headers: cors, body: JSON.stringify({ error: 'E-post är inte påslagen ännu.' }) };
+  }
 
   try {
     const res = await fetch(RESEND_API, {

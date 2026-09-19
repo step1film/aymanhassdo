@@ -25,9 +25,9 @@
                          2.00 univisium   · 1.78 vanlig 16:9
 
    STEP1FILM_EMBEDS      Trailern på panel 02 (film-001). Tom id-sträng
-                         ger texten "Trailer kommer" i stället.
+                         lämnar rutan tom — ingen platshållartext.
 
-   STEP1FILM_REEL        Klippspelaren på panel 01. Varje klipp spelar
+   STEP1FILM_REEL        Klippspelaren på panel 03. Varje klipp spelar
                          30 sekunder och lämnar sedan över till nästa.
                          Längden sitter i SEKUNDER i main.js.
 
@@ -67,8 +67,16 @@
    STEP1FILM_POSTERS     Affischerna på panel 02. De tonar in och ut, var
                          och en på sin plats: en i mitten, två delar
                          rutan, tre står vänster/mitten/höger. Fler än
-                         tre går men börjar trängas. Tom lista ger
-                         "Bilder kommer".
+                         tre går men börjar trängas. Tom lista ger en
+                         tom ruta — ingen platshållartext.
+
+                         Birds of Passage stillbilder ligger INTE här.
+                         De står direkt i Birdsofpassage/index.html, en
+                         och en: varje bild har sin egen bredd, spalt och
+                         höjd i layouten, och en sådan placering går inte
+                         att räkna fram ur en lista. Filerna finns i
+                         Birdsofpassage/stills/ som 1800×900 webp,
+                         omskalade från originalen i mappen ovanför.
 
    Fält som finns i två språk skrivs { sv: '…', en: '…' }. Ett fält som
    är samma på båda språken får stå som en vanlig sträng.
@@ -155,89 +163,90 @@ window.STEP1FILM_CLIENTS = [
 ];
 
 window.STEP1FILM_FILMOGRAPHY = [
-    {
-      "year": "2027–2028",
-      "title": "JAG SOM HAR TVÅ MAMMOR",
-      "subtitle": "I Have Two Mothers",
-      "format": {
-        "sv": "Dokumentär",
-        "en": "Documentary"
-      },
-      "status": {
-        "sv": "Under utveckling",
-        "en": "In development"
-      },
-      "note": {
-        "sv": "Under research och utveckling. Samproduktion med Northern Shadows Films.",
-        "en": "In research and development. Co-production with Northern Shadows Films."
-      }
+  {
+    "year": "2027–2028",
+    "title": "JAG SOM HAR TVÅ MAMMOR",
+    "subtitle": "I Have Two Mothers",
+    "format": {
+      "sv": "Dokumentär",
+      "en": "Documentary"
     },
-    {
-      "year": "2026–2027",
-      "title": "BIRDS OF PASSAGE",
-      "format": {
-        "sv": "Långfilmsdokumentär",
-        "en": "Feature-length documentary"
-      },
-      "status": {
-        "sv": "Pågående",
-        "en": "In progress"
-      },
-      "note": {
-        "sv": "Samproduktion: Story AB",
-        "en": "Co-production: Story AB"
-      }
+    "status": {
+      "sv": "Under utveckling",
+      "en": "In development"
     },
-    {
-      "year": "2022–2023",
-      "title": "OTYG",
-      "format": {
-        "sv": "Kortfilm",
-        "en": "Short film"
-      },
-      "runtime": "09 min",
-      "note": {
-        "sv": "Pitchad på Värnamo Filmhistoriska Festival och visad på två filmfestivaler online. Manus till en långfilm är under utveckling.",
-        "en": "Pitched at the Värnamo Film History Festival and shown at two online film festivals. A feature-length script is in development."
-      }
-    },
-    {
-      "year": "2021–2022",
-      "title": "TOGETHER WE CREATE HARMONY",
-      "format": {
-        "sv": "Musik och kort 3D-film",
-        "en": "Music and a short 3D film"
-      },
-      "runtime": "04 min",
-      "note": {
-        "sv": "Allt började med en fråga: kan olika noter mötas och skapa harmoni? Vi lät en orientalisk sång i bayati-skalan möta en svensk. De harmonierade vackert.",
-        "en": "It started with one question: can different notes meet and create harmony? We let an oriental song in the bayati scale meet a Swedish one. They harmonised beautifully."
-      }
-    },
-    {
-      "year": "2020–2021",
-      "title": "THE MIND’S EYE",
-      "format": {
-        "sv": "Kortfilm · drama",
-        "en": "Short film · drama"
-      },
-      "runtime": "05 min",
-      "note": {
-        "sv": "Official selection — CortoDino Film Festival, X Edizione, Neapel, 23 november 2020. Semifinal — Festival del Cinema di Cefalù, Palermo, 23 november 2020.",
-        "en": "Official selection — CortoDino Film Festival, X Edizione, Naples, 23 November 2020. Semi-final — Festival del Cinema di Cefalù, Palermo, 23 November 2020."
-      }
-    },
-    {
-      "year": "2015–2016",
-      "title": "NYA ORD",
-      "subtitle": "New Words",
-      "format": {
-        "sv": "Dokumentär · pedagogik, komedi, musik, resa",
-        "en": "Documentary · educational, comedy, music, travel"
-      },
-      "runtime": "48 min"
+    "note": {
+      "sv": "Under research och utveckling. Samproduktion med Northern Shadows Films.",
+      "en": "In research and development. Co-production with Northern Shadows Films."
     }
-  ];
+  },
+  {
+    "year": "2026–2027",
+    "title": "BIRDS OF PASSAGE",
+    "format": {
+      "sv": "Långfilmsdokumentär",
+      "en": "Feature-length documentary"
+    },
+    "status": {
+      "sv": "Pågående",
+      "en": "In progress"
+    },
+    "note": {
+      "sv": "Samproduktion: Story AB",
+      "en": "Co-production: Story AB"
+    },
+    "runtime": "80 min"
+  },
+  {
+    "year": "2022–2023",
+    "title": "OTYG",
+    "format": {
+      "sv": "Kortfilm",
+      "en": "Short film"
+    },
+    "runtime": "09 min",
+    "note": {
+      "sv": "Pitchad på Värnamo Filmhistoriska Festival och visad på två filmfestivaler online. Manus till en långfilm är under utveckling.",
+      "en": "Pitched at the Värnamo Film History Festival and shown at two online film festivals. A feature-length script is in development."
+    }
+  },
+  {
+    "year": "2021–2022",
+    "title": "TOGETHER WE CREATE HARMONY",
+    "format": {
+      "sv": "Musik och kort 3D-film",
+      "en": "Music and a short 3D film"
+    },
+    "runtime": "04 min",
+    "note": {
+      "sv": "Allt började med en fråga: kan olika noter mötas och skapa harmoni? Vi lät en orientalisk sång i bayati-skalan möta en svensk. De harmonierade vackert.",
+      "en": "It started with one question: can different notes meet and create harmony? We let an oriental song in the bayati scale meet a Swedish one. They harmonised beautifully."
+    }
+  },
+  {
+    "year": "2020–2021",
+    "title": "THE MIND’S EYE",
+    "format": {
+      "sv": "Kortfilm · drama",
+      "en": "Short film · drama"
+    },
+    "runtime": "05 min",
+    "note": {
+      "sv": "Official selection — CortoDino Film Festival, X Edizione, Neapel, 23 november 2020. Semifinal — Festival del Cinema di Cefalù, Palermo, 23 november 2020.",
+      "en": "Official selection — CortoDino Film Festival, X Edizione, Naples, 23 November 2020. Semi-final — Festival del Cinema di Cefalù, Palermo, 23 November 2020."
+    }
+  },
+  {
+    "year": "2015–2016",
+    "title": "NYA ORD",
+    "subtitle": "New Words",
+    "format": {
+      "sv": "Dokumentär · pedagogik, komedi, musik, resa",
+      "en": "Documentary · educational, comedy, music, travel"
+    },
+    "runtime": "48 min"
+  }
+];
 
 window.STEP1FILM_SELECTED = [
   {

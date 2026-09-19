@@ -85,8 +85,22 @@
 
        Bygget hoppas numera över när bara sajten ändrats, se
        netlify.toml — det var ett dussin onödiga produktionsbyggen om
-       dagen som tömde potten på två dygn. */
-    kassaStangd: true
+       dagen som tömde potten på två dygn.
+
+       ÖPPNAD IGEN (2026-09-16):
+       Netlify är uppgraderat och deployerna går igenom — översta
+       raden på Deploys säger Published med ett färskt commit-id.
+       Priskontrollen gjordes om från grunden: alla 16 produkter,
+       priser och storlekspriser jämfördes rad för rad mellan
+       PRODUCTS här i filen och functions/_lib/catalog.js, och de är
+       identiska. Frakten stämmer också, 79 kr och fri över 1200 på
+       båda ställena.
+
+       Swish är fortfarande av, men inte genom den här flaggan —
+       payment-methods ser att certifikatet saknas och kassan visar
+       bara kort. Swish tänds av sig själv den dag certifikatet
+       ligger på servern. */
+    kassaStangd: false
   };
 
   window.S1F_CONFIG = CONFIG;
@@ -1217,6 +1231,7 @@
       payCard: 'Kort / Klarna', payCardDesc: 'Betala säkert via Stripe',
       paySwish: 'Swish', paySwishDesc: 'Betala med Swish-appen',
       payNow: 'Betala', paying: 'Öppnar betalning…',
+      payTestNote: 'Testläge — butiken tar inte emot riktiga betalningar än. Riktiga kort avvisas.',
       swishWaiting: 'Öppna Swish-appen och godkänn betalningen…',
       swishOpenApp: 'Öppna Swish',
       swishScan: 'Skanna QR-koden med Swish-appen',
@@ -1269,6 +1284,7 @@
       payCard: 'Card / Klarna', payCardDesc: 'Pay securely via Stripe',
       paySwish: 'Swish', paySwishDesc: 'Pay with the Swish app',
       payNow: 'Pay', paying: 'Opening payment…',
+      payTestNote: 'Test mode — the store is not taking real payments yet. Real cards will be declined.',
       swishWaiting: 'Open the Swish app and approve the payment…',
       swishOpenApp: 'Open Swish',
       swishScan: 'Scan the QR code with the Swish app',
@@ -1989,6 +2005,22 @@
       const first = wrap.querySelector('.pay-option:not([style*="none"]) input');
       if (first) first.checked = true;
     }
+    /* Testläge: servern kör på en testnyckel och tar inga riktiga
+       pengar. Rutan är avsiktligt omöjlig att missa — en butik som
+       ser färdig ut men avvisar varje kort är värre än en stängd. */
+    const test = (payOn('card') && payAvail.cardTest) || (payOn('swish') && payAvail.swishTest);
+    let ruta = document.getElementById('payTestNote');
+    if (test && !ruta) {
+      ruta = document.createElement('p');
+      ruta.id = 'payTestNote';
+      ruta.className = 'pay-test';
+      wrap.insertBefore(ruta, wrap.firstChild);
+    }
+    if (ruta) {
+      ruta.textContent = t('payTestNote');
+      ruta.style.display = test ? '' : 'none';
+    }
+
     // Är kassan stängd står det redan "Beställning pausad" på knappen
     if (!CONFIG.kassaStangd) document.getElementById('placeOrder').textContent = t('payNow');
   }
@@ -2023,7 +2055,7 @@
      hunnit fråga — och stannar tomt om servern inte svarar, så en
      nedsläckt Netlify ger mejlbeställning i stället för en kassa som
      kraschar mitt i betalningen. */
-  const payAvail = { card: false, swish: false };
+  const payAvail = { card: false, swish: false, cardTest: false, swishTest: false };
   let payProbe = null;
 
   /** Är betalsättet påslaget just nu? 'auto' = det servern sa. */
@@ -2053,6 +2085,11 @@
         const d = await res.json();
         payAvail.card = Boolean(d.card);
         payAvail.swish = Boolean(d.swish);
+        /* Testnyckel på servern betyder att inga riktiga kort går
+           igenom. Kassan måste säga det — annars står kunden med ett
+           avvisat kort och ingen förklaring. */
+        payAvail.cardTest = Boolean(d.cardTest);
+        payAvail.swishTest = Boolean(d.swishTest);
         // Numret i kassan ska vara det servern faktiskt tar betalt till
         if (d.swishNumber) CONFIG.swishNumber = d.swishNumber;
       } catch { /* ingen kontakt → betalning förblir av, mejlbeställning gäller */ }

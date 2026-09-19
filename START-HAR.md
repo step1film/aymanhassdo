@@ -110,15 +110,27 @@ kunden hade i butiken. Det innehåller ordernummer, raderna, frakt, totalt,
 leveransadress, vad som händer härnäst, ångerrätten och länkar till
 villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
 
-- [ ] **4.10** 🙋 Skapa konto på [resend.com](https://resend.com) (gratis upp till 3 000 mejl/mån).
+**Behöver du göra något alls?** Nej, om `MAIL_ACCOUNTS` är satt (se
+ADMIN_SETUP.md). Brevet går då via **one.com** från `shop@step1film.se`,
+samma väg som posten du skriver själv i admin — ingen ny leverantör,
+inga nya DNS-poster, SPF och DKIM redan på plats. Det gäller både
+orderbekräftelsen och samarbetsformuläret.
+
+Resend är alternativet när butiken växer: den är byggd för utskick och
+ger leveranskvitton, studsar och statistik, medan one.com är en vanlig
+brevlåda med dagliga gränser. Finns `RESEND_API_KEY` används den, annars
+one.com. Stegen nedan är alltså **frivilliga**.
+
+- [ ] **4.10** 🙋 *(frivilligt)* Skapa konto på [resend.com](https://resend.com) (gratis upp till 3 000 mejl/mån).
 - [ ] **4.11** 🙋 *Domains* → lägg till `step1film.se`. Resend ger dig tre DNS-poster (SPF, DKIM, DMARC) att lägga in hos one.com. **Rör inte MX-posterna** — de styr din inkommande post.
 - [ ] **4.12** 🙋 *API Keys* → skapa en nyckel. Lägg i Netlify som hemlig variabel `RESEND_API_KEY`.
 - [ ] **4.13** 🙋 Lägg också `EMAIL_FROM` = `STEP1FILM STORE <shop@step1film.se>` (vanlig variabel, inte hemlig). Vill du ha en dold kopia själv: `EMAIL_BCC` = `shop@step1film.se`.
 - [ ] **4.14** 🙋 Skapa adressen `collaboration@step1film.se` hos one.com. Formuläret på startsidan (panel 05) mejlar dit — samma två nycklar som ovan driver det.
 
-> Hoppar du över det här slutar ingenting att fungera — betalningen går
-> igenom, ordern hamnar hos Printful, och mejlet loggas i Netlify så du
-> kan skriva till kunden för hand. Men kunden får inget kvitto.
+> Saknas både Resend och `MAIL_ACCOUNTS` slutar ingenting att fungera —
+> betalningen går igenom, ordern hamnar hos Printful, och mejlet loggas i
+> Netlify så du kan skriva till kunden för hand. Men kunden får inget
+> kvitto, och köpvillkoren lovar ett.
 
 **Slå på**
 - [x] **4.8** ✅ Sköter sig själv. `CONFIG.payments` i `shop.js` står på
@@ -129,6 +141,23 @@ villkorssidorna. Avsändare och svarsadress är **shop@step1film.se**.
       som helst med:
       `curl https://step1film.netlify.app/.netlify/functions/payment-methods`
 - [x] **4.9** ✅ Två testköp gjorda. Utkast i Printful med rätt produkt, färg, storlek och adress.
+
+---
+
+## Kassan är öppen igen (2026-09-16)
+
+`kassaStangd` i `shop.js` står på `false`. Netlify är uppgraderat,
+deployerna publiceras, och priserna kontrollerades rad för rad: alla 16
+produkter, alla storlekspriser och frakten är identiska i `shop.js` och
+`functions/_lib/catalog.js`.
+
+**Butiken går att handla i — men servern kör fortfarande på Stripes
+testnyckel.** Kassan säger det rakt ut i en röd ruta, och riktiga kort
+avvisas av Stripe. Stegen nedan är det som gör den skarp på riktigt.
+
+Swish är av, och behövde inget handgrepp: `payment-methods` ser att
+certifikatet saknas och kassan visar bara kort. Den dagen certifikatet
+läggs in tänds Swish av sig själv.
 
 ---
 

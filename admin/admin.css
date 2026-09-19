@@ -415,3 +415,115 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* =====================================================
+   MEJL
+   =====================================================
+   Två spalter: rubrikerna till vänster, brevet till höger.
+   Samma delning som varje mejlprogram sedan trettio år — det
+   finns ingen anledning att uppfinna en ny här. */
+/* Adresserna är långa och får inte klippas mitt i domänen. */
+@media (min-width: 821px) {
+  #mejlKonto { width: auto; min-width: 16rem; max-width: 24rem; }
+}
+
+.mejl {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  /* Höjden är fönstret minus toppraden och rubrikraden. Listan och
+     brevet rullar var för sig; sidan i stort rullar inte. */
+  height: clamp(28rem, calc(100vh - 16rem), 60rem);
+}
+.mejl-lista, .mejl-yta {
+  background: var(--yta);
+  overflow-y: auto;
+  min-width: 0;
+}
+
+/* --- Rubrikraderna --- */
+.brevrad {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+.brevrad:hover { background: rgba(255,255,255,0.04); }
+.brevrad.vald  { background: rgba(255,255,255,0.07); }
+/* Oläst: avsändare och ämne i fetstil, plus en röd prick i kanten.
+   Fetstilen ensam syns dåligt i en lång lista. */
+.brevrad.oläst .brevrad-fran,
+.brevrad.oläst .brevrad-amne { font-weight: 600; color: var(--white); }
+.brevrad.oläst { border-left: 3px solid var(--accent); padding-left: calc(0.9rem - 3px); }
+.brevrad-topp { display: flex; justify-content: space-between; gap: 0.6rem; align-items: baseline; }
+.brevrad-fran { font-size: 0.86rem; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brevrad-datum { font-size: 0.72rem; color: var(--text-dim); flex: none; }
+.brevrad-amne {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.84rem;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.brevrad-gem { color: var(--text-dim); }
+
+/* --- Brevet --- */
+.mejl-yta { padding: 1.2rem 1.4rem; }
+.brev-huvud { border-bottom: 1px solid var(--line); padding-bottom: 0.9rem; margin-bottom: 1rem; }
+.brev-amne { font-size: 1.15rem; margin: 0 0 0.5rem; color: var(--white); }
+.brev-rad { font-size: 0.82rem; color: var(--text-dim); }
+.brev-rad strong { color: var(--text); font-weight: 500; }
+.brev-verktyg { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
+
+/* Brevets egen text. Den kommer utifrån, så den får inte ärva
+   sidans mått fritt — bilder och tabeller kan vara hur breda som
+   helst i ett mejl. */
+.brev-kropp { font-size: 0.9rem; line-height: 1.6; overflow-wrap: anywhere; }
+.brev-kropp img { max-width: 100%; height: auto; }
+.brev-kropp table { max-width: 100%; }
+.brev-kropp pre { white-space: pre-wrap; font: inherit; margin: 0; }
+.brev-kropp a { color: var(--accent); }
+.brev-bilagor { margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
+.brev-bilagor span { font-size: 0.8rem; color: var(--text-dim); display: block; }
+
+/* --- Skrivrutan --- */
+.skriv { display: flex; flex-direction: column; gap: 0.7rem; }
+.skriv label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 0.25rem; }
+.skriv input, .skriv textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line-s);
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+}
+.skriv textarea { min-height: 16rem; resize: vertical; line-height: 1.6; }
+.skriv input:focus, .skriv textarea:focus { outline: 1px solid var(--accent); outline-offset: 1px; }
+.skriv-fot { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.skriv-status { font-size: 0.8rem; color: var(--text-dim); }
+.skriv-status.fel { color: var(--accent); }
+
+/* --- Tomma lägen --- */
+.mejl-tom { padding: 2.5rem 1.4rem; text-align: center; color: var(--text-dim); font-size: 0.86rem; }
+
+/* Smal skärm: en spalt. Listan kortas och brevet läggs under —
+   två spalter på 400 px ger 200 px var, och då ryms varken
+   avsändare eller ämne. */
+@media (max-width: 900px) {
+  .mejl { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .mejl-lista { max-height: 22rem; }
+  .mejl-yta { min-height: 20rem; }
+}

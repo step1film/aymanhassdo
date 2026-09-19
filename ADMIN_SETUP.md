@@ -127,6 +127,84 @@ Funkar det är du igång.
 | **Video** | Showreelen, trailern, de fyra klippen, affischerna | `site-config.js` |
 | **Produkter** | Namn, beskrivning, pris, färger, storlekar, ordning, dölj/visa | `shop.js` + `functions/_lib/catalog.js` |
 | **Bilder** | Uppladdning till `assets/` | den mappen du väljer |
+| **Mejl** | Läser och skickar posten i brevlådorna hos one.com | *ingenting* — se nedan |
+
+---
+
+## Mejlfliken
+
+Fliken **Mejl** är en inkorg för adresserna på step1film.se —
+`ayman@`, `info@`, `shop@`, `collaboration@` och vilka du nu har. Den
+läser och skickar mot brevlådorna hos **one.com** över IMAP och SMTP,
+alltså exakt samma vägar som mejlprogrammet i telefonen.
+
+**Ingenting sparas någonstans.** Resten av admin sparar genom att
+skriva till GitHub-repot — och det repot är publikt, det *är* sajten.
+Ett mejl som hamnade där hade legat öppet för vem som helst. Därför
+hämtas posten direkt ur brevlådan varje gång du öppnar fliken, och
+försvinner igen när du stänger den. **MX-posterna rörs inte** — mejlen
+fortsätter komma fram precis som förut, admin är bara ännu ett
+mejlprogram som tittar i samma låda. Det du skickar läggs dessutom
+tillbaka i *Skickat* via IMAP, så svaret syns i telefonen också.
+
+Fliken finns inte förrän du satt `MAIL_ACCOUNTS`. Utan den svarar
+funktionerna att mejl inte är igångsatt och knappen göms.
+
+### Miljövariablerna
+
+Samma ställe som de andra: **Site configuration → Environment
+variables**, scope *All scopes*.
+
+| Nyckel | Värde |
+|--------|-------|
+| `MAIL_ACCOUNTS` | JSON-listan nedan — **obligatorisk** |
+| `MAIL_IMAP_HOST` | valfri, standard `imap.one.com` |
+| `MAIL_IMAP_PORT` | valfri, standard `993` |
+| `MAIL_SMTP_HOST` | valfri, standard `send.one.com` |
+| `MAIL_SMTP_PORT` | valfri, standard `465` |
+
+`MAIL_ACCOUNTS` är en JSON-array, en post per brevlåda, allt på en
+rad. `namn` är valfritt och blir avsändarnamnet mottagaren ser.
+`anvandare` behövs bara om inloggningen hos one.com är något annat än
+adressen.
+
+```json
+[{"adress":"ayman@step1film.se","losenord":"…","namn":"Ayman Hassdo"},{"adress":"info@step1film.se","losenord":"…","namn":"STEP1FILM"},{"adress":"shop@step1film.se","losenord":"…","namn":"STEP1FILM STORE"},{"adress":"collaboration@step1film.se","losenord":"…","namn":"STEP1FILM"}]
+```
+
+Ordningen i listan är ordningen i väljaren, och den första brevlådan
+är den som öppnas när du går in på fliken.
+
+`shop@` och `collaboration@` är värda att ha med av två skäl. Dels ser
+du svaren på samma ställe som allt annat: butikens orderbekräftelser går
+ut från `shop@`, och formuläret *Samarbeta* landar i `collaboration@`.
+Dels **driver den här variabeln utskicken**. Butikens orderbekräftelse
+och samarbetsformuläret skickas via one.com från `shop@` så länge ingen
+Resend-nyckel finns — ingen extra leverantör behövs. Se START-HAR.md,
+del 4.
+
+⚠️ **Lösenorden här är brevlådornas riktiga lösenord** och ger full
+åtkomst till posten. De ligger hos Netlify, aldrig i repot, och lämnar
+aldrig servern — webbläsaren får bara veta vilka *adresser* som finns,
+aldrig ett lösenord. Erbjuder one.com appspecifika lösenord är de att
+föredra framför huvudlösenordet: då kan just det här användas stängas
+av för sig.
+
+Kontrollera serveradresserna i one.coms kontrollpanel (*E-post →
+Inställningar → IMAP/SMTP*) innan du litar på standardvärdena, och att
+IMAP är påslaget för brevlådan. Stämmer de inte, sätt
+`MAIL_IMAP_HOST` / `MAIL_SMTP_HOST`.
+
+Glöm inte **Deploys → Trigger deploy** efteråt.
+
+### Vad fliken inte gör
+
+* **Bilagor listas men laddas inte ned.** Ett svar från en serverlös
+  funktion får väga sex megabyte, och en vanlig bildbilaga spränger
+  den gränsen. Öppna sådana brev i mejlprogrammet.
+* **Bara inkorgen visas**, de tjugofem senaste breven.
+* **Inget raderas.** Fliken läser, markerar som läst och skickar —
+  inget mer. Städning gör du i mejlprogrammet.
 
 ---
 
@@ -180,6 +258,11 @@ ett skript som döpts om till `.png` stoppas.
 
 `GITHUB_TOKEN` lämnar aldrig Netlify. Adminsidan i webbläsaren ser den
 aldrig; den ber Netlify-funktionerna göra jobbet, och de har nyckeln.
+Samma sak med brevlådornas lösenord i `MAIL_ACCOUNTS`.
+
+Mejlfliken skriver ingenting till repot. Du kan bara skicka från de
+adresser som står i `MAIL_ACCOUNTS` — avsändaren slås upp på servern,
+så webbläsaren kan inte be om någon annans namn.
 
 Kommer du på att lösenordet läckt: byt `ADMIN_PASSWORD` **och**
 `ADMIN_SECRET` i Netlify och deploya om. Alla inloggade sessioner

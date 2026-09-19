@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
   <link rel="stylesheet" href="../assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin.css?v=2026-09-16" />
 </head>
 <body>
 
@@ -48,6 +48,9 @@
       <button class="flik"        data-flik="video"     role="tab" type="button">Video</button>
       <button class="flik"        data-flik="produkter" role="tab" type="button">Produkter</button>
       <button class="flik"        data-flik="bilder"    role="tab" type="button">Bilder</button>
+      <!-- Mejlfliken göms tills servern svarat att MAIL_ACCOUNTS finns.
+           En flik som bara kan säga "inte igångsatt" är ingen flik. -->
+      <button class="flik"        data-flik="mejl"      role="tab" type="button" hidden>Mejl</button>
     </nav>
     <div class="topp-hoger">
       <span class="sparstatus" id="sparStatus" role="status" aria-live="polite"></span>
@@ -133,12 +136,38 @@
       <div id="bildYta"></div>
     </section>
 
+    <!-- ---------- MEJL ---------- -->
+    <section class="del" data-del="mejl">
+      <div class="del-topp">
+        <div>
+          <h2>Mejl</h2>
+          <p class="hjalp">Posten läses direkt ur brevlådan hos one.com — ingenting sparas här.
+             Det du skickar hamnar också i Skickat, så det syns i telefonen som vanligt.</p>
+        </div>
+        <div class="del-verktyg">
+          <select class="sok" id="mejlKonto" aria-label="Välj brevlåda"></select>
+          <button class="knapp" type="button" id="mejlUppdatera">Uppdatera</button>
+          <button class="knapp knapp--primar" type="button" id="mejlNytt">Nytt mejl</button>
+        </div>
+      </div>
+
+      <div class="mejl">
+        <!-- Vänster: rubrikerna. Höger: brevet eller skrivrutan. -->
+        <div class="mejl-lista" id="mejlLista" role="list" aria-label="Brev i inkorgen"></div>
+        <div class="mejl-yta" id="mejlYta"></div>
+      </div>
+    </section>
+
   </main>
 </div>
 
 <!-- Meddelanderuta -->
 <div id="rop" role="status" aria-live="polite" hidden></div>
 
-<script src="admin.js" defer></script>
+<!-- ?v= tvingar fram en ny hämtning när filerna ändrats. GitHub Pages
+     låter webbläsaren spara dem i tio minuter, och utan den här stämpeln
+     kan man sitta med en gammal adminsida långt efter en deploy.
+     Räkna upp datumet när admin.js eller admin.css ändras. -->
+<script src="admin.js?v=2026-09-16" defer></script>
 </body>
 </html>
