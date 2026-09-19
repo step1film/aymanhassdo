@@ -3752,6 +3752,33 @@ body.sida #logo-mark > * { pointer-events: auto; }
   }
 }
 
+/* --- Hero där hela bilden måste synas ---
+   Heron beskär bilden för att fylla skärmen, och det fungerar när
+   motivet är en figur i ett landskap. Är motivet två personer bredvid
+   varandra går det inte: på en telefon är fönstret bara en tredjedel
+   så brett som bilden, och en av dem hamnar utanför. En film som
+   heter Jag som har två mammor kan inte ha en hero med en mamma.
+
+   Villkoret är fönstrets form, inte dess bredd: ett kvadratiskt
+   fönster på en dator beskär precis lika illa som en telefon. Är
+   fönstret smalare än 3:2 lägger sig bilden därför som ett band
+   överst i sitt eget format, med texten under den mot svart — ingen
+   beskärning, och ingen toning som behövs. Bredare än så räcker
+   bilden till och heron fyller skärmen som på den andra filmsidan. */
+@media (max-aspect-ratio: 3 / 2) {
+  .bop-hero--hel-bild { min-height: 0; display: block; }
+  .bop-hero--hel-bild .bop-hero-bild {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: var(--nav-h);
+  }
+  .bop-hero--hel-bild::after { display: none; }
+  .bop-hero--hel-bild .bop-hero-inner {
+    padding-top: clamp(1.4rem, 5vh, 2.4rem);
+  }
+}
+
 /* --- Trilogin ---
    Tre titlar under varandra, den man står på markerad. Raderna är
    avskilda med linjer i stället för punkter: det är en filmografi,

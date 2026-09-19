@@ -63,14 +63,16 @@
   </div>
 
   <!-- =====================================================
-       HERO — hela skärmen, ansiktet bakom texten
+       HERO — hela skärmen, de två mammorna bakom texten
        =====================================================
-       Bilden är ljus upptill och mörknar nedåt, så rubriken ligger i
-       den övre halvan där toningen bär den. Samma uppbyggnad som på
-       Birds of Passage-sidan: bilden som eget lager längst bak. -->
-  <header class="bop-hero">
-    <img class="bop-hero-bild" src="stills/jhtm-hero.webp" alt=""
-         width="1800" height="1013" fetchpriority="high" decoding="async" aria-hidden="true" />
+       Bilden som eget lager längst bak, texten ovanpå, som på Birds
+       of Passage-sidan. Det här är sidans enda fotografi i färg —
+       stillbilderna nedanför är svartvita, som i pitchdecket. De två
+       sitter i höger halva av bilden, så rubriken till vänster täcker
+       ingen av dem. -->
+  <header class="bop-hero bop-hero--hel-bild">
+    <img class="bop-hero-bild" src="stills/jhtm-mammorna.webp" alt="Birgitta och Fedaa i soffan"
+         width="1800" height="1012" fetchpriority="high" decoding="async" />
 
     <div class="bop-hero-inner">
       <a class="sida-back" href="../" data-i18n="jhtmBack">← Till startsidan</a>
@@ -168,6 +170,16 @@
                width="1000" height="1125" loading="lazy" decoding="async" />
         </figure>
       </div>
+    </section>
+
+    <!-- Fedaa i närbild, över hela bredden och direkt under stycket om
+         henne. Bilden låg först bakom rubriken i heron, nedtonad och
+         beskuren; här syns den hel och hör ihop med texten ovanför. -->
+    <section class="bop-rad">
+      <figure class="bop-bild bop-bild--full">
+        <img src="stills/jhtm-fedaa-ansikte.webp" alt="Fedaa i närbild"
+             width="1800" height="1013" loading="lazy" decoding="async" />
+      </figure>
     </section>
 
     <!-- 04 — Birgitta, spegelvänd mot Fedaa. De två mammorna får
