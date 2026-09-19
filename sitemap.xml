@@ -15,7 +15,15 @@
        med stort B är den som finns. -->
   <url>
     <loc>https://step1film.se/Birdsofpassage/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Andra filmen i trilogin, samma upplägg: en mapp med en
+       index.html. Också skiftlägeskänslig — /Jagsomhartvamammor/. -->
+  <url>
+    <loc>https://step1film.se/Jagsomhartvamammor/</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
