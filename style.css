@@ -3486,17 +3486,6 @@ body.sida #logo-mark > * { pointer-events: auto; }
 .bop-hero-inner .sida-back:hover { color: var(--accent); }
 .bop-hero-inner .sida-under { color: var(--white); }
 .bop-hero-inner .sida-fakta { border-top-color: var(--line-s); }
-/* Raden om trilogin, under faktaraden. Mindre än ingressen ovanför
-   och ljusare än etiketterna — den är en upplysning, inte en rubrik,
-   och ska läsas efter de andra raderna, inte före. */
-.sida-trilogirad {
-  margin: clamp(1rem, 2.5vh, 1.5rem) 0 0;
-  font-size: var(--fs-note);
-  line-height: 1.7;
-  color: var(--text);
-  max-width: 56ch;
-  text-wrap: pretty;
-}
 
 /* =====================================================
    FILMSIDA — sidans kropp
