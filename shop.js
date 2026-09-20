@@ -129,7 +129,14 @@
     khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
     camel:    { hex: '#ab7742', sv: 'Kamel',    en: 'Camel',    light: false },
     yellow:   { hex: '#f2d24e', sv: 'Gul',      en: 'Yellow',   light: true  },
-    heather:  { hex: '#b8b5ad', sv: 'Heather',  en: 'Heather',  light: true  },
+    /* CREW TEE:s enda färg utöver svart och gul. Brickan stod på en varm
+       grå (#b8b5ad) medan plagget på bilden är blågrått — kunden såg en
+       färg och fick en annan. Värdet är avläst ur crew-tee-heather.webp,
+       från tygets upplysta yta.
+
+       Namnet står kvar som Heather Slate på båda språken — det är
+       färgens namn hos tillverkaren, och det kunden ser på plagget. */
+    heather:  { hex: '#596c77', sv: 'Heather Slate', en: 'Heather Slate', light: false },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
