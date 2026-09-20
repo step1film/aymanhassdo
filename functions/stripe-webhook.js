@@ -16,6 +16,7 @@
 
 const Stripe = require('stripe');
 const { priceCart, SHIP_COUNTRIES } = require('./_lib/catalog');
+const { rimligFrakt, MAX_SEK } = require('./_lib/shipping');
 const { fulfilOrder } = require('./_lib/fulfil');
 
 /* Stripe kan skicka samma händelse mer än en gång — vid omförsök, och
@@ -85,23 +86,37 @@ exports.handler = async (event) => {
     const compact = JSON.parse(md.lines || '[]'); // [[id, color, size, qty], …]
 
     // Räkna om priserna på servern igen — metadata är bara referens.
-    const cart = priceCart(compact.map(([id, color, size, qty]) => ({ id, color, size, qty })));
+    let cart = priceCart(compact.map(([id, color, size, qty]) => ({ id, color, size, qty })));
 
-    /* Kontrollera att kunden betalat det ordern kostar nu. Sessionen
-       skapades med serverns priser, så det stämmer i normalfallet —
-       men ändras ett pris medan en kassa står öppen betalar kunden det
-       gamla priset och vi hade tryckt ordern för det nya. Kunden HAR
+    /* Kontrollera att kunden betalat det ordern kostar.
+       -----------------------------------------------------
+       VARORNA är facit: summan räknas om ur katalogen, precis som
+       när sessionen skapades. FRAKTEN kan däremot inte jämföras mot
+       ett fast tal längre — den hämtas live från Printful och kan ha
+       ändrats mellan kassan och den här webhooken. Att räkna om den
+       här hade gett falsklarm på fullt korrekta ordrar.
+
+       I stället kontrolleras skillnaden: det kunden betalade minus
+       varorna ska vara en frakt i ett rimligt spann. Blir den negativ
+       har kunden betalat för lite för varorna, och det är det farliga
+       fallet. Blir den för stor är något fel oavsett vad. Kunden HAR
        betalat, så vi svarar 200 och lägger ordern för hand. */
     const paidOre = Number(session.amount_total);
-    const vantatOre = Math.round(cart.total * 100);
-    if (Number.isFinite(paidOre) && Math.abs(paidOre - vantatOre) > 1) {
+    const betaltKr = paidOre / 100;
+    const fraktKr = Math.round((betaltKr - cart.subtotal) * 100) / 100;
+
+    if (!Number.isFinite(paidOre) || !rimligFrakt(fraktKr)) {
       console.warn(`[stripe-webhook] ⚠️ MANUELL HANTERING: order ${md.reference} betalades `
-        + `med ${paidOre / 100} kr men kostar ${cart.total} kr enligt katalogen. `
+        + `med ${betaltKr} kr. Varorna kostar ${cart.subtotal} kr enligt katalogen, vilket ger `
+        + `${fraktKr} kr i frakt — utanför spannet 0–${MAX_SEK} kr. `
         + `Ingen Printful-order lagd — kontrollera priset och lägg ordern för hand `
         + `eller återbetala mellanskillnaden.`);
       handledSessions.add(session.id);
       return { statusCode: 200, body: 'ok (beloppet stämmer inte, manuell hantering)' };
     }
+
+    // Frakten kunden faktiskt betalade är den som ska stå på kvittot.
+    cart = priceCart(compact.map(([id, color, size, qty]) => ({ id, color, size, qty })), { shipping: fraktKr });
 
     // Stripe kan ha samlat in en annan leveransadress — den vinner.
     const sd = session.shipping_details || session.customer_details;

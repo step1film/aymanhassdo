@@ -15,6 +15,7 @@ const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const Stripe = require('stripe');
 const { priceCart, validateRecipient } = require('./_lib/catalog');
+const { resolveShipping } = require('./_lib/shipping');
 
 
 /* Betalsätten hos Stripe.
@@ -65,6 +66,11 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
   }
 
+  /* Frakten hämtas live för kundens land. Svarar inte Printful blir
+     det standardpriset — kassan stannar aldrig på en frakt. */
+  const frakt = await resolveShipping({ lines: cart.lines, subtotal: cart.subtotal, recipient });
+  cart = priceCart(payload.items, { shipping: frakt.amount });
+
   const stripe = new Stripe(key, { apiVersion: '2024-06-20' });
   const site = (process.env.SITE_URL || `https://${event.headers.host}`).replace(/\/$/, '');
   const reference = 'S1F-' + Date.now().toString(36).toUpperCase();
@@ -93,7 +99,7 @@ exports.handler = async (event) => {
       shipping_options: [{
         shipping_rate_data: {
           type: 'fixed_amount',
-          display_name: cart.shipping === 0 ? 'Fri frakt' : 'Frakt',
+          display_name: cart.shipping === 0 ? 'Fri frakt' : (frakt.name || 'Frakt'),
           fixed_amount: { amount: cart.shipping * 100, currency: cart.currency }
         }
       }],
@@ -103,6 +109,8 @@ exports.handler = async (event) => {
         recipient: JSON.stringify(recipient).slice(0, 480),
         lines: JSON.stringify(cart.lines.map((l) => [l.id, l.color, l.size, l.qty])).slice(0, 480),
         shipping: String(cart.shipping),
+        // Så det går att se i Stripe om frakten var live eller reserven
+        shippingSource: frakt.source,
         total: String(cart.total),
         // Så att bekräftelsemejlet kommer på samma språk som butiken stod på
         lang: payload.lang === 'en' ? 'en' : 'sv'

@@ -15,11 +15,17 @@
    ===================================================== */
 'use strict';
 
+const { FALLBACK_SEK, FREE_OVER_SEK, MAX_SEK } = require('./shipping');
+
 const CURRENCY = 'sek';
 
-// Frakt (kr) — spegla CONFIG.shippingFee / shippingFreeOver i shop.js
-const SHIPPING_FEE = 79;
-const SHIPPING_FREE_OVER = 1200;
+/* Frakt (kr). Siffrorna bor i shipping.js — där räknas också den
+   riktiga frakten fram mot Printful. Här används de bara när ingen
+   live-frakt skickats med, och som spegling av CONFIG.shippingFee /
+   shippingFreeOver i shop.js. */
+const SHIPPING_FEE = FALLBACK_SEK;
+const SHIPPING_FREE_OVER = FREE_OVER_SEK;
+const SHIPPING_MAX = MAX_SEK;
 
 /* Länder vi levererar till.
    79 kr är en svensk fraktavgift. Printful tar mer för utrikes, så en
@@ -194,8 +200,7 @@ const CATALOG = {
       "black|M": 5415681063,
       "black|L": 5415681064,
       "black|XL": 5415681065
-    },
-    "hidden": true
+    }
   },
   "icon-stickers": {
     "name": "ICON STICKERS",
@@ -243,9 +248,15 @@ function priceFor(id, size) {
 /**
  * Validerar en kundvagn från webbläsaren och räknar om allt på servern.
  * Kastar Error vid ogiltig indata.
+ *
+ * @param {Array} items      raderna från webbläsaren (id, färg, storlek, antal)
+ * @param {{shipping?:number}} [opts]
+ *   shipping: frakten i kronor, framräknad av shipping.js. Utelämnas den
+ *   används det fasta priset. Kommer ALDRIG från webbläsaren — anroparen
+ *   är en serverfunktion som just hämtat den från Printful.
  * @returns {{ lines, subtotal, shipping, total, currency }}
  */
-function priceCart(items) {
+function priceCart(items, opts) {
   if (!Array.isArray(items) || items.length === 0) throw new Error('Tom kundvagn.');
   if (items.length > 50) throw new Error('För många rader.');
 
@@ -277,7 +288,18 @@ function priceCart(items) {
   });
 
   const subtotal = lines.reduce((s, l) => s + l.lineTotal, 0);
-  const shipping = subtotal >= SHIPPING_FREE_OVER ? 0 : SHIPPING_FEE;
+
+  /* Fri frakt går före allt annat, även en framräknad live-frakt —
+     annars hade löftet på frakt-leverans.html brutits av ett API-svar. */
+  let shipping;
+  if (subtotal >= SHIPPING_FREE_OVER) {
+    shipping = 0;
+  } else if (opts && Number.isFinite(Number(opts.shipping))) {
+    // Spärr, inte artighet: ett tokigt värde ska inte kunna debiteras.
+    shipping = Math.min(Math.max(Number(opts.shipping), 0), SHIPPING_MAX);
+  } else {
+    shipping = SHIPPING_FEE;
+  }
 
   return { lines, subtotal, shipping, total: subtotal + shipping, currency: CURRENCY };
 }
@@ -302,6 +324,6 @@ function validateRecipient(r) {
 }
 
 module.exports = {
-  CATALOG, CURRENCY, SHIPPING_FEE, SHIPPING_FREE_OVER, SHIP_COUNTRIES, HIDDEN,
+  CATALOG, CURRENCY, SHIPPING_FEE, SHIPPING_FREE_OVER, SHIPPING_MAX, SHIP_COUNTRIES, HIDDEN,
   priceFor, priceCart, validateRecipient
 };
