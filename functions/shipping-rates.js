@@ -13,7 +13,7 @@
 
 const { corsHeaders, isForeignOrigin, skapaSpärr, clientIp } = require('./_lib/http');
 const { priceCart, SHIPPING_FREE_OVER } = require('./_lib/catalog');
-const { resolveShipping } = require('./_lib/shipping');
+const { resolveShipping, skuggaFrakt } = require('./_lib/shipping');
 
 /* Cachen i shipping.js tar de flesta anropen, men en vagn som
    ändras varje gång går förbi den. Spärren håller Printfuls
@@ -63,6 +63,12 @@ exports.handler = async (event) => {
     subtotal: cart.subtotal,
     recipient: mottagare
   });
+
+  /* I skuggläget frågas Printful här, utanför betalvägen, bara för
+     att logga vad frakten hade kostat. Kastar aldrig och ändrar
+     ingenting — men måste inväntas, annars fryser funktionen innan
+     raden hunnit skrivas. */
+  await skuggaFrakt({ lines: cart.lines, subtotal: cart.subtotal, recipient: mottagare });
 
   return {
     statusCode: 200,

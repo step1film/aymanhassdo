@@ -1,9 +1,13 @@
 /* =====================================================
    STEP1 STORE — frakt
    =====================================================
-   Frakten hämtas live från Printfuls Shipping Rate API,
-   baserat på kundens land och det som faktiskt ligger i
-   vagnen. Svarar inte Printful används ett fast pris.
+   Kunden betalar standardfrakten, 79 kr. Servern frågar ändå
+   Printful vad frakten faktiskt kostar och skriver ner svaret
+   i loggen — så det går att se vilka produkter som kostar mer
+   i frakt än de drar in. Det är skuggläget, standard.
+
+   SHIPPING_MODE=live låter i stället Printfuls pris bli det
+   kunden betalar. Svarar inte Printful används fast pris.
 
    ⚠️ Körs bara på servern. Anropet kräver PRINTFUL_API_TOKEN,
    och den får aldrig lämna servern.
@@ -36,7 +40,8 @@
      SHIPPING_FREE_OVER_SEK    1200  fri frakt över detta ordervärde
      SHIPPING_MAX_SEK          199   spärr: högre frakt än så är ett fel
      SHIPPING_TIMEOUT_MS       5000  hur länge vi väntar på Printful
-     SHIPPING_LIVE             true  'false' = alltid fast pris
+     SHIPPING_MODE             shadow  shadow | live | off (se nedan)
+     SHIPPING_LIVE             -     'false' = samma som SHIPPING_MODE=off
      SHIPPING_CAP_TO_STANDARD  true  'false' = låt live-priset gå över 79
    ===================================================== */
 'use strict';
@@ -52,8 +57,38 @@ const FALLBACK_SEK = tal(process.env.SHIPPING_FALLBACK_SEK, 79);
 const FREE_OVER_SEK = tal(process.env.SHIPPING_FREE_OVER_SEK, 1200);
 const MAX_SEK = tal(process.env.SHIPPING_MAX_SEK, 199);
 const TIMEOUT_MS = tal(process.env.SHIPPING_TIMEOUT_MS, 5000);
-const LIVE = process.env.SHIPPING_LIVE !== 'false';
 const CAP_TO_STANDARD = process.env.SHIPPING_CAP_TO_STANDARD !== 'false';
+
+/* -----------------------------------------------------
+   TRE LÄGEN
+   -----------------------------------------------------
+   shadow  (standard)  Kunden betalar alltid standardfrakten. Servern
+                       frågar ändå Printful — men bara för att skriva
+                       ner svaret i loggen, så det går att se vilka
+                       produkter som kostar mer i frakt än de drar in.
+                       Frågan ställs utanför betalvägen, så kunden
+                       aldrig får vänta på den.
+   live                Kunden betalar Printfuls pris (med taket).
+   off                 Printful frågas aldrig. Bara fast pris.
+
+   Varför shadow är standard: butiken skickar bara inom Sverige, där
+   frakten ligger mellan 46 och 102 kr. Live-priser hade gett kunden
+   46 kr ibland — och tagit bort de ~25 kr som PRISKALKYL.md räknar
+   med att frakten bidrar med per order. Vid låg volym är det
+   skillnaden mellan vinst och nolla. Loggen ger ändå signalen om
+   vilken produkt som behöver ett högre pris.
+
+   SHIPPING_LIVE=false finns kvar och betyder off, så en befintlig
+   miljövariabel inte plötsligt betyder något annat.
+--------------------------------------------------- */
+function lasLage() {
+  const v = String(process.env.SHIPPING_MODE || '').trim().toLowerCase();
+  if (v === 'live' || v === 'shadow' || v === 'off') return v;
+  if (process.env.SHIPPING_LIVE === 'false') return 'off';
+  return 'shadow';
+}
+const MODE = lasLage();
+const LIVE = MODE === 'live';
 
 /* Samma vagn och samma land ger samma frakt. Cachen håller
    Printful-anropen nere när kunden räknar om i kassan, och
@@ -169,7 +204,10 @@ async function resolveShipping({ lines, subtotal, recipient }) {
   // Fri frakt går före allt annat — då behöver Printful inte frågas.
   if (FREE_OVER_SEK > 0 && subtotal >= FREE_OVER_SEK) return fastFrakt(subtotal);
 
-  if (!LIVE) return fastFrakt(subtotal, 'SHIPPING_LIVE=false');
+  /* I shadow och off debiteras standardpriset, och betalvägen ska då
+     inte vänta på ett anrop vars svar ändå inte används. Själva
+     uppslaget görs av skuggaFrakt(), som shipping-rates anropar. */
+  if (!LIVE) return fastFrakt(subtotal, MODE);
   if (!process.env.PRINTFUL_API_TOKEN) {
     console.warn('[shipping] fast pris: PRINTFUL_API_TOKEN saknas');
     return fastFrakt(subtotal, 'token saknas');
@@ -241,12 +279,57 @@ async function resolveShipping({ lines, subtotal, recipient }) {
 }
 
 
+/**
+ * Skuggläget: frågar Printful vad frakten HADE kostat och skriver ner
+ * svaret. Påverkar aldrig priset och kastar aldrig — det här får inte
+ * kunna störa ett köp.
+ *
+ * Loggraden är till för att läsas om ett halvår: den säger vilken
+ * produkt det gäller, vad Printful tog, och vad vi tog.
+ */
+async function skuggaFrakt({ lines, subtotal, recipient }) {
+  if (MODE !== 'shadow') return;
+  if (!process.env.PRINTFUL_API_TOKEN) return;
+  if (FREE_OVER_SEK > 0 && subtotal >= FREE_OVER_SEK) return;   // fri frakt, inget att jämföra
+
+  const rader = (lines || []).filter((l) => l.variant_id);
+  if (!rader.length || rader.length !== (lines || []).length) return;
+
+  const land = String((recipient && recipient.country_code) || 'SE').toUpperCase().slice(0, 2);
+  const nyckel = 'skugga|' + cacheNyckel(land, rader);
+  if (frånCache(nyckel)) return;                                 // redan loggad nyligen
+
+  try {
+    const svar = await getPrintfulShippingRates(
+      { country_code: land, zip: (recipient && recipient.zip) || undefined },
+      rader.map((l) => ({ variant_id: l.variant_id, quantity: l.qty })),
+      'SEK'
+    );
+    const billigast = svar
+      .map((r) => Math.ceil(Number(r.rate)))
+      .filter((kr) => Number.isFinite(kr))
+      .sort((a, b) => a - b)[0];
+    if (!Number.isFinite(billigast)) return;
+
+    tillCache(nyckel, true);
+
+    const varor = rader.map((l) => `${l.qty}× ${l.id || l.variant_id}`).join(', ');
+    const vitag = FALLBACK_SEK;
+    const tecken = billigast > vitag ? 'ÖVER' : 'under';
+    console.log(`[shipping] SKUGGA: Printful ${billigast} kr, vi tog ${vitag} kr `
+      + `(${tecken} vårt pris) — ${land}, ${varor}`);
+  } catch (err) {
+    console.warn(`[shipping] SKUGGA kunde inte hämta pris: ${String((err && err.message) || err)}`);
+  }
+}
+
+
 /** Ligger frakten i ett rimligt spann? Används av beloppskontrollerna. */
 function rimligFrakt(kr) {
   return Number.isFinite(kr) && kr >= -0.01 && kr <= MAX_SEK + 0.01;
 }
 
 module.exports = {
-  getPrintfulShippingRates, resolveShipping, rimligFrakt,
-  FALLBACK_SEK, FREE_OVER_SEK, MAX_SEK, TIMEOUT_MS, LIVE, CAP_TO_STANDARD
+  getPrintfulShippingRates, resolveShipping, skuggaFrakt, rimligFrakt,
+  FALLBACK_SEK, FREE_OVER_SEK, MAX_SEK, TIMEOUT_MS, MODE, LIVE, CAP_TO_STANDARD
 };

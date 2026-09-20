@@ -59,10 +59,42 @@ webbläsaren.
 
 ## Frakten
 
-Frakten hämtas live från Printful för kundens land och det som ligger i
-vagnen (`functions/_lib/shipping.js`). Kassan visar den innan kunden
-betalar, och servern räknar fram den på nytt när betalningen skapas —
-siffran webbläsaren visat kan aldrig bli den som debiteras.
+**Kunden betalar 79 kr, fri frakt över 1 200 kr.** Precis som förut.
+
+Det nya är att servern frågar Printful vad frakten *faktiskt* kostar och
+skriver ner svaret i loggen (`functions/_lib/shipping.js`). Sök på
+`[shipping] SKUGGA` i *Functions → Logs*:
+
+```
+[shipping] SKUGGA: Printful 102 kr, vi tog 79 kr (ÖVER vårt pris) — SE, 1× rolling-backpack
+[shipping] SKUGGA: Printful 47 kr, vi tog 79 kr (under vårt pris) — SE, 1× reel-mugg
+```
+
+Raden som säger ÖVER är signalen: den produkten kostar mer i frakt än
+den drar in, och behöver ett högre pris. Utan loggen är det en gissning.
+
+**Varför inte live-priser till kunden?** `PRISKALKYL.md` räknar med att
+kunden betalar P + 79 kr, och att de 79 kronorna bidrar med ~59 kr efter
+moms och avgifter. Tar vi 47 kr försvinner ~25 kr av det — per order.
+Butiken skickar bara inom Sverige, där spannet är 46–102 kr, så
+live-priser vinner inget som inte ett justerat produktpris vinner bättre.
+
+**Skuggfrågan ligger utanför betalvägen.** Den ställs av
+`shipping-rates`, alltså när kassan öppnas. `create-checkout-session` och
+`swish-create-payment` tar standardpriset direkt och väntar aldrig på
+Printful.
+
+**Tre lägen, en variabel** (`SHIPPING_MODE`):
+
+| Läge | Kunden betalar | Printful frågas |
+|---|---|---|
+| `shadow` (standard) | 79 kr | ja, bara för loggen |
+| `live` | Printfuls pris, högst 79 kr | ja, i betalvägen |
+| `off` | 79 kr | nej |
+
+I `live` visar kassan priset innan kunden betalar, och servern räknar
+fram det på nytt när betalningen skapas — siffran webbläsaren visat kan
+aldrig bli den som debiteras.
 
 **Svarar inte Printful tas det fasta priset.** Nätverksfel, timeout
 (5 sekunder), svar utanför 2xx, tomt svar, saknad token, eller en rad
@@ -71,11 +103,11 @@ en rad som börjar `[shipping] FALLBACK`. Sök på den i *Functions → Logs*
 för att se hur ofta det händer. En utebliven order kostar mer än några
 kronors felräknad frakt, så kassan stannar aldrig på en frakt.
 
-**Kunden betalar aldrig mer än standardfrakten.** `frakt-leverans.html`
-lovar högst 79 kr, och Printful tar mer än så för vissa varor
-(ryggsäcken 102 kr). Blir live-priset högre står vi för mellanskillnaden;
-blir det lägre får kunden det lägre. `SHIPPING_CAP_TO_STANDARD=false`
-tar bort taket — men då måste frakt-leverans.html skrivas om först.
+**Taket gäller i `live`-läget.** Printful tar mer än 79 kr för vissa
+varor (ryggsäcken 102 kr), och `frakt-leverans.html` säger 79 kr. Blir
+Printfuls pris högre står vi för mellanskillnaden.
+`SHIPPING_CAP_TO_STANDARD=false` tar bort taket — men då måste
+frakt-leverans.html skrivas om först.
 
 **Beloppskontrollen är byggd för rörlig frakt.** Webhooken och
 `swish-complete` räknar om *varorna* ur katalogen — det är facit — och
