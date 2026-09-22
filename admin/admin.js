@@ -222,7 +222,7 @@
       'bopSupportHead', 'bopSupportNames', 'bopContact', 'bopContactNote']],
     ['Sidan Jag som har två mammor', ['jhtmBack', 'jhtmKicker', 'jhtmUnder',
       'jhtmFStatus', 'jhtmVStatus', 'jhtmFPremiere', 'jhtmVPremiere',
-      'jhtmFFormat', 'jhtmVFormat', 'jhtmFDirector', 'jhtmFProducer',
+      'jhtmFFormat', 'jhtmVFormat', 'jhtmFDirector', 'jhtmFProducer', 'jhtmFCinematographer',
       'jhtmFilmHead', 'jhtmFilm1', 'jhtmFilm2',
       'jhtmTriHead', 'jhtmTriSub', 'jhtmTri1',
       'jhtmFedaa', 'jhtmBirgitta', 'jhtmDistHead', 'jhtmDist1', 'jhtmQuestion',
