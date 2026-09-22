@@ -3857,7 +3857,6 @@ body.sida #logo-mark > * { pointer-events: auto; }
   margin-right: 0.6em;
   vertical-align: middle;
 }
-.bop-fraga--logline { border-top: 0; }
 
 /* Brödtext under en creditlista — regissörens rader, inte en roll. */
 .credit-brod {
