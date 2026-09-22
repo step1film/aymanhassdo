@@ -3847,6 +3847,17 @@ body.sida #logo-mark > * { pointer-events: auto; }
   max-width: 24ch;
   margin: 0 auto;
 }
+/* Etiketten före loglinen: samma röda, glesa versaler som
+   sidans övriga etiketter, på samma rad som frågan. */
+.fraga-etikett {
+  font-size: 0.5em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 0.6em;
+  vertical-align: middle;
+}
+.bop-fraga--logline { border-top: 0; }
 
 /* Brödtext under en creditlista — regissörens rader, inte en roll. */
 .credit-brod {

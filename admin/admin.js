@@ -225,7 +225,7 @@
       'jhtmFFormat', 'jhtmVFormat', 'jhtmFDirector', 'jhtmFProducer', 'jhtmFCinematographer',
       'jhtmFilmHead', 'jhtmFilm1', 'jhtmFilm2',
       'jhtmTriHead', 'jhtmTriSub', 'jhtmTri1',
-      'jhtmFedaa', 'jhtmBirgitta', 'jhtmDistHead', 'jhtmDist1', 'jhtmQuestion',
+      'jhtmFedaa', 'jhtmBirgitta', 'jhtmDistHead', 'jhtmDist1', 'jhtmLogline', 'jhtmQuestion',
       'jhtmStatusHead', 'jhtmStatus1', 'jhtmStatus2',
       'jhtmDirHead', 'jhtmDirName', 'jhtmDirBase', 'jhtmDirBaseV',
       'jhtmDirCompany', 'jhtmDirEdu', 'jhtmDirEduV', 'jhtmDirProg', 'jhtmDirProgV',
