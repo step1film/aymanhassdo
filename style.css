@@ -3528,6 +3528,16 @@ body.sida #logo-mark > * { pointer-events: auto; }
    skärmen. */
 .bop-split--trailer { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.45fr); }
 .bop-split--trailer .sida-trailer { max-width: none; }
+/* Tre spalter: text, affischen i mitten, loglinen. Affischen är
+   smal och stående, så mittspalten behöver inte mer än så. */
+.bop-trio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.5rem);
+  align-items: center;
+}
+.bop-trio-logline .fraga-etikett { display: block; margin: 0 0 0.8rem; font-size: var(--fs-micro); letter-spacing: 0.3em; }
+.bop-trio-logline .fraga-text { margin: 0; max-width: 16ch; font-size: clamp(1.3rem, 2.4vw, 2rem); }
 
 /* Stående porträtt. En stående bild blir dubbelt så hög som en
    liggande på samma bredd, så den får en smalare spalt — annars äger
@@ -3717,6 +3727,7 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .bop-sida { gap: clamp(2.5rem, 8vh, 4rem); }
   .bop-split,
   .bop-split--omvand { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .bop-trio { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
   .bop-split--omvand .bop-text  { order: 1; }
   .bop-split--omvand .bop-media { order: 2; }
   .bop-text p { max-width: none; }
