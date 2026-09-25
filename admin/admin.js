@@ -903,7 +903,8 @@
      satt. Är den inte det visas ingen flik alls, i stället för
      en som bara kan säga att den inte fungerar.
   ===================================================== */
-  const MEJL = { konto: '', brev: [], valt: null, laddar: false };
+  const MEJL = { konto: '', mapp: 'inkorg', brev: [], valt: null };
+  const iSkickat = () => MEJL.mapp === 'skickat';
 
   const mejlLista  = () => $('#mejlLista');
   const mejlYta    = () => $('#mejlYta');
@@ -956,38 +957,62 @@
     return doc.body.innerHTML;
   }
 
+  /* Varje hämtning får ett nummer. Byter man mapp eller brevlåda
+     medan en lista är på väg ska det sena svaret inte skriva över
+     det man faktiskt valt. */
+  let mejlVarv = 0;
   async function mejlHamta() {
-    if (MEJL.laddar) return;
-    MEJL.laddar = true;
+    const varv = ++mejlVarv;
     const lista = mejlLista();
     lista.textContent = '';
     lista.appendChild(tomt('Hämtar …'));
+    lista.setAttribute('aria-label', iSkickat() ? 'Skickade brev' : 'Brev i inkorgen');
     try {
-      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto));
+      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp);
+      if (varv !== mejlVarv) return;
       MEJL.brev = d.brev || [];
       mejlRitaLista();
     } catch (e) {
+      if (varv !== mejlVarv) return;
       lista.textContent = '';
       lista.appendChild(tomt(e.message));
-    } finally {
-      MEJL.laddar = false;
     }
+  }
+
+  function mejlValjMapp(mapp) {
+    if (MEJL.mapp === mapp) return;
+    MEJL.mapp = mapp;
+    MEJL.valt = null;
+    MEJL.brev = [];
+    document.querySelectorAll('.mejl-mapp').forEach(k => {
+      const pa = k.dataset.mapp === mapp;
+      k.classList.toggle('vald', pa);
+      k.setAttribute('aria-selected', pa ? 'true' : 'false');
+    });
+    const yta = mejlYta();
+    yta.textContent = '';
+    yta.appendChild(tomt('Välj ett brev i listan.'));
+    mejlHamta();
   }
 
   function mejlRitaLista() {
     const lista = mejlLista();
     lista.textContent = '';
-    if (!MEJL.brev.length) { lista.appendChild(tomt('Inga brev i inkorgen.')); return; }
+    if (!MEJL.brev.length) { lista.appendChild(tomt(iSkickat() ? 'Inga skickade brev.' : 'Inga brev i inkorgen.')); return; }
 
     MEJL.brev.forEach(b => {
       const rad = el('button', 'brevrad');
       rad.type = 'button';
       rad.setAttribute('role', 'listitem');
-      if (!b.last) rad.classList.add('oläst');
+      if (!b.last && !iSkickat()) rad.classList.add('oläst');
       if (MEJL.valt === b.uid) rad.classList.add('vald');
 
       const topp = el('div', 'brevrad-topp');
-      topp.appendChild(el('span', 'brevrad-fran', b.franNamn || b.franAdress || '(okänd avsändare)'));
+      /* I Skickat är det mottagaren man letar efter, inte sig själv. */
+      const vem = iSkickat()
+        ? 'Till: ' + ((b.till && b.till.length) ? b.till.join(', ') : '(ingen mottagare)')
+        : (b.franNamn || b.franAdress || '(okänd avsändare)');
+      topp.appendChild(el('span', 'brevrad-fran', vem));
       topp.appendChild(el('span', 'brevrad-datum', narDa(b.datum)));
       rad.appendChild(topp);
 
@@ -1007,7 +1032,8 @@
     yta.textContent = '';
     yta.appendChild(tomt('Hämtar brevet …'));
     try {
-      const b = await be('/mail-read?konto=' + encodeURIComponent(MEJL.konto) + '&uid=' + encodeURIComponent(uid));
+      const b = await be('/mail-read?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp + '&uid=' + encodeURIComponent(uid));
+      if (MEJL.valt !== uid) return;
       mejlRitaBrev(b);
       /* Raden är läst nu — markera den utan att hämta om listan. */
       const post = MEJL.brev.find(x => x.uid === uid);
@@ -1031,8 +1057,11 @@
     if (fran.namn && fran.adress) r1.appendChild(document.createTextNode('  ' + fran.adress));
     huvud.appendChild(r1);
 
-    const till = (b.till || []).map(t => t.adress).filter(Boolean).join(', ');
+    const lista = (v) => (v || []).map(t => t.adress).filter(Boolean).join(', ');
+    const till = lista(b.till);
     if (till) huvud.appendChild(el('div', 'brev-rad', 'till ' + till));
+    if (lista(b.kopia)) huvud.appendChild(el('div', 'brev-rad', 'kopia ' + lista(b.kopia)));
+    if (lista(b.dold)) huvud.appendChild(el('div', 'brev-rad', 'dold kopia ' + lista(b.dold)));
     if (b.datum) {
       huvud.appendChild(el('div', 'brev-rad',
         new Date(b.datum).toLocaleString('sv-SE', { dateStyle: 'full', timeStyle: 'short' })));
@@ -1041,13 +1070,47 @@
     const verktyg = el('div', 'brev-verktyg');
     const svara = el('button', 'knapp knapp--primar', 'Svara');
     svara.type = 'button';
+    const svarsAmne = /^sv:/i.test(b.amne) ? b.amne : 'Sv: ' + b.amne;
+    /* Ett eget skickat brev besvaras till den man skrev till —
+       ett svar till sig själv är aldrig det man menar. */
     svara.onclick = () => mejlSkrivruta({
-      till: fran.adress || '',
-      amne: /^sv:/i.test(b.amne) ? b.amne : 'Sv: ' + b.amne,
+      till: iSkickat() ? till : (fran.adress || ''),
+      amne: svarsAmne,
       svarPa: b.messageId || '',
       citat: b.text || ''
     });
     verktyg.appendChild(svara);
+
+    /* Svara alla: avsändaren i Till, alla andra mottagare i Kopia —
+       utom den egna adressen, som annars fick sitt eget svar. */
+    const jag = MEJL.konto.toLowerCase();
+    const ovriga = [].concat(b.till || [], b.kopia || [])
+      .map(t => t.adress).filter(a => a && a.toLowerCase() !== jag && a !== fran.adress);
+    if (!iSkickat() && ovriga.length) {
+      const alla = el('button', 'knapp', 'Svara alla');
+      alla.type = 'button';
+      alla.onclick = () => mejlSkrivruta({
+        till: fran.adress || '',
+        kopia: [...new Set(ovriga)].join(', '),
+        amne: svarsAmne,
+        svarPa: b.messageId || '',
+        citat: b.text || ''
+      });
+      verktyg.appendChild(alla);
+    }
+
+    const vidare = el('button', 'knapp', 'Vidarebefordra');
+    vidare.type = 'button';
+    vidare.onclick = () => mejlSkrivruta({
+      amne: /^vb:|^fwd?:/i.test(b.amne) ? b.amne : 'Vb: ' + b.amne,
+      text: '\n\n\n---------- Vidarebefordrat brev ----------\n'
+        + 'Från: ' + (fran.namn ? fran.namn + ' <' + fran.adress + '>' : (fran.adress || '')) + '\n'
+        + (b.datum ? 'Datum: ' + new Date(b.datum).toLocaleString('sv-SE') + '\n' : '')
+        + 'Ämne: ' + b.amne + '\n'
+        + (till ? 'Till: ' + till + '\n' : '')
+        + '\n' + (b.text || '')
+    });
+    verktyg.appendChild(vidare);
     huvud.appendChild(verktyg);
     yta.appendChild(huvud);
 
@@ -1087,13 +1150,36 @@
     };
 
     const till = falt('Till', 'mTill', forifyllt.till);
+    const kopia = falt('Kopia (CC)', 'mKopia', forifyllt.kopia);
+    const dold = falt('Dold kopia (BCC)', 'mDold', forifyllt.dold);
+    const hint = 'Flera adresser skiljs med komma.';
+    [till, kopia, dold].forEach(i => { i.placeholder = hint; i.inputMode = 'email'; i.autocomplete = 'off'; });
+
+    /* Kopia och Dold kopia står gömda tills man ber om dem — men
+       syns direkt om de redan är ifyllda, som vid Svara alla. */
+    const kopiaRad = kopia.parentNode, doldRad = dold.parentNode;
+    const extra = el('div', 'skriv-extra');
+    const visaKopia = el('button', '', 'Lägg till kopia (CC)'); visaKopia.type = 'button';
+    const visaDold = el('button', '', 'Lägg till dold kopia (BCC)'); visaDold.type = 'button';
+    extra.appendChild(visaKopia); extra.appendChild(visaDold);
+    till.parentNode.appendChild(extra);
+    const synk = () => {
+      kopiaRad.hidden = !forifyllt.kopia && !kopia.dataset.visas;
+      doldRad.hidden = !forifyllt.dold && !dold.dataset.visas;
+      visaKopia.hidden = !kopiaRad.hidden;
+      visaDold.hidden = !doldRad.hidden;
+    };
+    visaKopia.onclick = () => { kopia.dataset.visas = '1'; synk(); kopia.focus(); };
+    visaDold.onclick = () => { dold.dataset.visas = '1'; synk(); dold.focus(); };
+    synk();
+
     const amne = falt('Ämne', 'mAmne', forifyllt.amne);
     /* Citatet under svaret, som i vilket mejlprogram som helst —
        så mottagaren ser vad svaret gäller. */
     const citat = forifyllt.citat
       ? '\n\n\n--\n' + String(forifyllt.citat).split('\n').map(r => '> ' + r).join('\n')
       : '';
-    const text = falt('Meddelande', 'mText', citat, 'text');
+    const text = falt('Meddelande', 'mText', forifyllt.text || citat, 'text');
 
     const fot = el('div', 'skriv-fot');
     const skicka = el('button', 'knapp knapp--primar', 'Skicka');
@@ -1123,6 +1209,8 @@
           body: JSON.stringify({
             konto: MEJL.konto,
             till: till.value,
+            kopia: kopia.value,
+            dold: dold.value,
             amne: amne.value,
             text: text.value,
             svarPa: forifyllt.svarPa || ''
@@ -1133,6 +1221,8 @@
           : 'Skickat. Kopian kom inte in i Skickat — brevet är ändå ute.');
         yta.textContent = '';
         yta.appendChild(tomt('Skickat.'));
+        /* Står man i Skickat ska det nya brevet synas i listan direkt. */
+        if (iSkickat()) mejlHamta();
       } catch (e) {
         status.className = 'skriv-status fel';
         status.textContent = e.message;
@@ -1160,6 +1250,7 @@
       mejlFlik().hidden = false;
 
       val.onchange = () => { MEJL.konto = val.value; MEJL.valt = null; mejlYta().textContent = ''; mejlHamta(); };
+      document.querySelectorAll('.mejl-mapp').forEach(k => { k.onclick = () => mejlValjMapp(k.dataset.mapp); });
       $('#mejlUppdatera').onclick = () => mejlHamta();
       $('#mejlNytt').onclick = () => mejlSkrivruta();
 

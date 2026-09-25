@@ -58,6 +58,7 @@
    ===================================================== */
 'use strict';
 
+const crypto = require('crypto');
 const { ImapFlow } = require('imapflow');
 const { simpleParser } = require('mailparser');
 const nodemailer = require('nodemailer');
@@ -150,13 +151,25 @@ async function hittaMapp(klient, sort) {
   return gissad ? gissad.path : null;
 }
 
+/* Webbläsaren väljer mapp med ett av två ord, aldrig med ett
+   mappnamn: Skickat heter olika på olika servrar, och ett fritt
+   namn hade låtit vem som helst med en session peta i vilken mapp
+   som helst. Hittas ingen Skickat-mapp blir svaret null. */
+const MAPPAR = ['inkorg', 'skickat'];
+async function mappFor(klient, mapp) {
+  if (mapp === 'skickat') return hittaMapp(klient, '\\Sent');
+  return 'INBOX';
+}
+
 /* Rubrikerna i en mapp, nyast först.
    Bara kuvertet hämtas — avsändare, ämne, datum, storlek. Att läsa
    brödtexten för varje rad hade gjort listan tiotals gånger tyngre
    utan att något av det syns i den. */
-async function lista(konto, { mapp = 'INBOX', fran = 0, antal = 25 } = {}) {
+async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25 } = {}) {
   return medImap(konto, async (klient) => {
-    const las = await klient.getMailboxLock(mapp);
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return { totalt: 0, brev: [], saknas: true };
+    const las = await klient.getMailboxLock(sokvag);
     try {
       const totalt = klient.mailbox.exists;
       if (!totalt) return { totalt: 0, brev: [] };
@@ -173,11 +186,14 @@ async function lista(konto, { mapp = 'INBOX', fran = 0, antal = 25 } = {}) {
       })) {
         const e = m.envelope || {};
         const avs = (e.from && e.from[0]) || {};
+        /* I Skickat är det mottagaren som ska stå på raden, inte du. */
+        const mott = [].concat(e.to || [], e.cc || []);
         brev.push({
           uid: m.uid,
           amne: e.subject || '(utan ämne)',
           franNamn: avs.name || '',
           franAdress: avs.address || '',
+          till: mott.map(t => t.name || t.address || '').filter(Boolean),
           datum: e.date ? new Date(e.date).toISOString() : null,
           last: m.flags ? m.flags.has('\\Seen') : false,
           storlek: m.size || 0,
@@ -202,9 +218,11 @@ function harBilaga(del) {
 /* Ett helt brev. Källan hämtas rå och tolkas här — mailparser klarar
    teckenkodningar, flerdelade brev och bilagor, och det är inte
    något man skriver själv en fredag. */
-async function las(konto, { mapp = 'INBOX', uid }) {
+async function las(konto, { mapp = 'inkorg', uid }) {
   return medImap(konto, async (klient) => {
-    const las = await klient.getMailboxLock(mapp);
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return null;
+    const las = await klient.getMailboxLock(sokvag);
     try {
       const m = await klient.fetchOne(String(uid), { source: true, flags: true }, { uid: true });
       if (!m || !m.source) return null;
@@ -220,6 +238,9 @@ async function las(konto, { mapp = 'INBOX', uid }) {
         fran: adr(p.from),
         till: adr(p.to),
         kopia: adr(p.cc),
+        /* Dold kopia syns bara i ditt eget exemplar i Skickat —
+           mottagarna får aldrig raden. */
+        dold: adr(p.bcc),
         datum: p.date ? p.date.toISOString() : null,
         html: p.html || '',
         text: p.text || '',
@@ -253,16 +274,21 @@ function smtp(konto, tidsgrans) {
   });
 }
 
-async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
+async function skicka(konto, { till, kopia, dold, amne, text, svarPa, referenser }) {
   const post = smtp(konto);
 
   const brev = {
     from: konto.namn ? `${konto.namn} <${konto.adress}>` : konto.adress,
     to: till,
     subject: amne,
-    text
+    text,
+    /* Id och datum sätts här så att brevet som skickas och kopian i
+       Skickat — som byggs var för sig, se nedan — blir samma brev. */
+    messageId: `<${Date.now().toString(36)}.${crypto.randomBytes(8).toString('hex')}@${konto.adress.split('@')[1] || 'step1film.se'}>`,
+    date: new Date()
   };
   if (kopia) brev.cc = kopia;
+  if (dold) brev.bcc = dold;
   /* In-Reply-To och References är det som gör att svaret hamnar i
      samma tråd hos mottagaren i stället för som ett löst brev. */
   if (svarPa) {
@@ -277,11 +303,21 @@ async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
      byggas här.) */
   const ravara = await new MailComposer(brev).compile().build();
 
+  /* Kopian till Skickat byggs en gång till, med Bcc-raden kvar.
+     Den som skickar ska kunna se vem som fick en dold kopia; de som
+     tog emot brevet ska inte. Utan dold kopia är de två identiska. */
+  let skickatKopia = ravara;
+  if (dold) {
+    const nod = new MailComposer(brev).compile();
+    nod.keepBcc = true;
+    skickatKopia = await nod.build();
+  }
+
   /* Kuvertet måste räknas fram själv när brevet skickas färdigbyggt.
      Fälten är en kommalista och kan innehålla namn — hit ska bara de
      rena adresserna. */
   const rena = (v) => adressparser(String(v || '')).map(a => a.address).filter(Boolean);
-  const mottagare = rena(till).concat(rena(kopia));
+  const mottagare = rena(till).concat(rena(kopia), rena(dold));
   const kvitto = await post.sendMail({
     envelope: { from: konto.adress, to: mottagare },
     raw: ravara
@@ -292,7 +328,7 @@ async function skicka(konto, { till, kopia, amne, text, svarPa, referenser }) {
     await medImap(konto, async (klient) => {
       const mapp = await hittaMapp(klient, '\\Sent');
       if (!mapp) return;
-      await klient.append(mapp, ravara, ['\\Seen']);
+      await klient.append(mapp, skickatKopia, ['\\Seen']);
       iSkickat = true;
     });
   } catch {
@@ -338,4 +374,4 @@ async function skickaBrev({ fran, till, amne, text, html, svaraTill, hemligKopia
   return { id: kvitto.messageId || '' };
 }
 
-module.exports = { konfigurerad, kontolista, kontoFor, avsandare, lista, las, skicka, skickaBrev, hittaMapp };
+module.exports = { MAPPAR, konfigurerad, kontolista, kontoFor, avsandare, lista, las, skicka, skickaBrev, hittaMapp };

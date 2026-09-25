@@ -1,8 +1,8 @@
 /* =====================================================
    ADMIN — ett helt brev
    =====================================================
-   GET ?konto=…&uid=…&mapp=INBOX
-   → { amne, fran, till, datum, html, text, bilagor }
+   GET ?konto=…&uid=…&mapp=inkorg|skickat
+   → { amne, fran, till, kopia, dold, datum, html, text, bilagor }
 
    Brevet markeras som läst i samma anrop. HTML:en skickas
    rå härifrån och saneras i admin innan den visas — se
@@ -34,8 +34,11 @@ exports.handler = async (event) => {
   const uid = Number(q.uid);
   if (!Number.isInteger(uid) || uid < 1) return json(400, headers, { fel: 'Ogiltigt uid.' });
 
+  const mapp = q.mapp || 'inkorg';
+  if (!M.MAPPAR.includes(mapp)) return json(400, headers, { fel: 'Okänd mapp.' });
+
   try {
-    const brev = await M.las(konto, { mapp: q.mapp || 'INBOX', uid });
+    const brev = await M.las(konto, { mapp, uid });
     if (!brev) return json(404, headers, { fel: 'Brevet finns inte kvar.' });
     return json(200, headers, brev);
   } catch (e) {

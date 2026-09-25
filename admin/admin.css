@@ -439,11 +439,33 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
      brevet rullar var för sig; sidan i stort rullar inte. */
   height: clamp(28rem, calc(100vh - 16rem), 60rem);
 }
-.mejl-lista, .mejl-yta {
+.mejl-spalt, .mejl-yta {
   background: var(--yta);
-  overflow-y: auto;
   min-width: 0;
+  min-height: 0;
 }
+.mejl-yta { overflow-y: auto; }
+/* Mappväljaren står still överst; bara rubrikerna under rullar. */
+.mejl-spalt { display: flex; flex-direction: column; }
+.mejl-lista { flex: 1; overflow-y: auto; min-height: 0; }
+
+/* --- Inkorg / Skickat --- */
+.mejl-mappar { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+.mejl-mapp {
+  flex: 1;
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mejl-mapp:hover { color: var(--text); }
+.mejl-mapp.vald { color: var(--white); border-bottom-color: var(--accent); }
 
 /* --- Rubrikraderna --- */
 .brevrad {
@@ -515,6 +537,14 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 .skriv-fot { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
 .skriv-status { font-size: 0.8rem; color: var(--text-dim); }
 .skriv-status.fel { color: var(--accent); }
+/* Kopia och Dold kopia göms tills man ber om dem, som i Gmail —
+   de flesta brev har bara en mottagare. */
+.skriv-extra { display: flex; gap: 0.8rem; margin-top: 0.3rem; }
+.skriv-extra button {
+  border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+  font-size: 0.78rem; color: var(--text-dim); text-decoration: underline; text-underline-offset: 2px;
+}
+.skriv-extra button:hover { color: var(--text); }
 
 /* --- Tomma lägen --- */
 .mejl-tom { padding: 2.5rem 1.4rem; text-align: center; color: var(--text-dim); font-size: 0.86rem; }
@@ -524,6 +554,6 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
    avsändare eller ämne. */
 @media (max-width: 900px) {
   .mejl { grid-template-columns: minmax(0, 1fr); height: auto; }
-  .mejl-lista { max-height: 22rem; }
+  .mejl-spalt { max-height: 25rem; }
   .mejl-yta { min-height: 20rem; }
 }
