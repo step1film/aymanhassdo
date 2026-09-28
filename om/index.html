@@ -50,39 +50,61 @@
        Lägg till fler profiler där (Wikidata, Vimeo, Instagram,
        Svensk Filmdatabas) när de finns.
 
+       Personen ligger i en ProfilePage: Googles egen typ för "den här
+       sidan handlar om en person". Det är den typen Rich Results Test
+       visar ("Profile page") — en ensam Person visas inte där.
+
        Inget påhittat: bara det som också står på sidan.
   ====================================================== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": "https://step1film.se/om/#person",
-    "name": "Ayman Hassdo",
-    "jobTitle": "Filmregissör",
-    "description": "Filmmaker, regissör, klippare och musiker baserad i Småland.",
+    "@type": "ProfilePage",
+    "@id": "https://step1film.se/om/",
     "url": "https://step1film.se/om/",
-    "image": "https://step1film.se/assets/portraits/ayman-hassdo-portratt.webp",
-    "mainEntityOfPage": "https://step1film.se/om/",
-    "worksFor": {
-      "@type": "Organization",
-      "@id": "https://step1film.se/#business",
-      "name": "STEP1FILM",
-      "url": "https://step1film.se/"
-    },
-    "alumniOf": [
-      { "@type": "EducationalOrganization", "name": "Ölands folkhögskola" },
-      { "@type": "EducationalOrganization", "name": "Tornedalens folkhögskola" },
-      {
-        "@type": "EducationalOrganization",
-        "name": "Film & Tv skolan",
-        "address": { "@type": "PostalAddress", "addressLocality": "Kairo", "addressCountry": "EG" }
-      }
-    ],
-    "sameAs": [
-      "https://www.imdb.com/name/nm12716735/",
-      "https://www.linkedin.com/in/ayman-hassdo/",
-      "https://www.youtube.com/channel/UCjZA01zWOmehKvUGtTdjviA"
-    ]
+    "name": "Ayman Hassdo – regissör och filmmaker",
+    "inLanguage": "sv",
+    "dateCreated": "2026-09-28",
+    "dateModified": "2026-09-28",
+    "mainEntity": {
+      "@type": "Person",
+      "@id": "https://step1film.se/om/#person",
+      "name": "Ayman Hassdo",
+      "jobTitle": "Filmregissör",
+      "description": "Filmmaker, regissör, klippare och musiker baserad i Småland.",
+      "url": "https://step1film.se/om/",
+      "image": "https://step1film.se/assets/portraits/ayman-hassdo-portratt.webp",
+      "worksFor": {
+        "@type": "Organization",
+        "@id": "https://step1film.se/#business",
+        "name": "STEP1FILM",
+        "url": "https://step1film.se/"
+      },
+      "alumniOf": [
+        {
+          "@type": "EducationalOrganization",
+          "name": "Ölands folkhögskola"
+        },
+        {
+          "@type": "EducationalOrganization",
+          "name": "Tornedalens folkhögskola"
+        },
+        {
+          "@type": "EducationalOrganization",
+          "name": "Film & Tv skolan",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Kairo",
+            "addressCountry": "EG"
+          }
+        }
+      ],
+      "sameAs": [
+        "https://www.imdb.com/name/nm12716735/",
+        "https://www.linkedin.com/in/ayman-hassdo/",
+        "https://www.youtube.com/channel/UCjZA01zWOmehKvUGtTdjviA"
+      ]
+    }
   }
   </script>
 </head>
