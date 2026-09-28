@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0c0c0c" />
 
   <title>Ayman Hassdo – regissör och filmmaker | STEP1FILM</title>
-  <meta name="description" content="Ayman Hassdo är filmregissör, klippare och musiker baserad i Småland. Utbildad i dokumentärfilm på Ölands folkhögskola och vid en filmhögskola i Kairo. Driver produktionsbolaget STEP1FILM." />
+  <meta name="description" content="Ayman Hassdo är filmregissör, klippare och musiker baserad i Småland. Utbildad vid Film &amp; Tv skolan i Kairo och i dokumentärfilm på Ölands folkhögskola. Driver produktionsbolaget STEP1FILM." />
   <meta name="author" content="Ayman Hassdo" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://step1film.se/om/" />
@@ -69,10 +69,15 @@
       "name": "STEP1FILM",
       "url": "https://step1film.se/"
     },
-    "alumniOf": {
-      "@type": "EducationalOrganization",
-      "name": "Ölands folkhögskola"
-    },
+    "alumniOf": [
+      { "@type": "EducationalOrganization", "name": "Ölands folkhögskola" },
+      { "@type": "EducationalOrganization", "name": "Tornedalens folkhögskola" },
+      {
+        "@type": "EducationalOrganization",
+        "name": "Film & Tv skolan",
+        "address": { "@type": "PostalAddress", "addressLocality": "Kairo", "addressCountry": "EG" }
+      }
+    ],
     "sameAs": [
       "https://www.imdb.com/name/nm12716735/",
       "https://www.linkedin.com/in/ayman-hassdo/",
@@ -84,7 +89,8 @@
 <body class="sida">
 
   <!-- Samma ordmärke som startsidan. Till höger: Om (den här sidan)
-       och butiken, samma två länkar som i startsidans huvudmeny. -->
+       och butiken. Startsidans meny länkar med flit inte hit — sidan
+       är till för Google (sitemap.xml, JSON-LD), inte för menyn. -->
   <div id="logo-mark">
     <a href="../" class="logo-text" aria-label="STEP1FILM — startsida"><i class="logo-reel" aria-hidden="true"></i>STEP<span>1</span>FILM</a>
     <a href="/om/" class="logo-text logo-store logo-hoger" aria-current="page">OM</a>
@@ -122,15 +128,15 @@
       <div class="bop-text">
         <h2 class="sida-rubrik" id="om-bio">Biografi</h2>
         <p class="lead">Ayman Hassdo är filmmaker, regissör, klippare och musiker, baserad i Småland. Han föddes i nordöstra Syrien och kom till Sverige när kriget tvingade honom att lämna sitt hem. Sedan 2013 arbetar han som filmregissör i Sverige.</p>
-        <p>Ayman har examen från en filmhögskola i Kairo och har studerat dokumentärfilm på Ölands folkhögskola. Han arbetar ofta i flera led av samma film — han skriver, regisserar och klipper — och musiken är en del av samma hantverk.</p>
+        <p>Ayman har examen från Film &amp; Tv skolan i Kairo. I Sverige har han studerat dokumentärfilm på Ölands folkhögskola och även gått på Tornedalens folkhögskola. Han arbetar ofta i flera led av samma film — han skriver, regisserar och klipper — och musiken är en del av samma hantverk.</p>
         <p>Hans filmer handlar om människor snarare än om frågor. Kortfilmen The Mind’s Eye från 2020 skrev, regisserade och klippte han själv. Just nu arbetar han med en trilogi dokumentärfilmer om migration och integration, där Birds of Passage, en samproduktion med Story AB, och Jag som har två mammor är de två första delarna.</p>
         <p>Ayman driver produktionsbolaget STEP1FILM, som gör dokumentär, kortfilm och uppdragsfilm i Småland och Jönköpings län. Bolaget hjälper också nya filmskapare att ta sitt första steg — från den första idén till en färdig film på biograf eller festival.</p>
       </div>
     </section>
 
     <!-- 03 — filmografin. En rad per film: affisch, år, titel, form och
-         roll. Uppgifter som saknas står som [år] / [roll] i rött — de
-         ska fyllas i innan sidan publiceras, inte gissas. -->
+         roll. Form och roll för Otyg och Nya ord står inte med ännu —
+         de läggs till när de är bekräftade, inte gissade. -->
     <section class="om-block" aria-labelledby="om-filmer">
       <h2 class="sida-rubrik" id="om-filmer">Filmografi</h2>
 
@@ -149,20 +155,16 @@
           <img class="om-film-affisch" src="../assets/films/posters/otyg.jpg" alt="Affisch till Otyg"
                width="750" height="1000" loading="lazy" decoding="async" />
           <div class="om-film-text">
-            <span class="om-film-ar"><span class="om-saknas">[år]</span></span>
+            <span class="om-film-ar">2022</span>
             <h3 class="om-film-titel">Otyg</h3>
-            <p class="om-film-form"><span class="om-saknas">[kortfilm/dokumentär?]</span></p>
-            <p class="om-film-roll"><span class="om-saknas">[roll]</span></p>
           </div>
         </li>
         <li class="om-film">
           <img class="om-film-affisch" src="../assets/films/posters/nya-ord.jpg" alt="Affisch till Nya ord"
                width="707" height="1000" loading="lazy" decoding="async" />
           <div class="om-film-text">
-            <span class="om-film-ar"><span class="om-saknas">[år]</span></span>
+            <span class="om-film-ar">2016</span>
             <h3 class="om-film-titel">Nya ord</h3>
-            <p class="om-film-form"><span class="om-saknas">[kortfilm/dokumentär?]</span></p>
-            <p class="om-film-roll"><span class="om-saknas">[roll]</span></p>
           </div>
         </li>
       </ul>

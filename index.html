@@ -39,6 +39,8 @@
        Person   vem Ayman är. @id pekar på /om/ — det är personens egen
                 sida, och samma @id står där. Då ser Google en person,
                 separat från bolaget, som bolaget har som grundare.
+                /om/ har med flit ingen länk i menyn. Google hittar den
+                ändå: via url-fältet här, sitemap.xml och sameAs-profilerna.
        ProfessionalService  vad verksamheten gör och VAR den gör det.
                 Det är en Organization (ProfessionalService och
                 LocalBusiness är undertyper), med founder → Ayman.
@@ -72,7 +74,8 @@
         ],
         "alumniOf": [
           { "@type": "EducationalOrganization", "name": "\u00d6lands folkh\u00f6gskola" },
-          { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" }
+          { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" },
+          { "@type": "EducationalOrganization", "name": "Film & Tv skolan", "address": { "@type": "PostalAddress", "addressLocality": "Kairo", "addressCountry": "EG" } }
         ],
         "sameAs": [
           "https://www.imdb.com/name/nm12716735/",
@@ -251,10 +254,6 @@
         <button type="button" data-lang="sv">SV</button>
         <button type="button" data-lang="en">EN</button>
       </div>
-      <!-- Om: personens egen sida. Ny flik, som butiken — svepstacken
-           tappar sitt läge om man lämnar den. -->
-      <a href="/om/" class="logo-text logo-store" data-i18n="aboutLink"
-         target="_blank" rel="noopener">OM</a>
       <a href="/store" class="logo-text logo-store" data-i18n-aria="storeLinkAria" aria-label="STEP1FILM Store"
          data-i18n="storeLink" target="_blank" rel="noopener">BUTIK</a>
     </div>
