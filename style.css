@@ -3951,3 +3951,92 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .sida-bilder img:nth-child(n) { grid-column: 1 / -1; }
 }
 
+/* =====================================================
+   OM-SIDAN — /om/
+   =====================================================
+   Personens egen sida. Byggd av samma delar som filmsidorna
+   (.bop-sida, .bop-split, .sida-rubrik, .credit-rad, .sida-knapp);
+   här står bara det som skiljer. */
+
+/* Huvudmenyn: första länken till höger skjuter sig själv dit. På
+   startsidan gör språkvalet det; här finns inget språkval. */
+.logo-hoger { margin-left: auto; }
+.logo-store[aria-current="page"] { color: var(--accent); }
+
+/* Filmsidorna börjar med en hero som ordmärket ligger ovanpå. Den här
+   sidan börjar med text, så den måste börja under ordmärket. */
+.om-sida { padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4rem)); }
+
+/* Titeln är lång — ett namn och en yrkesbeskrivning — och får vara
+   något mindre än en filmtitel för att inte bryta på fyra rader. */
+.om-titel { font-size: clamp(2rem, min(5.4vw, 7vh), 3.8rem); line-height: 1; }
+
+/* Porträttet är kvadratiskt; filmsidornas bildruta är 2:1. */
+.om-portratt img { aspect-ratio: 1 / 1; object-fit: cover; }
+
+/* --- Filmografi --- */
+.om-filmer {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: clamp(1.4rem, 3vw, 2.4rem);
+}
+.om-film { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.om-film-affisch {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+.om-film-ar {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.24em;
+  color: var(--accent);
+}
+.om-film-titel {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin: 0.2rem 0 0.3rem;
+}
+.om-film-form,
+.om-film-roll { font-size: var(--fs-note); line-height: 1.5; color: var(--text); }
+.om-film-roll { color: var(--text-dim); }
+
+/* Uppgift som saknas. Syns tydligt så att den inte glöms kvar — ska
+   vara borta innan sidan publiceras. */
+.om-saknas {
+  color: var(--accent);
+  border-bottom: 1px dashed currentColor;
+}
+
+.om-under {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: var(--fs-label);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: clamp(2rem, 5vh, 3rem) 0 0.6rem;
+}
+.om-pagaende { max-width: 52rem; }
+.om-pagaende a { color: var(--white); border-bottom: 1px solid var(--line-s); transition: color 0.25s, border-color 0.25s; }
+.om-pagaende a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* --- Profiler --- */
+.om-lankar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+

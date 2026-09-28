@@ -36,8 +36,12 @@
   <!-- =====================================================
        JSON-LD — strukturerad data
        =====================================================
-       Person   vem Ayman är
+       Person   vem Ayman är. @id pekar på /om/ — det är personens egen
+                sida, och samma @id står där. Då ser Google en person,
+                separat från bolaget, som bolaget har som grundare.
        ProfessionalService  vad verksamheten gör och VAR den gör det.
+                Det är en Organization (ProfessionalService och
+                LocalBusiness är undertyper), med founder → Ayman.
                 Det är den här biten som lokal sökning läser: areaServed
                 talar om vilka orter och län uppdragen tas i, och
                 hasOfferCatalog vad som faktiskt erbjuds.
@@ -53,9 +57,9 @@
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://step1film.se/#person",
+        "@id": "https://step1film.se/om/#person",
         "name": "Ayman Hassdo",
-        "url": "https://step1film.se/",
+        "url": "https://step1film.se/om/",
         "image": "https://step1film.se/assets/portraits/ayman-hassdo.webp",
         "jobTitle": ["Filmregiss\u00f6r", "Filmfotograf", "Filmproducent", "Klippare"],
         "worksFor": { "@id": "https://step1film.se/#business" },
@@ -70,7 +74,11 @@
           { "@type": "EducationalOrganization", "name": "\u00d6lands folkh\u00f6gskola" },
           { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" }
         ],
-        "sameAs": []
+        "sameAs": [
+          "https://www.imdb.com/name/nm12716735/",
+          "https://www.linkedin.com/in/ayman-hassdo/",
+          "https://www.youtube.com/channel/UCjZA01zWOmehKvUGtTdjviA"
+        ]
       },
       {
         "@type": ["ProfessionalService", "LocalBusiness"],
@@ -81,7 +89,7 @@
         "url": "https://step1film.se/",
         "logo": "https://step1film.se/bg-stage.jpg",
         "image": "https://step1film.se/bg-stage.jpg",
-        "founder": { "@id": "https://step1film.se/#person" },
+        "founder": { "@id": "https://step1film.se/om/#person", "@type": "Person", "name": "Ayman Hassdo" },
         "email": "mailto:info@step1film.se",
         "priceRange": "$$",
         "currenciesAccepted": "SEK",
@@ -243,6 +251,10 @@
         <button type="button" data-lang="sv">SV</button>
         <button type="button" data-lang="en">EN</button>
       </div>
+      <!-- Om: personens egen sida. Ny flik, som butiken — svepstacken
+           tappar sitt läge om man lämnar den. -->
+      <a href="/om/" class="logo-text logo-store" data-i18n="aboutLink"
+         target="_blank" rel="noopener">OM</a>
       <a href="/store" class="logo-text logo-store" data-i18n-aria="storeLinkAria" aria-label="STEP1FILM Store"
          data-i18n="storeLink" target="_blank" rel="noopener">BUTIK</a>
     </div>
