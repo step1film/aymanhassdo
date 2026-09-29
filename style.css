@@ -388,9 +388,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* Butikslänk + språkväxlare till höger i toppen */
+/* Butikslänken är ett mål, språkvalet bredvid är en inställning. Den
+   får därför vara större än SV/EN — de ska ligga kvar som de var. */
 .logo-store {
   margin-left: 0.9rem;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   letter-spacing: 0.24em;
   color: var(--text-dim);
   transition: color 0.25s ease;
@@ -442,7 +444,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 @media (max-width: 560px) {
-  .logo-store { letter-spacing: 0.14em; margin-left: 0.6rem; }
+  /* Smal skärm: ordet får vara kvar större än språkvalet, men inte så
+     stort att raden spricker bredvid ordmärket. */
+  .logo-store { font-size: 0.95rem; letter-spacing: 0.14em; margin-left: 0.6rem; }
   .lang-toggle { font-size: var(--fs-label); }
   .lang-toggle button { padding: 0.22rem 0.5rem; }
 }
