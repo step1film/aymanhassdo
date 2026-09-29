@@ -152,8 +152,14 @@
       </div>
 
       <div class="mejl">
-        <!-- Vänster: rubrikerna. Höger: brevet eller skrivrutan. -->
-        <div class="mejl-lista" id="mejlLista" role="list" aria-label="Brev i inkorgen"></div>
+        <!-- Vänster: mappväljaren och rubrikerna. Höger: brevet eller skrivrutan. -->
+        <div class="mejl-spalt">
+          <div class="mejl-mappar" role="tablist" aria-label="Mapp">
+            <button class="mejl-mapp vald" type="button" role="tab" aria-selected="true" data-mapp="inkorg">Inkorg</button>
+            <button class="mejl-mapp" type="button" role="tab" aria-selected="false" data-mapp="skickat">Skickat</button>
+          </div>
+          <div class="mejl-lista" id="mejlLista" role="list" aria-label="Brev i inkorgen"></div>
+        </div>
         <div class="mejl-yta" id="mejlYta"></div>
       </div>
     </section>

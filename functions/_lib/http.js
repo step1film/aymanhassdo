@@ -58,4 +58,40 @@ function isForeignOrigin(event) {
 
 const json = (statusCode, headers, body) => ({ statusCode, headers, body: JSON.stringify(body) });
 
-module.exports = { corsHeaders, isForeignOrigin, allowedOrigins, json };
+
+/* -----------------------------------------------------
+   ENKEL SPÄRR MOT MISSBRUK
+   -----------------------------------------------------
+   Räknaren lever i funktionsinstansen. Den stoppar inte en
+   angripare med tusen IP-adresser, men den stoppar allt som
+   går genom en och samma, och den kostar ingenting. Ett
+   riktigt skydd hör hemma i en KV-store — se PAYMENTS_SETUP.md.
+
+   Varje funktionsfil har sin egen instans, alltså sin egen
+   räknare. Det är avsiktligt: en spärr på fraktpriser ska
+   inte kunna låsa ute någon från att betala.
+--------------------------------------------------- */
+function skapaSpärr({ windowMs = 10 * 60 * 1000, max = 10 } = {}) {
+  const träffar = new Map();
+
+  return function spärrad(nyckel, egetMax) {
+    if (!nyckel) return false;
+    const tak = egetMax || max;
+    const nu = Date.now();
+    const tider = (träffar.get(nyckel) || []).filter((t) => nu - t < windowMs);
+    tider.push(nu);
+    träffar.set(nyckel, tider);
+    if (träffar.size > 500) {
+      for (const [k, v] of träffar) if (!v.length || nu - v[v.length - 1] > windowMs) träffar.delete(k);
+    }
+    return tider.length > tak;
+  };
+}
+
+/** Kundens IP så som Netlify ser den. */
+function clientIp(event) {
+  const h = (event && event.headers) || {};
+  return h['x-nf-client-connection-ip'] || (h['x-forwarded-for'] || '').split(',')[0].trim() || '';
+}
+
+module.exports = { corsHeaders, isForeignOrigin, allowedOrigins, json, skapaSpärr, clientIp };

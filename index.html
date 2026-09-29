@@ -14,6 +14,9 @@
   <meta name="keywords" content="filmproduktion Småland, filmbolag Jönköpings län, filmfotograf Jönköping, reklamfilm Värnamo, dokumentärfilm Småland, filmregissör Vaggeryd, filmteam Småland, videoproduktion Jönköping, Ayman Hassdo, STEP1FILM" />
   <meta name="author" content="Ayman Hassdo" />
   <link rel="canonical" href="https://step1film.se/" />
+  <!-- Google Search Console: bevisar att sajten är Aymans. Ta inte bort —
+       då tappar Search Console åtkomsten. -->
+  <meta name="google-site-verification" content="InsPq8QJzVVGLMMtJVcg6UdWfinzLaLp0ouvLSr1bvE" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -36,8 +39,14 @@
   <!-- =====================================================
        JSON-LD — strukturerad data
        =====================================================
-       Person   vem Ayman är
+       Person   vem Ayman är. @id pekar på /om/ — det är personens egen
+                sida, och samma @id står där. Då ser Google en person,
+                separat från bolaget, som bolaget har som grundare.
+                /om/ har med flit ingen länk i menyn, bara en diskret
+                länk i sidfoten — plus url-fältet här och sitemap.xml.
        ProfessionalService  vad verksamheten gör och VAR den gör det.
+                Det är en Organization (ProfessionalService och
+                LocalBusiness är undertyper), med founder → Ayman.
                 Det är den här biten som lokal sökning läser: areaServed
                 talar om vilka orter och län uppdragen tas i, och
                 hasOfferCatalog vad som faktiskt erbjuds.
@@ -53,9 +62,9 @@
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://step1film.se/#person",
+        "@id": "https://step1film.se/om/#person",
         "name": "Ayman Hassdo",
-        "url": "https://step1film.se/",
+        "url": "https://step1film.se/om/",
         "image": "https://step1film.se/assets/portraits/ayman-hassdo.webp",
         "jobTitle": ["Filmregiss\u00f6r", "Filmfotograf", "Filmproducent", "Klippare"],
         "worksFor": { "@id": "https://step1film.se/#business" },
@@ -68,9 +77,14 @@
         ],
         "alumniOf": [
           { "@type": "EducationalOrganization", "name": "\u00d6lands folkh\u00f6gskola" },
-          { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" }
+          { "@type": "EducationalOrganization", "name": "Tornedalens folkh\u00f6gskola" },
+          { "@type": "EducationalOrganization", "name": "Film & Tv skolan", "address": { "@type": "PostalAddress", "addressLocality": "Kairo", "addressCountry": "EG" } }
         ],
-        "sameAs": []
+        "sameAs": [
+          "https://www.imdb.com/name/nm12716735/",
+          "https://www.linkedin.com/in/ayman-hassdo/",
+          "https://www.youtube.com/channel/UCjZA01zWOmehKvUGtTdjviA"
+        ]
       },
       {
         "@type": ["ProfessionalService", "LocalBusiness"],
@@ -81,7 +95,7 @@
         "url": "https://step1film.se/",
         "logo": "https://step1film.se/bg-stage.jpg",
         "image": "https://step1film.se/bg-stage.jpg",
-        "founder": { "@id": "https://step1film.se/#person" },
+        "founder": { "@id": "https://step1film.se/om/#person", "@type": "Person", "name": "Ayman Hassdo" },
         "email": "mailto:info@step1film.se",
         "priceRange": "$$",
         "currenciesAccepted": "SEK",
@@ -664,6 +678,10 @@
             <div class="foot-col">
               <span class="foot-brand"><i class="logo-reel" aria-hidden="true"></i>STEP<em>1</em>FILM</span>
               <span class="foot-copy" data-i18n="footCopy">© 2026 STEP1FILM · Småland, Sverige</span>
+              <!-- Den enda länken till /om/ på startsidan: diskret här i
+                   sidfoten i stället för i menyn, men en vanlig länk som
+                   Google följer. -->
+              <a class="foot-link" href="/om/">Ayman Hassdo</a>
             </div>
             <div class="foot-col foot-col--right">
               <a class="foot-link" href="mailto:info@step1film.se">info@step1film.se</a>

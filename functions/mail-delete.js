@@ -1,7 +1,7 @@
 /* =====================================================
    ADMIN — radera ett brev
    =====================================================
-   POST { konto, uid, mapp? }
+   POST { konto, uid, mapp? }   mapp: 'inkorg' (standard) eller 'skickat'
    → { ok: true, borta: false }   flyttat till papperskorgen
    → { ok: true, borta: true }    raderat på riktigt (låg redan där)
 
@@ -42,8 +42,12 @@ exports.handler = async (event) => {
   const uid = Number(d.uid);
   if (!Number.isInteger(uid) || uid < 1) return json(400, headers, { fel: 'Ogiltigt uid.' });
 
+  /* Bara mapparna listan känner till. Ett fritt mappnamn härifrån
+     hade låtit webbläsaren peka ut vilken brevlåda som helst. */
+  const mapp = M.MAPPAR.includes(d.mapp) ? d.mapp : 'inkorg';
+
   try {
-    const svar = await M.radera(konto, { mapp: d.mapp || 'INBOX', uid });
+    const svar = await M.radera(konto, { mapp, uid });
     if (!svar.ok) {
       return json(409, headers, { fel: 'Brevlådan har ingen papperskorg, så brevet lämnades orört.' });
     }

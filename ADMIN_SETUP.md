@@ -202,7 +202,8 @@ Glöm inte **Deploys → Trigger deploy** efteråt.
 * **Bilagor listas men laddas inte ned.** Ett svar från en serverlös
   funktion får väga sex megabyte, och en vanlig bildbilaga spränger
   den gränsen. Öppna sådana brev i mejlprogrammet.
-* **Bara inkorgen visas**, de tjugofem senaste breven.
+* **Inkorgen och Skickat**, de tjugofem senaste breven i vardera.
+  Andra mappar i brevlådan visas inte.
 * **Radera betyder flytta till papperskorgen.** Knappen *Radera* i
   ett öppnat brev lägger det i brevlådans papperskorg, precis som i
   vilket mejlprogram som helst — det går alltså att hämta tillbaka i

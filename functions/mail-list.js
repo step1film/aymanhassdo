@@ -1,7 +1,7 @@
 /* =====================================================
    ADMIN — inkorgens rubriker
    =====================================================
-   GET ?konto=info@step1film.se&mapp=INBOX&fran=0
+   GET ?konto=info@step1film.se&mapp=inkorg|skickat&fran=0
    med sessionsnyckeln i X-Admin-Session
    → { konton: [...], mapp, totalt, brev: [...] }
 
@@ -35,12 +35,14 @@ exports.handler = async (event) => {
   const konto = M.kontoFor(q.konto);
   if (!konto) return json(404, headers, { fel: 'Okänd brevlåda.' });
 
-  const mapp = q.mapp || 'INBOX';
+  const mapp = q.mapp || 'inkorg';
+  if (!M.MAPPAR.includes(mapp)) return json(400, headers, { fel: 'Okänd mapp.' });
   const fran = Math.max(0, Number(q.fran) || 0);
   const antal = Math.min(50, Math.max(5, Number(q.antal) || 25));
 
   try {
-    const { totalt, brev } = await M.lista(konto, { mapp, fran, antal });
+    const { totalt, brev, saknas } = await M.lista(konto, { mapp, fran, antal });
+    if (saknas) return json(404, headers, { fel: 'Hittade ingen Skickat-mapp i brevlådan.' });
     return json(200, headers, { konton, mapp, totalt, fran, brev });
   } catch (e) {
     /* Felmeddelandet från IMAP kan innehålla serverns svar ordagrant.

@@ -68,11 +68,11 @@
        Bilden som eget lager längst bak, texten ovanpå, som på Birds
        of Passage-sidan. Det här är sidans enda fotografi i färg —
        stillbilderna nedanför är svartvita, som i pitchdecket. De två
-       sitter i höger halva av bilden, så rubriken till vänster täcker
-       ingen av dem. -->
+       sitter bredvid varandra i soffan, Birgitta till vänster och
+       Fedaa till höger. -->
   <header class="bop-hero bop-hero--hel-bild">
     <img class="bop-hero-bild" src="stills/jhtm-mammorna.webp" alt="Birgitta och Fedaa i soffan"
-         width="1800" height="1012" fetchpriority="high" decoding="async" />
+         width="1800" height="1013" fetchpriority="high" decoding="async" />
 
     <div class="bop-hero-inner">
       <a class="sida-back" href="../" data-i18n="jhtmBack">← Till startsidan</a>
@@ -90,7 +90,7 @@
           <span class="fakta-varde" data-i18n="jhtmVPremiere">Beräknad 2028</span>
         </div>
         <div class="fakta-post">
-          <span class="fakta-etikett" data-i18n="jhtmFFormat">Format</span>
+          <span class="fakta-etikett" data-i18n="jhtmFFormat">Genre</span>
           <span class="fakta-varde" data-i18n="jhtmVFormat">Dokumentärfilm</span>
         </div>
         <div class="fakta-post">
@@ -107,28 +107,10 @@
 
   <main class="bop-sida bop-sida--egna-matt">
 
-    <!-- 01 — premissen till vänster, affischen till höger.
-         Affischen är illustrerad och i färg, ensam om det på sidan.
-         Den får stå bredvid texten i stället för i bildraderna, där
-         de svartvita stillbilderna hör hemma. -->
-    <section class="bop-split">
-      <div class="bop-text">
-        <h2 class="sida-rubrik" data-i18n="jhtmFilmHead">Filmen</h2>
-        <p class="lead" data-i18n="jhtmFilm1">Två kvinnor. En biologisk mamma på andra sidan jordklotet, och en som kom in i familjen och stannade.</p>
-        <p data-i18n="jhtmFilm2">Filmen utforskar hur oväntade band kan bli de starkaste — och vad två mammor gör med en berättelse om tillhörighet.</p>
-      </div>
-      <div class="bop-media">
-        <figure class="bop-bild bop-bild--affisch">
-          <img src="affisch.webp" alt="Affisch till Jag som har två mammor"
-               width="900" height="1613" loading="lazy" decoding="async" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 02 — trilogin. Birds of Passage är redan gjord och har en egen
+    <!-- 01 — trilogin, först på sidan. Birds of Passage är redan gjord och har en egen
          sida, så den raden är en länk. Den här filmen markeras som
          den man står på, och den tredje står kvar som titel. -->
-    <section class="bop-split bop-split--omvand">
+    <section class="bop-ensam">
       <div class="bop-text">
         <h2 class="sida-rubrik" data-i18n="jhtmTriHead">En trilogi</h2>
         <p class="sida-underrubrik" data-i18n="jhtmTriSub">om migration och integration</p>
@@ -146,11 +128,27 @@
           </li>
         </ol>
       </div>
+    </section>
+
+    <!-- 02 — premissen till vänster, affischen i mitten och loglinen
+         till höger. Affischen är illustrerad och i färg, ensam om det
+         på sidan. Den får stå mellan texterna i stället för i
+         bildraderna, där de svartvita stillbilderna hör hemma. -->
+    <section class="bop-trio">
+      <div class="bop-text">
+        <h2 class="sida-rubrik" data-i18n="jhtmFilmHead">Filmen</h2>
+        <p class="lead" data-i18n="jhtmFilm1">Två kvinnor. En biologisk mamma på andra sidan jordklotet, och en som kom in i familjen och stannade.</p>
+        <p data-i18n="jhtmFilm2">Filmen utforskar hur oväntade band kan bli de starkaste — och vad två mammor gör med en berättelse om tillhörighet.</p>
+      </div>
       <div class="bop-media">
-        <figure class="bop-bild">
-          <img src="stills/jhtm-ankomst.webp" alt="Ankomsthallen på Stockholm Arlanda"
-               width="1400" height="790" loading="lazy" decoding="async" />
+        <figure class="bop-bild bop-bild--affisch">
+          <img src="affisch.webp" alt="Affisch till Jag som har två mammor"
+               width="900" height="1613" loading="lazy" decoding="async" />
         </figure>
+      </div>
+      <div class="bop-trio-logline">
+        <span class="fraga-etikett" data-i18n="jhtmLogline">Logline:</span>
+        <p class="fraga-text" data-i18n="jhtmQuestion">Vad betyder familj när man förlorat sitt ursprung?</p>
       </div>
     </section>
 
@@ -172,16 +170,6 @@
       </div>
     </section>
 
-    <!-- Fedaa i närbild, över hela bredden och direkt under stycket om
-         henne. Bilden låg först bakom rubriken i heron, nedtonad och
-         beskuren; här syns den hel och hör ihop med texten ovanför. -->
-    <section class="bop-rad">
-      <figure class="bop-bild bop-bild--full">
-        <img src="stills/jhtm-fedaa-ansikte.webp" alt="Fedaa i närbild"
-             width="1800" height="1013" loading="lazy" decoding="async" />
-      </figure>
-    </section>
-
     <!-- 04 — Birgitta, spegelvänd mot Fedaa. De två mammorna får
          samma utrymme och samma bildformat, var sin sida. -->
     <section class="bop-split bop-split--portratt bop-split--omvand">
@@ -192,40 +180,37 @@
       <div class="bop-media">
         <figure class="bop-bild">
           <img src="stills/jhtm-birgitta.webp" alt="Birgitta i samtal"
-               width="1000" height="1125" loading="lazy" decoding="async" />
+               width="1000" height="1408" loading="lazy" decoding="async" />
         </figure>
       </div>
     </section>
 
-    <!-- 05 — avståndet, över hela bredden. -->
-    <section class="bop-rad">
-      <figure class="bop-bild bop-bild--full">
-        <img src="stills/jhtm-avstand.webp" alt="Väntande resenärer framför ankomsttavlan"
-             width="1600" height="900" loading="lazy" decoding="async" />
-      </figure>
-    </section>
-
-    <section class="bop-ensam">
+    <!-- 05 — avståndet, texten till vänster och ankomsttavlan bredvid. -->
+    <section class="bop-split">
       <div class="bop-text">
         <h2 class="sida-rubrik" data-i18n="jhtmDistHead">Avståndet</h2>
         <p data-i18n="jhtmDist1">Min biologiska mamma Fedaa hamnade i Australien efter kriget i Syrien. Familjen finns kvar — men på andra sidan jordklotet.</p>
       </div>
+      <div class="bop-media">
+        <figure class="bop-bild">
+          <img src="stills/jhtm-avstand.webp" alt="Väntande resenärer framför ankomsttavlan"
+               width="1600" height="900" loading="lazy" decoding="async" />
+        </figure>
+      </div>
     </section>
 
-    <!-- 06 — frågan filmen ställer. Den står ensam, utan bild, för
-         att den ska få väga. -->
-    <section class="bop-fraga">
-      <p class="fraga-text" data-i18n="jhtmQuestion">Vad betyder familj när man förlorat sitt ursprung?</p>
-    </section>
-
-    <!-- 07 — var projektet står. Utan bild: de fem stillbilderna är
-         redan använda var för sig, och att sätta en av dem en andra
-         gång hade synts som en upprepning, inte som en bild. -->
-    <section class="bop-ensam">
+    <!-- 07 — var projektet står, med ankomsthallen bredvid. -->
+    <section class="bop-split">
       <div class="bop-text">
         <h2 class="sida-rubrik" data-i18n="jhtmStatusHead">Status och process</h2>
         <p data-i18n="jhtmStatus1">Projektet är i en utforskande fas — jag samlar material. Jag vet vad jag vill säga, men låter filmen växa fram i sin egen takt.</p>
         <p data-i18n="jhtmStatus2">Research och utveckling sker med Sydsvenska Filmkreatörer. Premiären är beräknad till 2028.</p>
+      </div>
+      <div class="bop-media">
+        <figure class="bop-bild">
+          <img src="stills/jhtm-ankomst.webp" alt="Ankomsthallen på Stockholm Arlanda"
+               width="1400" height="790" loading="lazy" decoding="async" />
+        </figure>
       </div>
     </section>
 
@@ -245,23 +230,15 @@
             <span class="credit-namn">Erik Westerström</span>
           </div>
           <div class="credit-rad">
-            <span class="credit-roll" data-i18n="jhtmDirBase">Bas</span>
-            <span class="credit-namn" data-i18n="jhtmDirBaseV">Skillingaryd, Sverige</span>
+            <span class="credit-roll" data-i18n="jhtmFCinematographer">Filmfotograf</span>
+            <span class="credit-namn">Marcus Storm</span>
           </div>
           <div class="credit-rad">
-            <span class="credit-roll" data-i18n="jhtmDirCompany">Bolag</span>
-            <span class="credit-namn">STEP1FILM</span>
-          </div>
-          <div class="credit-rad">
-            <span class="credit-roll" data-i18n="jhtmDirEdu">Utbildning</span>
-            <span class="credit-namn" data-i18n="jhtmDirEduV">Dokumentärfilm, Ölands folkhögskola</span>
-          </div>
-          <div class="credit-rad">
-            <span class="credit-roll" data-i18n="jhtmDirProg">Program</span>
-            <span class="credit-namn" data-i18n-html="jhtmDirProgV">GAZE &rdquo;Talent to Watch&rdquo;, Jönköpings län<br>Bergman Talangdagar</span>
+            <span class="credit-roll" data-i18n="jhtmDirCompany">Produktionsbolag</span>
+            <span class="credit-namn">STEP1FILM &amp; Northern Shadows</span>
           </div>
         </div>
-        <p class="credit-brod" data-i18n="jhtmDirBio">Filmregissör i Sverige sedan 2013, kommer från Syrien. Driver produktionsbolaget STEP1FILM.</p>
+        <p class="credit-brod" data-i18n="jhtmDirBio">Filmregissör i Sverige sedan 2013. Driver produktionsbolaget STEP1FILM.</p>
       </div>
 
       <div class="bop-slut-sida">

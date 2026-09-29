@@ -83,9 +83,9 @@ köra igång det ena först.
 
 **Stripe (kort + Klarna)**
 - [x] **4.1** ✅ Stripe-konto klart. ⬜ Klarna återstår att aktivera under *Payment methods*.
-- [x] **4.2** ✅ `STRIPE_SECRET_KEY` satt (testnyckel).
+- [x] **4.2** ✅ `STRIPE_SECRET_KEY` satt — **live-nyckeln** (`sk_live_…`), verifierat 2026-09-20 via `payment-methods` (`cardTest: false`).
 - [x] **4.3** ✅ Webhook skapad mot `stripe-webhook`, händelse `checkout.session.completed`.
-- [ ] **4.3b** 🙋 Lägg till två händelser till på samma webhook:
+- [x] **4.3b** ✅ Klart — webhooken `netlify-printful` i live-läge lyssnar på tre händelser. Ursprunglig text: Lägg till två händelser till på samma webhook:
       `checkout.session.async_payment_succeeded` och
       `checkout.session.async_payment_failed`. De gäller betalsätt som
       bekräftas i efterhand — utan dem kan en kund betala utan att
@@ -165,7 +165,11 @@ läggs in tänds Swish av sig själv.
 
 Gör bara detta när ett helt testköp gått igenom felfritt.
 
-- [ ] **5.1** 🙋 Byt `STRIPE_SECRET_KEY` till `sk_live_…` och lägg om webhooken i Stripes live-läge (nytt signing secret).
+- [x] **5.1** ✅ Klart. `sk_live_…` ligger i Netlify och live-webhooken är på plats.
+      **Kontrollera själv när som helst** — öppna
+      `https://step1film.netlify.app/.netlify/functions/payment-methods`.
+      `"cardTest": false` betyder live-nyckel, `true` betyder testnyckel.
+      Det svaret är facit; den här listan kan halka efter.
 - [ ] **5.2** 🙋 Byt `SWISH_ENV` till `production`.
 - [ ] **5.3** 🙋 Sätt `PRINTFUL_CONFIRM_ORDERS` = `true`. **Nu debiteras du på riktigt för varje order.**
 - [ ] **5.4** 🙋 Köp något själv, för fullt pris, med ditt eget kort. Det är enda sättet att veta att hela kedjan håller.

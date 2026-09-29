@@ -13,6 +13,7 @@ const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 const { priceCart, validateRecipient } = require('./_lib/catalog');
 const { getPaymentRequest, swishConfigured } = require('./_lib/swish');
 const { fulfilOrder } = require('./_lib/fulfil');
+const { rimligFrakt, MAX_SEK } = require('./_lib/shipping');
 
 
 /* Enkel skydd mot dubbla ordrar inom samma funktionsinstans.
@@ -64,15 +65,26 @@ exports.handler = async (event) => {
   }
 
   try {
-    const cart = priceCart(payload.items);
+    let cart = priceCart(payload.items);
     const recipient = validateRecipient(payload.recipient || {});
 
-    // Beloppet Swish faktiskt tog betalt måste matcha serverns summa.
+    /* VARORNA räknas om ur katalogen och är facit. FRAKTEN hämtades
+       live när betalningen skapades och kan ha ändrats sedan dess, så
+       den kan inte jämföras mot ett fast tal — i stället kontrolleras
+       att skillnaden mellan betalt och varorna är en rimlig frakt.
+       Är den negativ har kunden betalat för lite för varorna, och det
+       är fallet som kostar oss pengar. */
     const paid = Number(payment.amount);
-    if (!Number.isFinite(paid) || Math.abs(paid - cart.total) > 0.01) {
-      console.warn(`[swish-complete] Beloppet stämmer inte: betalt ${paid}, förväntat ${cart.total}`);
+    const fraktKr = Math.round((paid - cart.subtotal) * 100) / 100;
+
+    if (!Number.isFinite(paid) || !rimligFrakt(fraktKr)) {
+      console.warn(`[swish-complete] Beloppet stämmer inte: betalt ${paid}, varor ${cart.subtotal}, `
+        + `ger ${fraktKr} kr i frakt — utanför spannet 0–${MAX_SEK} kr.`);
       return { statusCode: 409, headers: cors, body: JSON.stringify({ status: 'PAID', error: 'Beloppet stämmer inte.' }) };
     }
+
+    // Frakten kunden faktiskt betalade är den som ska stå på kvittot.
+    cart = priceCart(payload.items, { shipping: fraktKr });
 
     handled.add(paymentId);
     await fulfilOrder({

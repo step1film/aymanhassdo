@@ -3528,6 +3528,16 @@ body.sida #logo-mark > * { pointer-events: auto; }
    skärmen. */
 .bop-split--trailer { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.45fr); }
 .bop-split--trailer .sida-trailer { max-width: none; }
+/* Tre spalter: text, affischen i mitten, loglinen. Affischen är
+   smal och stående, så mittspalten behöver inte mer än så. */
+.bop-trio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.5rem);
+  align-items: center;
+}
+.bop-trio-logline .fraga-etikett { display: block; margin: 0 0 0.8rem; font-size: var(--fs-micro); letter-spacing: 0.3em; }
+.bop-trio-logline .fraga-text { margin: 0; max-width: 16ch; font-size: clamp(1.3rem, 2.4vw, 2rem); }
 
 /* Stående porträtt. En stående bild blir dubbelt så hög som en
    liggande på samma bredd, så den får en smalare spalt — annars äger
@@ -3717,6 +3727,7 @@ body.sida #logo-mark > * { pointer-events: auto; }
   .bop-sida { gap: clamp(2.5rem, 8vh, 4rem); }
   .bop-split,
   .bop-split--omvand { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .bop-trio { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
   .bop-split--omvand .bop-text  { order: 1; }
   .bop-split--omvand .bop-media { order: 2; }
   .bop-text p { max-width: none; }
@@ -3847,6 +3858,16 @@ body.sida #logo-mark > * { pointer-events: auto; }
   max-width: 24ch;
   margin: 0 auto;
 }
+/* Etiketten före loglinen: samma röda, glesa versaler som
+   sidans övriga etiketter, på samma rad som frågan. */
+.fraga-etikett {
+  font-size: 0.5em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 0.6em;
+  vertical-align: middle;
+}
 
 /* Brödtext under en creditlista — regissörens rader, inte en roll. */
 .credit-brod {
@@ -3928,5 +3949,87 @@ body.sida #logo-mark > * { pointer-events: auto; }
      bredden och får en egen rad. */
   .sida-bilder { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
   .sida-bilder img:nth-child(n) { grid-column: 1 / -1; }
+}
+
+/* =====================================================
+   OM-SIDAN — /om/
+   =====================================================
+   Personens egen sida. Byggd av samma delar som filmsidorna
+   (.bop-sida, .bop-split, .sida-rubrik, .credit-rad, .sida-knapp);
+   här står bara det som skiljer. */
+
+/* Huvudmenyn: första länken till höger skjuter sig själv dit. På
+   startsidan gör språkvalet det; här finns inget språkval. */
+.logo-hoger { margin-left: auto; }
+.logo-store[aria-current="page"] { color: var(--accent); }
+
+/* Filmsidorna börjar med en hero som ordmärket ligger ovanpå. Den här
+   sidan börjar med text, så den måste börja under ordmärket. */
+.om-sida { padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4rem)); }
+
+/* Titeln är lång — ett namn och en yrkesbeskrivning — och får vara
+   något mindre än en filmtitel för att inte bryta på fyra rader. */
+.om-titel { font-size: clamp(2rem, min(5.4vw, 7vh), 3.8rem); line-height: 1; }
+
+/* Porträttet är kvadratiskt; filmsidornas bildruta är 2:1. */
+.om-portratt img { aspect-ratio: 1 / 1; object-fit: cover; }
+
+/* --- Filmografi --- */
+.om-filmer {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: clamp(1.4rem, 3vw, 2.4rem);
+}
+.om-film { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.om-film-affisch {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+.om-film-ar {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.24em;
+  color: var(--accent);
+}
+.om-film-titel {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin: 0.2rem 0 0.3rem;
+}
+.om-film-form,
+.om-film-roll { font-size: var(--fs-note); line-height: 1.5; color: var(--text); }
+.om-film-roll { color: var(--text-dim); }
+
+.om-under {
+  font-family: var(--ff-display);
+  font-weight: 400;
+  font-size: var(--fs-label);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: clamp(2rem, 5vh, 3rem) 0 0.6rem;
+}
+.om-pagaende { max-width: 52rem; }
+.om-pagaende a { color: var(--white); border-bottom: 1px solid var(--line-s); transition: color 0.25s, border-color 0.25s; }
+.om-pagaende a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* --- Profiler --- */
+.om-lankar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
 }
 

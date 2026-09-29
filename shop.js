@@ -129,7 +129,14 @@
     khaki:    { hex: '#8a8354', sv: 'Khaki',    en: 'Khaki',    light: true  },
     camel:    { hex: '#ab7742', sv: 'Kamel',    en: 'Camel',    light: false },
     yellow:   { hex: '#f2d24e', sv: 'Gul',      en: 'Yellow',   light: true  },
-    heather:  { hex: '#b8b5ad', sv: 'Heather',  en: 'Heather',  light: true  },
+    /* CREW TEE:s enda färg utöver svart och gul. Brickan stod på en varm
+       grå (#b8b5ad) medan plagget på bilden är blågrått — kunden såg en
+       färg och fick en annan. Värdet är avläst ur crew-tee-heather.webp,
+       från tygets upplysta yta.
+
+       Namnet står kvar som Heather Slate på båda språken — det är
+       färgens namn hos tillverkaren, och det kunden ser på plagget. */
+    heather:  { hex: '#596c77', sv: 'Heather Slate', en: 'Heather Slate', light: false },
     navy:     { hex: '#1f2a4d', sv: 'Marinblå', en: 'Navy',     light: false },
     // Flerfärgad pastell — swatchen visas som en gradient
     pastel:   { hex: 'linear-gradient(90deg,#f6b6c4,#f7d9a6,#eef0a6,#b6e3c6,#a9d8ef,#c9b8e6)', sv: 'Pastell', en: 'Pastel', light: true }
@@ -656,8 +663,7 @@
           "assets/products/crew-tee-heather-3.webp",
           "assets/products/crew-tee-heather-4.webp"
         ]
-      },
-      "hidden": true
+      }
     },
     {
       "id": "static-reel-sleeve",
@@ -1810,9 +1816,64 @@
 
   function cartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
   // Fraktavgift för nuvarande vagn (0 vid tom vagn eller över freeOver-gränsen)
+  /* -----------------------------------------------------
+     FRAKT
+     -----------------------------------------------------
+     Priset hämtas från servern, som i sin tur frågar Printful för
+     kundens land. Tills svaret kommit — och om det aldrig kommer —
+     visas standardpriset. Kassan väntar aldrig på en frakt.
+
+     Siffran här är bara till för att VISA. Det kunden debiteras
+     räknas fram på nytt på servern när betalningen skapas.
+  ----------------------------------------------------- */
+  let liveShipping = null;      // { nyckel, amount, source }
+  let fraktHämtning = null;
+
+  /** Vagnens fingeravtryck — ändras den är den gamla frakten ogiltig. */
+  function fraktNyckel() {
+    return cart.map((i) => `${i.id}|${i.color}|${i.size || 'one'}|${i.qty}`).sort().join(',')
+      + '|' + (document.getElementById('coZip') ? (document.getElementById('coZip').value || '').trim() : '');
+  }
+
+  /** Frågar servern vad frakten kostar. Misslyckas den händer ingenting. */
+  function hamtaFrakt() {
+    const base = payApi();
+    if (!base || !cart.length) return Promise.resolve();
+    const nyckel = fraktNyckel();
+    if (liveShipping && liveShipping.nyckel === nyckel) return Promise.resolve();
+    if (fraktHämtning && fraktHämtning.nyckel === nyckel) return fraktHämtning.p;
+
+    const p = (async () => {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        const res = await fetch(`${base}/shipping-rates`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: cartPayload(),
+            country_code: 'SE',
+            recipient: { zip: (document.getElementById('coZip') || {}).value || '' }
+          }),
+          signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) return;
+        const d = await res.json();
+        if (!Number.isFinite(Number(d.shipping))) return;
+        liveShipping = { nyckel, amount: Number(d.shipping), source: d.source };
+      } catch { /* servern tyst → standardpriset står kvar */ }
+      finally { fraktHämtning = null; }
+    })();
+
+    fraktHämtning = { nyckel, p };
+    return p;
+  }
+
   function shippingCost() {
     if (cart.length === 0) return 0;
     if (CONFIG.shippingFreeOver > 0 && cartTotal() >= CONFIG.shippingFreeOver) return 0;
+    if (liveShipping && liveShipping.nyckel === fraktNyckel()) return liveShipping.amount;
     return CONFIG.shippingFee || 0;
   }
   function grandTotal() { return cartTotal() + shippingCost(); }
@@ -1920,8 +1981,9 @@
     checkoutView.style.display = 'block';
     renderCheckout();
     renderPayMethods();
-    // Servern kan svara efter att kassan öppnats — rita om betalvalen då
+    // Servern kan svara efter att kassan öppnats — rita om när den gör det
     probePayments().then(renderPayMethods);
+    hamtaFrakt().then(renderCheckout);
   }
 
   /** Visar betalvalen om betalning är aktiverad (annars mejlbeställning). */
@@ -2429,6 +2491,10 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
     document.getElementById('keepShopping').addEventListener('click', closeDrawer);
     document.getElementById('backToCart').addEventListener('click', showCartView);
     document.getElementById('placeOrder').addEventListener('click', placeOrder);
+    /* Postnumret kan påverka frakten i länder som prissätter per region.
+       Vi frågar om när kunden lämnar fältet, inte vid varje tangent. */
+    const zip = document.getElementById('coZip');
+    if (zip) zip.addEventListener('blur', () => { hamtaFrakt().then(renderCheckout); });
     document.getElementById('thanksDone').addEventListener('click', closeDrawer);
 
     applyStaticI18n();
