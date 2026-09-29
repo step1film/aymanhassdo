@@ -1049,6 +1049,43 @@
       citat: b.text || ''
     });
     verktyg.appendChild(svara);
+
+    /* Radera. Frågan innan är inte en formalitet: brevet försvinner
+       ur listan direkt, och utan den räcker ett felklick. Att brevet
+       går att hämta tillbaka står i frågan, så man vet hur illa det
+       är om man svarar fel. */
+    const radera = el('button', 'knapp knapp--fara', 'Radera');
+    radera.type = 'button';
+    radera.onclick = async () => {
+      const amne = b.amne || '(utan ämne)';
+      if (!confirm('Radera brevet "' + amne + '"?\n\n'
+        + 'Det flyttas till papperskorgen och går att hämta tillbaka '
+        + 'i ditt vanliga mejlprogram.')) return;
+
+      radera.disabled = true;
+      try {
+        const svar = await be('/mail-delete', {
+          method: 'POST',
+          body: JSON.stringify({ konto: MEJL.konto, uid: b.uid })
+        });
+        rop(svar.borta
+          ? 'Brevet är raderat.'
+          : 'Brevet ligger i papperskorgen.');
+        /* Raden tas ur listan här i stället för att hela inkorgen
+           hämtas om: servern har redan gjort jobbet, och en ny
+           IMAP-runda hade bara kostat en väntan. */
+        MEJL.brev = MEJL.brev.filter(x => x.uid !== b.uid);
+        MEJL.valt = null;
+        mejlRitaLista();
+        yta.textContent = '';
+        yta.appendChild(tomt('Brevet är borta. Välj ett annat i listan.'));
+      } catch (e) {
+        radera.disabled = false;
+        rop(e.message, 'fel');
+      }
+    };
+    verktyg.appendChild(radera);
+
     huvud.appendChild(verktyg);
     yta.appendChild(huvud);
 

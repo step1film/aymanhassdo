@@ -236,6 +236,39 @@ async function las(konto, { mapp = 'INBOX', uid }) {
   });
 }
 
+/* Radera ett brev.
+   -----------------------------------------------------
+   Att radera betyder flytta till papperskorgen, inte utplåna. Det är
+   vad varje mejlprogram gör, och det är det enda rimliga här: den som
+   råkar trycka fel ska kunna hämta tillbaka brevet i telefonen.
+
+   Står brevet redan i papperskorgen finns ingenstans kvar att flytta
+   det. Då raderas det på riktigt — annars hade ett andra tryck inte
+   gjort någonting, och papperskorgen aldrig gått att tömma.
+
+   Hittas ingen papperskorg alls (en brevlåda kan sakna den) görs
+   ingenting. Att i det läget radera permanent vore att göra mer än
+   den som tryckte bad om. */
+async function radera(konto, { mapp = 'INBOX', uid }) {
+  return medImap(konto, async (klient) => {
+    const papperskorg = await hittaMapp(klient, '\\Trash');
+    const iPapperskorgen = papperskorg && papperskorg.toLowerCase() === String(mapp).toLowerCase();
+    if (!papperskorg) return { ok: false, skal: 'ingen papperskorg' };
+
+    const las = await klient.getMailboxLock(mapp);
+    try {
+      if (iPapperskorgen) {
+        await klient.messageDelete(String(uid), { uid: true });
+        return { ok: true, borta: true };
+      }
+      await klient.messageMove(String(uid), papperskorg, { uid: true });
+      return { ok: true, borta: false, mapp: papperskorg };
+    } finally {
+      las.release();
+    }
+  });
+}
+
 /* Skicka, och lägg tillbaka en kopia i Skickat.
    SMTP skickar brevet men lämnar inget spår i brevlådan — det steget
    gör mejlprogram själva. Utan det hade ett svar skrivet här varit
@@ -338,4 +371,4 @@ async function skickaBrev({ fran, till, amne, text, html, svaraTill, hemligKopia
   return { id: kvitto.messageId || '' };
 }
 
-module.exports = { konfigurerad, kontolista, kontoFor, avsandare, lista, las, skicka, skickaBrev, hittaMapp };
+module.exports = { konfigurerad, kontolista, kontoFor, avsandare, lista, las, radera, skicka, skickaBrev, hittaMapp };

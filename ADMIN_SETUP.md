@@ -203,8 +203,14 @@ Glöm inte **Deploys → Trigger deploy** efteråt.
   funktion får väga sex megabyte, och en vanlig bildbilaga spränger
   den gränsen. Öppna sådana brev i mejlprogrammet.
 * **Bara inkorgen visas**, de tjugofem senaste breven.
-* **Inget raderas.** Fliken läser, markerar som läst och skickar —
-  inget mer. Städning gör du i mejlprogrammet.
+* **Radera betyder flytta till papperskorgen.** Knappen *Radera* i
+  ett öppnat brev lägger det i brevlådans papperskorg, precis som i
+  vilket mejlprogram som helst — det går alltså att hämta tillbaka i
+  telefonen. Ligger brevet redan i papperskorgen raderas det på
+  riktigt. Saknar brevlådan papperskorg händer ingenting, och det
+  står i svaret.
+* **Ingenting töms automatiskt.** Papperskorgen tömmer du i ditt
+  vanliga mejlprogram.
 
 ---
 
