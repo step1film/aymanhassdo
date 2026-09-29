@@ -388,16 +388,39 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* Butikslänk + språkväxlare till höger i toppen */
-/* Butikslänken är ett mål, språkvalet bredvid är en inställning. Den
-   får därför vara större än SV/EN — de ska ligga kvar som de var. */
+/* Länkarna till höger i toppen. Diskreta — de ska finnas men inte
+   ropa. /om/ använder samma klass för sin Om-länk. */
 .logo-store {
   margin-left: 0.9rem;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   letter-spacing: 0.24em;
   color: var(--text-dim);
   transition: color 0.25s ease;
 }
 .logo-store:hover, .logo-store:focus-visible { color: var(--white); }
+
+/* Butiken är undantaget. Den är ett mål man kan gå till, inte en
+   upplysning om var man är, och får därför en röd ram omkring sig och
+   en storlek som syns bredvid språkvalet.
+
+   Höger padding är mindre än vänster med flit. Bokstavsmellanrummet
+   läggs till efter varje tecken, också det sista, så utan den
+   skillnaden hade ordet stått snett i rutan. */
+.logo-butik {
+  font-size: 1.2rem;
+  padding: 0.3em 0.46em 0.3em 0.7em;
+  /* 2 px, inte 1. En hårfin linje mot en rörlig bakgrund blir grå på
+     avstånd — det var hela poängen med att rama in ordet. */
+  border: 2px solid var(--accent);
+  color: var(--white);
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+/* Hover fyller rutan i stället för att byta textfärg: ramen finns
+   redan, och då är det fyllningen som är kvar att ge. */
+.logo-butik:hover, .logo-butik:focus-visible {
+  background-color: var(--accent);
+  color: var(--white);
+}
 
 .lang-toggle {
   margin-left: auto;
@@ -444,9 +467,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 @media (max-width: 560px) {
+  .logo-store { letter-spacing: 0.14em; margin-left: 0.6rem; }
   /* Smal skärm: ordet får vara kvar större än språkvalet, men inte så
-     stort att raden spricker bredvid ordmärket. */
-  .logo-store { font-size: 0.95rem; letter-spacing: 0.14em; margin-left: 0.6rem; }
+     stort att raden spricker bredvid ordmärket. Rutan blir tätare
+     omkring det av samma skäl. */
+  .logo-butik { font-size: 1rem; padding: 0.26em 0.4em 0.26em 0.54em; }
   .lang-toggle { font-size: var(--fs-label); }
   .lang-toggle button { padding: 0.22rem 0.5rem; }
 }
