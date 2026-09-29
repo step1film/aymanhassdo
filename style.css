@@ -399,9 +399,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .logo-store:hover, .logo-store:focus-visible { color: var(--white); }
 
-/* Butiken är undantaget. Den är ett mål man kan gå till, inte en
-   upplysning om var man är, och får därför en röd ram omkring sig och
-   en storlek som syns bredvid språkvalet.
+/* Butiken på startsidan är undantaget. Den är ett mål man kan gå
+   till, inte en upplysning om var man är, och får därför en röd ram
+   omkring sig och en storlek som syns bredvid språkvalet. Klassen
+   sitter bara på startsidans länk — undersidorna har sin butikslänk
+   diskret, som de andra länkarna i toppen.
 
    Höger padding är mindre än vänster med flit. Bokstavsmellanrummet
    läggs till efter varje tecken, också det sista, så utan den
