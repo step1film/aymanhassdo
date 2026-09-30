@@ -331,19 +331,14 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .logo-text.rullar .lm-l {
   animation: logo-studs 560ms cubic-bezier(0.24, 1.5, 0.32, 1) both;
 }
-/* Bokstäverna går i gång efter varandra, inte samtidigt. Rullen är
-   barn nummer ett, så bokstäverna är två till tio. Fördröjningen står
-   här i stället för i en inline-stil per bokstav — samma sak för
-   webbläsaren, en sak mindre i HTML:en. */
-.logo-text.rullar .lm-l:nth-child(2)  { animation-delay:  90ms; }
-.logo-text.rullar .lm-l:nth-child(3)  { animation-delay: 128ms; }
-.logo-text.rullar .lm-l:nth-child(4)  { animation-delay: 166ms; }
-.logo-text.rullar .lm-l:nth-child(5)  { animation-delay: 204ms; }
-.logo-text.rullar .lm-l:nth-child(6)  { animation-delay: 242ms; }
-.logo-text.rullar .lm-l:nth-child(7)  { animation-delay: 280ms; }
-.logo-text.rullar .lm-l:nth-child(8)  { animation-delay: 318ms; }
-.logo-text.rullar .lm-l:nth-child(9)  { animation-delay: 356ms; }
-.logo-text.rullar .lm-l:nth-child(10) { animation-delay: 394ms; }
+/* Bokstäverna går i gång efter varandra, inte samtidigt.
+
+   Fördröjningen räknas ur bokstavens ordningstal, som logo.js sätter
+   som --f när det delar upp ordet. Det stod förut som nio regler med
+   nth-child, en per bokstav. Det höll så länge märket var STEP1FILM
+   och inget annat: butikens STEP1 STORE har tio bokstäver, och den
+   tionde hade blivit utan fördröjning och hoppat i otakt. */
+.logo-text.rullar .lm-l { animation-delay: calc(90ms + var(--f, 0) * 38ms); }
 
 /* Den som bett om lugn rörelse får ingen lek. Skriptet hoppar över
    den också, men regeln står kvar som ett andra lås. */
@@ -409,7 +404,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
    läggs till efter varje tecken, också det sista, så utan den
    skillnaden hade ordet stått snett i rutan. */
 .logo-butik {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   padding: 0.3em 0.46em 0.3em 0.7em;
   /* 2 px, inte 1. En hårfin linje mot en rörlig bakgrund blir grå på
      avstånd — det var hela poängen med att rama in ordet. */

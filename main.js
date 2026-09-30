@@ -1514,38 +1514,7 @@
     });
   }
 
-  /* --------------------------------------------------
-     ORDMÄRKET SOM LEKER
-     --------------------------------------------------
-     Klick på loggan: rullen snurrar ett varv och bokstäverna studsar
-     upp en och en. Själva rörelsen ligger i CSS — här sätts bara
-     klassen som drar i gång den, och tas bort igen när den är klar.
-
-     Klassen måste bort mellan klicken. En animation som redan står på
-     elementet startar inte om bara för att klassen sätts på nytt, så
-     ett andra klick hade inte gjort någonting. Omstarten görs med den
-     vanliga knepet: ta bort klassen, läs av en layoutegenskap för att
-     tvinga webbläsaren att räkna om, sätt tillbaka den.
-
-     Länken gör fortfarande sitt vanliga jobb — hoppet till showreelen
-     ligger kvar i initScrollDriver och rörs inte här. */
-  function initLogoLek() {
-    const logga = document.querySelector('#logo-mark .logo-text');
-    if (!logga || !logga.querySelector('.lm-l')) return;
-
-    const LANGST = 960;   // rullens 880 ms + sista bokstavens fördröjning
-    let timer = 0;
-
-    logga.addEventListener('click', () => {
-      if (prefersReducedMotion) return;
-      clearTimeout(timer);
-      logga.classList.remove('rullar');
-      void logga.offsetWidth;
-      logga.classList.add('rullar');
-      timer = setTimeout(() => logga.classList.remove('rullar'), LANGST);
-    });
-  }
-
+  
   /* --------------------------------------------------
      BOOT SEQUENCE
   -------------------------------------------------- */
@@ -1558,7 +1527,6 @@
     initReel();
     initTrailerBox();
     initCollabForm();
-    initLogoLek();
     initLoader(() => {
       document.body.classList.remove('is-loading');
       initScrollDriver();
