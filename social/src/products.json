@@ -1,0 +1,10 @@
+[
+  {"id": "24fps-hoodie",     "name": "24FPS HOODIE",     "price": 699, "image": "hoodie-24fps-black.webp"},
+  {"id": "rolling-backpack", "name": "ROLLING BACKPACK", "price": 649, "image": "backpack-navy.webp"},
+  {"id": "spoiler-hoodie",   "name": "SPOILER HOODIE",   "price": 649, "image": "hoodie-natural.webp"},
+  {"id": "step1-jersey",     "name": "STEP1 JERSEY",     "price": 549, "image": "step1-jersey.webp"},
+  {"id": "take-one-sleeve",  "name": "TAKE ONE SLEEVE",  "price": 499, "image": "take-one-sleeve.webp"},
+  {"id": "action-dad-cap",   "name": "ACTION DAD CAP",   "price": 399, "image": "dad-cap-camel.webp"},
+  {"id": "reel-trucker-cap", "name": "STEP1 FAN",        "price": 299, "image": "trucker-cap-navy.webp"},
+  {"id": "awesome-mugg",     "name": "AWESOME MUGG",     "price": 249, "image": "awesome-mugg.webp"}
+]
