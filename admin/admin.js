@@ -194,7 +194,7 @@
   const TEXTGRUPPER = [
     ['Hero och ramverk', ['skip', 'homeAria', 'storeLink', 'storeLinkAria', 'skipIntro', 'skipIntroAria',
       'loaderLabel', 'rotateTitle', 'rotateBody', 'rotateStay', 'playShowreel', 'showreel', 'enterSite',
-      'heroTag', 'introPlace', 'introStory', 'introDoes']],
+      'heroTag', 'introPlace', 'introDoes']],
     ['Panel 01 — Vad vi gör', ['p3Title', 'p3Meta', 'p3Intro',
       'doMake', 'doMake1', 'doMake2', 'doMake3', 'doMake4',
       'doDev', 'doDev1', 'doDev2', 'doDev3', 'doDev4']],
