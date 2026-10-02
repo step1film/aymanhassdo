@@ -20,7 +20,7 @@ Tre block i `index.html`:
 
 Det viktigaste fältet för lokal sökning är `areaServed`. Det listar
 Jönköpings län, Småland och orterna Jönköping, Värnamo, Vaggeryd,
-Nässjö, Gislaved och Eksjö.
+Skillingaryd, Nässjö, Gislaved och Eksjö.
 
 `hasOfferCatalog` listar de sex tjänsterna från panel 03 — planering,
 manus, inspelning, klipp, ljud och filmteam. Det är de orden någon
