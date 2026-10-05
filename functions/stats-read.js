@@ -18,15 +18,23 @@ const S = require('./_lib/stats');
 
 const JUST_NU = 5 * 60 * 1000;
 
-/** Hämta alla besök för en dag, några i taget. */
+/** Hämta dagens händelser, några i taget, och bygg ihop dem till besök. */
 async function besokFor(store, dag) {
-  const { blobs } = await store.list({ prefix: 's/' + dag + '/' });
-  const ut = [];
+  const { blobs } = await store.list({ prefix: 'e/' + dag + '/' });
+  const perBesokare = new Map();
   for (let i = 0; i < blobs.length; i += 25) {
-    const del = await Promise.all(blobs.slice(i, i + 25).map(b => store.get(b.key, { type: 'json' }).catch(() => null)));
-    del.forEach((b, j) => { if (b) ut.push({ key: blobs[i + j].key, ...b }); });
+    const del = blobs.slice(i, i + 25);
+    const data = await Promise.all(del.map(b => store.get(b.key, { type: 'json' }).catch(() => null)));
+    data.forEach((h, j) => {
+      if (!h) return;
+      const id = del[j].key.split('/')[2];
+      if (!perBesokare.has(id)) perBesokare.set(id, []);
+      perBesokare.get(id).push(h);
+    });
   }
-  return ut;
+  const besok = [];
+  for (const h of perBesokare.values()) { const b = S.byggBesok(h); if (b) besok.push(b); }
+  return { besok, nycklar: blobs.map(b => b.key) };
 }
 
 async function dagSumma(store, dag, avslutad) {
@@ -34,12 +42,14 @@ async function dagSumma(store, dag, avslutad) {
     const sparad = await store.get('r/' + dag, { type: 'json' }).catch(() => null);
     if (sparad) return { sum: sparad, besok: [] };
   }
-  const besok = await besokFor(store, dag);
+  const { besok, nycklar } = await besokFor(store, dag);
   const sum = S.tomDag(dag);
   besok.forEach(b => S.raknaIn(sum, b));
   if (avslutad) {
     await store.setJSON('r/' + dag, sum);
-    await Promise.all(besok.map(b => store.delete(b.key).catch(() => {})));
+    for (let i = 0; i < nycklar.length; i += 25) {
+      await Promise.all(nycklar.slice(i, i + 25).map(k => store.delete(k).catch(() => {})));
+    }
   }
   return { sum, besok };
 }
@@ -92,7 +102,7 @@ exports.handler = async (event) => {
       justNu
     });
   } catch (e) {
-    console.error('stats-read:', e && e.message);
-    return json(502, headers, { fel: 'Kunde inte läsa statistiken. Är Netlify Blobs igång för sajten?' });
+    console.error('stats-read:', e && e.name, e && e.message);
+    return json(502, headers, { fel: 'Kunde inte läsa statistiken (' + ((e && e.name) || 'okänt fel') + '). Se funktionsloggen för stats-read i Netlify.' });
   }
 };

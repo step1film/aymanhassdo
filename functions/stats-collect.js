@@ -16,7 +16,6 @@ const { corsHeaders, isForeignOrigin, skapaSpärr, clientIp } = require('./_lib/
 const S = require('./_lib/stats');
 
 const spärrad = skapaSpärr({ windowMs: 10 * 60 * 1000, max: 300 });
-const MAX_SIDOR = 60;
 const MAX_TID = 30 * 60 * 1000;     // en sida räknas högst en halvtimme åt gången
 
 exports.handler = async (event) => {
@@ -47,35 +46,21 @@ exports.handler = async (event) => {
 
   const nu = Date.now();
   const dag = S.dagFor(nu);
-  const nyckel = 's/' + dag + '/' + S.besokarId(ip, ua, dag);
+  const nyckel = 'e/' + dag + '/' + S.besokarId(ip, ua, dag) + '/' + nu + '-' + Math.random().toString(36).slice(2, 8);
+
+  let h;
+  if (d.t === 'pv') {
+    /* Land, källa och enhet följer med varje sidvisning. Besöket tar
+       dem från sin första när det byggs ihop i stats-read. */
+    h = { t: 'pv', ts: nu, p: sida, ...S.plats(event), kalla: S.kalla(d.r, d.u), enhet: S.enhet(d.w) };
+  } else {
+    const ms = Math.max(0, Math.min(MAX_TID, Math.round(Number(d.ms) || 0)));
+    if (!ms) return klart;
+    h = { t: 'tid', ts: nu, p: sida, ms };
+  }
 
   try {
-    const store = S.butik(event);
-    let b = await store.get(nyckel, { type: 'json' });
-
-    if (d.t === 'pv') {
-      if (!b) {
-        b = {
-          start: nu, ...S.plats(event),
-          kalla: S.kalla(d.r, d.u) || 'Direkt',
-          enhet: S.enhet(d.w),
-          visningar: 0, ms: 0, sidor: {}
-        };
-      }
-      b.visningar += 1;
-      if (b.sidor[sida] || Object.keys(b.sidor).length < MAX_SIDOR) {
-        const s = b.sidor[sida] || (b.sidor[sida] = { visningar: 0, ms: 0 });
-        s.visningar += 1;
-      }
-    } else {
-      if (!b) return klart;          // tid utan sidvisning — inget att lägga den på
-      const ms = Math.max(0, Math.min(MAX_TID, Math.round(Number(d.ms) || 0)));
-      if (!ms) return klart;
-      b.ms += ms;
-      if (b.sidor[sida]) b.sidor[sida].ms += ms;
-    }
-    b.senast = nu;
-    await store.setJSON(nyckel, b);
+    await S.butik(event).setJSON(nyckel, h);
   } catch (e) {
     console.error('stats-collect:', e && e.message);
   }

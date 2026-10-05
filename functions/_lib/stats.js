@@ -20,8 +20,15 @@
    inget konto, ingen miljövariabel — Netlify kopplar in den
    själv.
 
-     s/<dag>/<id>   ett besök: land, stad, källa, sidor, tid
-     r/<dag>        dygnets sammanställning
+     e/<dag>/<id>/<tid>-<slump>   en händelse: sidvisning eller tid
+     r/<dag>                      dygnets sammanställning
+
+   Varje händelse är en egen post som skrivs en gång och
+   aldrig läses om och skrivs över. Blobs från en funktion
+   i Lambda-format läser med "eventual consistency" — en
+   läsning kan vara upp till en minut gammal — och då hade
+   ett besök som uppdaterades på plats tappat sidvisningar
+   när någon klickade snabbt. Besöken byggs ihop vid läsning.
 
    Ett avslutat dygn räknas ihop till r/<dag> första gången
    adminsidan frågar efter det, och de enskilda besöken
@@ -37,7 +44,9 @@ const ZON = 'Europe/Stockholm';
 /** Butiken. connectLambda behövs för funktioner i Lambda-format. */
 function butik(event) {
   connectLambda(event);
-  return getStore({ name: 'statistik', consistency: 'strong' });
+  /* Inte consistency: 'strong' — connectLambda sätter ingen
+     uncachedEdgeURL, och då kastar varje anrop BlobsConsistencyError. */
+  return getStore({ name: 'statistik' });
 }
 
 /** YYYY-MM-DD i svensk tid. */
@@ -136,6 +145,26 @@ function lagg(obj, nyckel, falt) {
   return r;
 }
 
+/** Bygg ihop händelserna för en besökare till ett besök. */
+function byggBesok(handelser) {
+  handelser.sort((a, b) => a.ts - b.ts);
+  const forsta = handelser.find(h => h.t === 'pv');
+  if (!forsta) return null;
+  const b = {
+    start: forsta.ts, senast: forsta.ts,
+    land: forsta.land, landnamn: forsta.landnamn, stad: forsta.stad, region: forsta.region,
+    kalla: forsta.kalla || 'Direkt', enhet: forsta.enhet,
+    visningar: 0, ms: 0, sidor: {}
+  };
+  for (const h of handelser) {
+    const s = b.sidor[h.p] || (b.sidor[h.p] = { visningar: 0, ms: 0 });
+    if (h.t === 'pv') { b.visningar += 1; s.visningar += 1; }
+    else { b.ms += h.ms || 0; s.ms += h.ms || 0; }
+    b.senast = Math.max(b.senast, h.ts);
+  }
+  return b;
+}
+
 /** Räkna in ett besök i en dagssammanställning. */
 function raknaIn(sum, b) {
   sum.besok += 1;
@@ -175,5 +204,5 @@ function slaIhop(dagar) {
 
 module.exports = {
   butik, dagFor, dagarFore, besokarId, plats, kalla, enhet, ROBOT,
-  tomDag, raknaIn, slaIhop
+  tomDag, byggBesok, raknaIn, slaIhop
 };
