@@ -144,6 +144,8 @@
     ip29: 'Order data that constitutes accounting records is kept for <strong>seven years</strong> under the Swedish Accounting Act. Other data is deleted once it is no longer needed for its purpose.',
     ip30: 'Cookies and storage in your browser',
     ip31: 'The shop uses <strong>no tracking or marketing cookies</strong>. We only store your cart and your language choice locally in your own browser (localStorage) so the site works. That information is not sent to us and you can clear it whenever you like via your browser settings.',
+    ip41: 'Visitor statistics',
+    ip42: 'We keep simple, self-hosted visitor statistics for step1film.se: which pages are visited, how long they are on screen, which site the visitor came from, approximate country and city, and whether it is a mobile or a computer. The statistics use <strong>no cookies</strong> and store <strong>no IP address</strong>. To count visitors, an ID is created from a hash of the connection and a random value that changes every day, so no individual can be identified or followed between days. After one day only aggregated numbers are kept. The data is stored with Netlify and is not shared with anyone else. Legal basis: legitimate interest in understanding how the website is used (Art. 6.1 f GDPR).',
     ip32: 'Your rights',
     ip33: 'You have the right to:',
     ip34: 'find out what data we hold about you (a copy of your record),',

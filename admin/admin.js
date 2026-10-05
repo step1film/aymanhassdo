@@ -151,6 +151,7 @@
     if (!f) return;
     $$('.flik').forEach(b => b.classList.toggle('active', b === f));
     $$('.del').forEach(d => d.classList.toggle('active', d.dataset.del === f.dataset.flik));
+    if (f.dataset.flik === 'statistik' && !STAT.hamtad) statHamta();
   });
 
   /* -----------------------------------------------------
@@ -1302,6 +1303,178 @@
          fliken tog vägen. Raden syns i webbläsarens konsol. */
       console.warn('[mejl] Fliken göms:', e && e.message);
     }
+  }
+
+  /* =====================================================
+     STATISTIK
+     =====================================================
+     Hämtas först när fliken öppnas — ingen anledning att
+     räkna ihop 90 dagar varje gång någon ska ändra en text.
+     Siffrorna kommer från stats-read; se functions/_lib/stats.js
+     för hur de samlas in.
+  ===================================================== */
+  const STAT = { hamtad: false };
+
+  const tal = (n) => (n || 0).toLocaleString('sv-SE');
+
+  function tid(ms) {
+    const s = Math.round((ms || 0) / 1000);
+    if (s < 60) return s + ' s';
+    const m = Math.floor(s / 60);
+    if (m < 60) return m + ' min ' + String(s % 60).padStart(2, '0') + ' s';
+    return Math.floor(m / 60) + ' h ' + (m % 60) + ' min';
+  }
+
+  let landNamn = null;
+  try { landNamn = new Intl.DisplayNames(['sv'], { type: 'region' }); } catch { /* äldre webbläsare */ }
+  function land(kod, reserv) {
+    if (!kod || kod === '??') return 'Okänt land';
+    try { return (landNamn && landNamn.of(kod)) || reserv || kod; } catch { return reserv || kod; }
+  }
+  /* Flaggan byggs ur landskoden: A–Z → regionala bokstavssymboler. */
+  function flagga(kod) {
+    if (!/^[A-Z]{2}$/.test(kod || '')) return '🌐';
+    return String.fromCodePoint(...[...kod].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+  }
+
+  async function statHamta() {
+    const yta = $('#statYta');
+    STAT.hamtad = true;
+    yta.textContent = '';
+    yta.appendChild(el('div', 'tom', 'Räknar ihop …'));
+    try {
+      const d = await be('/stats-read?dagar=' + $('#statPeriod').value);
+      ritaStatistik(d);
+    } catch (er) {
+      STAT.hamtad = false;
+      yta.textContent = '';
+      yta.appendChild(el('div', 'tom', er.message));
+    }
+  }
+  $('#statPeriod').addEventListener('change', statHamta);
+  $('#statUppdatera').addEventListener('click', statHamta);
+
+  function ritaStatistik(d) {
+    const yta = $('#statYta');
+    yta.textContent = '';
+    const t = d.totalt || {};
+
+    if (!t.besok) {
+      yta.appendChild(el('div', 'tom', 'Inga besök under perioden ännu. Statistiken börjar räknas när sajten har publicerats med stats.js.'));
+      return;
+    }
+
+    /* Nyckeltal */
+    const rad = el('div', 'stat-tal');
+    const ruta = (etikett, varde, under) => {
+      const r = el('div', 'stat-ruta');
+      r.appendChild(el('div', 'stat-etikett', etikett));
+      r.appendChild(el('div', 'stat-varde', varde));
+      if (under) r.appendChild(el('div', 'stat-under', under));
+      rad.appendChild(r);
+    };
+    ruta('Besökare', tal(t.besok));
+    ruta('Sidvisningar', tal(t.visningar), (t.visningar / t.besok).toFixed(1).replace('.', ',') + ' sidor per besök');
+    ruta('Snitt tid per besök', tid(t.ms / t.besok), 'tid sidan låg framme');
+    ruta('Studsar', Math.round(100 * t.studs / t.besok) + ' %', 'lämnade efter en sida');
+    ruta('Just nu', tal(d.justNu), 'aktiva senaste 5 min');
+    yta.appendChild(rad);
+
+    /* Besökare per dag */
+    if ((d.perDag || []).length > 1) yta.appendChild(statDiagram(d.perDag));
+
+    /* Listorna */
+    const rutnat = el('div', 'stat-rutnat');
+    rutnat.appendChild(statLista('Länder', d.lander, r => flagga(r.nyckel) + '  ' + land(r.nyckel, r.namn),
+      r => r.besok, r => 'snitt ' + tid(r.ms / r.besok)));
+    rutnat.appendChild(statLista('Städer', d.stader, r => {
+      const [stad, kod] = r.nyckel.split('|');
+      return flagga(kod) + '  ' + stad;
+    }, r => r.besok, r => {
+      const kod = r.nyckel.split('|')[1];
+      return [r.region, land(kod)].filter(Boolean).join(', ');
+    }, 'Ingen stad känd än. Netlify anger stad för de flesta anslutningar, men inte alla.'));
+    rutnat.appendChild(statLista('Källor', d.kallor, r => r.nyckel, r => r.besok, null,
+      'Inga källor än.'));
+    rutnat.appendChild(statLista('Sidor', d.sidor, r => r.nyckel === '/' ? 'Startsidan' : r.nyckel, r => r.visningar,
+      r => 'snitt ' + tid(r.ms / Math.max(1, r.visningar)), null, 'visningar'));
+    rutnat.appendChild(statLista('Enheter', d.enheter, r => r.nyckel, r => r.besok));
+    yta.appendChild(rutnat);
+  }
+
+  /* En rankad lista med en tunn stapel bakom varje rad. */
+  function statLista(rubrik, rader, namn, varde, under, tomText, enhet = 'besök') {
+    const box = el('section', 'stat-lista');
+    const topp = el('div', 'stat-lista-topp');
+    topp.appendChild(el('h3', '', rubrik));
+    topp.appendChild(el('span', 'stat-lista-enhet', enhet));
+    box.appendChild(topp);
+    if (!rader || !rader.length) { box.appendChild(el('p', 'stat-tomrad', tomText || 'Inget än.')); return box; }
+    const max = Math.max(...rader.map(varde)) || 1;
+    rader.forEach(r => {
+      const rd = el('div', 'stat-rad');
+      const stapel = el('i', 'stat-stapel');
+      stapel.style.width = (100 * varde(r) / max).toFixed(1) + '%';
+      rd.appendChild(stapel);
+      const text = el('div', 'stat-rad-text');
+      text.appendChild(el('span', 'stat-rad-namn', namn(r)));
+      if (under) { const u = under(r); if (u) text.appendChild(el('span', 'stat-rad-under', u)); }
+      rd.appendChild(text);
+      rd.appendChild(el('span', 'stat-rad-varde', tal(varde(r))));
+      box.appendChild(rd);
+    });
+    return box;
+  }
+
+  /* Staplar per dag, med en ruta som visar dagens siffror när man pekar. */
+  function statDiagram(perDag) {
+    const box = el('section', 'stat-diagram');
+    const topp = el('div', 'stat-lista-topp');
+    topp.appendChild(el('h3', '', 'Besökare per dag'));
+    box.appendChild(topp);
+
+    const max = Math.max(1, ...perDag.map(p => p.besok));
+    const yta = el('div', 'stat-staplar');
+    yta.style.setProperty('--n', perDag.length);
+    const info = el('div', 'stat-info');
+    info.hidden = true;
+
+    const datum = (dag, opt) => new Date(dag + 'T12:00:00').toLocaleDateString('sv-SE', opt);
+
+    perDag.forEach((p) => {
+      const kol = el('div', 'stat-kol');
+      kol.tabIndex = 0;
+      const b = el('i', 'stat-bar');
+      b.style.height = p.besok ? Math.max(2, 100 * p.besok / max) + '%' : '0';
+      kol.appendChild(b);
+      kol.setAttribute('aria-label', datum(p.dag, { day: 'numeric', month: 'long' }) + ': ' + p.besok + ' besökare');
+      const visa = () => {
+        info.textContent = '';
+        info.appendChild(el('strong', '', datum(p.dag, { weekday: 'short', day: 'numeric', month: 'short' })));
+        info.appendChild(el('span', '', tal(p.besok) + ' besökare · ' + tal(p.visningar) + ' visningar'));
+        if (p.besok) info.appendChild(el('span', '', 'snitt ' + tid(p.ms / p.besok)));
+        info.hidden = false;
+        const k = kol.getBoundingClientRect(), y = yta.getBoundingClientRect();
+        const x = k.left - y.left + k.width / 2;
+        info.style.left = Math.min(Math.max(x, 80), y.width - 80) + 'px';
+        kol.classList.add('vald');
+      };
+      const gom = () => { info.hidden = true; kol.classList.remove('vald'); };
+      kol.addEventListener('mouseenter', visa);
+      kol.addEventListener('focus', visa);
+      kol.addEventListener('mouseleave', gom);
+      kol.addEventListener('blur', gom);
+      yta.appendChild(kol);
+    });
+    yta.appendChild(info);
+    box.appendChild(yta);
+
+    const axel = el('div', 'stat-axel');
+    axel.appendChild(el('span', '', datum(perDag[0].dag, { day: 'numeric', month: 'short' })));
+    axel.appendChild(el('span', '', 'max ' + tal(max) + ' / dag'));
+    axel.appendChild(el('span', '', datum(perDag[perDag.length - 1].dag, { day: 'numeric', month: 'short' })));
+    box.appendChild(axel);
+    return box;
   }
 
   /* -----------------------------------------------------

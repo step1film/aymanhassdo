@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
   <link rel="stylesheet" href="../assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="admin.css?v=2026-09-16" />
+  <link rel="stylesheet" href="admin.css?v=2026-10-05" />
 </head>
 <body>
 
@@ -48,6 +48,7 @@
       <button class="flik"        data-flik="video"     role="tab" type="button">Video</button>
       <button class="flik"        data-flik="produkter" role="tab" type="button">Produkter</button>
       <button class="flik"        data-flik="bilder"    role="tab" type="button">Bilder</button>
+      <button class="flik"        data-flik="statistik" role="tab" type="button">Statistik</button>
       <!-- Mejlfliken göms tills servern svarat att MAIL_ACCOUNTS finns.
            En flik som bara kan säga "inte igångsatt" är ingen flik. -->
       <button class="flik"        data-flik="mejl"      role="tab" type="button" hidden>Mejl</button>
@@ -136,6 +137,28 @@
       <div id="bildYta"></div>
     </section>
 
+    <!-- ---------- STATISTIK ---------- -->
+    <section class="del" data-del="statistik">
+      <div class="del-topp">
+        <div>
+          <h2>Statistik</h2>
+          <p class="hjalp">Besökare, tid på sidan och var de kommer ifrån. Räknas utan cookies och
+             utan att någon IP-adress sparas — ett besök är en besökare under ett dygn.
+             Land och stad kommer från Netlifys uppslag av anslutningen och är ungefärliga.</p>
+        </div>
+        <div class="del-verktyg">
+          <select class="sok" id="statPeriod" aria-label="Välj period">
+            <option value="1">I dag</option>
+            <option value="7" selected>Senaste 7 dagarna</option>
+            <option value="30">Senaste 30 dagarna</option>
+            <option value="90">Senaste 90 dagarna</option>
+          </select>
+          <button class="knapp" type="button" id="statUppdatera">Uppdatera</button>
+        </div>
+      </div>
+      <div id="statYta"></div>
+    </section>
+
     <!-- ---------- MEJL ---------- -->
     <section class="del" data-del="mejl">
       <div class="del-topp">
@@ -174,6 +197,6 @@
      låter webbläsaren spara dem i tio minuter, och utan den här stämpeln
      kan man sitta med en gammal adminsida långt efter en deploy.
      Räkna upp datumet när admin.js eller admin.css ändras. -->
-<script src="admin.js?v=2026-09-16" defer></script>
+<script src="admin.js?v=2026-10-05" defer></script>
 </body>
 </html>
