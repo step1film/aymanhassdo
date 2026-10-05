@@ -303,3 +303,23 @@ helt i Netlifys gränssnitt — ingen ny commit behövs.
 Byt vid minsta tvivel: om lösenordet skickats i ett meddelande, legat i
 en anteckning på en delad dator, eller om någon som haft det inte
 längre ska ha det.
+
+---
+
+## Statistikfliken
+
+Fliken **Statistik** visar besökare, sidvisningar, tid på sidan, länder,
+städer, källor (Google, Facebook …), sidor och enheter.
+
+- **Inget att ställa in.** Datan sparas i Netlify Blobs, som Netlify
+  kopplar in själv. Ingen ny miljövariabel behövs.
+- **Hur den samlas in:** `stats.js` på varje sida skickar en liten
+  signal till funktionen `stats-collect`. Koden ligger i
+  `functions/_lib/stats.js`.
+- **Integritet:** inga cookies, ingen IP-adress sparas. Besökare
+  räknas med en hash som byter salt varje dygn. Efter ett dygn finns
+  bara sammanräknade siffror kvar. Integritetspolicyn beskriver det.
+- **Land och stad** kommer från Netlifys uppslag av anslutningen och är
+  ungefärliga (VPN och mobilnät kan visa en grannstad).
+- Statistiken börjar räknas när ändringen har publicerats — det finns
+  ingen historik från innan dess.
