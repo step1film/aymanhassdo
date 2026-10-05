@@ -20,6 +20,8 @@ Personal portfolio for filmmaker Ayman Hassdo (STEP1FILM).
 | `PRINTFUL_SETUP.md` | Step-by-step guide to wire the store to Printful (print-on-demand) |
 | `PAYMENTS_SETUP.md` | Step-by-step guide for payments: Swish + Klarna/card (Stripe) |
 | `bg-stage.jpg` | Background behind the clapperboard |
+| `assets/og-image.jpg` | Link preview image (Facebook, LinkedIn, Messenger …), 1200×630 — logo on Bild03 |
+| `assets/logo-600.png` | Square logo for Google (JSON-LD `logo`) |
 | `cursor.png` | Custom cursor |
 | `robots.txt` | Search engine directive |
 | `sitemap.xml` | Sitemap for search engines |
