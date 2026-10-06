@@ -904,7 +904,7 @@
      satt. Är den inte det visas ingen flik alls, i stället för
      en som bara kan säga att den inte fungerar.
   ===================================================== */
-  const MEJL = { konto: '', mapp: 'inkorg', brev: [], valt: null };
+  const MEJL = { konto: '', mapp: 'inkorg', brev: [], totalt: 0, valt: null, hamtarFler: false };
   const iSkickat = () => MEJL.mapp === 'skickat';
 
   const mejlLista  = () => $('#mejlLista');
@@ -964,6 +964,7 @@
   let mejlVarv = 0;
   async function mejlHamta() {
     const varv = ++mejlVarv;
+    MEJL.hamtarFler = false;
     const lista = mejlLista();
     lista.textContent = '';
     lista.appendChild(tomt('Hämtar …'));
@@ -972,11 +973,36 @@
       const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp);
       if (varv !== mejlVarv) return;
       MEJL.brev = d.brev || [];
+      MEJL.totalt = d.totalt || 0;
       mejlRitaLista();
     } catch (e) {
       if (varv !== mejlVarv) return;
       lista.textContent = '';
       lista.appendChild(tomt(e.message));
+    }
+  }
+
+  /* Nästa sida äldre brev. Listan visar 25 åt gången; servern
+     räknar bakifrån, så antalet brev vi redan har är rätt startpunkt.
+     Kommer ett nytt brev in under tiden förskjuts fönstret ett steg —
+     därför sållas dubbletter bort på uid. */
+  async function mejlHamtaFler() {
+    if (MEJL.hamtarFler) return;
+    const varv = mejlVarv;
+    MEJL.hamtarFler = true;
+    mejlRitaLista();
+    try {
+      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp
+        + '&fran=' + MEJL.brev.length + '&antal=25');
+      if (varv !== mejlVarv) return;
+      const finns = new Set(MEJL.brev.map(b => b.uid));
+      MEJL.brev = MEJL.brev.concat((d.brev || []).filter(b => !finns.has(b.uid)));
+      MEJL.totalt = d.totalt || MEJL.totalt;
+    } catch (e) {
+      if (varv !== mejlVarv) return;
+      alert(e.message);
+    } finally {
+      if (varv === mejlVarv) { MEJL.hamtarFler = false; mejlRitaLista(); }
     }
   }
 
@@ -1024,6 +1050,15 @@
       rad.onclick = () => mejlOppna(b.uid);
       lista.appendChild(rad);
     });
+
+    if (MEJL.brev.length < MEJL.totalt) {
+      const fler = el('button', 'mejl-fler',
+        MEJL.hamtarFler ? 'Hämtar …' : 'Visa fler (' + MEJL.brev.length + ' av ' + MEJL.totalt + ')');
+      fler.type = 'button';
+      fler.disabled = MEJL.hamtarFler;
+      fler.onclick = mejlHamtaFler;
+      lista.appendChild(fler);
+    }
   }
 
   async function mejlOppna(uid) {
@@ -1140,6 +1175,7 @@
            om: servern har redan gjort jobbet, och en ny IMAP-runda
            hade bara kostat en väntan. */
         MEJL.brev = MEJL.brev.filter(x => x.uid !== b.uid);
+        MEJL.totalt = Math.max(0, MEJL.totalt - 1);
         MEJL.valt = null;
         mejlRitaLista();
         yta.textContent = '';

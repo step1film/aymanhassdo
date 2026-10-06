@@ -546,6 +546,23 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 }
 .skriv-extra button:hover { color: var(--text); }
 
+/* --- Visa fler: sist i listan --- */
+.mejl-fler {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 0.9rem;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mejl-fler:hover:not(:disabled) { color: var(--white); background: rgba(255,255,255,0.04); }
+.mejl-fler:disabled { cursor: default; }
+
 /* --- Tomma lägen --- */
 .mejl-tom { padding: 2.5rem 1.4rem; text-align: center; color: var(--text-dim); font-size: 0.86rem; }
 
