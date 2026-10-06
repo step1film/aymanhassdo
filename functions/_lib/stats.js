@@ -31,8 +31,16 @@
    när någon klickade snabbt. Besöken byggs ihop vid läsning.
 
    Ett avslutat dygn räknas ihop till r/<dag> första gången
-   adminsidan frågar efter det, och de enskilda besöken
-   raderas då. Kvar blir bara siffror — inga besök.
+   adminsidan frågar efter det, och de enskilda händelserna
+   raderas då. Besöken sparas samtidigt hopbyggda i v/<dag>
+   så att man kan klicka på en besökare och se stad, enhet,
+   webbläsare och vilka sidor den läste. De raderas efter
+   SPARA_BESOK dygn — sedan finns bara siffrorna kvar.
+
+     v/<dag>                      dygnets besök, högst 30 dygn
+
+   Webbläsarens identifierande sträng (user-agent) sparas
+   aldrig som den är, bara namnet på webbläsaren och systemet.
    ===================================================== */
 'use strict';
 
@@ -40,6 +48,7 @@ const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
 
 const ZON = 'Europe/Stockholm';
+const SPARA_BESOK = 30;           // dygn som enskilda besök finns kvar
 
 /** Butiken. connectLambda behövs för funktioner i Lambda-format. */
 function butik(event) {
@@ -129,6 +138,39 @@ function enhet(bredd) {
   return 'Dator';
 }
 
+/* -----------------------------------------------------
+   Webbläsare och system
+   -----------------------------------------------------
+   Ur user-agent. Ordningen spelar roll: Edge, Opera och
+   Samsung säger alla också "Chrome", och Chrome säger
+   "Safari".
+----------------------------------------------------- */
+const WEBBLASARE = [
+  [/Edg(e|A|iOS)?\//, 'Edge'],
+  [/OPR\/|Opera/, 'Opera'],
+  [/SamsungBrowser/, 'Samsung Internet'],
+  [/FBAN|FBAV|FB_IAB/, 'Facebook (inbyggd)'],
+  [/Instagram/, 'Instagram (inbyggd)'],
+  [/Firefox|FxiOS/, 'Firefox'],
+  [/Chrome|CriOS/, 'Chrome'],
+  [/Safari/, 'Safari']
+];
+const SYSTEM = [
+  [/iPad/, 'iPadOS'],
+  [/iPhone|iPod/, 'iOS'],
+  [/Android/, 'Android'],
+  [/CrOS/, 'ChromeOS'],
+  [/Windows/, 'Windows'],
+  [/Mac OS X|Macintosh/, 'macOS'],
+  [/Linux/, 'Linux']
+];
+
+function programvara(ua) {
+  const u = String(ua || '');
+  const hitta = (lista) => { for (const [m, namn] of lista) if (m.test(u)) return namn; return ''; };
+  return { webblasare: hitta(WEBBLASARE), os: hitta(SYSTEM) };
+}
+
 const ROBOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|embedly|headless|lighthouse|pingdom|monitor|curl|wget|python|axios|node-fetch/i;
 
 /* -----------------------------------------------------
@@ -154,15 +196,37 @@ function byggBesok(handelser) {
     start: forsta.ts, senast: forsta.ts,
     land: forsta.land, landnamn: forsta.landnamn, stad: forsta.stad, region: forsta.region,
     kalla: forsta.kalla || 'Direkt', enhet: forsta.enhet,
-    visningar: 0, ms: 0, sidor: {}
+    webblasare: forsta.webblasare || '', os: forsta.os || '',
+    sprak: forsta.sprak || '', bredd: forsta.bredd || 0,
+    visningar: 0, ms: 0, sidor: {}, vag: []
   };
   for (const h of handelser) {
     const s = b.sidor[h.p] || (b.sidor[h.p] = { visningar: 0, ms: 0 });
-    if (h.t === 'pv') { b.visningar += 1; s.visningar += 1; }
-    else { b.ms += h.ms || 0; s.ms += h.ms || 0; }
+    if (h.t === 'pv') {
+      b.visningar += 1; s.visningar += 1;
+      b.vag.push({ p: h.p, ts: h.ts, ms: 0 });
+    } else {
+      b.ms += h.ms || 0; s.ms += h.ms || 0;
+      /* Tiden hör till den senaste visningen av samma sida. */
+      for (let i = b.vag.length - 1; i >= 0; i--) {
+        if (b.vag[i].p === h.p) { b.vag[i].ms += h.ms || 0; break; }
+      }
+    }
     b.senast = Math.max(b.senast, h.ts);
   }
+  if (b.vag.length > 60) b.vag = b.vag.slice(0, 60);
   return b;
+}
+
+/** Det som sparas i v/<dag> och visas i admin: inga id:n, ingen user-agent. */
+function besokUt(b) {
+  return {
+    start: b.start, senast: b.senast,
+    land: b.land || '', landnamn: b.landnamn || '', stad: b.stad || '', region: b.region || '',
+    kalla: b.kalla || 'Direkt', enhet: b.enhet || 'Okänd',
+    webblasare: b.webblasare || '', os: b.os || '', sprak: b.sprak || '', bredd: b.bredd || 0,
+    visningar: b.visningar || 0, ms: b.ms || 0, vag: b.vag || []
+  };
 }
 
 /** Räkna in ett besök i en dagssammanställning. */
@@ -203,6 +267,6 @@ function slaIhop(dagar) {
 }
 
 module.exports = {
-  butik, dagFor, dagarFore, besokarId, plats, kalla, enhet, ROBOT,
-  tomDag, byggBesok, raknaIn, slaIhop
+  butik, dagFor, dagarFore, besokarId, plats, kalla, enhet, programvara, ROBOT,
+  SPARA_BESOK, tomDag, byggBesok, besokUt, raknaIn, slaIhop
 };

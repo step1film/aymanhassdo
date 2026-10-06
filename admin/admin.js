@@ -1423,19 +1423,150 @@
     const rutnat = el('div', 'stat-rutnat');
     rutnat.appendChild(statLista('Länder', d.lander, r => flagga(r.nyckel) + '  ' + land(r.nyckel, r.namn),
       r => r.besok, r => 'snitt ' + tid(r.ms / r.besok)));
-    rutnat.appendChild(statLista('Städer', d.stader, r => {
+    const stader = statLista('Städer', d.stader, r => {
       const [stad, kod] = r.nyckel.split('|');
       return flagga(kod) + '  ' + stad;
     }, r => r.besok, r => {
       const kod = r.nyckel.split('|')[1];
       return [r.region, land(kod)].filter(Boolean).join(', ');
-    }, 'Ingen stad känd än. Netlify anger stad för de flesta anslutningar, men inte alla.'));
+    }, 'Ingen stad känd än. Netlify anger stad för de flesta anslutningar, men inte alla.');
+    rutnat.appendChild(stader);
     rutnat.appendChild(statLista('Källor', d.kallor, r => r.nyckel, r => r.besok, null,
       'Inga källor än.'));
     rutnat.appendChild(statLista('Sidor', d.sidor, r => r.nyckel === '/' ? 'Startsidan' : r.nyckel, r => r.visningar,
       r => 'snitt ' + tid(r.ms / Math.max(1, r.visningar)), null, 'visningar'));
     rutnat.appendChild(statLista('Enheter', d.enheter, r => r.nyckel, r => r.besok));
     yta.appendChild(rutnat);
+
+    /* Enskilda besökare. Klick på en stad filtrerar listan. */
+    const besokare = statBesokare(d);
+    yta.appendChild(besokare.box);
+    (d.stader || []).forEach((r, i) => {
+      const rd = stader.querySelectorAll('.stat-rad')[i];
+      if (!rd) return;
+      const [stad, kod] = r.nyckel.split('|');
+      rd.classList.add('klickbar');
+      rd.tabIndex = 0;
+      rd.setAttribute('role', 'button');
+      rd.title = 'Visa besökarna från ' + stad;
+      const valj = () => { besokare.filtrera(stad, kod); besokare.box.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+      rd.onclick = valj;
+      rd.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); valj(); } };
+    });
+  }
+
+  /* -----------------------------------------------------
+     Besökarna, ett i taget
+     -----------------------------------------------------
+     En rad per besök, nyast först. Klick fäller ut detaljerna:
+     enhet, webbläsare, språk och vilka sidor besökaren läste i
+     vilken ordning. Ingen IP-adress — den sparas aldrig.
+  ----------------------------------------------------- */
+  function statBesokare(d) {
+    const box = el('section', 'stat-lista stat-besokare');
+    const topp = el('div', 'stat-lista-topp');
+    topp.appendChild(el('h3', '', 'Besökare'));
+    const filterRad = el('span', 'stat-lista-enhet');
+    topp.appendChild(filterRad);
+    box.appendChild(topp);
+    const lista = el('div', 'besok-lista');
+    box.appendChild(lista);
+
+    const alla = d.besokare || [];
+    const SIDA = 50;
+    let filter = null, visas = SIDA, oppen = null;
+
+    const klocka = (ms) => new Date(ms).toLocaleString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const klockslag = (ms) => new Date(ms).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const sidnamn = (p) => p === '/' ? 'Startsidan' : p;
+    const ikon = (enhet) => ({ Mobil: '📱', Surfplatta: '📱', Dator: '💻' })[enhet] || '❔';
+    const plats = (b) => b.stad ? b.stad : land(b.land, b.landnamn);
+
+    function rita() {
+      const urval = filter ? alla.filter(b => b.stad === filter.stad && (b.land || '') === (filter.kod || '')) : alla;
+      lista.textContent = '';
+      filterRad.textContent = '';
+      if (filter) {
+        filterRad.appendChild(document.createTextNode(urval.length + ' från ' + filter.stad + ' · '));
+        const nollst = el('button', 'besok-nollst', 'Visa alla');
+        nollst.type = 'button';
+        nollst.onclick = () => { filter = null; visas = SIDA; oppen = null; rita(); };
+        filterRad.appendChild(nollst);
+      } else {
+        filterRad.textContent = 'från ' + new Date(d.besokareFran + 'T12:00:00').toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
+          + ' · klicka på en stad för att filtrera';
+      }
+
+      if (!urval.length) {
+        lista.appendChild(el('p', 'stat-tomrad', alla.length
+          ? 'Inga besökare därifrån som finns sparade.'
+          : 'Inga enskilda besök sparade än. De börjar sparas nu och finns kvar i 30 dagar.'));
+        return;
+      }
+
+      urval.slice(0, visas).forEach(b => {
+        const rad = el('button', 'besok-rad');
+        rad.type = 'button';
+        rad.setAttribute('aria-expanded', oppen === b ? 'true' : 'false');
+        rad.appendChild(el('span', 'besok-tid', klocka(b.start)));
+        rad.appendChild(el('span', 'besok-plats', flagga(b.land) + '  ' + plats(b)));
+        rad.appendChild(el('span', 'besok-enhet', ikon(b.enhet) + ' ' + b.enhet));
+        rad.appendChild(el('span', 'besok-kalla', b.kalla || 'Direkt'));
+        rad.appendChild(el('span', 'besok-sum', b.visningar + (b.visningar === 1 ? ' sida' : ' sidor') + ' · ' + tid(b.ms)));
+        rad.onclick = () => { oppen = oppen === b ? null : b; rita(); };
+        lista.appendChild(rad);
+        if (oppen === b) lista.appendChild(detaljer(b));
+      });
+
+      if (urval.length > visas) {
+        const fler = el('button', 'mejl-fler', 'Visa fler (' + visas + ' av ' + urval.length + ')');
+        fler.type = 'button';
+        fler.onclick = () => { visas += SIDA; rita(); };
+        lista.appendChild(fler);
+      }
+    }
+
+    function detaljer(b) {
+      const box = el('div', 'besok-detalj');
+      const fakta = el('dl', 'besok-fakta');
+      const rad = (etikett, varde) => {
+        if (!varde) return;
+        const r = el('div');
+        r.appendChild(el('dt', '', etikett));
+        r.appendChild(el('dd', '', varde));
+        fakta.appendChild(r);
+      };
+      rad('Plats', [b.stad, b.region, land(b.land, b.landnamn)].filter(Boolean).join(', '));
+      rad('Enhet', b.enhet + (b.bredd ? ' (' + b.bredd + ' px bred skärm)' : ''));
+      rad('Webbläsare', b.webblasare || 'Okänd');
+      rad('System', b.os || 'Okänt');
+      rad('Språk', b.sprak);
+      rad('Kom från', b.kalla || 'Direkt');
+      rad('Tid på sajten', tid(b.ms) + ' · ' + klockslag(b.start) + '–' + klockslag(b.senast));
+      box.appendChild(fakta);
+
+      if ((b.vag || []).length) {
+        box.appendChild(el('div', 'stat-etikett', 'Sidor i ordning'));
+        const ol = el('ol', 'besok-vag');
+        b.vag.forEach(v => {
+          const li = el('li');
+          li.appendChild(el('span', 'besok-vag-tid', klockslag(v.ts)));
+          li.appendChild(el('span', 'besok-vag-sida', sidnamn(v.p)));
+          li.appendChild(el('span', 'besok-vag-ms', v.ms ? tid(v.ms) : '—'));
+          ol.appendChild(li);
+        });
+        box.appendChild(ol);
+      } else {
+        box.appendChild(el('p', 'stat-tomrad', 'Sidordningen sparades inte för det här besöket.'));
+      }
+      return box;
+    }
+
+    rita();
+    return {
+      box,
+      filtrera(stad, kod) { filter = { stad, kod }; visas = SIDA; oppen = null; rita(); }
+    };
   }
 
   /* En rankad lista med en tunn stapel bakom varje rad. */

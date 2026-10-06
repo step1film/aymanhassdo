@@ -3,12 +3,17 @@
    =====================================================
    GET ?dagar=1|7|30|90 med sessionsnyckeln i X-Admin-Session
    → { period, totalt, perDag, lander, stader, kallor, sidor,
-       enheter, justNu }
+       enheter, justNu, besokare, besokareFran }
 
    Avslutade dygn (före i går) räknas ihop till r/<dag> en
-   gång och sparas; de enskilda besöken raderas då. I går
-   och i dag räknas fram varje gång — ett besök som pågår
-   vid midnatt kan fortfarande skicka tid.
+   gång och sparas; de enskilda händelserna raderas då och
+   besöken sparas hopbyggda i v/<dag>. I går och i dag räknas
+   fram varje gång — ett besök som pågår vid midnatt kan
+   fortfarande skicka tid.
+
+   besokare är de enskilda besöken, nyast först, för de dygn
+   i perioden som ligger inom S.SPARA_BESOK. v/<dag> som är
+   äldre än så raderas vid varje läsning.
    ===================================================== */
 'use strict';
 
@@ -37,21 +42,32 @@ async function besokFor(store, dag) {
   return { besok, nycklar: blobs.map(b => b.key) };
 }
 
-async function dagSumma(store, dag, avslutad) {
+async function dagSumma(store, dag, avslutad, medBesok) {
   if (avslutad) {
     const sparad = await store.get('r/' + dag, { type: 'json' }).catch(() => null);
-    if (sparad) return { sum: sparad, besok: [] };
+    if (sparad) {
+      const besok = medBesok ? (await store.get('v/' + dag, { type: 'json' }).catch(() => null)) || [] : [];
+      return { sum: sparad, besok };
+    }
   }
   const { besok, nycklar } = await besokFor(store, dag);
   const sum = S.tomDag(dag);
   besok.forEach(b => S.raknaIn(sum, b));
   if (avslutad) {
+    if (medBesok && besok.length) await store.setJSON('v/' + dag, besok.map(S.besokUt));
     await store.setJSON('r/' + dag, sum);
     for (let i = 0; i < nycklar.length; i += 25) {
       await Promise.all(nycklar.slice(i, i + 25).map(k => store.delete(k).catch(() => {})));
     }
   }
-  return { sum, besok };
+  return { sum, besok: medBesok ? besok.map(S.besokUt) : [] };
+}
+
+/** Radera sparade besök som är äldre än S.SPARA_BESOK dygn. */
+async function rensaBesok(store, grans) {
+  const { blobs } = await store.list({ prefix: 'v/' });
+  const gamla = blobs.map(b => b.key).filter(k => k.slice(2) < grans);
+  await Promise.all(gamla.map(k => store.delete(k).catch(() => {})));
 }
 
 /** Objekt → sorterad lista, störst först. */
@@ -82,13 +98,17 @@ exports.handler = async (event) => {
 
   try {
     const store = S.butik(event);
-    const svar = await Promise.all(dagar.map(d => dagSumma(store, d, d < igar)));
+    const besokGrans = S.dagarFore(idag, S.SPARA_BESOK - 1);
+    const svar = await Promise.all(dagar.map(d => dagSumma(store, d, d < igar, d >= besokGrans)));
+    await rensaBesok(store, besokGrans).catch(e => console.error('stats-read rensa:', e && e.message));
     const summor = svar.map(s => s.sum);
     const tot = S.slaIhop(summor);
 
     const nu = Date.now();
     const idagsBesok = svar[svar.length - 1].besok;
     const justNu = idagsBesok.filter(b => nu - (b.senast || 0) < JUST_NU).length;
+
+    const allaBesok = svar.flatMap(x => x.besok).sort((a, b) => b.start - a.start);
 
     return json(200, headers, {
       period: { fran: dagar[0], till: idag, dagar: antal },
@@ -99,7 +119,10 @@ exports.handler = async (event) => {
       kallor: topp(tot.kallor, 'besok', 20),
       sidor: topp(tot.sidor, 'visningar', 20),
       enheter: topp(tot.enheter, 'besok', 5),
-      justNu
+      justNu,
+      besokare: allaBesok.slice(0, 1000),
+      besokareTotalt: allaBesok.length,
+      besokareFran: dagar[0] > besokGrans ? dagar[0] : besokGrans
     });
   } catch (e) {
     console.error('stats-read:', e && e.name, e && e.message);

@@ -4,7 +4,7 @@
    POST med en liten JSON-kropp, skickad med sendBeacon som
    text/plain (då behövs ingen CORS-förfrågan i förväg).
 
-     { t: 'pv',  p: '/om/', r: 'https://google.com/', w: 1440, u: 'newsletter' }
+     { t: 'pv',  p: '/om/', r: 'https://google.com/', w: 1440, u: 'newsletter', l: 'sv-SE' }
      { t: 'tid', p: '/om/', ms: 42000 }
 
    Svarar alltid 204 utan innehåll. En besökare ska aldrig
@@ -52,7 +52,9 @@ exports.handler = async (event) => {
   if (d.t === 'pv') {
     /* Land, källa och enhet följer med varje sidvisning. Besöket tar
        dem från sin första när det byggs ihop i stats-read. */
-    h = { t: 'pv', ts: nu, p: sida, ...S.plats(event), kalla: S.kalla(d.r, d.u), enhet: S.enhet(d.w) };
+    h = { t: 'pv', ts: nu, p: sida, ...S.plats(event), kalla: S.kalla(d.r, d.u), enhet: S.enhet(d.w),
+      ...S.programvara(ua), sprak: String(d.l || '').replace(/[^A-Za-z-]/g, '').slice(0, 12),
+      bredd: Math.max(0, Math.min(10000, Math.round(Number(d.w) || 0))) };
   } else {
     const ms = Math.max(0, Math.min(MAX_TID, Math.round(Number(d.ms) || 0)));
     if (!ms) return klart;

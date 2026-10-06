@@ -4,7 +4,7 @@
    Skickar två sorters små meddelanden till vår egen
    Netlify-funktion, stats-collect:
 
-     pv   en sida har öppnats (sökväg, källa, skärmbredd)
+     pv   en sida har öppnats (sökväg, källa, skärmbredd, språk)
      tid  hur länge sidan faktiskt låg framme
 
    Ingen cookie, ingenting i localStorage eller
@@ -31,7 +31,7 @@
   var utm = '';
   try { utm = new URLSearchParams(location.search).get('utm_source') || ''; } catch (e) { /* gammal webbläsare */ }
 
-  skicka({ t: 'pv', r: document.referrer || '', w: window.innerWidth || 0, u: utm });
+  skicka({ t: 'pv', r: document.referrer || '', w: window.innerWidth || 0, u: utm, l: navigator.language || '' });
 
   /* Synlig tid. Räknas upp medan sidan syns och skickas varje gång
      den göms — byte av flik, låst telefon eller stängd sida. */
