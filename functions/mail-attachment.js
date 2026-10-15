@@ -2,7 +2,8 @@
    ADMIN — en bilaga
    =====================================================
    GET ?konto=…&uid=…&mapp=inkorg|skickat&nr=0
-   → { namn, typ, storlek, data }   (data är base64)
+   → { namn, typ, storlek, data, lasbar? }   (data är base64;
+     lasbar finns för vidarebefordrade brev, som vanlig text)
 
    Filen går genom funktionen och lagras ingenstans, precis
    som breven. Netlify tillåter högst sex megabyte i ett svar,
@@ -54,7 +55,8 @@ exports.handler = async (event) => {
       namn: b.namn,
       typ: b.typ,
       storlek: b.innehall.length,
-      data: b.innehall.toString('base64')
+      data: b.innehall.toString('base64'),
+      ...(b.lasbar ? { lasbar: b.lasbar } : {})
     });
   } catch (e) {
     console.error('mail-attachment:', e && e.message);
