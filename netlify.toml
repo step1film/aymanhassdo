@@ -102,9 +102,11 @@
     #                      innan den laddats upp — den är en blob: i minnet.
     #   connect-src netlify adminsidan ligger på step1film.se men anropar
     #                      funktionerna på step1film.netlify.app.
+    #   media-src/frame-src blob:  adminens mejlflik visar bilagor (video,
+    #                      ljud, PDF) direkt från minnet som blob:.
     #   font-src 'self'    typsnitten ligger lokalt sedan de flyttades hem
     #                      från Google Fonts; ingen extern källa behövs.
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://files.cdn.printful.com; connect-src 'self' https://api.stripe.com https://step1film.netlify.app; form-action 'self' https://checkout.stripe.com; frame-src https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://files.cdn.printful.com; connect-src 'self' https://api.stripe.com https://step1film.netlify.app; form-action 'self' https://checkout.stripe.com; media-src 'self' blob:; frame-src blob: https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
 
 # Betalnings-endpoints ska aldrig cachas
 [[headers]]
