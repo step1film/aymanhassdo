@@ -208,9 +208,16 @@ async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25 } = {}) {
   });
 }
 
+/* En del räknas som bilaga om den är märkt så — eller om den har ett
+   filnamn. Många mejlprogram (Apple Mail, mobiler) skickar PDF:er och
+   bilder som `inline` eller helt utan märkning, bara med ett namn.
+   Att bara titta på `attachment` gjorde att de aldrig syntes. */
 function harBilaga(del) {
   if (!del) return false;
   if (del.disposition === 'attachment') return true;
+  const namn = (del.dispositionParameters && del.dispositionParameters.filename)
+    || (del.parameters && del.parameters.name);
+  if (namn && !/^multipart\//i.test(del.type || '')) return true;
   if (Array.isArray(del.childNodes)) return del.childNodes.some(harBilaga);
   return false;
 }
@@ -245,11 +252,44 @@ async function las(konto, { mapp = 'inkorg', uid }) {
         html: p.html || '',
         text: p.text || '',
         messageId: p.messageId || '',
-        bilagor: (p.attachments || []).map(b => ({
+        /* nr är bilagans plats i brevet — det är den bilaga() nedan
+           frågar efter när en fil ska hämtas. */
+        bilagor: (p.attachments || []).map((b, nr) => ({
+          nr,
           namn: b.filename || 'bilaga',
           typ: b.contentType || '',
           storlek: b.size || 0
         }))
+      };
+    } finally {
+      las.release();
+    }
+  });
+}
+
+/* En bilaga, som råa byte.
+   -----------------------------------------------------
+   Brevet hämtas och tolkas på nytt och bilagan plockas ut på sin
+   plats i listan — samma ordning som las() gav webbläsaren. IMAP
+   kan visserligen hämta en enskild del, men mailparser säger inte
+   vilket delnummer en bilaga har, och att räkna fram det själv är
+   lätt att göra fel. Brevet markeras inte som läst här; det har
+   redan öppnats. */
+async function bilaga(konto, { mapp = 'inkorg', uid, nr }) {
+  return medImap(konto, async (klient) => {
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return null;
+    const las = await klient.getMailboxLock(sokvag);
+    try {
+      const m = await klient.fetchOne(String(uid), { source: true }, { uid: true });
+      if (!m || !m.source) return null;
+      const p = await simpleParser(m.source);
+      const b = (p.attachments || [])[nr];
+      if (!b) return null;
+      return {
+        namn: b.filename || 'bilaga',
+        typ: b.contentType || 'application/octet-stream',
+        innehall: b.content
       };
     } finally {
       las.release();
@@ -413,4 +453,4 @@ async function skickaBrev({ fran, till, amne, text, html, svaraTill, hemligKopia
   return { id: kvitto.messageId || '' };
 }
 
-module.exports = { MAPPAR, konfigurerad, kontolista, kontoFor, avsandare, lista, las, radera, skicka, skickaBrev, hittaMapp };
+module.exports = { MAPPAR, konfigurerad, kontolista, kontoFor, avsandare, lista, las, bilaga, radera, skicka, skickaBrev, hittaMapp };

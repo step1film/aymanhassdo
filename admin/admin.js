@@ -1197,13 +1197,51 @@
     if (b.bilagor && b.bilagor.length) {
       const box = el('div', 'brev-bilagor');
       box.appendChild(el('span', '', b.bilagor.length + ' bilaga' + (b.bilagor.length > 1 ? 'or' : '') + ':'));
-      b.bilagor.forEach(f => box.appendChild(el('span', '', '· ' + f.namn + '  (' + Math.round(f.storlek / 1024) + ' kB)')));
-      /* Bilagorna listas men laddas inte ned. Att skicka en fil genom
-         en serverlös funktion innebär att hela filen ska rymmas i ett
-         svar, och gränsen är sex megabyte — en vanlig bildbilaga
-         spränger den. Öppna sådana i mejlprogrammet. */
-      box.appendChild(el('span', '', 'Bilagor öppnas i ditt vanliga mejlprogram.'));
+      /* Brevlåda och mapp läses av nu, inte när man klickar: hinner man
+         byta mapp innan man trycker ska rätt brev ändå frågas efter. */
+      const konto = MEJL.konto, mapp = MEJL.mapp;
+      b.bilagor.forEach((f, i) => {
+        const nr = Number.isInteger(f.nr) ? f.nr : i;
+        const knapp = el('button', 'brev-bilaga', '⤓ ' + f.namn + '  (' + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)');
+        knapp.type = 'button';
+        knapp.title = 'Ladda ned ' + f.namn;
+        knapp.onclick = () => mejlHamtaBilaga(knapp, { konto, mapp, uid: b.uid, nr });
+        box.appendChild(knapp);
+      });
+      /* Filen går genom en serverlös funktion, och ett svar får vara
+         högst sex megabyte. Större bilagor öppnas i mejlprogrammet. */
+      box.appendChild(el('span', '', 'Bilagor över 4 MB öppnas i ditt vanliga mejlprogram.'));
       yta.appendChild(box);
+    }
+  }
+
+  /* Hämta en bilaga och ge den till webbläsaren som en nedladdning.
+     Filen kommer som base64 i JSON — samma väg som allt annat, med
+     sessionsnyckeln i huvudet — och görs om till en blob här. */
+  async function mejlHamtaBilaga(knapp, { konto, mapp, uid, nr }) {
+    if (knapp.disabled) return;
+    const text = knapp.textContent;
+    knapp.disabled = true;
+    knapp.textContent = 'Hämtar …';
+    try {
+      const f = await be('/mail-attachment?konto=' + encodeURIComponent(konto)
+        + '&mapp=' + encodeURIComponent(mapp) + '&uid=' + encodeURIComponent(uid) + '&nr=' + nr);
+      const bin = atob(f.data);
+      const byte = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) byte[i] = bin.charCodeAt(i);
+      const url = URL.createObjectURL(new Blob([byte], { type: f.typ || 'application/octet-stream' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = f.namn || 'bilaga';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (e) {
+      rop(e.message, 'fel');
+    } finally {
+      knapp.disabled = false;
+      knapp.textContent = text;
     }
   }
 
