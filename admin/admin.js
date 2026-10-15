@@ -1202,11 +1202,20 @@
       const konto = MEJL.konto, mapp = MEJL.mapp;
       b.bilagor.forEach((f, i) => {
         const nr = Number.isInteger(f.nr) ? f.nr : i;
-        const knapp = el('button', 'brev-bilaga', '⤓ ' + f.namn + '  (' + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)');
-        knapp.type = 'button';
-        knapp.title = 'Ladda ned ' + f.namn;
-        knapp.onclick = () => mejlHamtaBilaga(knapp, { konto, mapp, uid: b.uid, nr });
-        box.appendChild(knapp);
+        const vem = { konto, mapp, uid: b.uid, nr, namn: f.namn, typ: f.typ };
+        const rad = el('div', 'brev-bilaga');
+        rad.appendChild(el('span', 'brev-bilaga-namn', f.namn + '  (' + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)'));
+        if (bilagaSort(f.typ, f.namn)) {
+          const visa = el('button', 'knapp', 'Visa');
+          visa.type = 'button';
+          visa.onclick = () => mejlVisaBilaga(visa, vem);
+          rad.appendChild(visa);
+        }
+        const ned = el('button', 'knapp', 'Ladda ned');
+        ned.type = 'button';
+        ned.onclick = () => mejlLaddaNed(ned, vem);
+        rad.appendChild(ned);
+        box.appendChild(rad);
       });
       /* Filen går genom en serverlös funktion, och ett svar får vara
          högst sex megabyte. Större bilagor öppnas i mejlprogrammet. */
@@ -1215,34 +1224,143 @@
     }
   }
 
-  /* Hämta en bilaga och ge den till webbläsaren som en nedladdning.
+  /* --- Bilagor -------------------------------------------------------
      Filen kommer som base64 i JSON — samma väg som allt annat, med
-     sessionsnyckeln i huvudet — och görs om till en blob här. */
-  async function mejlHamtaBilaga(knapp, { konto, mapp, uid, nr }) {
+     sessionsnyckeln i huvudet — och görs om till en blob här. En
+     hämtad bilaga sparas i minnet så länge sidan är öppen: den som
+     först tittar och sedan laddar ned ska inte vänta två gånger. */
+  const BILAGOR = new Map();
+
+  async function hamtaBilaga({ konto, mapp, uid, nr }) {
+    const id = [konto, mapp, uid, nr].join('|');
+    if (BILAGOR.has(id)) return BILAGOR.get(id);
+    const f = await be('/mail-attachment?konto=' + encodeURIComponent(konto)
+      + '&mapp=' + encodeURIComponent(mapp) + '&uid=' + encodeURIComponent(uid) + '&nr=' + nr);
+    const bin = atob(f.data);
+    const byte = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) byte[i] = bin.charCodeAt(i);
+    const fil = { namn: f.namn || 'bilaga', typ: f.typ || 'application/octet-stream', byte };
+    BILAGOR.set(id, fil);
+    return fil;
+  }
+
+  /* Vilka filer får visas här, och hur?
+     Bara sorter som inte kan köra kod. En blob-adress har samma
+     ursprung som admin, så en HTML- eller SVG-fil öppnad i en ram
+     hade kunnat läsa sessionsnyckeln. SVG visas därför bara som
+     <img> (där skript aldrig körs), och HTML inte alls. Typen som
+     blobben får sätts här utifrån listan — aldrig rakt från
+     avsändaren. */
+  function bilagaSort(typ, namn) {
+    const t = String(typ || '').toLowerCase();
+    const n = String(namn || '').toLowerCase();
+    if (/^image\/(png|jpe?g|gif|webp|bmp|avif|svg\+xml)$/.test(t) || /\.(png|jpe?g|gif|webp|bmp|avif|svg)$/.test(n)) return 'bild';
+    if (t === 'application/pdf' || n.endsWith('.pdf')) return 'pdf';
+    if (/^video\/(mp4|webm|ogg|quicktime)$/.test(t) || /\.(mp4|webm|mov|m4v)$/.test(n)) return 'video';
+    if (/^audio\//.test(t) || /\.(mp3|m4a|wav|ogg|aac)$/.test(n)) return 'ljud';
+    if (/^text\/(plain|csv)$/.test(t) || /\.(txt|csv|log|md)$/.test(n)) return 'text';
+    return null;
+  }
+
+  const sakerTyp = (sort, typ) => {
+    if (sort === 'pdf') return 'application/pdf';
+    if (sort === 'text') return 'text/plain';
+    if (/^(image|video|audio)\/[a-z0-9.+-]+$/i.test(typ || '')) return typ;
+    return { bild: 'image/*', video: 'video/mp4', ljud: 'audio/mpeg' }[sort];
+  };
+
+  async function medKnapp(knapp, arbete) {
     if (knapp.disabled) return;
     const text = knapp.textContent;
     knapp.disabled = true;
     knapp.textContent = 'Hämtar …';
-    try {
-      const f = await be('/mail-attachment?konto=' + encodeURIComponent(konto)
-        + '&mapp=' + encodeURIComponent(mapp) + '&uid=' + encodeURIComponent(uid) + '&nr=' + nr);
-      const bin = atob(f.data);
-      const byte = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) byte[i] = bin.charCodeAt(i);
-      const url = URL.createObjectURL(new Blob([byte], { type: f.typ || 'application/octet-stream' }));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = f.namn || 'bilaga';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-    } catch (e) {
-      rop(e.message, 'fel');
-    } finally {
-      knapp.disabled = false;
-      knapp.textContent = text;
+    try { await arbete(); }
+    catch (e) { rop(e.message, 'fel'); }
+    finally { knapp.disabled = false; knapp.textContent = text; }
+  }
+
+  function sparaFil(fil) {
+    const url = URL.createObjectURL(new Blob([fil.byte], { type: 'application/octet-stream' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fil.namn;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+
+  function mejlLaddaNed(knapp, vem) {
+    return medKnapp(knapp, async () => sparaFil(await hamtaBilaga(vem)));
+  }
+
+  function mejlVisaBilaga(knapp, vem) {
+    return medKnapp(knapp, async () => {
+      const fil = await hamtaBilaga(vem);
+      const sort = bilagaSort(fil.typ, fil.namn) || bilagaSort(vem.typ, vem.namn);
+      if (!sort) { sparaFil(fil); return; }
+      oppnaVisning(fil, sort);
+    });
+  }
+
+  /* Visningen lägger sig över hela sidan. Stäng med krysset, Esc
+     eller ett klick utanför filen. */
+  function oppnaVisning(fil, sort) {
+    const url = URL.createObjectURL(new Blob([fil.byte], { type: sakerTyp(sort, fil.typ) }));
+    const lager = el('div', 'visning');
+    lager.setAttribute('role', 'dialog');
+    lager.setAttribute('aria-modal', 'true');
+    lager.setAttribute('aria-label', fil.namn);
+
+    const topp = el('div', 'visning-topp');
+    topp.appendChild(el('span', 'visning-namn', fil.namn));
+    const ned = el('button', 'knapp', 'Ladda ned');
+    ned.type = 'button';
+    ned.onclick = () => sparaFil(fil);
+    const stang = el('button', 'knapp', 'Stäng ✕');
+    stang.type = 'button';
+    topp.appendChild(ned);
+    topp.appendChild(stang);
+    lager.appendChild(topp);
+
+    const yta = el('div', 'visning-yta');
+    let inne;
+    if (sort === 'bild') {
+      inne = document.createElement('img');
+      inne.alt = fil.namn;
+      inne.src = url;
+    } else if (sort === 'pdf') {
+      inne = document.createElement('iframe');
+      inne.title = fil.namn;
+      inne.src = url;
+    } else if (sort === 'video' || sort === 'ljud') {
+      inne = document.createElement(sort === 'video' ? 'video' : 'audio');
+      inne.controls = true;
+      inne.src = url;
+    } else {
+      /* Text visas som text — textContent, aldrig innerHTML. */
+      inne = el('pre', '', new TextDecoder().decode(fil.byte));
     }
+    inne.classList.add('visning-fil', 'visning-fil--' + sort);
+    yta.appendChild(inne);
+    lager.appendChild(yta);
+
+    const fokusInnan = document.activeElement;
+    const tangent = (e) => { if (e.key === 'Escape') stangVisning(); };
+    function stangVisning() {
+      document.removeEventListener('keydown', tangent);
+      lager.remove();
+      document.body.classList.remove('visar-fil');
+      URL.revokeObjectURL(url);
+      if (fokusInnan && fokusInnan.focus) fokusInnan.focus();
+    }
+    stang.onclick = stangVisning;
+    yta.onclick = (e) => { if (e.target === yta) stangVisning(); };
+    document.addEventListener('keydown', tangent);
+
+    document.body.appendChild(lager);
+    document.body.classList.add('visar-fil');
+    stang.focus();
   }
 
   function mejlSkrivruta(forifyllt = {}) {
