@@ -527,6 +527,41 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 .brev-bilaga-namn { flex: 1 1 12rem; min-width: 0; font-size: 0.85rem; overflow-wrap: anywhere; }
 .brev-bilaga .knapp { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
 
+/* --- Kalenderinbjudan --- */
+.kal-plats { margin-top: 1.2rem; }
+.kal-vantar { font-size: 0.85rem; color: var(--text-dim); }
+.kal {
+  border: 1px solid var(--line-s); border-left: 3px solid var(--accent);
+  border-radius: 6px; background: var(--yta-hog); padding: 1rem;
+  width: 100%; max-width: 40rem;
+}
+.visning-yta .kal { align-self: flex-start; margin: 0 auto; }
+.kal-topp { display: flex; gap: 1rem; align-items: flex-start; }
+.kal-ruta {
+  flex: none; width: 3.6rem; text-align: center;
+  border: 1px solid var(--line-s); border-radius: 6px; overflow: hidden;
+}
+.kal-man { display: block; background: var(--accent); color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.15rem 0; }
+.kal-dag { display: block; font-size: 1.5rem; font-weight: 600; padding: 0.2rem 0; color: var(--white); }
+.kal-info { flex: 1; min-width: 0; }
+.kal-titel { margin: 0 0 0.4rem; font-size: 1.05rem; font-weight: 600; color: var(--white); overflow-wrap: anywhere; }
+.kal-rad { margin: 0.2rem 0; font-size: 0.85rem; overflow-wrap: anywhere; }
+.kal-installt { display: inline-block; margin-bottom: 0.3rem; padding: 0.1rem 0.5rem; border-radius: 3px; background: var(--accent); color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.kal-verktyg { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+.kal-verktyg .knapp { text-decoration: none; }
+.kal-delt, .kal-besk { margin-top: 0.9rem; border-top: 1px solid var(--line); padding-top: 0.6rem; font-size: 0.85rem; }
+.kal-delt summary, .kal-besk summary { cursor: pointer; color: var(--text-dim); }
+.kal-delt ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.kal-delt li { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.25rem 0; flex-wrap: wrap; }
+.kal-person { overflow-wrap: anywhere; }
+.kal-svar { color: var(--text-dim); font-size: 0.8rem; }
+.kal-besk pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0.5rem 0 0; max-height: 20rem; overflow: auto; }
+@media (max-width: 640px) {
+  .kal { padding: 0.8rem; }
+  .kal-ruta { width: 3rem; }
+  .kal-verktyg .knapp { flex: 1; justify-content: center; }
+}
+
 /* --- Förhandsvisning av bilaga --- */
 body.visar-fil { overflow: hidden; }
 .visning {
