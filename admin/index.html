@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
   <link rel="stylesheet" href="../assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="admin.css?v=2026-10-15b" />
+  <link rel="stylesheet" href="admin.css?v=2026-10-16" />
 </head>
 <body>
 
@@ -170,6 +170,7 @@
         <div class="del-verktyg">
           <select class="sok" id="mejlKonto" aria-label="Välj brevlåda"></select>
           <button class="knapp" type="button" id="mejlUppdatera">Uppdatera</button>
+          <button class="knapp" type="button" id="mejlSignatur">Signatur</button>
           <button class="knapp knapp--primar" type="button" id="mejlNytt">Nytt mejl</button>
         </div>
       </div>
@@ -180,7 +181,13 @@
           <div class="mejl-mappar" role="tablist" aria-label="Mapp">
             <button class="mejl-mapp vald" type="button" role="tab" aria-selected="true" data-mapp="inkorg">Inkorg</button>
             <button class="mejl-mapp" type="button" role="tab" aria-selected="false" data-mapp="skickat">Skickat</button>
+            <button class="mejl-mapp" type="button" role="tab" aria-selected="false" data-mapp="utkast">Utkast</button>
+            <button class="mejl-mapp" type="button" role="tab" aria-selected="false" data-mapp="skrap">Skräppost</button>
+            <button class="mejl-mapp" type="button" role="tab" aria-selected="false" data-mapp="papperskorg">Papperskorg</button>
           </div>
+          <form class="mejl-sok" id="mejlSokForm" role="search">
+            <input type="search" id="mejlSok" placeholder="Sök i mappen …" aria-label="Sök bland breven i mappen" autocomplete="off" />
+          </form>
           <div class="mejl-lista" id="mejlLista" role="list" aria-label="Brev i inkorgen"></div>
         </div>
         <div class="mejl-yta" id="mejlYta"></div>
@@ -197,6 +204,6 @@
      låter webbläsaren spara dem i tio minuter, och utan den här stämpeln
      kan man sitta med en gammal adminsida långt efter en deploy.
      Räkna upp datumet när admin.js eller admin.css ändras. -->
-<script src="admin.js?v=2026-10-15b" defer></script>
+<script src="admin.js?v=2026-10-16" defer></script>
 </body>
 </html>
