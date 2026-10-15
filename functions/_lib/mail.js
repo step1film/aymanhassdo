@@ -182,9 +182,19 @@ async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25, sok = '' } 
          träffarna, nyast (högst uid) först. */
       let urval, totalt, uid = false;
       if (sok) {
-        const traffar = await klient.search({
-          or: [{ subject: sok }, { from: sok }, { to: sok }, { body: sok }]
-        }, { uid: true }) || [];
+        /* Först rubrikerna — avsändare, mottagare, ämne — som servern
+           söker i på ett ögonblick. Hittas inget där letas det i
+           själva texten, som tar längre tid i en stor brevlåda.
+           Varje fält söks för sig och träffarna läggs ihop: one.com
+           klarar inte alltid ett nästlat OR i ett enda kommando. */
+        const traff = new Set();
+        const leta = async (fraga) => {
+          const r = await klient.search(fraga, { uid: true });
+          (Array.isArray(r) ? r : []).forEach(u => traff.add(u));
+        };
+        for (const falt of ['from', 'to', 'cc', 'subject']) await leta({ [falt]: sok });
+        if (!traff.size) await leta({ body: sok });
+        const traffar = [...traff];
         traffar.sort((a, b) => b - a);
         totalt = traffar.length;
         const sida = traffar.slice(fran, fran + antal);
