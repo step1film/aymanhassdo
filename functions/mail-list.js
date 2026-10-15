@@ -1,7 +1,7 @@
 /* =====================================================
    ADMIN — inkorgens rubriker
    =====================================================
-   GET ?konto=info@step1film.se&mapp=inkorg|skickat&fran=0
+   GET ?konto=info@step1film.se&mapp=inkorg|skickat|utkast|skrap|papperskorg&fran=0&sok=…
    med sessionsnyckeln i X-Admin-Session
    → { konton: [...], mapp, totalt, brev: [...] }
 
@@ -39,10 +39,13 @@ exports.handler = async (event) => {
   if (!M.MAPPAR.includes(mapp)) return json(400, headers, { fel: 'Okänd mapp.' });
   const fran = Math.max(0, Number(q.fran) || 0);
   const antal = Math.min(50, Math.max(5, Number(q.antal) || 25));
+  /* Sökordet går till IMAP:s SEARCH som en sträng — ImapFlow citerar
+     den. Radbrytningar tas bort och längden hålls nere. */
+  const sok = String(q.sok || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 100);
 
   try {
-    const { totalt, brev, saknas } = await M.lista(konto, { mapp, fran, antal });
-    if (saknas) return json(404, headers, { fel: 'Hittade ingen Skickat-mapp i brevlådan.' });
+    const { totalt, brev, saknas } = await M.lista(konto, { mapp, fran, antal, sok });
+    if (saknas) return json(404, headers, { fel: 'Hittade inte den mappen i brevlådan.' });
     return json(200, headers, { konton, mapp, totalt, fran, brev });
   } catch (e) {
     /* Felmeddelandet från IMAP kan innehålla serverns svar ordagrant.

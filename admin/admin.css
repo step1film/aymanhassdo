@@ -450,22 +450,34 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 .mejl-lista { flex: 1; overflow-y: auto; min-height: 0; }
 
 /* --- Inkorg / Skickat --- */
-.mejl-mappar { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+/* Fem mappar ryms inte bredvid varandra i en smal spalt. De rullar
+   i sidled i stället för att brytas på två rader. */
+.mejl-mappar { display: flex; border-bottom: 1px solid var(--line); flex: none; overflow-x: auto; scrollbar-width: none; }
+.mejl-mappar::-webkit-scrollbar { display: none; }
 .mejl-mapp {
-  flex: 1;
-  padding: 0.7rem 0.9rem;
+  flex: 1 0 auto;
+  white-space: nowrap;
+  padding: 0.7rem 0.75rem;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
   color: var(--text-dim);
   font: inherit;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
 }
 .mejl-mapp:hover { color: var(--text); }
 .mejl-mapp.vald { color: var(--white); border-bottom-color: var(--accent); }
+
+/* --- Sökrutan --- */
+.mejl-sok { flex: none; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); }
+.mejl-sok input {
+  width: 100%; padding: 0.45rem 0.65rem; font: inherit; font-size: 0.85rem;
+  background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px;
+}
+.mejl-sok input:focus { outline: none; border-color: var(--line-s); }
 
 /* --- Rubrikraderna --- */
 .brevrad {
@@ -595,7 +607,7 @@ body.visar-fil { overflow: hidden; }
 /* --- Skrivrutan --- */
 .skriv { display: flex; flex-direction: column; gap: 0.7rem; }
 .skriv label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 0.25rem; }
-.skriv input, .skriv textarea {
+.skriv input {
   width: 100%;
   background: var(--bg);
   border: 1px solid var(--line-s);
@@ -604,8 +616,69 @@ body.visar-fil { overflow: hidden; }
   font: inherit;
   padding: 0.55rem 0.7rem;
 }
-.skriv textarea { min-height: 16rem; resize: vertical; line-height: 1.6; }
-.skriv input:focus, .skriv textarea:focus { outline: 1px solid var(--accent); outline-offset: 1px; }
+.skriv input:focus { outline: 1px solid var(--accent); outline-offset: 1px; }
+.skriv.dra { outline: 2px dashed var(--accent); outline-offset: 6px; border-radius: 4px; }
+
+/* --- Redigeraren: verktygsfält + vit skrivruta --- */
+.red { border: 1px solid var(--line-s); border-radius: 4px; overflow: hidden; }
+.red-falt {
+  display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: center;
+  padding: 0.4rem; background: var(--yta-hog); border-bottom: 1px solid var(--line-s);
+}
+.red-grupp { display: flex; gap: 0.15rem; align-items: center; }
+.red-grupp + .red-grupp { padding-left: 0.5rem; border-left: 1px solid var(--line); }
+.red-knapp {
+  position: relative;
+  min-width: 2rem; height: 2rem; padding: 0 0.4rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid transparent; border-radius: 4px;
+  color: var(--text); font: inherit; font-size: 0.9rem; cursor: pointer;
+}
+.red-knapp:hover { background: rgba(255,255,255,0.07); border-color: var(--line); }
+.red-knapp.pa { background: rgba(224,28,28,0.18); border-color: var(--accent); color: var(--white); }
+.red-fet { font-weight: 700; }
+.red-kursiv { font-style: italic; font-family: Georgia, serif; }
+.red-under { text-decoration: underline; }
+.red-genom { text-decoration: line-through; }
+.red-val {
+  height: 2rem; padding: 0 0.4rem; font: inherit; font-size: 0.8rem;
+  background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; cursor: pointer;
+}
+.red-farg { flex-direction: column; gap: 0; line-height: 1; }
+.red-farg span:first-child { font-weight: 700; font-size: 0.85rem; }
+.red-farg-strek { display: block; width: 1.1rem; height: 0.22rem; margin-top: 0.12rem; border-radius: 1px; }
+.red-farg input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; border: 0; padding: 0; }
+.red-ruta {
+  min-height: 18rem; max-height: 60vh; overflow-y: auto;
+  padding: 0.9rem 1rem; background: #ffffff; color: #222222;
+  outline: none; overflow-wrap: anywhere;
+}
+.red-ruta--kort { min-height: 8rem; }
+.red-ruta img { max-width: 100%; height: auto; }
+.red-ruta a { color: #0b57d0; }
+.red-ruta blockquote { margin: 0 0 0 0.8ex; border-left: 2px solid #cccccc; padding-left: 1ex; color: #444444; }
+.red-ruta table { max-width: 100%; }
+
+/* --- Bilagor i skrivrutan --- */
+.skriv-bilagor { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.skriv-bilagor-tips { font-size: 0.78rem; color: var(--text-dim); }
+.skriv-bilaga {
+  display: inline-flex; align-items: center; gap: 0.45rem; max-width: 100%;
+  padding: 0.3rem 0.35rem 0.3rem 0.6rem; font-size: 0.82rem;
+  border: 1px solid var(--line-s); border-radius: 999px; background: var(--yta-hog);
+}
+.skriv-bilaga-namn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 16rem; }
+.skriv-bilaga-storlek { color: var(--text-dim); font-size: 0.75rem; flex: none; }
+.skriv-bilaga-ta {
+  flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  border: 0; background: none; color: var(--text-dim); cursor: pointer; font: inherit; font-size: 0.75rem;
+}
+.skriv-bilaga-ta:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+@media (max-width: 640px) {
+  .red-grupp + .red-grupp { padding-left: 0; border-left: 0; }
+  .red-ruta { min-height: 14rem; padding: 0.75rem; }
+  .skriv-fot .knapp { flex: 1; justify-content: center; }
+}
 .skriv-fot { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
 .skriv-status { font-size: 0.8rem; color: var(--text-dim); }
 .skriv-status.fel { color: var(--accent); }
