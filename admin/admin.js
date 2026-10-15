@@ -936,30 +936,40 @@
   }
 
   /* Brevets HTML kommer utifrån och är därför fientlig tills
-     motsatsen bevisats. Den tvättas i ett löst dokument som aldrig
-     kopplas till sidan: skript, stilar, ramar, formulär och
-     händelseattribut plockas bort, och kvar blir texten med sin
-     formatering. Länkar öppnas i ny flik och utan referrer.
+     motsatsen bevisats. Den tvättas med DOMPurify (admin/purify.min.js)
+     — ett beprövat bibliotek som också klarar de knep en egen
+     svartlista missar: kodade javascript:-länkar, <noscript>-fällor
+     och andra sätt att få HTML att ändra betydelse när den läses in
+     en gång till.
 
-     Att visa brevet i en sandlådad iframe vore ännu strängare, men
-     då måste höjden mätas och skickas tillbaka, och en iframe utan
-     same-origin kan inte mäta sig själv. Det här räcker för en
-     inkorg som bara du är inloggad i. */
+     Utöver standardreglerna: inga stilmallar (de hade ändrat hela
+     adminsidan), inga formulär, ramar eller media, inga id/name
+     (de kan skriva över sidans egna variabler), och länkar och
+     bilder bara till http(s), mailto, tel och inbakade bilder.
+     Länkar öppnas i ny flik utan referrer.
+
+     Saknas biblioteket visas bara texten — hellre det än HTML som
+     inte gått att tvätta. */
+  const RENT = {
+    FORBID_TAGS: ['style', 'form', 'input', 'button', 'textarea', 'select', 'option', 'iframe', 'frame', 'frameset',
+      'object', 'embed', 'link', 'meta', 'base', 'video', 'audio', 'source', 'track', 'svg', 'math', 'template', 'noscript'],
+    FORBID_ATTR: ['id', 'name', 'srcset', 'action', 'formaction', 'background', 'ping'],
+    ALLOWED_URI_REGEXP: /^(?:https?:|mailto:|tel:|#|data:image\/(?:png|jpe?g|gif|webp|bmp);base64,)/i,
+    ADD_ATTR: ['target']
+  };
+  let renKrok = false;
   function renaHtml(html) {
-    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
-    doc.querySelectorAll('script, style, iframe, object, embed, form, input, button, link, meta, base').forEach(n => n.remove());
-    doc.querySelectorAll('*').forEach(n => {
-      [...n.attributes].forEach(a => {
-        const namn = a.name.toLowerCase();
-        const varde = String(a.value || '').trim().toLowerCase();
-        if (namn.startsWith('on')) n.removeAttribute(a.name);
-        else if ((namn === 'href' || namn === 'src') && (varde.startsWith('javascript:') || varde.startsWith('data:text/html'))) {
-          n.removeAttribute(a.name);
-        }
+    if (!window.DOMPurify || !DOMPurify.isSupported) {
+      const d = new DOMParser().parseFromString(String(html || ''), 'text/html');
+      return textTillHtml(d.body ? d.body.textContent : '');
+    }
+    if (!renKrok) {
+      DOMPurify.addHook('afterSanitizeAttributes', (n) => {
+        if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
       });
-      if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
-    });
-    return doc.body.innerHTML;
+      renKrok = true;
+    }
+    return DOMPurify.sanitize(String(html || ''), RENT);
   }
 
   /* Varje hämtning får ett nummer. Byter man mapp eller brevlåda
@@ -971,7 +981,7 @@
     MEJL.hamtarFler = false;
     const lista = mejlLista();
     lista.textContent = '';
-    lista.appendChild(tomt('Hämtar …'));
+    lista.appendChild(tomt(MEJL.sok ? 'Söker efter "' + MEJL.sok + '" …' : 'Hämtar …'));
     lista.setAttribute('aria-label', 'Brev i ' + MAPPNAMN[MEJL.mapp]);
     try {
       const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp + sokDel());
@@ -1036,6 +1046,11 @@
         ? 'Inga träffar på "' + MEJL.sok + '" i ' + MAPPNAMN[MEJL.mapp] + '.'
         : 'Inga brev i ' + MAPPNAMN[MEJL.mapp] + '.'));
       return;
+    }
+
+    if (MEJL.sok) {
+      lista.appendChild(el('div', 'mejl-traffar',
+        MEJL.totalt + (MEJL.totalt === 1 ? ' träff' : ' träffar') + ' på "' + MEJL.sok + '"'));
     }
 
     MEJL.brev.forEach(b => {
@@ -1254,8 +1269,44 @@
     yta.appendChild(huvud);
 
     const kropp = el('div', 'brev-kropp');
-    if (b.html) kropp.innerHTML = renaHtml(b.html);
-    else kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
+    if (b.html) {
+      /* Tolkas i en <template> först: där är innehållet dött, så inga
+         bilder hinner börja laddas innan de blockerats nedan. */
+      const mall = document.createElement('template');
+      mall.innerHTML = renaHtml(b.html);
+      /* Bilder från internet visas inte förrän man ber om det, som i
+         Outlook. Många utskick har en osynlig spårningsbild som säger
+         till avsändaren när och var brevet öppnades. Inbakade bilder
+         (data:) kommer inifrån brevet och visas direkt. */
+      const fjarr = [...mall.content.querySelectorAll('img[src^="http"], img[src^="//"]')];
+      const bakgrund = [...mall.content.querySelectorAll('[style*="url("]')];
+      fjarr.forEach(i => { i.dataset.blockerad = i.getAttribute('src'); i.removeAttribute('src'); });
+      bakgrund.forEach(n => {
+        const stil = n.getAttribute('style');
+        n.dataset.blockeradStil = stil;
+        n.setAttribute('style', stil.replace(/url\([^)]*\)/gi, 'none'));
+      });
+      kropp.appendChild(document.importNode(mall.content, true));
+      /* importNode gör nya noder — hämta dem igen ur sidan. */
+      fjarr.length = 0; bakgrund.length = 0;
+      kropp.querySelectorAll('img[data-blockerad]').forEach(i => fjarr.push(i));
+      kropp.querySelectorAll('[data-blockerad-stil]').forEach(n => bakgrund.push(n));
+      if (fjarr.length || bakgrund.length) {
+        const rad = el('div', 'brev-bilder');
+        rad.appendChild(el('span', '', 'Bilder från internet visas inte, så att avsändaren inte kan se att du öppnat brevet.'));
+        const visa = el('button', 'knapp', 'Visa bilder');
+        visa.type = 'button';
+        visa.onclick = () => {
+          fjarr.forEach(i => { i.setAttribute('src', i.dataset.blockerad); });
+          bakgrund.forEach(n => { n.setAttribute('style', n.dataset.blockeradStil); });
+          rad.remove();
+        };
+        rad.appendChild(visa);
+        yta.appendChild(rad);
+      }
+    } else {
+      kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
+    }
     yta.appendChild(kropp);
 
     /* En kalenderinbjudan visas som ett kort direkt i brevet, som i
@@ -1689,7 +1740,9 @@
     ruta.setAttribute('aria-multiline', 'true');
     ruta.setAttribute('aria-label', 'Meddelande');
     ruta.style.cssText = BREVSTIL;
-    ruta.innerHTML = startHtml || '<div><br></div>';
+    /* Det som läggs in från början — signatur, citat, utkast — tvättas
+       som all annan HTML innan det hamnar i en redigerbar ruta. */
+    ruta.innerHTML = startHtml ? renaHtml(startHtml) : '<div><br></div>';
 
     /* Markeringen sparas när den ändras i rutan och läggs tillbaka
        innan ett kommando körs — annars hamnar ett klick i en
@@ -2171,15 +2224,23 @@
       $('#mejlUppdatera').onclick = () => mejlHamta();
       $('#mejlNytt').onclick = () => mejlSkrivruta();
       $('#mejlSignatur').onclick = () => mejlSignatur();
-      $('#mejlSokForm').onsubmit = (e) => {
-        e.preventDefault();
-        MEJL.sok = $('#mejlSok').value.trim();
+      /* Sökningen startar medan man skriver, en kort stund efter sista
+         tangenten — varje bokstav för sig hade blivit en IMAP-runda.
+         Enter söker direkt, och en tom ruta visar hela mappen igen. */
+      let sokTimer;
+      const sok = () => {
+        clearTimeout(sokTimer);
+        const v = $('#mejlSok').value.trim();
+        if (v === MEJL.sok) return;
+        MEJL.sok = v;
         MEJL.valt = null;
         mejlHamta();
       };
-      /* Töms sökrutan (krysset i rutan) visas hela mappen igen. */
-      $('#mejlSok').addEventListener('search', () => {
-        if (!$('#mejlSok').value && MEJL.sok) { MEJL.sok = ''; mejlHamta(); }
+      $('#mejlSokForm').onsubmit = (e) => { e.preventDefault(); sok(); };
+      $('#mejlSok').addEventListener('input', () => {
+        clearTimeout(sokTimer);
+        const v = $('#mejlSok').value.trim();
+        sokTimer = setTimeout(sok, v ? 500 : 0);
       });
       /* Signaturerna hämtas i bakgrunden. Går det inte blir det
          bara inga signaturer — brevskrivandet ska inte hänga på det. */
