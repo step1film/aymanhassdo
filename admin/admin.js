@@ -1194,6 +1194,25 @@
     else kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
     yta.appendChild(kropp);
 
+    /* En kalenderinbjudan visas som ett kort direkt i brevet, som i
+       Outlook — man ska inte behöva öppna bilagan för att se när och
+       var. Filen är liten, så den hämtas med en gång. */
+    const inbjudan = (b.bilagor || []).map((f, i) => ({ f, nr: Number.isInteger(f.nr) ? f.nr : i }))
+      .find(x => bilagaSort(x.f.typ, x.f.namn) === 'kalender');
+    if (inbjudan) {
+      const plats = el('div', 'kal-plats');
+      plats.appendChild(el('p', 'kal-vantar', 'Hämtar inbjudan …'));
+      yta.appendChild(plats);
+      const uid = b.uid;
+      hamtaBilaga({ konto: MEJL.konto, mapp: MEJL.mapp, uid, nr: inbjudan.nr })
+        .then(fil => {
+          if (MEJL.valt !== uid) return;
+          plats.textContent = '';
+          plats.appendChild(kalenderKort(fil));
+        })
+        .catch(() => { plats.remove(); });
+    }
+
     if (b.bilagor && b.bilagor.length) {
       const box = el('div', 'brev-bilagor');
       box.appendChild(el('span', '', b.bilagor.length + ' bilaga' + (b.bilagor.length > 1 ? 'or' : '') + ':'));
@@ -1257,6 +1276,7 @@
     const t = String(typ || '').toLowerCase();
     const n = String(namn || '').toLowerCase();
     if (t === 'message/rfc822' || n.endsWith('.eml')) return 'brev';
+    if (t === 'text/calendar' || t === 'application/ics' || n.endsWith('.ics')) return 'kalender';
     /* Alla bildsorter visas som <img>, där inget skript kan köras.
        HEIC (iPhone) klarar bara Safari — andra webbläsare visar ett
        tomt fönster, och då finns Ladda ned kvar. */
@@ -1300,8 +1320,8 @@
     finally { knapp.disabled = false; knapp.textContent = text; }
   }
 
-  function sparaFil(fil) {
-    const url = URL.createObjectURL(new Blob([fil.byte], { type: 'application/octet-stream' }));
+  function sparaFil(fil, typ) {
+    const url = URL.createObjectURL(new Blob([fil.byte], { type: typ || 'application/octet-stream' }));
     const a = document.createElement('a');
     a.href = url;
     a.download = fil.namn;
@@ -1322,6 +1342,167 @@
       if (!sort) { sparaFil(fil); return; }
       oppnaVisning(fil, sort);
     });
+  }
+
+  /* --- Kalenderinbjudningar ------------------------------------------
+     En .ics-fil är text i ett enkelt radformat. Bara det första
+     evenemanget läses — en inbjudan har nästan alltid ett. Allt som
+     visas sätts med textContent; länkar släpps bara igenom om de
+     börjar med https://. */
+  function lasIcs(text) {
+    const rader = String(text || '').replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
+    const avkoda = (v) => v.replace(/\\([nN])/g, '\n').replace(/\\([,;\\])/g, '$1');
+    let metod = '';
+    let ev = null;
+    let inne = false;
+    for (const rad of rader) {
+      /* Namn och parametrar före första kolon som inte står i citat. */
+      let i = 0, citat = false;
+      for (; i < rad.length; i++) {
+        if (rad[i] === '"') citat = !citat;
+        else if (rad[i] === ':' && !citat) break;
+      }
+      if (i >= rad.length) continue;
+      const [namn, ...delar] = rad.slice(0, i).split(';');
+      const varde = rad.slice(i + 1);
+      const param = {};
+      delar.forEach(d => {
+        const j = d.indexOf('=');
+        if (j > 0) param[d.slice(0, j).toUpperCase()] = d.slice(j + 1).replace(/^"|"$/g, '');
+      });
+      const N = namn.toUpperCase();
+      if (N === 'BEGIN' && varde.toUpperCase() === 'VEVENT') { if (!ev) { ev = { deltagare: [] }; inne = true; } continue; }
+      if (N === 'END' && varde.toUpperCase() === 'VEVENT') { inne = false; continue; }
+      if (N === 'METHOD') { metod = varde.toUpperCase(); continue; }
+      if (!inne || !ev) continue;
+      /* Larm och liknande ligger som egna block inne i evenemanget. */
+      if (N === 'BEGIN') { inne = varde.toUpperCase() === 'VEVENT'; continue; }
+
+      const person = () => ({
+        namn: param.CN || '',
+        adress: varde.replace(/^mailto:/i, ''),
+        roll: param.ROLE || '',
+        svar: param.PARTSTAT || ''
+      });
+      if (N === 'SUMMARY') ev.titel = avkoda(varde);
+      else if (N === 'LOCATION') ev.plats = avkoda(varde);
+      else if (N === 'DESCRIPTION') ev.beskrivning = avkoda(varde);
+      else if (N === 'DTSTART') ev.start = { v: varde, ...param };
+      else if (N === 'DTEND') ev.slut = { v: varde, ...param };
+      else if (N === 'STATUS') ev.status = varde.toUpperCase();
+      else if (N === 'RRULE') ev.aterkommer = true;
+      else if (N === 'ORGANIZER') ev.arrangor = person();
+      else if (N === 'ATTENDEE') ev.deltagare.push(person());
+      else if (N === 'X-MICROSOFT-SKYPETEAMSMEETINGURL' || N === 'URL') ev.lank = ev.lank || varde.trim();
+    }
+    if (ev) ev.metod = metod;
+    return ev;
+  }
+
+  /* Tid ur .ics. Slutar den på Z är den i UTC och visas i svensk tid.
+     Har den en tidszon (TZID) visas klockslaget som det står — för
+     inbjudningar härifrån är det svensk tid — med zonens namn efter
+     om den inte ser svensk ut. */
+  function icsTid(t) {
+    if (!t || !t.v) return null;
+    const m = t.v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/);
+    if (!m) return null;
+    const [, y, mo, d, h, mi, , z] = m;
+    if (!h) return { datum: new Date(+y, +mo - 1, +d), heldag: true };
+    if (z) return { datum: new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi)), utc: true };
+    const svensk = !t.TZID || /stockholm|w\. europe|romance|central europe|europe\/(oslo|copenhagen|berlin|paris|amsterdam|brussels)/i.test(t.TZID);
+    return { datum: new Date(+y, +mo - 1, +d, +h, +mi), zon: svensk ? '' : t.TZID };
+  }
+
+  function kalenderKort(fil) {
+    const kort = el('div', 'kal');
+    const ev = lasIcs(new TextDecoder().decode(fil.byte));
+    if (!ev) {
+      kort.appendChild(el('p', 'kal-vantar', 'Inbjudan gick inte att läsa. Ladda ned den och öppna i kalendern.'));
+      return kort;
+    }
+
+    const start = icsTid(ev.start);
+    const slut = icsTid(ev.slut);
+    const zon = (x) => (x && x.utc ? { timeZone: 'Europe/Stockholm' } : {});
+    const dag = (x) => x.datum.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', ...zon(x) });
+    const klock = (x) => x.datum.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', ...zon(x) });
+
+    /* Datumrutan till vänster, som i Outlook. */
+    const topp = el('div', 'kal-topp');
+    const ruta = el('div', 'kal-ruta');
+    if (start) {
+      ruta.appendChild(el('span', 'kal-man', start.datum.toLocaleDateString('sv-SE', { month: 'short', ...zon(start) }).replace('.', '')));
+      ruta.appendChild(el('span', 'kal-dag', start.datum.toLocaleDateString('sv-SE', { day: 'numeric', ...zon(start) })));
+    }
+    topp.appendChild(ruta);
+
+    const info = el('div', 'kal-info');
+    const installt = ev.metod === 'CANCEL' || ev.status === 'CANCELLED';
+    if (installt) info.appendChild(el('span', 'kal-installt', 'Inställt'));
+    info.appendChild(el('h3', 'kal-titel', ev.titel || '(utan titel)'));
+
+    if (start) {
+      let tid = dag(start);
+      if (!start.heldag) {
+        tid += ', ' + klock(start);
+        if (slut) tid += (slut.datum.toDateString() === start.datum.toDateString() ? '–' + klock(slut) : ' – ' + dag(slut) + ', ' + klock(slut));
+        if (start.zon) tid += ' (' + start.zon + ')';
+      } else {
+        tid += ' · heldag';
+      }
+      if (ev.aterkommer) tid += ' · återkommande';
+      info.appendChild(el('p', 'kal-rad', '🕑  ' + tid));
+    }
+    if (ev.plats) info.appendChild(el('p', 'kal-rad', '📍  ' + ev.plats));
+    if (ev.arrangor) {
+      const a = ev.arrangor;
+      info.appendChild(el('p', 'kal-rad', '👤  Arrangör: ' + (a.namn ? a.namn + ' <' + a.adress + '>' : a.adress)));
+    }
+    topp.appendChild(info);
+    kort.appendChild(topp);
+
+    const verktyg = el('div', 'kal-verktyg');
+    if (ev.lank && /^https:\/\//i.test(ev.lank)) {
+      const a = el('a', 'knapp knapp--primar', 'Anslut till mötet');
+      a.href = ev.lank;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      verktyg.appendChild(a);
+    }
+    /* Som text/calendar öppnar telefonen filen direkt i kalendern. */
+    const lagg = el('button', 'knapp', 'Lägg till i kalendern');
+    lagg.type = 'button';
+    lagg.onclick = () => sparaFil({ ...fil, namn: /\.ics$/i.test(fil.namn) ? fil.namn : 'inbjudan.ics' }, 'text/calendar');
+    verktyg.appendChild(lagg);
+    kort.appendChild(verktyg);
+
+    if (ev.deltagare.length) {
+      const svarText = { ACCEPTED: 'Tackat ja', DECLINED: 'Tackat nej', TENTATIVE: 'Kanske', 'NEEDS-ACTION': 'Inte svarat', DELEGATED: 'Delegerat' };
+      const grupp = el('details', 'kal-delt');
+      grupp.open = ev.deltagare.length <= 8;
+      grupp.appendChild(el('summary', '', 'Deltagare (' + ev.deltagare.length + ')'));
+      const lista = el('ul', '');
+      ev.deltagare.forEach(d => {
+        const rad = el('li', '');
+        rad.appendChild(el('span', 'kal-person', d.namn || d.adress));
+        const extra = [];
+        if (d.roll === 'OPT-PARTICIPANT') extra.push('valfri');
+        if (svarText[d.svar]) extra.push(svarText[d.svar]);
+        if (extra.length) rad.appendChild(el('span', 'kal-svar', extra.join(' · ')));
+        lista.appendChild(rad);
+      });
+      grupp.appendChild(lista);
+      kort.appendChild(grupp);
+    }
+
+    if (ev.beskrivning && ev.beskrivning.trim()) {
+      const besk = el('details', 'kal-besk');
+      besk.appendChild(el('summary', '', 'Beskrivning'));
+      besk.appendChild(el('pre', '', ev.beskrivning.trim()));
+      kort.appendChild(besk);
+    }
+    return kort;
   }
 
   /* Visningen lägger sig över hela sidan. Stäng med krysset, Esc
@@ -1358,6 +1539,8 @@
       inne = document.createElement(sort === 'video' ? 'video' : 'audio');
       inne.controls = true;
       inne.src = url;
+    } else if (sort === 'kalender') {
+      inne = kalenderKort(fil);
     } else {
       /* Text visas som text — textContent, aldrig innerHTML. Ett
          vidarebefordrat brev visas som servern tolkat det. */
