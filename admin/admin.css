@@ -519,6 +519,14 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 .brev-kropp a { color: var(--accent); }
 .brev-bilagor { margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
 .brev-bilagor span { font-size: 0.8rem; color: var(--text-dim); display: block; }
+.brev-bilaga {
+  display: block; margin: 0.35rem 0; padding: 0.4rem 0.7rem;
+  background: none; border: 1px solid var(--line-s); border-radius: 4px;
+  color: inherit; font: inherit; font-size: 0.85rem; text-align: left;
+  cursor: pointer; max-width: 100%; overflow-wrap: anywhere;
+}
+.brev-bilaga:hover { border-color: var(--text-dim); }
+.brev-bilaga:disabled { opacity: 0.6; cursor: wait; }
 
 /* --- Skrivrutan --- */
 .skriv { display: flex; flex-direction: column; gap: 0.7rem; }
