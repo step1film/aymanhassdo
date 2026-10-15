@@ -1204,7 +1204,9 @@
         const nr = Number.isInteger(f.nr) ? f.nr : i;
         const vem = { konto, mapp, uid: b.uid, nr, namn: f.namn, typ: f.typ };
         const rad = el('div', 'brev-bilaga');
-        rad.appendChild(el('span', 'brev-bilaga-namn', f.namn + '  (' + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)'));
+        const etikett = bilagaEtikett(f.typ);
+        rad.appendChild(el('span', 'brev-bilaga-namn', f.namn + '  (' + (etikett ? etikett + ', ' : '')
+          + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)'));
         if (bilagaSort(f.typ, f.namn)) {
           const visa = el('button', 'knapp', 'Visa');
           visa.type = 'button';
@@ -1239,7 +1241,7 @@
     const bin = atob(f.data);
     const byte = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) byte[i] = bin.charCodeAt(i);
-    const fil = { namn: f.namn || 'bilaga', typ: f.typ || 'application/octet-stream', byte };
+    const fil = { namn: f.namn || 'bilaga', typ: f.typ || 'application/octet-stream', byte, lasbar: f.lasbar || '' };
     BILAGOR.set(id, fil);
     return fil;
   }
@@ -1254,12 +1256,31 @@
   function bilagaSort(typ, namn) {
     const t = String(typ || '').toLowerCase();
     const n = String(namn || '').toLowerCase();
-    if (/^image\/(png|jpe?g|gif|webp|bmp|avif|svg\+xml)$/.test(t) || /\.(png|jpe?g|gif|webp|bmp|avif|svg)$/.test(n)) return 'bild';
+    if (t === 'message/rfc822' || n.endsWith('.eml')) return 'brev';
+    /* Alla bildsorter visas som <img>, där inget skript kan köras.
+       HEIC (iPhone) klarar bara Safari — andra webbläsare visar ett
+       tomt fönster, och då finns Ladda ned kvar. */
+    if (/^image\//.test(t) || /\.(png|jpe?g|gif|webp|bmp|avif|svg|heic|heif|tiff?)$/.test(n)) return 'bild';
     if (t === 'application/pdf' || n.endsWith('.pdf')) return 'pdf';
-    if (/^video\/(mp4|webm|ogg|quicktime)$/.test(t) || /\.(mp4|webm|mov|m4v)$/.test(n)) return 'video';
+    if (/^video\//.test(t) || /\.(mp4|webm|mov|m4v)$/.test(n)) return 'video';
     if (/^audio\//.test(t) || /\.(mp3|m4a|wav|ogg|aac)$/.test(n)) return 'ljud';
-    if (/^text\/(plain|csv)$/.test(t) || /\.(txt|csv|log|md)$/.test(n)) return 'text';
+    /* All text — även HTML, kalenderinbjudningar och visitkort — visas
+       som ren text med textContent. Inget av det tolkas eller körs. */
+    if (/^text\//.test(t) || /^application\/(json|xml)$/.test(t)
+      || /\.(txt|csv|log|md|ics|vcf|json|xml|html?)$/.test(n)) return 'text';
     return null;
+  }
+
+  /* Bilagans sort i klartext på raden, så att det syns vad en fil
+     utan namn är för något. */
+  function bilagaEtikett(typ) {
+    const t = String(typ || '').toLowerCase();
+    return {
+      'message/rfc822': 'vidarebefordrat brev',
+      'text/calendar': 'kalenderinbjudan',
+      'text/vcard': 'visitkort', 'text/x-vcard': 'visitkort',
+      'application/pdf': 'PDF'
+    }[t] || t;
   }
 
   const sakerTyp = (sort, typ) => {
@@ -1338,8 +1359,11 @@
       inne.controls = true;
       inne.src = url;
     } else {
-      /* Text visas som text — textContent, aldrig innerHTML. */
-      inne = el('pre', '', new TextDecoder().decode(fil.byte));
+      /* Text visas som text — textContent, aldrig innerHTML. Ett
+         vidarebefordrat brev visas som servern tolkat det. */
+      const text = sort === 'brev' && fil.lasbar ? fil.lasbar : new TextDecoder().decode(fil.byte);
+      inne = el('pre', '', text);
+      sort = 'text';
     }
     inne.classList.add('visning-fil', 'visning-fil--' + sort);
     yta.appendChild(inne);

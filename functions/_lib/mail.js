@@ -256,7 +256,7 @@ async function las(konto, { mapp = 'inkorg', uid }) {
            frågar efter när en fil ska hämtas. */
         bilagor: (p.attachments || []).map((b, nr) => ({
           nr,
-          namn: b.filename || 'bilaga',
+          namn: b.filename || namnFor(b.contentType),
           typ: b.contentType || '',
           storlek: b.size || 0
         }))
@@ -265,6 +265,27 @@ async function las(konto, { mapp = 'inkorg', uid }) {
       las.release();
     }
   });
+}
+
+/* Bilagor utan filnamn — vidarebefordrade brev, kalenderinbjudningar,
+   bilder inklistrade i brevet — får ett namn efter sin sort, så att det
+   syns vad de är och filen får rätt ändelse när den sparas. */
+const ANDELSE = {
+  'message/rfc822': 'vidarebefordrat-brev.eml',
+  'text/calendar': 'inbjudan.ics',
+  'text/vcard': 'kontakt.vcf',
+  'text/x-vcard': 'kontakt.vcf',
+  'text/plain': 'text.txt',
+  'text/html': 'sida.html',
+  'application/pdf': 'dokument.pdf',
+  'image/jpeg': 'bild.jpg',
+  'image/png': 'bild.png',
+  'image/gif': 'bild.gif',
+  'image/webp': 'bild.webp',
+  'image/heic': 'bild.heic'
+};
+function namnFor(typ) {
+  return ANDELSE[String(typ || '').toLowerCase()] || 'bilaga';
 }
 
 /* En bilaga, som råa byte.
@@ -286,10 +307,30 @@ async function bilaga(konto, { mapp = 'inkorg', uid, nr }) {
       const p = await simpleParser(m.source);
       const b = (p.attachments || [])[nr];
       if (!b) return null;
+      const typ = b.contentType || 'application/octet-stream';
+      /* Ett vidarebefordrat brev ligger som rå MIME-källa — kodad och
+         oläslig som den är. Det tolkas här så att admin kan visa det
+         som vanlig text. Själva filen (.eml) går fortfarande att ladda
+         ned orörd. */
+      let lasbar = '';
+      if (/^message\/rfc822$/i.test(typ)) {
+        try {
+          const inre = await simpleParser(b.content);
+          lasbar = [
+            'Från: ' + (inre.from ? inre.from.text : ''),
+            'Till: ' + (inre.to ? inre.to.text : ''),
+            'Datum: ' + (inre.date ? inre.date.toLocaleString('sv-SE') : ''),
+            'Ämne: ' + (inre.subject || ''),
+            '',
+            inre.text || ''
+          ].join('\n');
+        } catch { /* då visas den inte, men går att ladda ned */ }
+      }
       return {
-        namn: b.filename || 'bilaga',
-        typ: b.contentType || 'application/octet-stream',
-        innehall: b.content
+        namn: b.filename || namnFor(typ),
+        typ,
+        innehall: b.content,
+        lasbar
       };
     } finally {
       las.release();
