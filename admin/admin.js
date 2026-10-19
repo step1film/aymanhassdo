@@ -904,8 +904,12 @@
      satt. Är den inte det visas ingen flik alls, i stället för
      en som bara kan säga att den inte fungerar.
   ===================================================== */
-  const MEJL = { konto: '', mapp: 'inkorg', brev: [], totalt: 0, valt: null, hamtarFler: false };
+  const MEJL = { konto: '', mapp: 'inkorg', brev: [], totalt: 0, valt: null, hamtarFler: false, sok: '', signaturer: {} };
   const iSkickat = () => MEJL.mapp === 'skickat';
+  /* I Skickat och Utkast är det mottagaren man letar efter på raden. */
+  const visarMottagare = () => MEJL.mapp === 'skickat' || MEJL.mapp === 'utkast';
+  const MAPPNAMN = { inkorg: 'inkorgen', skickat: 'Skickat', utkast: 'Utkast', skrap: 'Skräppost', papperskorg: 'papperskorgen' };
+  const sokDel = () => (MEJL.sok ? '&sok=' + encodeURIComponent(MEJL.sok) : '');
 
   const mejlLista  = () => $('#mejlLista');
   const mejlYta    = () => $('#mejlYta');
@@ -932,30 +936,40 @@
   }
 
   /* Brevets HTML kommer utifrån och är därför fientlig tills
-     motsatsen bevisats. Den tvättas i ett löst dokument som aldrig
-     kopplas till sidan: skript, stilar, ramar, formulär och
-     händelseattribut plockas bort, och kvar blir texten med sin
-     formatering. Länkar öppnas i ny flik och utan referrer.
+     motsatsen bevisats. Den tvättas med DOMPurify (admin/purify.min.js)
+     — ett beprövat bibliotek som också klarar de knep en egen
+     svartlista missar: kodade javascript:-länkar, <noscript>-fällor
+     och andra sätt att få HTML att ändra betydelse när den läses in
+     en gång till.
 
-     Att visa brevet i en sandlådad iframe vore ännu strängare, men
-     då måste höjden mätas och skickas tillbaka, och en iframe utan
-     same-origin kan inte mäta sig själv. Det här räcker för en
-     inkorg som bara du är inloggad i. */
+     Utöver standardreglerna: inga stilmallar (de hade ändrat hela
+     adminsidan), inga formulär, ramar eller media, inga id/name
+     (de kan skriva över sidans egna variabler), och länkar och
+     bilder bara till http(s), mailto, tel och inbakade bilder.
+     Länkar öppnas i ny flik utan referrer.
+
+     Saknas biblioteket visas bara texten — hellre det än HTML som
+     inte gått att tvätta. */
+  const RENT = {
+    FORBID_TAGS: ['style', 'form', 'input', 'button', 'textarea', 'select', 'option', 'iframe', 'frame', 'frameset',
+      'object', 'embed', 'link', 'meta', 'base', 'video', 'audio', 'source', 'track', 'svg', 'math', 'template', 'noscript'],
+    FORBID_ATTR: ['id', 'name', 'srcset', 'action', 'formaction', 'background', 'ping'],
+    ALLOWED_URI_REGEXP: /^(?:https?:|mailto:|tel:|#|data:image\/(?:png|jpe?g|gif|webp|bmp);base64,)/i,
+    ADD_ATTR: ['target']
+  };
+  let renKrok = false;
   function renaHtml(html) {
-    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
-    doc.querySelectorAll('script, style, iframe, object, embed, form, input, button, link, meta, base').forEach(n => n.remove());
-    doc.querySelectorAll('*').forEach(n => {
-      [...n.attributes].forEach(a => {
-        const namn = a.name.toLowerCase();
-        const varde = String(a.value || '').trim().toLowerCase();
-        if (namn.startsWith('on')) n.removeAttribute(a.name);
-        else if ((namn === 'href' || namn === 'src') && (varde.startsWith('javascript:') || varde.startsWith('data:text/html'))) {
-          n.removeAttribute(a.name);
-        }
+    if (!window.DOMPurify || !DOMPurify.isSupported) {
+      const d = new DOMParser().parseFromString(String(html || ''), 'text/html');
+      return textTillHtml(d.body ? d.body.textContent : '');
+    }
+    if (!renKrok) {
+      DOMPurify.addHook('afterSanitizeAttributes', (n) => {
+        if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
       });
-      if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
-    });
-    return doc.body.innerHTML;
+      renKrok = true;
+    }
+    return DOMPurify.sanitize(String(html || ''), RENT);
   }
 
   /* Varje hämtning får ett nummer. Byter man mapp eller brevlåda
@@ -967,10 +981,10 @@
     MEJL.hamtarFler = false;
     const lista = mejlLista();
     lista.textContent = '';
-    lista.appendChild(tomt('Hämtar …'));
-    lista.setAttribute('aria-label', iSkickat() ? 'Skickade brev' : 'Brev i inkorgen');
+    lista.appendChild(tomt(MEJL.sok ? 'Söker efter "' + MEJL.sok + '" …' : 'Hämtar …'));
+    lista.setAttribute('aria-label', 'Brev i ' + MAPPNAMN[MEJL.mapp]);
     try {
-      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp);
+      const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp + sokDel());
       if (varv !== mejlVarv) return;
       MEJL.brev = d.brev || [];
       MEJL.totalt = d.totalt || 0;
@@ -993,7 +1007,7 @@
     mejlRitaLista();
     try {
       const d = await be('/mail-list?konto=' + encodeURIComponent(MEJL.konto) + '&mapp=' + MEJL.mapp
-        + '&fran=' + MEJL.brev.length + '&antal=25');
+        + '&fran=' + MEJL.brev.length + '&antal=25' + sokDel());
       if (varv !== mejlVarv) return;
       const finns = new Set(MEJL.brev.map(b => b.uid));
       MEJL.brev = MEJL.brev.concat((d.brev || []).filter(b => !finns.has(b.uid)));
@@ -1011,6 +1025,8 @@
     MEJL.mapp = mapp;
     MEJL.valt = null;
     MEJL.brev = [];
+    MEJL.sok = '';
+    const sok = $('#mejlSok'); if (sok) sok.value = '';
     document.querySelectorAll('.mejl-mapp').forEach(k => {
       const pa = k.dataset.mapp === mapp;
       k.classList.toggle('vald', pa);
@@ -1025,18 +1041,28 @@
   function mejlRitaLista() {
     const lista = mejlLista();
     lista.textContent = '';
-    if (!MEJL.brev.length) { lista.appendChild(tomt(iSkickat() ? 'Inga skickade brev.' : 'Inga brev i inkorgen.')); return; }
+    if (!MEJL.brev.length) {
+      lista.appendChild(tomt(MEJL.sok
+        ? 'Inga träffar på "' + MEJL.sok + '" i ' + MAPPNAMN[MEJL.mapp] + '.'
+        : 'Inga brev i ' + MAPPNAMN[MEJL.mapp] + '.'));
+      return;
+    }
+
+    if (MEJL.sok) {
+      lista.appendChild(el('div', 'mejl-traffar',
+        MEJL.totalt + (MEJL.totalt === 1 ? ' träff' : ' träffar') + ' på "' + MEJL.sok + '"'));
+    }
 
     MEJL.brev.forEach(b => {
       const rad = el('button', 'brevrad');
       rad.type = 'button';
       rad.setAttribute('role', 'listitem');
-      if (!b.last && !iSkickat()) rad.classList.add('oläst');
+      if (!b.last && !visarMottagare()) rad.classList.add('oläst');
       if (MEJL.valt === b.uid) rad.classList.add('vald');
 
       const topp = el('div', 'brevrad-topp');
       /* I Skickat är det mottagaren man letar efter, inte sig själv. */
-      const vem = iSkickat()
+      const vem = visarMottagare()
         ? 'Till: ' + ((b.till && b.till.length) ? b.till.join(', ') : '(ingen mottagare)')
         : (b.franNamn || b.franAdress || '(okänd avsändare)');
       topp.appendChild(el('span', 'brevrad-fran', vem));
@@ -1080,6 +1106,31 @@
     }
   }
 
+  /* Raden tas ur listan här i stället för att hela mappen hämtas
+     om: servern har redan gjort jobbet, och en ny IMAP-runda hade
+     bara kostat en väntan. */
+  function mejlTaBort(uid, text) {
+    MEJL.brev = MEJL.brev.filter(x => x.uid !== uid);
+    MEJL.totalt = Math.max(0, MEJL.totalt - 1);
+    MEJL.valt = null;
+    mejlRitaLista();
+    const yta = mejlYta();
+    yta.textContent = '';
+    yta.appendChild(tomt(text));
+  }
+
+  async function mejlFlytta(b, till, klart) {
+    try {
+      await be('/mail-move', { method: 'POST', body: JSON.stringify({ konto: MEJL.konto, mapp: MEJL.mapp, uid: b.uid, till }) });
+      rop(klart);
+      mejlTaBort(b.uid, klart);
+    } catch (e) { rop(e.message, 'fel'); }
+  }
+
+  const esc = (t) => String(t == null ? '' : t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const textTillHtml = (t) => '<div>' + esc(t).replace(/\r?\n/g, '<br>') + '</div>';
+
   function mejlRitaBrev(b) {
     const yta = mejlYta();
     yta.textContent = '';
@@ -1104,61 +1155,100 @@
     }
 
     const verktyg = el('div', 'brev-verktyg');
-    const svara = el('button', 'knapp knapp--primar', 'Svara');
-    svara.type = 'button';
-    const svarsAmne = /^sv:/i.test(b.amne) ? b.amne : 'Sv: ' + b.amne;
-    /* Ett eget skickat brev besvaras till den man skrev till —
-       ett svar till sig själv är aldrig det man menar. */
-    svara.onclick = () => mejlSkrivruta({
-      till: iSkickat() ? till : (fran.adress || ''),
-      amne: svarsAmne,
-      svarPa: b.messageId || '',
-      citat: b.text || ''
-    });
-    verktyg.appendChild(svara);
+    const knapp = (text, klass, gor) => {
+      const k = el('button', 'knapp' + (klass ? ' ' + klass : ''), text);
+      k.type = 'button';
+      k.onclick = gor;
+      verktyg.appendChild(k);
+      return k;
+    };
 
-    /* Svara alla: avsändaren i Till, alla andra mottagare i Kopia —
-       utom den egna adressen, som annars fick sitt eget svar. */
-    const jag = MEJL.konto.toLowerCase();
-    const ovriga = [].concat(b.till || [], b.kopia || [])
-      .map(t => t.adress).filter(a => a && a.toLowerCase() !== jag && a !== fran.adress);
-    if (!iSkickat() && ovriga.length) {
-      const alla = el('button', 'knapp', 'Svara alla');
-      alla.type = 'button';
-      alla.onclick = () => mejlSkrivruta({
-        till: fran.adress || '',
-        kopia: [...new Set(ovriga)].join(', '),
-        amne: svarsAmne,
-        svarPa: b.messageId || '',
-        citat: b.text || ''
-      });
-      verktyg.appendChild(alla);
+    /* Originalet som det ska citeras: HTML om det finns, annars texten
+       gjord till HTML. Bilder i texten är redan inbakade av servern. */
+    const original = b.html ? renaHtml(b.html) : textTillHtml(b.text || '');
+    const franText = fran.namn ? fran.namn + ' <' + (fran.adress || '') + '>' : (fran.adress || '');
+    const datumText = b.datum ? new Date(b.datum).toLocaleString('sv-SE', { dateStyle: 'long', timeStyle: 'short' }) : '';
+    const referenser = [b.referenser, b.messageId].filter(Boolean).join(' ').trim();
+    const svarsAmne = /^(sv|re|aw):/i.test(b.amne) ? b.amne : 'Sv: ' + b.amne;
+    const citat = () => '<p>' + esc((datumText ? 'Den ' + datumText + ' skrev ' : '') + franText + ':') + '</p>'
+      + '<blockquote style="margin:0 0 0 0.8ex;border-left:2px solid #ccc;padding-left:1ex">' + original + '</blockquote>';
+    /* Bilagorna följer med en vidarebefordran, som i Outlook. De
+       hämtas direkt ur brevlådan på servern när brevet skickas. */
+    const medfoljande = { mapp: MEJL.mapp, uid: b.uid, filer: (b.bilagor || []).map((f, i) => ({ ...f, nr: Number.isInteger(f.nr) ? f.nr : i })) };
+    const lista2 = (v) => (v || []).map(t => t.adress).filter(Boolean).join(', ');
+
+    if (MEJL.mapp === 'utkast') {
+      /* Ett utkast öppnas för att skrivas klart. */
+      knapp('Redigera', 'knapp--primar', () => mejlSkrivruta({
+        till: lista2(b.till), kopia: lista2(b.kopia), dold: lista2(b.dold),
+        amne: b.amne === '(utan ämne)' ? '' : b.amne,
+        html: original,
+        svarPa: b.svarPa || '', referenser: b.referenser || '',
+        medfoljande, utkast: b.uid, signatur: false
+      }));
+    } else if (MEJL.mapp === 'papperskorg') {
+      knapp('Återställ till inkorgen', 'knapp--primar', () => mejlFlytta(b, 'inkorg', 'Brevet ligger i inkorgen igen.'));
+    } else {
+      knapp('Svara', 'knapp--primar', () => mejlSkrivruta({
+        /* Ett eget skickat brev besvaras till den man skrev till —
+           ett svar till sig själv är aldrig det man menar. */
+        till: iSkickat() ? till : (fran.adress || ''),
+        amne: svarsAmne, svarPa: b.messageId || '', referenser, html: citat()
+      }));
+
+      /* Svara alla: avsändaren i Till, alla andra mottagare i Kopia —
+         utom den egna adressen, som annars fick sitt eget svar. */
+      const jag = MEJL.konto.toLowerCase();
+      const ovriga = [].concat(b.till || [], b.kopia || [])
+        .map(t => t.adress).filter(a => a && a.toLowerCase() !== jag && a !== fran.adress);
+      if (!iSkickat() && ovriga.length) {
+        knapp('Svara alla', '', () => mejlSkrivruta({
+          till: fran.adress || '', kopia: [...new Set(ovriga)].join(', '),
+          amne: svarsAmne, svarPa: b.messageId || '', referenser, html: citat()
+        }));
+      }
+
+      knapp('Vidarebefordra', '', () => mejlSkrivruta({
+        amne: /^(vb|fw|fwd):/i.test(b.amne) ? b.amne : 'Vb: ' + b.amne,
+        html: '<p>---------- Vidarebefordrat brev ----------<br>'
+          + 'Från: ' + esc(franText) + '<br>'
+          + (datumText ? 'Datum: ' + esc(datumText) + '<br>' : '')
+          + 'Ämne: ' + esc(b.amne) + '<br>'
+          + (till ? 'Till: ' + esc(till) + '<br>' : '') + '</p>' + original,
+        medfoljande
+      }));
+
+      if (!visarMottagare()) {
+        knapp('Markera som oläst', '', async () => {
+          try {
+            await be('/mail-flag', { method: 'POST', body: JSON.stringify({ konto: MEJL.konto, mapp: MEJL.mapp, uid: b.uid, last: false }) });
+            const post = MEJL.brev.find(x => x.uid === b.uid);
+            if (post) post.last = false;
+            MEJL.valt = null;
+            mejlRitaLista();
+            yta.textContent = '';
+            yta.appendChild(tomt('Brevet är markerat som oläst.'));
+          } catch (e) { rop(e.message, 'fel'); }
+        });
+      }
+      if (MEJL.mapp === 'skrap') {
+        knapp('Inte skräppost', '', () => mejlFlytta(b, 'inkorg', 'Brevet ligger i inkorgen.'));
+      } else if (MEJL.mapp === 'inkorg') {
+        knapp('Skräppost', '', () => mejlFlytta(b, 'skrap', 'Brevet ligger i Skräppost.'));
+      }
     }
-
-    const vidare = el('button', 'knapp', 'Vidarebefordra');
-    vidare.type = 'button';
-    vidare.onclick = () => mejlSkrivruta({
-      amne: /^vb:|^fwd?:/i.test(b.amne) ? b.amne : 'Vb: ' + b.amne,
-      text: '\n\n\n---------- Vidarebefordrat brev ----------\n'
-        + 'Från: ' + (fran.namn ? fran.namn + ' <' + fran.adress + '>' : (fran.adress || '')) + '\n'
-        + (b.datum ? 'Datum: ' + new Date(b.datum).toLocaleString('sv-SE') + '\n' : '')
-        + 'Ämne: ' + b.amne + '\n'
-        + (till ? 'Till: ' + till + '\n' : '')
-        + '\n' + (b.text || '')
-    });
-    verktyg.appendChild(vidare);
 
     /* Radera sist i raden, längst från knapparna man trycker på ofta.
        Frågan innan är inte en formalitet: brevet försvinner ur listan
        direkt. Att det går att hämta tillbaka står i själva frågan, så
-       man vet hur illa det är att svara fel. */
-    const radera = el('button', 'knapp knapp--fara', 'Radera');
-    radera.type = 'button';
-    radera.onclick = async () => {
+       man vet hur illa det är att svara fel. I papperskorgen raderas
+       det på riktigt, och då säger frågan det. */
+    const iKorgen = MEJL.mapp === 'papperskorg';
+    const radera = knapp(iKorgen ? 'Radera för gott' : 'Radera', 'knapp--fara', async () => {
       const amne = b.amne || '(utan ämne)';
-      if (!confirm('Radera brevet "' + amne + '"?\n\n'
-        + 'Det flyttas till papperskorgen och går att hämta tillbaka '
-        + 'i ditt vanliga mejlprogram.')) return;
+      if (!confirm('Radera brevet "' + amne + '"?\n\n' + (iKorgen
+        ? 'Det raderas för gott och går inte att få tillbaka.'
+        : 'Det flyttas till papperskorgen och går att hämta tillbaka därifrån.'))) return;
 
       radera.disabled = true;
       try {
@@ -1168,56 +1258,674 @@
           method: 'POST',
           body: JSON.stringify({ konto: MEJL.konto, mapp: MEJL.mapp, uid: b.uid })
         });
-        rop(svar.borta
-          ? 'Brevet är raderat.'
-          : 'Brevet ligger i papperskorgen.');
-        /* Raden tas ur listan här i stället för att hela mappen hämtas
-           om: servern har redan gjort jobbet, och en ny IMAP-runda
-           hade bara kostat en väntan. */
-        MEJL.brev = MEJL.brev.filter(x => x.uid !== b.uid);
-        MEJL.totalt = Math.max(0, MEJL.totalt - 1);
-        MEJL.valt = null;
-        mejlRitaLista();
-        yta.textContent = '';
-        yta.appendChild(tomt('Brevet är borta. Välj ett annat i listan.'));
+        rop(svar.borta ? 'Brevet är raderat.' : 'Brevet ligger i papperskorgen.');
+        mejlTaBort(b.uid, 'Brevet är borta. Välj ett annat i listan.');
       } catch (e) {
         radera.disabled = false;
         rop(e.message, 'fel');
       }
-    };
-    verktyg.appendChild(radera);
+    });
     huvud.appendChild(verktyg);
     yta.appendChild(huvud);
 
     const kropp = el('div', 'brev-kropp');
-    if (b.html) kropp.innerHTML = renaHtml(b.html);
-    else kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
+    if (b.html) {
+      /* Tolkas i en <template> först: där är innehållet dött, så inga
+         bilder hinner börja laddas innan de blockerats nedan. */
+      const mall = document.createElement('template');
+      mall.innerHTML = renaHtml(b.html);
+      /* Bilder från internet visas inte förrän man ber om det, som i
+         Outlook. Många utskick har en osynlig spårningsbild som säger
+         till avsändaren när och var brevet öppnades. Inbakade bilder
+         (data:) kommer inifrån brevet och visas direkt. */
+      const fjarr = [...mall.content.querySelectorAll('img[src^="http"], img[src^="//"]')];
+      const bakgrund = [...mall.content.querySelectorAll('[style*="url("]')];
+      fjarr.forEach(i => { i.dataset.blockerad = i.getAttribute('src'); i.removeAttribute('src'); });
+      bakgrund.forEach(n => {
+        const stil = n.getAttribute('style');
+        n.dataset.blockeradStil = stil;
+        n.setAttribute('style', stil.replace(/url\([^)]*\)/gi, 'none'));
+      });
+      kropp.appendChild(document.importNode(mall.content, true));
+      /* importNode gör nya noder — hämta dem igen ur sidan. */
+      fjarr.length = 0; bakgrund.length = 0;
+      kropp.querySelectorAll('img[data-blockerad]').forEach(i => fjarr.push(i));
+      kropp.querySelectorAll('[data-blockerad-stil]').forEach(n => bakgrund.push(n));
+      if (fjarr.length || bakgrund.length) {
+        const rad = el('div', 'brev-bilder');
+        rad.appendChild(el('span', '', 'Bilder från internet visas inte, så att avsändaren inte kan se att du öppnat brevet.'));
+        const visa = el('button', 'knapp', 'Visa bilder');
+        visa.type = 'button';
+        visa.onclick = () => {
+          fjarr.forEach(i => { i.setAttribute('src', i.dataset.blockerad); });
+          bakgrund.forEach(n => { n.setAttribute('style', n.dataset.blockeradStil); });
+          rad.remove();
+        };
+        rad.appendChild(visa);
+        yta.appendChild(rad);
+      }
+    } else {
+      kropp.appendChild(el('pre', '', b.text || '(tomt brev)'));
+    }
     yta.appendChild(kropp);
+
+    /* En kalenderinbjudan visas som ett kort direkt i brevet, som i
+       Outlook — man ska inte behöva öppna bilagan för att se när och
+       var. Filen är liten, så den hämtas med en gång. */
+    const inbjudan = (b.bilagor || []).map((f, i) => ({ f, nr: Number.isInteger(f.nr) ? f.nr : i }))
+      .find(x => bilagaSort(x.f.typ, x.f.namn) === 'kalender');
+    if (inbjudan) {
+      const plats = el('div', 'kal-plats');
+      plats.appendChild(el('p', 'kal-vantar', 'Hämtar inbjudan …'));
+      yta.appendChild(plats);
+      const uid = b.uid;
+      hamtaBilaga({ konto: MEJL.konto, mapp: MEJL.mapp, uid, nr: inbjudan.nr })
+        .then(fil => {
+          if (MEJL.valt !== uid) return;
+          plats.textContent = '';
+          plats.appendChild(kalenderKort(fil));
+        })
+        .catch(() => { plats.remove(); });
+    }
 
     if (b.bilagor && b.bilagor.length) {
       const box = el('div', 'brev-bilagor');
       box.appendChild(el('span', '', b.bilagor.length + ' bilaga' + (b.bilagor.length > 1 ? 'or' : '') + ':'));
-      b.bilagor.forEach(f => box.appendChild(el('span', '', '· ' + f.namn + '  (' + Math.round(f.storlek / 1024) + ' kB)')));
-      /* Bilagorna listas men laddas inte ned. Att skicka en fil genom
-         en serverlös funktion innebär att hela filen ska rymmas i ett
-         svar, och gränsen är sex megabyte — en vanlig bildbilaga
-         spränger den. Öppna sådana i mejlprogrammet. */
-      box.appendChild(el('span', '', 'Bilagor öppnas i ditt vanliga mejlprogram.'));
+      /* Brevlåda och mapp läses av nu, inte när man klickar: hinner man
+         byta mapp innan man trycker ska rätt brev ändå frågas efter. */
+      const konto = MEJL.konto, mapp = MEJL.mapp;
+      b.bilagor.forEach((f, i) => {
+        const nr = Number.isInteger(f.nr) ? f.nr : i;
+        const vem = { konto, mapp, uid: b.uid, nr, namn: f.namn, typ: f.typ };
+        const rad = el('div', 'brev-bilaga');
+        const etikett = bilagaEtikett(f.typ);
+        rad.appendChild(el('span', 'brev-bilaga-namn', f.namn + '  (' + (etikett ? etikett + ', ' : '')
+          + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)'));
+        if (bilagaSort(f.typ, f.namn)) {
+          const visa = el('button', 'knapp', 'Visa');
+          visa.type = 'button';
+          visa.onclick = () => mejlVisaBilaga(visa, vem);
+          rad.appendChild(visa);
+        }
+        const ned = el('button', 'knapp', 'Ladda ned');
+        ned.type = 'button';
+        ned.onclick = () => mejlLaddaNed(ned, vem);
+        rad.appendChild(ned);
+        box.appendChild(rad);
+      });
+      /* Filen går genom en serverlös funktion, och ett svar får vara
+         högst sex megabyte. Större bilagor öppnas i mejlprogrammet. */
+      box.appendChild(el('span', '', 'Bilagor över 4 MB öppnas i ditt vanliga mejlprogram.'));
       yta.appendChild(box);
     }
+  }
+
+  /* --- Bilagor -------------------------------------------------------
+     Filen kommer som base64 i JSON — samma väg som allt annat, med
+     sessionsnyckeln i huvudet — och görs om till en blob här. En
+     hämtad bilaga sparas i minnet så länge sidan är öppen: den som
+     först tittar och sedan laddar ned ska inte vänta två gånger. */
+  const BILAGOR = new Map();
+
+  async function hamtaBilaga({ konto, mapp, uid, nr }) {
+    const id = [konto, mapp, uid, nr].join('|');
+    if (BILAGOR.has(id)) return BILAGOR.get(id);
+    const f = await be('/mail-attachment?konto=' + encodeURIComponent(konto)
+      + '&mapp=' + encodeURIComponent(mapp) + '&uid=' + encodeURIComponent(uid) + '&nr=' + nr);
+    const bin = atob(f.data);
+    const byte = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) byte[i] = bin.charCodeAt(i);
+    const fil = { namn: f.namn || 'bilaga', typ: f.typ || 'application/octet-stream', byte, lasbar: f.lasbar || '' };
+    BILAGOR.set(id, fil);
+    return fil;
+  }
+
+  /* Vilka filer får visas här, och hur?
+     Bara sorter som inte kan köra kod. En blob-adress har samma
+     ursprung som admin, så en HTML- eller SVG-fil öppnad i en ram
+     hade kunnat läsa sessionsnyckeln. SVG visas därför bara som
+     <img> (där skript aldrig körs), och HTML inte alls. Typen som
+     blobben får sätts här utifrån listan — aldrig rakt från
+     avsändaren. */
+  function bilagaSort(typ, namn) {
+    const t = String(typ || '').toLowerCase();
+    const n = String(namn || '').toLowerCase();
+    if (t === 'message/rfc822' || n.endsWith('.eml')) return 'brev';
+    if (t === 'text/calendar' || t === 'application/ics' || n.endsWith('.ics')) return 'kalender';
+    /* Alla bildsorter visas som <img>, där inget skript kan köras.
+       HEIC (iPhone) klarar bara Safari — andra webbläsare visar ett
+       tomt fönster, och då finns Ladda ned kvar. */
+    if (/^image\//.test(t) || /\.(png|jpe?g|gif|webp|bmp|avif|svg|heic|heif|tiff?)$/.test(n)) return 'bild';
+    if (t === 'application/pdf' || n.endsWith('.pdf')) return 'pdf';
+    if (/^video\//.test(t) || /\.(mp4|webm|mov|m4v)$/.test(n)) return 'video';
+    if (/^audio\//.test(t) || /\.(mp3|m4a|wav|ogg|aac)$/.test(n)) return 'ljud';
+    /* All text — även HTML, kalenderinbjudningar och visitkort — visas
+       som ren text med textContent. Inget av det tolkas eller körs. */
+    if (/^text\//.test(t) || /^application\/(json|xml)$/.test(t)
+      || /\.(txt|csv|log|md|ics|vcf|json|xml|html?)$/.test(n)) return 'text';
+    return null;
+  }
+
+  /* Bilagans sort i klartext på raden, så att det syns vad en fil
+     utan namn är för något. */
+  function bilagaEtikett(typ) {
+    const t = String(typ || '').toLowerCase();
+    return {
+      'message/rfc822': 'vidarebefordrat brev',
+      'text/calendar': 'kalenderinbjudan',
+      'text/vcard': 'visitkort', 'text/x-vcard': 'visitkort',
+      'application/pdf': 'PDF'
+    }[t] || t;
+  }
+
+  const sakerTyp = (sort, typ) => {
+    if (sort === 'pdf') return 'application/pdf';
+    if (sort === 'text') return 'text/plain';
+    if (/^(image|video|audio)\/[a-z0-9.+-]+$/i.test(typ || '')) return typ;
+    return { bild: 'image/*', video: 'video/mp4', ljud: 'audio/mpeg' }[sort];
+  };
+
+  async function medKnapp(knapp, arbete) {
+    if (knapp.disabled) return;
+    const text = knapp.textContent;
+    knapp.disabled = true;
+    knapp.textContent = 'Hämtar …';
+    try { await arbete(); }
+    catch (e) { rop(e.message, 'fel'); }
+    finally { knapp.disabled = false; knapp.textContent = text; }
+  }
+
+  function sparaFil(fil, typ) {
+    const url = URL.createObjectURL(new Blob([fil.byte], { type: typ || 'application/octet-stream' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fil.namn;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+
+  function mejlLaddaNed(knapp, vem) {
+    return medKnapp(knapp, async () => sparaFil(await hamtaBilaga(vem)));
+  }
+
+  function mejlVisaBilaga(knapp, vem) {
+    return medKnapp(knapp, async () => {
+      const fil = await hamtaBilaga(vem);
+      const sort = bilagaSort(fil.typ, fil.namn) || bilagaSort(vem.typ, vem.namn);
+      if (!sort) { sparaFil(fil); return; }
+      oppnaVisning(fil, sort);
+    });
+  }
+
+  /* --- Kalenderinbjudningar ------------------------------------------
+     En .ics-fil är text i ett enkelt radformat. Bara det första
+     evenemanget läses — en inbjudan har nästan alltid ett. Allt som
+     visas sätts med textContent; länkar släpps bara igenom om de
+     börjar med https://. */
+  function lasIcs(text) {
+    const rader = String(text || '').replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
+    const avkoda = (v) => v.replace(/\\([nN])/g, '\n').replace(/\\([,;\\])/g, '$1');
+    let metod = '';
+    let ev = null;
+    let inne = false;
+    for (const rad of rader) {
+      /* Namn och parametrar före första kolon som inte står i citat. */
+      let i = 0, citat = false;
+      for (; i < rad.length; i++) {
+        if (rad[i] === '"') citat = !citat;
+        else if (rad[i] === ':' && !citat) break;
+      }
+      if (i >= rad.length) continue;
+      const [namn, ...delar] = rad.slice(0, i).split(';');
+      const varde = rad.slice(i + 1);
+      const param = {};
+      delar.forEach(d => {
+        const j = d.indexOf('=');
+        if (j > 0) param[d.slice(0, j).toUpperCase()] = d.slice(j + 1).replace(/^"|"$/g, '');
+      });
+      const N = namn.toUpperCase();
+      if (N === 'BEGIN' && varde.toUpperCase() === 'VEVENT') { if (!ev) { ev = { deltagare: [] }; inne = true; } continue; }
+      if (N === 'END' && varde.toUpperCase() === 'VEVENT') { inne = false; continue; }
+      if (N === 'METHOD') { metod = varde.toUpperCase(); continue; }
+      if (!inne || !ev) continue;
+      /* Larm och liknande ligger som egna block inne i evenemanget. */
+      if (N === 'BEGIN') { inne = varde.toUpperCase() === 'VEVENT'; continue; }
+
+      const person = () => ({
+        namn: param.CN || '',
+        adress: varde.replace(/^mailto:/i, ''),
+        roll: param.ROLE || '',
+        svar: param.PARTSTAT || ''
+      });
+      if (N === 'SUMMARY') ev.titel = avkoda(varde);
+      else if (N === 'LOCATION') ev.plats = avkoda(varde);
+      else if (N === 'DESCRIPTION') ev.beskrivning = avkoda(varde);
+      else if (N === 'DTSTART') ev.start = { v: varde, ...param };
+      else if (N === 'DTEND') ev.slut = { v: varde, ...param };
+      else if (N === 'STATUS') ev.status = varde.toUpperCase();
+      else if (N === 'RRULE') ev.aterkommer = true;
+      else if (N === 'ORGANIZER') ev.arrangor = person();
+      else if (N === 'ATTENDEE') ev.deltagare.push(person());
+      else if (N === 'X-MICROSOFT-SKYPETEAMSMEETINGURL' || N === 'URL') ev.lank = ev.lank || varde.trim();
+    }
+    if (ev) ev.metod = metod;
+    return ev;
+  }
+
+  /* Tid ur .ics. Slutar den på Z är den i UTC och visas i svensk tid.
+     Har den en tidszon (TZID) visas klockslaget som det står — för
+     inbjudningar härifrån är det svensk tid — med zonens namn efter
+     om den inte ser svensk ut. */
+  function icsTid(t) {
+    if (!t || !t.v) return null;
+    const m = t.v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/);
+    if (!m) return null;
+    const [, y, mo, d, h, mi, , z] = m;
+    if (!h) return { datum: new Date(+y, +mo - 1, +d), heldag: true };
+    if (z) return { datum: new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi)), utc: true };
+    const svensk = !t.TZID || /stockholm|w\. europe|romance|central europe|europe\/(oslo|copenhagen|berlin|paris|amsterdam|brussels)/i.test(t.TZID);
+    return { datum: new Date(+y, +mo - 1, +d, +h, +mi), zon: svensk ? '' : t.TZID };
+  }
+
+  function kalenderKort(fil) {
+    const kort = el('div', 'kal');
+    const ev = lasIcs(new TextDecoder().decode(fil.byte));
+    if (!ev) {
+      kort.appendChild(el('p', 'kal-vantar', 'Inbjudan gick inte att läsa. Ladda ned den och öppna i kalendern.'));
+      return kort;
+    }
+
+    const start = icsTid(ev.start);
+    const slut = icsTid(ev.slut);
+    const zon = (x) => (x && x.utc ? { timeZone: 'Europe/Stockholm' } : {});
+    const dag = (x) => x.datum.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', ...zon(x) });
+    const klock = (x) => x.datum.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', ...zon(x) });
+
+    /* Datumrutan till vänster, som i Outlook. */
+    const topp = el('div', 'kal-topp');
+    const ruta = el('div', 'kal-ruta');
+    if (start) {
+      ruta.appendChild(el('span', 'kal-man', start.datum.toLocaleDateString('sv-SE', { month: 'short', ...zon(start) }).replace('.', '')));
+      ruta.appendChild(el('span', 'kal-dag', start.datum.toLocaleDateString('sv-SE', { day: 'numeric', ...zon(start) })));
+    }
+    topp.appendChild(ruta);
+
+    const info = el('div', 'kal-info');
+    const installt = ev.metod === 'CANCEL' || ev.status === 'CANCELLED';
+    if (installt) info.appendChild(el('span', 'kal-installt', 'Inställt'));
+    info.appendChild(el('h3', 'kal-titel', ev.titel || '(utan titel)'));
+
+    if (start) {
+      let tid = dag(start);
+      if (!start.heldag) {
+        tid += ', ' + klock(start);
+        if (slut) tid += (slut.datum.toDateString() === start.datum.toDateString() ? '–' + klock(slut) : ' – ' + dag(slut) + ', ' + klock(slut));
+        if (start.zon) tid += ' (' + start.zon + ')';
+      } else {
+        tid += ' · heldag';
+      }
+      if (ev.aterkommer) tid += ' · återkommande';
+      info.appendChild(el('p', 'kal-rad', '🕑  ' + tid));
+    }
+    if (ev.plats) info.appendChild(el('p', 'kal-rad', '📍  ' + ev.plats));
+    if (ev.arrangor) {
+      const a = ev.arrangor;
+      info.appendChild(el('p', 'kal-rad', '👤  Arrangör: ' + (a.namn ? a.namn + ' <' + a.adress + '>' : a.adress)));
+    }
+    topp.appendChild(info);
+    kort.appendChild(topp);
+
+    const verktyg = el('div', 'kal-verktyg');
+    if (ev.lank && /^https:\/\//i.test(ev.lank)) {
+      const a = el('a', 'knapp knapp--primar', 'Anslut till mötet');
+      a.href = ev.lank;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      verktyg.appendChild(a);
+    }
+    /* Som text/calendar öppnar telefonen filen direkt i kalendern. */
+    const lagg = el('button', 'knapp', 'Lägg till i kalendern');
+    lagg.type = 'button';
+    lagg.onclick = () => sparaFil({ ...fil, namn: /\.ics$/i.test(fil.namn) ? fil.namn : 'inbjudan.ics' }, 'text/calendar');
+    verktyg.appendChild(lagg);
+    kort.appendChild(verktyg);
+
+    if (ev.deltagare.length) {
+      const svarText = { ACCEPTED: 'Tackat ja', DECLINED: 'Tackat nej', TENTATIVE: 'Kanske', 'NEEDS-ACTION': 'Inte svarat', DELEGATED: 'Delegerat' };
+      const grupp = el('details', 'kal-delt');
+      grupp.open = ev.deltagare.length <= 8;
+      grupp.appendChild(el('summary', '', 'Deltagare (' + ev.deltagare.length + ')'));
+      const lista = el('ul', '');
+      ev.deltagare.forEach(d => {
+        const rad = el('li', '');
+        rad.appendChild(el('span', 'kal-person', d.namn || d.adress));
+        const extra = [];
+        if (d.roll === 'OPT-PARTICIPANT') extra.push('valfri');
+        if (svarText[d.svar]) extra.push(svarText[d.svar]);
+        if (extra.length) rad.appendChild(el('span', 'kal-svar', extra.join(' · ')));
+        lista.appendChild(rad);
+      });
+      grupp.appendChild(lista);
+      kort.appendChild(grupp);
+    }
+
+    if (ev.beskrivning && ev.beskrivning.trim()) {
+      const besk = el('details', 'kal-besk');
+      besk.appendChild(el('summary', '', 'Beskrivning'));
+      besk.appendChild(el('pre', '', ev.beskrivning.trim()));
+      kort.appendChild(besk);
+    }
+    return kort;
+  }
+
+  /* Visningen lägger sig över hela sidan. Stäng med krysset, Esc
+     eller ett klick utanför filen. */
+  function oppnaVisning(fil, sort) {
+    const url = URL.createObjectURL(new Blob([fil.byte], { type: sakerTyp(sort, fil.typ) }));
+    const lager = el('div', 'visning');
+    lager.setAttribute('role', 'dialog');
+    lager.setAttribute('aria-modal', 'true');
+    lager.setAttribute('aria-label', fil.namn);
+
+    const topp = el('div', 'visning-topp');
+    topp.appendChild(el('span', 'visning-namn', fil.namn));
+    const ned = el('button', 'knapp', 'Ladda ned');
+    ned.type = 'button';
+    ned.onclick = () => sparaFil(fil);
+    const stang = el('button', 'knapp', 'Stäng ✕');
+    stang.type = 'button';
+    topp.appendChild(ned);
+    topp.appendChild(stang);
+    lager.appendChild(topp);
+
+    const yta = el('div', 'visning-yta');
+    let inne;
+    if (sort === 'bild') {
+      inne = document.createElement('img');
+      inne.alt = fil.namn;
+      inne.src = url;
+    } else if (sort === 'pdf') {
+      inne = document.createElement('iframe');
+      inne.title = fil.namn;
+      inne.src = url;
+    } else if (sort === 'video' || sort === 'ljud') {
+      inne = document.createElement(sort === 'video' ? 'video' : 'audio');
+      inne.controls = true;
+      inne.src = url;
+    } else if (sort === 'kalender') {
+      inne = kalenderKort(fil);
+    } else {
+      /* Text visas som text — textContent, aldrig innerHTML. Ett
+         vidarebefordrat brev visas som servern tolkat det. */
+      const text = sort === 'brev' && fil.lasbar ? fil.lasbar : new TextDecoder().decode(fil.byte);
+      inne = el('pre', '', text);
+      sort = 'text';
+    }
+    inne.classList.add('visning-fil', 'visning-fil--' + sort);
+    yta.appendChild(inne);
+    lager.appendChild(yta);
+
+    const fokusInnan = document.activeElement;
+    const tangent = (e) => { if (e.key === 'Escape') stangVisning(); };
+    function stangVisning() {
+      document.removeEventListener('keydown', tangent);
+      lager.remove();
+      document.body.classList.remove('visar-fil');
+      URL.revokeObjectURL(url);
+      if (fokusInnan && fokusInnan.focus) fokusInnan.focus();
+    }
+    stang.onclick = stangVisning;
+    yta.onclick = (e) => { if (e.target === yta) stangVisning(); };
+    document.addEventListener('keydown', tangent);
+
+    document.body.appendChild(lager);
+    document.body.classList.add('visar-fil');
+    stang.focus();
+  }
+
+  /* =====================================================
+     SKRIVRUTAN
+     =====================================================
+     Texten skrivs i en redigerbar ruta (contenteditable) med ett
+     verktygsfält ovanför. Formateringen görs med execCommand —
+     gammalt men det enda som fungerar likadant i alla webbläsare
+     utan ett tungt bibliotek. Rutan är vit med mörk text, så att
+     man ser brevet ungefär som mottagaren gör.
+
+     Brevet skickas både som HTML och som ren text. Mejlprogram
+     som inte visar HTML får texten.
+  ===================================================== */
+  const TYPSNITT = [
+    ['Arial, Helvetica, sans-serif', 'Arial'],
+    ['Calibri, Carlito, Arial, sans-serif', 'Calibri'],
+    ['Verdana, Geneva, sans-serif', 'Verdana'],
+    ['"Trebuchet MS", Helvetica, sans-serif', 'Trebuchet'],
+    ['Georgia, serif', 'Georgia'],
+    ['"Times New Roman", Times, serif', 'Times'],
+    ['"Courier New", Courier, monospace', 'Courier']
+  ];
+  const STORLEKAR = [['2', 'Liten'], ['3', 'Normal'], ['4', 'Mellan'], ['5', 'Stor'], ['6', 'Större'], ['7', 'Störst']];
+  /* Brevets grundstil. Står både runt texten i rutan och runt det
+     som skickas, så att det ser likadant ut på båda ställena. */
+  const BREVSTIL = 'font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#222222;';
+
+  /* Små bilagor (sammanlagt) bakas in i anropet; större laddas upp i
+     delar först. Ett anrop får vara sex megabyte, och base64 gör
+     filen en tredjedel större. */
+  const BILAGA_DIREKT = 3 * 1024 * 1024;
+  const BILAGA_DEL = 3.4 * 1024 * 1024;
+  const BILAGA_MAX = 20 * 1024 * 1024;
+
+  const kB = (n) => (n >= 1024 * 1024 ? (n / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' kB');
+
+  function filTillBase64(fil) {
+    return new Promise((ok, fel) => {
+      const r = new FileReader();
+      r.onload = () => ok(String(r.result).split(',')[1] || '');
+      r.onerror = () => fel(new Error('Kunde inte läsa ' + fil.name + '.'));
+      r.readAsDataURL(fil);
+    });
+  }
+
+  /* Redigeraren: verktygsfältet och rutan. Används både för brevet
+     och för signaturen. */
+  function redigerare(startHtml, { onFiler } = {}) {
+    const wrap = el('div', 'red');
+    const falt = el('div', 'red-falt');
+    const ruta = el('div', 'red-ruta');
+    ruta.contentEditable = 'true';
+    ruta.setAttribute('role', 'textbox');
+    ruta.setAttribute('aria-multiline', 'true');
+    ruta.setAttribute('aria-label', 'Meddelande');
+    ruta.style.cssText = BREVSTIL;
+    /* Det som läggs in från början — signatur, citat, utkast — tvättas
+       som all annan HTML innan det hamnar i en redigerbar ruta. */
+    ruta.innerHTML = startHtml ? renaHtml(startHtml) : '<div><br></div>';
+
+    /* Markeringen sparas när den ändras i rutan och läggs tillbaka
+       innan ett kommando körs — annars hamnar ett klick i en
+       rullista utanför texten. */
+    let markering = null;
+    const sparaMarkering = () => {
+      const sel = window.getSelection();
+      if (sel.rangeCount && ruta.contains(sel.anchorNode)) markering = sel.getRangeAt(0).cloneRange();
+    };
+    document.addEventListener('selectionchange', sparaMarkering);
+    const atervand = () => {
+      ruta.focus();
+      if (markering) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(markering);
+      }
+    };
+    const kor = (kommando, varde) => {
+      atervand();
+      try { document.execCommand('styleWithCSS', false, true); } catch {}
+      document.execCommand(kommando, false, varde);
+      sparaMarkering();
+      ruta.dispatchEvent(new Event('input'));
+      uppdateraLagen();
+    };
+
+    const grupp = () => { const g = el('div', 'red-grupp'); falt.appendChild(g); return g; };
+    const lagen = [];
+    const knapp = (g, etikett, titel, kommando, varde, klass) => {
+      const k = el('button', 'red-knapp' + (klass ? ' ' + klass : ''), etikett);
+      k.type = 'button';
+      k.title = titel;
+      k.setAttribute('aria-label', titel);
+      /* mousedown, inte click: annars hinner rutan tappa markeringen. */
+      k.addEventListener('mousedown', (e) => e.preventDefault());
+      k.onclick = () => (typeof kommando === 'function' ? kommando() : kor(kommando, varde));
+      if (typeof kommando === 'string' && ['bold', 'italic', 'underline', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList'].includes(kommando)) {
+        lagen.push([k, kommando]);
+      }
+      g.appendChild(k);
+      return k;
+    };
+    const lista = (g, titel, val, kommando) => {
+      const v = el('select', 'red-val');
+      v.title = titel;
+      v.setAttribute('aria-label', titel);
+      const tom = el('option', '', titel); tom.value = ''; v.appendChild(tom);
+      val.forEach(([varde, namn]) => { const o = el('option', '', namn); o.value = varde; v.appendChild(o); });
+      v.onchange = () => { if (v.value) kor(kommando, v.value); v.value = ''; };
+      g.appendChild(v);
+      return v;
+    };
+    const farg = (g, titel, symbol, kommando, start) => {
+      const l = el('label', 'red-knapp red-farg');
+      l.title = titel;
+      l.appendChild(el('span', '', symbol));
+      const i = el('input');
+      i.type = 'color';
+      i.value = start;
+      i.setAttribute('aria-label', titel);
+      const strek = el('span', 'red-farg-strek');
+      strek.style.background = start;
+      l.appendChild(strek);
+      l.addEventListener('mousedown', sparaMarkering);
+      i.oninput = () => { strek.style.background = i.value; };
+      i.onchange = () => kor(kommando, i.value);
+      l.appendChild(i);
+      g.appendChild(l);
+    };
+
+    const g1 = grupp();
+    lista(g1, 'Typsnitt', TYPSNITT, 'fontName');
+    lista(g1, 'Storlek', STORLEKAR, 'fontSize');
+    const g2 = grupp();
+    knapp(g2, 'B', 'Fet (Ctrl+B)', 'bold', null, 'red-fet');
+    knapp(g2, 'I', 'Kursiv (Ctrl+I)', 'italic', null, 'red-kursiv');
+    knapp(g2, 'U', 'Understruken (Ctrl+U)', 'underline', null, 'red-under');
+    knapp(g2, 'S', 'Genomstruken', 'strikeThrough', null, 'red-genom');
+    farg(g2, 'Textfärg', 'A', 'foreColor', '#c00000');
+    farg(g2, 'Överstrykningsfärg', '▮', 'hiliteColor', '#ffff00');
+    const g3 = grupp();
+    knapp(g3, '•', 'Punktlista', 'insertUnorderedList');
+    knapp(g3, '1.', 'Numrerad lista', 'insertOrderedList');
+    knapp(g3, '⇤', 'Minska indrag', 'outdent');
+    knapp(g3, '⇥', 'Öka indrag', 'indent');
+    const g4 = grupp();
+    knapp(g4, '⯇', 'Vänsterjustera', 'justifyLeft');
+    knapp(g4, '≡', 'Centrera', 'justifyCenter');
+    knapp(g4, '⯈', 'Högerjustera', 'justifyRight');
+    const g5 = grupp();
+    knapp(g5, '🔗', 'Infoga länk', () => {
+      sparaMarkering();
+      let url = prompt('Länkadress (https://… eller e-postadress):', 'https://');
+      if (!url) return;
+      url = url.trim();
+      if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(url)) url = 'mailto:' + url;
+      else if (!/^(https?:|mailto:)/i.test(url)) url = 'https://' + url;
+      const sel = markering && !markering.collapsed;
+      if (sel) kor('createLink', url);
+      else kor('insertHTML', '<a href="' + esc(url) + '">' + esc(url.replace(/^mailto:/i, '')) + '</a>');
+    });
+    knapp(g5, '⛓̸', 'Ta bort länk', 'unlink');
+    knapp(g5, '―', 'Vågrät linje', 'insertHorizontalRule');
+    knapp(g5, 'T̸', 'Rensa formatering', 'removeFormat');
+    if (onFiler) {
+      const fil = el('input');
+      fil.type = 'file';
+      fil.multiple = true;
+      fil.hidden = true;
+      fil.onchange = () => { onFiler([...fil.files]); fil.value = ''; };
+      wrap.appendChild(fil);
+      knapp(g5, '📎', 'Bifoga filer', () => fil.click());
+    }
+    const g6 = grupp();
+    knapp(g6, '↶', 'Ångra (Ctrl+Z)', 'undo');
+    knapp(g6, '↷', 'Gör om (Ctrl+Y)', 'redo');
+
+    /* Knapparna för fet, kursiv … lyser när markören står i sådan text. */
+    function uppdateraLagen() {
+      lagen.forEach(([k, kom]) => {
+        let pa = false;
+        try { pa = document.queryCommandState(kom); } catch {}
+        k.classList.toggle('pa', !!pa);
+      });
+    }
+    ruta.addEventListener('keyup', uppdateraLagen);
+    ruta.addEventListener('mouseup', uppdateraLagen);
+
+    /* Inklistrat: filer blir bilagor, bilder hamnar i texten (de görs
+       om till inbäddade bilder när brevet skickas), och HTML från
+       andra program tvättas på samma sätt som inkommande post. */
+    ruta.addEventListener('paste', (e) => {
+      const cd = e.clipboardData;
+      if (!cd) return;
+      const filer = [...(cd.files || [])];
+      if (filer.length) {
+        e.preventDefault();
+        const bilder = filer.filter(f => /^image\//.test(f.type) && f.size < 1024 * 1024);
+        const ovriga = filer.filter(f => !bilder.includes(f));
+        bilder.forEach(f => {
+          const r = new FileReader();
+          r.onload = () => kor('insertHTML', '<img src="' + r.result + '" alt="" style="max-width:100%">');
+          r.readAsDataURL(f);
+        });
+        if (ovriga.length && onFiler) onFiler(ovriga);
+        return;
+      }
+      const html = cd.getData('text/html');
+      if (html) {
+        e.preventDefault();
+        kor('insertHTML', renaHtml(html.replace(/<!--[\s\S]*?-->/g, '')));
+      }
+    });
+
+    wrap.appendChild(falt);
+    wrap.appendChild(ruta);
+    return {
+      wrap, ruta,
+      html: () => ruta.innerHTML,
+      text: () => ruta.innerText.replace(/ /g, ' ').replace(/\n{3,}/g, '\n\n').trim(),
+      tom: () => !ruta.innerText.trim() && !ruta.querySelector('img'),
+      stang: () => document.removeEventListener('selectionchange', sparaMarkering)
+    };
+  }
+
+  function signaturFor(konto) {
+    return MEJL.signaturer[String(konto || '').toLowerCase()] || '';
   }
 
   function mejlSkrivruta(forifyllt = {}) {
     const yta = mejlYta();
     yta.textContent = '';
     const box = el('div', 'skriv');
+    const konto = MEJL.konto;
+    let utkastUid = forifyllt.utkast || null;
 
-    const falt = (etikett, id, varde, typ) => {
+    const falt = (etikett, id, varde) => {
       const w = el('div');
       const l = el('label', '', etikett); l.htmlFor = id; w.appendChild(l);
-      const i = typ === 'text' ? el('textarea') : el('input');
+      const i = el('input');
       i.id = id;
-      if (typ !== 'text') i.type = 'text';
+      i.type = 'text';
       i.value = varde || '';
       w.appendChild(i);
       box.appendChild(w);
@@ -1249,59 +1957,246 @@
     synk();
 
     const amne = falt('Ämne', 'mAmne', forifyllt.amne);
-    /* Citatet under svaret, som i vilket mejlprogram som helst —
-       så mottagaren ser vad svaret gäller. */
-    const citat = forifyllt.citat
-      ? '\n\n\n--\n' + String(forifyllt.citat).split('\n').map(r => '> ' + r).join('\n')
-      : '';
-    const text = falt('Meddelande', 'mText', forifyllt.text || citat, 'text');
+
+    /* Brödtexten: en tom rad att skriva på, signaturen, och under
+       den citatet eller det vidarebefordrade brevet. Ett utkast
+       öppnas precis som det sparades. */
+    const sig = forifyllt.signatur === false ? '' : signaturFor(konto);
+    const start = forifyllt.signatur === false
+      ? (forifyllt.html || '')
+      : '<div><br></div>' + (sig ? '<div><br></div><div class="signatur">' + sig + '</div>' : '')
+        + (forifyllt.html ? '<div><br></div>' + forifyllt.html : '');
+
+    /* Bilagor. `nya` är filer valda här; `med` är filer som redan
+       ligger i ett brev i brevlådan (vidarebefordran, utkast). */
+    let nya = [];
+    let med = (forifyllt.medfoljande && forifyllt.medfoljande.filer || []).map(f => ({ ...f }));
+    let medKalla = forifyllt.medfoljande ? { mapp: forifyllt.medfoljande.mapp, uid: forifyllt.medfoljande.uid } : null;
+    const bilagorRuta = el('div', 'skriv-bilagor');
+
+    const totalStorlek = () => nya.reduce((s, f) => s + f.size, 0) + med.reduce((s, f) => s + (f.storlek || 0), 0);
+    let andrat = false;
+    const leggTill = (filer) => {
+      const fore = totalStorlek();
+      const plats = BILAGA_MAX - fore;
+      let summa = 0;
+      const ok = [];
+      filer.forEach(f => { if (summa + f.size <= plats) { ok.push(f); summa += f.size; } });
+      if (ok.length < filer.length) rop('Högst 20 MB bilagor per brev. ' + (filer.length - ok.length) + ' fil(er) kom inte med.', 'fel');
+      nya = nya.concat(ok);
+      andrat = true;
+      ritaBilagor();
+    };
+
+    const red = redigerare(start, { onFiler: leggTill });
+    const textW = el('div');
+    const tl = el('label', '', 'Meddelande');
+    textW.appendChild(tl);
+    textW.appendChild(red.wrap);
+    box.appendChild(textW);
+    box.appendChild(bilagorRuta);
+    red.ruta.addEventListener('input', () => { andrat = true; });
+    [till, kopia, dold, amne].forEach(i => i.addEventListener('input', () => { andrat = true; }));
+
+    function ritaBilagor() {
+      bilagorRuta.textContent = '';
+      const alla = [
+        ...med.map((f, i) => ({ namn: f.namn, storlek: f.storlek || 0, ta: () => { med.splice(i, 1); } })),
+        ...nya.map((f, i) => ({ namn: f.name, storlek: f.size, ta: () => { nya.splice(i, 1); } }))
+      ];
+      if (!alla.length) {
+        bilagorRuta.appendChild(el('span', 'skriv-bilagor-tips', 'Dra filer hit eller tryck 📎 för att bifoga. Högst 20 MB per brev.'));
+        return;
+      }
+      alla.forEach(f => {
+        const chip = el('span', 'skriv-bilaga');
+        chip.appendChild(el('span', 'skriv-bilaga-namn', '📎 ' + f.namn));
+        chip.appendChild(el('span', 'skriv-bilaga-storlek', kB(f.storlek)));
+        const x = el('button', 'skriv-bilaga-ta', '✕');
+        x.type = 'button';
+        x.title = 'Ta bort ' + f.namn;
+        x.setAttribute('aria-label', 'Ta bort ' + f.namn);
+        x.onclick = () => { f.ta(); andrat = true; ritaBilagor(); };
+        chip.appendChild(x);
+        bilagorRuta.appendChild(chip);
+      });
+      bilagorRuta.appendChild(el('span', 'skriv-bilagor-tips', 'Totalt ' + kB(totalStorlek()) + ' av 20 MB'));
+    }
+    ritaBilagor();
+
+    /* Dra och släpp filer var som helst på skrivrutan. */
+    box.addEventListener('dragover', (e) => {
+      if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) { e.preventDefault(); box.classList.add('dra'); }
+    });
+    box.addEventListener('dragleave', (e) => { if (!box.contains(e.relatedTarget)) box.classList.remove('dra'); });
+    box.addEventListener('drop', (e) => {
+      box.classList.remove('dra');
+      const filer = e.dataTransfer && [...e.dataTransfer.files];
+      if (filer && filer.length) { e.preventDefault(); leggTill(filer); }
+    });
 
     const fot = el('div', 'skriv-fot');
     const skicka = el('button', 'knapp knapp--primar', 'Skicka');
     skicka.type = 'button';
+    const spara = el('button', 'knapp', 'Spara utkast');
+    spara.type = 'button';
     const avbryt = el('button', 'knapp', 'Avbryt');
     avbryt.type = 'button';
-    const status = el('span', 'skriv-status', 'Skickas från ' + MEJL.konto);
-    fot.appendChild(skicka); fot.appendChild(avbryt); fot.appendChild(status);
+    const status = el('span', 'skriv-status', 'Skickas från ' + konto);
+    fot.appendChild(skicka); fot.appendChild(spara); fot.appendChild(avbryt); fot.appendChild(status);
     box.appendChild(fot);
     yta.appendChild(box);
 
-    till.focus();
-    if (forifyllt.till) text.focus();
+    if (forifyllt.till) red.ruta.focus(); else till.focus();
 
-    avbryt.onclick = () => {
+    const stang = (text) => {
+      red.stang();
       yta.textContent = '';
-      yta.appendChild(tomt('Välj ett brev i listan.'));
+      yta.appendChild(tomt(text));
     };
 
+    avbryt.onclick = () => {
+      if (andrat && !confirm('Kasta brevet? Det du skrivit försvinner.\n\nTryck Avbryt och sedan Spara utkast om du vill behålla det.')) return;
+      stang('Välj ett brev i listan.');
+    };
+
+    /* Bilagorna till anropet: små inbakade, stora uppladdade i delar. */
+    async function packaBilagor() {
+      const ut = { bilagor: [], uppladdade: [] };
+      const summa = nya.reduce((s, f) => s + f.size, 0);
+      if (summa <= BILAGA_DIREKT) {
+        for (const f of nya) ut.bilagor.push({ namn: f.name, typ: f.type, data: await filTillBase64(f) });
+      } else {
+        let n = 0;
+        for (const f of nya) {
+          n++;
+          const id = Date.now() + '-' + Math.random().toString(36).slice(2, 12).padEnd(10, '0');
+          const delar = Math.max(1, Math.ceil(f.size / BILAGA_DEL));
+          for (let i = 0; i < delar; i++) {
+            status.textContent = 'Laddar upp ' + f.name + (delar > 1 ? ' (del ' + (i + 1) + ' av ' + delar + ')' : '') + ' — fil ' + n + ' av ' + nya.length + ' …';
+            const bit = f.slice(i * BILAGA_DEL, (i + 1) * BILAGA_DEL);
+            await be('/mail-upload', { method: 'POST', body: JSON.stringify({ id, del: i, data: await filTillBase64(bit) }) });
+          }
+          ut.uppladdade.push({ id, namn: f.name, typ: f.type, delar });
+        }
+      }
+      if (medKalla && med.length) ut.medfoljande = { mapp: medKalla.mapp, uid: medKalla.uid, nr: med.map(f => f.nr) };
+      return ut;
+    }
+
+    function brevet() {
+      /* Rutans HTML får brevets grundstil runt sig, så att typsnitt
+         och storlek blir desamma hos mottagaren som här. */
+      const html = '<div style="' + BREVSTIL + '">' + red.html() + '</div>';
+      return {
+        konto,
+        till: till.value, kopia: kopia.value, dold: dold.value,
+        amne: amne.value,
+        html, text: red.text(),
+        svarPa: forifyllt.svarPa || '',
+        referenser: forifyllt.referenser || ''
+      };
+    }
+
+    const lås = (pa) => { skicka.disabled = spara.disabled = avbryt.disabled = pa; };
+
     skicka.onclick = async () => {
-      skicka.disabled = true;
+      if (!till.value.trim()) { status.className = 'skriv-status fel'; status.textContent = 'Fyll i en mottagare.'; till.focus(); return; }
+      if (!amne.value.trim() && !confirm('Skicka utan ämne?')) return;
+      if (amne.value.trim() === '') amne.value = '(utan ämne)';
+      lås(true);
       status.className = 'skriv-status';
-      status.textContent = 'Skickar …';
+      status.textContent = 'Förbereder …';
       try {
-        const svar = await be('/mail-send', {
-          method: 'POST',
-          body: JSON.stringify({
-            konto: MEJL.konto,
-            till: till.value,
-            kopia: kopia.value,
-            dold: dold.value,
-            amne: amne.value,
-            text: text.value,
-            svarPa: forifyllt.svarPa || ''
-          })
-        });
+        const data = { ...brevet(), ...(await packaBilagor()), utkast: utkastUid || undefined };
+        if (JSON.stringify(data).length > 5.5 * 1024 * 1024) throw new Error('Bilderna i texten är för stora. Bifoga dem som filer i stället.');
+        status.textContent = totalStorlek() > 5 * 1024 * 1024 ? 'Skickar — stora bilagor kan ta en stund …' : 'Skickar …';
+        const svar = await be('/mail-send', { method: 'POST', body: JSON.stringify(data) });
         rop(svar.iSkickat
           ? 'Skickat. Kopian ligger i Skickat.'
           : 'Skickat. Kopian kom inte in i Skickat — brevet är ändå ute.');
-        yta.textContent = '';
-        yta.appendChild(tomt('Skickat.'));
-        /* Står man i Skickat ska det nya brevet synas i listan direkt. */
-        if (iSkickat()) mejlHamta();
+        stang('Skickat.');
+        /* Står man i Skickat eller Utkast ska listan stämma direkt. */
+        if (MEJL.mapp === 'skickat' || MEJL.mapp === 'utkast') mejlHamta();
       } catch (e) {
         status.className = 'skriv-status fel';
         status.textContent = e.message;
-        skicka.disabled = false;
+        lås(false);
+      }
+    };
+
+    spara.onclick = async () => {
+      lås(true);
+      status.className = 'skriv-status';
+      status.textContent = 'Sparar utkast …';
+      try {
+        const data = { ...brevet(), ...(await packaBilagor()), ersatt: utkastUid || undefined };
+        const svar = await be('/mail-draft', { method: 'POST', body: JSON.stringify(data) });
+        /* Bilagorna ligger nu i utkastet. Läs tillbaka det, så att
+           nästa sparande eller Skicka tar filerna därifrån i stället
+           för att ladda upp dem igen. */
+        if (svar.uid) {
+          utkastUid = svar.uid;
+          try {
+            const u = await be('/mail-read?konto=' + encodeURIComponent(konto) + '&mapp=utkast&uid=' + svar.uid);
+            med = (u.bilagor || []).map((f, i) => ({ ...f, nr: Number.isInteger(f.nr) ? f.nr : i }));
+            medKalla = { mapp: 'utkast', uid: svar.uid };
+            nya = [];
+            ritaBilagor();
+          } catch { /* filerna finns kvar här och skickas med igen */ }
+        }
+        andrat = false;
+        status.textContent = 'Utkastet är sparat ' + new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) + '.';
+        if (MEJL.mapp === 'utkast') mejlHamta();
+      } catch (e) {
+        status.className = 'skriv-status fel';
+        status.textContent = e.message;
+      } finally {
+        lås(false);
+      }
+    };
+  }
+
+  /* Signaturen redigeras med samma verktyg som brevet. Den sparas
+     på servern per brevlåda, så den följer med till telefonen. */
+  function mejlSignatur() {
+    const yta = mejlYta();
+    yta.textContent = '';
+    const konto = MEJL.konto;
+    const box = el('div', 'skriv');
+    box.appendChild(el('h3', 'brev-amne', 'Signatur för ' + konto));
+    box.appendChild(el('p', 'hjalp', 'Läggs in automatiskt under nya brev, svar och vidarebefordringar från den här adressen. '
+      + 'Du kan klistra in en logga — håll den liten (under 100 kB).'));
+    const red = redigerare(signaturFor(konto));
+    red.ruta.classList.add('red-ruta--kort');
+    box.appendChild(red.wrap);
+    const fot = el('div', 'skriv-fot');
+    const spara = el('button', 'knapp knapp--primar', 'Spara signatur');
+    spara.type = 'button';
+    const avbryt = el('button', 'knapp', 'Stäng');
+    avbryt.type = 'button';
+    const status = el('span', 'skriv-status', '');
+    fot.appendChild(spara); fot.appendChild(avbryt); fot.appendChild(status);
+    box.appendChild(fot);
+    yta.appendChild(box);
+    red.ruta.focus();
+
+    avbryt.onclick = () => { red.stang(); yta.textContent = ''; yta.appendChild(tomt('Välj ett brev i listan.')); };
+    spara.onclick = async () => {
+      spara.disabled = true;
+      status.className = 'skriv-status';
+      status.textContent = 'Sparar …';
+      const html = red.tom() ? '' : red.html();
+      try {
+        await be('/mail-settings', { method: 'POST', body: JSON.stringify({ konto, signatur: html }) });
+        MEJL.signaturer[konto.toLowerCase()] = html;
+        status.textContent = 'Sparad.';
+        rop('Signaturen är sparad.');
+      } catch (e) {
+        status.className = 'skriv-status fel';
+        status.textContent = e.message;
+      } finally {
+        spara.disabled = false;
       }
     };
   }
@@ -1328,6 +2223,28 @@
       document.querySelectorAll('.mejl-mapp').forEach(k => { k.onclick = () => mejlValjMapp(k.dataset.mapp); });
       $('#mejlUppdatera').onclick = () => mejlHamta();
       $('#mejlNytt').onclick = () => mejlSkrivruta();
+      $('#mejlSignatur').onclick = () => mejlSignatur();
+      /* Sökningen startar medan man skriver, en kort stund efter sista
+         tangenten — varje bokstav för sig hade blivit en IMAP-runda.
+         Enter söker direkt, och en tom ruta visar hela mappen igen. */
+      let sokTimer;
+      const sok = () => {
+        clearTimeout(sokTimer);
+        const v = $('#mejlSok').value.trim();
+        if (v === MEJL.sok) return;
+        MEJL.sok = v;
+        MEJL.valt = null;
+        mejlHamta();
+      };
+      $('#mejlSokForm').onsubmit = (e) => { e.preventDefault(); sok(); };
+      $('#mejlSok').addEventListener('input', () => {
+        clearTimeout(sokTimer);
+        const v = $('#mejlSok').value.trim();
+        sokTimer = setTimeout(sok, v ? 500 : 0);
+      });
+      /* Signaturerna hämtas i bakgrunden. Går det inte blir det
+         bara inga signaturer — brevskrivandet ska inte hänga på det. */
+      be('/mail-settings').then(d => { MEJL.signaturer = d.signaturer || {}; }).catch(() => {});
 
       mejlYta().appendChild(tomt('Välj ett brev i listan.'));
       mejlHamta();

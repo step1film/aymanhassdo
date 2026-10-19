@@ -145,7 +145,8 @@ async function hittaMapp(klient, sort) {
   const namn = {
     '\\Sent':  ['sent', 'skickat', 'sent items', 'skickade', 'skickad post'],
     '\\Drafts':['drafts', 'utkast'],
-    '\\Trash': ['trash', 'papperskorg', 'borttaget']
+    '\\Trash': ['trash', 'papperskorg', 'borttaget', 'deleted items', 'deleted messages'],
+    '\\Junk':  ['junk', 'spam', 'skräppost', 'junk e-mail', 'junk email', 'bulk mail']
   }[sort] || [];
   const gissad = lista.find(m => namn.includes(m.path.toLowerCase()) || namn.includes((m.name || '').toLowerCase()));
   return gissad ? gissad.path : null;
@@ -154,10 +155,11 @@ async function hittaMapp(klient, sort) {
 /* Webbläsaren väljer mapp med ett av två ord, aldrig med ett
    mappnamn: Skickat heter olika på olika servrar, och ett fritt
    namn hade låtit vem som helst med en session peta i vilken mapp
-   som helst. Hittas ingen Skickat-mapp blir svaret null. */
-const MAPPAR = ['inkorg', 'skickat'];
+   som helst. Hittas mappen inte blir svaret null. */
+const MAPPAR = ['inkorg', 'skickat', 'utkast', 'skrap', 'papperskorg'];
+const SPECIAL = { skickat: '\\Sent', utkast: '\\Drafts', skrap: '\\Junk', papperskorg: '\\Trash' };
 async function mappFor(klient, mapp) {
-  if (mapp === 'skickat') return hittaMapp(klient, '\\Sent');
+  if (SPECIAL[mapp]) return hittaMapp(klient, SPECIAL[mapp]);
   return 'INBOX';
 }
 
@@ -165,25 +167,52 @@ async function mappFor(klient, mapp) {
    Bara kuvertet hämtas — avsändare, ämne, datum, storlek. Att läsa
    brödtexten för varje rad hade gjort listan tiotals gånger tyngre
    utan att något av det syns i den. */
-async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25 } = {}) {
+async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25, sok = '' } = {}) {
   return medImap(konto, async (klient) => {
     const sokvag = await mappFor(klient, mapp);
     if (!sokvag) return { totalt: 0, brev: [], saknas: true };
     const las = await klient.getMailboxLock(sokvag);
     try {
-      const totalt = klient.mailbox.exists;
-      if (!totalt) return { totalt: 0, brev: [] };
+      const antalIMappen = klient.mailbox.exists;
+      if (!antalIMappen) return { totalt: 0, brev: [] };
 
-      /* IMAP numrerar äldst först. Vi vill ha nyast först, så vi
-         räknar fram fönstret bakifrån. */
-      const slut = Math.max(1, totalt - fran);
-      const start = Math.max(1, slut - antal + 1);
-      if (slut < start) return { totalt, brev: [] };
+      /* Vilka brev ska med? Utan sökord: ett fönster räknat bakifrån,
+         eftersom IMAP numrerar äldst först. Med sökord: servern letar
+         i avsändare, mottagare, ämne och text, och vi bläddrar bland
+         träffarna, nyast (högst uid) först. */
+      let urval, totalt, uid = false;
+      if (sok) {
+        /* Först rubrikerna — avsändare, mottagare, ämne — som servern
+           söker i på ett ögonblick. Hittas inget där letas det i
+           själva texten, som tar längre tid i en stor brevlåda.
+           Varje fält söks för sig och träffarna läggs ihop: one.com
+           klarar inte alltid ett nästlat OR i ett enda kommando. */
+        const traff = new Set();
+        const leta = async (fraga) => {
+          const r = await klient.search(fraga, { uid: true });
+          (Array.isArray(r) ? r : []).forEach(u => traff.add(u));
+        };
+        for (const falt of ['from', 'to', 'cc', 'subject']) await leta({ [falt]: sok });
+        if (!traff.size) await leta({ body: sok });
+        const traffar = [...traff];
+        traffar.sort((a, b) => b - a);
+        totalt = traffar.length;
+        const sida = traffar.slice(fran, fran + antal);
+        if (!sida.length) return { totalt, brev: [] };
+        urval = sida.join(',');
+        uid = true;
+      } else {
+        totalt = antalIMappen;
+        const slut = Math.max(1, totalt - fran);
+        const start = Math.max(1, slut - antal + 1);
+        if (fran >= totalt) return { totalt, brev: [] };
+        urval = `${start}:${slut}`;
+      }
 
       const brev = [];
-      for await (const m of klient.fetch(`${start}:${slut}`, {
+      for await (const m of klient.fetch(urval, {
         uid: true, envelope: true, flags: true, size: true, bodyStructure: true
-      })) {
+      }, { uid })) {
         const e = m.envelope || {};
         const avs = (e.from && e.from[0]) || {};
         /* I Skickat är det mottagaren som ska stå på raden, inte du. */
@@ -200,7 +229,7 @@ async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25 } = {}) {
           bilagor: harBilaga(m.bodyStructure)
         });
       }
-      brev.reverse();
+      brev.sort((a, b) => b.uid - a.uid);
       return { totalt, brev };
     } finally {
       las.release();
@@ -208,9 +237,16 @@ async function lista(konto, { mapp = 'inkorg', fran = 0, antal = 25 } = {}) {
   });
 }
 
+/* En del räknas som bilaga om den är märkt så — eller om den har ett
+   filnamn. Många mejlprogram (Apple Mail, mobiler) skickar PDF:er och
+   bilder som `inline` eller helt utan märkning, bara med ett namn.
+   Att bara titta på `attachment` gjorde att de aldrig syntes. */
 function harBilaga(del) {
   if (!del) return false;
   if (del.disposition === 'attachment') return true;
+  const namn = (del.dispositionParameters && del.dispositionParameters.filename)
+    || (del.parameters && del.parameters.name);
+  if (namn && !/^multipart\//i.test(del.type || '')) return true;
   if (Array.isArray(del.childNodes)) return del.childNodes.some(harBilaga);
   return false;
 }
@@ -226,12 +262,30 @@ async function las(konto, { mapp = 'inkorg', uid }) {
     try {
       const m = await klient.fetchOne(String(uid), { source: true, flags: true }, { uid: true });
       if (!m || !m.source) return null;
-      const p = await simpleParser(m.source);
+      const p = await simpleParser(m.source, { keepCidLinks: true });
 
       /* Markera som läst först när brevet faktiskt öppnats. */
       try { await klient.messageFlagsAdd(String(uid), ['\\Seen'], { uid: true }); } catch {}
 
       const adr = (f) => (f && f.value ? f.value.map(v => ({ namn: v.name || '', adress: v.address || '' })) : []);
+
+      /* Bilder inne i brevet — logotyper i signaturer, inklistrade
+         skärmdumpar — pekar på sina bilagor med cid:. Webbläsaren kan
+         inte följa en sådan adress, så de små bakas in i HTML:en som
+         data:-bilder. Taket håller svaret under Netlifys sex megabyte. */
+      let html = p.html || '';
+      const inbakade = new Set();
+      let utrymme = 2.5 * 1024 * 1024;
+      (p.attachments || []).forEach((b, nr) => {
+        if (!b.cid || !/^image\//i.test(b.contentType || '') || !b.content) return;
+        if (b.content.length > utrymme) return;
+        const cid = 'cid:' + b.cid;
+        if (!html.includes(cid)) return;
+        html = html.split(cid).join(`data:${b.contentType};base64,${b.content.toString('base64')}`);
+        utrymme -= b.content.length;
+        inbakade.add(nr);
+      });
+
       return {
         uid: Number(uid),
         amne: p.subject || '(utan ämne)',
@@ -242,18 +296,231 @@ async function las(konto, { mapp = 'inkorg', uid }) {
            mottagarna får aldrig raden. */
         dold: adr(p.bcc),
         datum: p.date ? p.date.toISOString() : null,
-        html: p.html || '',
+        html,
         text: p.text || '',
         messageId: p.messageId || '',
-        bilagor: (p.attachments || []).map(b => ({
-          namn: b.filename || 'bilaga',
+        svarPa: p.inReplyTo || '',
+        referenser: Array.isArray(p.references) ? p.references.join(' ') : (p.references || ''),
+        /* nr är bilagans plats i brevet — det är den bilaga() nedan
+           frågar efter när en fil ska hämtas. Bilder som redan visas
+           inne i texten står inte med i listan, men behåller sitt nr. */
+        bilagor: (p.attachments || []).map((b, nr) => ({
+          nr,
+          namn: b.filename || namnFor(b.contentType),
           typ: b.contentType || '',
-          storlek: b.size || 0
-        }))
+          storlek: b.size || 0,
+          iTexten: inbakade.has(nr)
+        })).filter(b => !b.iTexten)
       };
     } finally {
       las.release();
     }
+  });
+}
+
+/* Bilagor utan filnamn — vidarebefordrade brev, kalenderinbjudningar,
+   bilder inklistrade i brevet — får ett namn efter sin sort, så att det
+   syns vad de är och filen får rätt ändelse när den sparas. */
+const ANDELSE = {
+  'message/rfc822': 'vidarebefordrat-brev.eml',
+  'text/calendar': 'inbjudan.ics',
+  'text/vcard': 'kontakt.vcf',
+  'text/x-vcard': 'kontakt.vcf',
+  'text/plain': 'text.txt',
+  'text/html': 'sida.html',
+  'application/pdf': 'dokument.pdf',
+  'image/jpeg': 'bild.jpg',
+  'image/png': 'bild.png',
+  'image/gif': 'bild.gif',
+  'image/webp': 'bild.webp',
+  'image/heic': 'bild.heic'
+};
+function namnFor(typ) {
+  return ANDELSE[String(typ || '').toLowerCase()] || 'bilaga';
+}
+
+/* En bilaga, som råa byte.
+   -----------------------------------------------------
+   Brevet hämtas och tolkas på nytt och bilagan plockas ut på sin
+   plats i listan — samma ordning som las() gav webbläsaren. IMAP
+   kan visserligen hämta en enskild del, men mailparser säger inte
+   vilket delnummer en bilaga har, och att räkna fram det själv är
+   lätt att göra fel. Brevet markeras inte som läst här; det har
+   redan öppnats. */
+async function bilaga(konto, { mapp = 'inkorg', uid, nr }) {
+  return medImap(konto, async (klient) => {
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return null;
+    const las = await klient.getMailboxLock(sokvag);
+    try {
+      const m = await klient.fetchOne(String(uid), { source: true }, { uid: true });
+      if (!m || !m.source) return null;
+      const p = await simpleParser(m.source);
+      const b = (p.attachments || [])[nr];
+      if (!b) return null;
+      const typ = b.contentType || 'application/octet-stream';
+      /* Ett vidarebefordrat brev ligger som rå MIME-källa — kodad och
+         oläslig som den är. Det tolkas här så att admin kan visa det
+         som vanlig text. Själva filen (.eml) går fortfarande att ladda
+         ned orörd. */
+      let lasbar = '';
+      if (/^message\/rfc822$/i.test(typ)) {
+        try {
+          const inre = await simpleParser(b.content);
+          lasbar = [
+            'Från: ' + (inre.from ? inre.from.text : ''),
+            'Till: ' + (inre.to ? inre.to.text : ''),
+            'Datum: ' + (inre.date ? inre.date.toLocaleString('sv-SE') : ''),
+            'Ämne: ' + (inre.subject || ''),
+            '',
+            inre.text || ''
+          ].join('\n');
+        } catch { /* då visas den inte, men går att ladda ned */ }
+      }
+      return {
+        namn: b.filename || namnFor(typ),
+        typ,
+        innehall: b.content,
+        lasbar
+      };
+    } finally {
+      las.release();
+    }
+  });
+}
+
+/* Läst eller oläst. */
+async function markera(konto, { mapp = 'inkorg', uid, last }) {
+  return medImap(konto, async (klient) => {
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return false;
+    const las = await klient.getMailboxLock(sokvag);
+    try {
+      if (last) await klient.messageFlagsAdd(String(uid), ['\\Seen'], { uid: true });
+      else await klient.messageFlagsRemove(String(uid), ['\\Seen'], { uid: true });
+      return true;
+    } finally {
+      las.release();
+    }
+  });
+}
+
+/* Flytta ett brev mellan två av de kända mapparna — "Inte skräppost",
+   "Återställ" ur papperskorgen. Målet anges med samma ord som
+   listan använder, aldrig som ett fritt mappnamn. */
+async function flytta(konto, { mapp = 'inkorg', uid, till }) {
+  return medImap(konto, async (klient) => {
+    const fran = await mappFor(klient, mapp);
+    const mal = await mappFor(klient, till);
+    if (!fran || !mal) return { ok: false };
+    if (fran.toLowerCase() === mal.toLowerCase()) return { ok: true };
+    const las = await klient.getMailboxLock(fran);
+    try {
+      await klient.messageMove(String(uid), mal, { uid: true });
+      return { ok: true };
+    } finally {
+      las.release();
+    }
+  });
+}
+
+/* Bilagor ur ett brev som redan ligger i brevlådan, som färdiga
+   nodemailer-bilagor. Det är så vidarebefordran tar med originalets
+   filer, och så ett utkast behåller sina: filerna går direkt från
+   IMAP till SMTP på servern och behöver aldrig via webbläsaren. */
+async function bilagorUr(konto, { mapp = 'inkorg', uid, nr }) {
+  return medImap(konto, async (klient) => {
+    const sokvag = await mappFor(klient, mapp);
+    if (!sokvag) return [];
+    const las = await klient.getMailboxLock(sokvag);
+    try {
+      const m = await klient.fetchOne(String(uid), { source: true }, { uid: true });
+      if (!m || !m.source) return [];
+      const p = await simpleParser(m.source);
+      const valda = new Set(nr);
+      return (p.attachments || [])
+        .map((b, i) => ({ b, i }))
+        .filter(({ i }) => valda.has(i))
+        .map(({ b }) => ({
+          filename: b.filename || namnFor(b.contentType),
+          content: b.content,
+          contentType: b.contentType || 'application/octet-stream',
+          ...(b.cid ? { cid: b.cid } : {})
+        }));
+    } finally {
+      las.release();
+    }
+  });
+}
+
+/* Brevet som nodemailer-objekt — samma för det som skickas och det
+   som sparas som utkast. */
+function byggBrev(konto, { till, kopia, dold, amne, text, html, bilagor, svarPa, referenser }) {
+  const brev = {
+    from: konto.namn ? `${konto.namn} <${konto.adress}>` : konto.adress,
+    subject: amne || '',
+    text: text || ''
+  };
+  if (till) brev.to = till;
+  if (html) {
+    /* Bilder som klistrats in i texten eller signaturen ligger som
+       data:-adresser. Gmail och Outlook visar inte sådana, så de
+       görs om till inbäddade bilagor (cid:), som alla mejlprogram
+       klarar. */
+    const inbaddade = [];
+    html = html.replace(/(<img\b[^>]*?\bsrc\s*=\s*["'])data:(image\/[a-z0-9.+-]+);base64,([a-z0-9+/=\s]+)(["'])/gi,
+      (hel, fore, typ, data, efter) => {
+        const cid = `bild${inbaddade.length + 1}.${crypto.randomBytes(6).toString('hex')}@step1film`;
+        const andelse = (typ.split('/')[1] || 'png').replace('jpeg', 'jpg').replace(/\+.*$/, '');
+        inbaddade.push({ cid, contentType: typ, filename: `bild${inbaddade.length + 1}.${andelse}`, content: Buffer.from(data.replace(/\s+/g, ''), 'base64') });
+        return `${fore}cid:${cid}${efter}`;
+      });
+    brev.html = html;
+    if (inbaddade.length) bilagor = [...(bilagor || []), ...inbaddade];
+  }
+  if (kopia) brev.cc = kopia;
+  if (dold) brev.bcc = dold;
+  if (bilagor && bilagor.length) brev.attachments = bilagor;
+  /* In-Reply-To och References är det som gör att svaret hamnar i
+     samma tråd hos mottagaren i stället för som ett löst brev. */
+  if (svarPa) {
+    brev.inReplyTo = svarPa;
+    brev.references = referenser || svarPa;
+  }
+  return brev;
+}
+
+/* Spara ett utkast i Utkast-mappen, så att det syns i telefonen
+   också. IMAP kan inte ändra ett brev, så ett nytt sparande lägger
+   in en ny version och tar bort den gamla. */
+async function sparaUtkast(konto, data, ersatt) {
+  const brev = byggBrev(konto, data);
+  brev.date = new Date();
+  const nod = new MailComposer(brev).compile();
+  nod.keepBcc = true;
+  const ravara = await nod.build();
+  return medImap(konto, async (klient) => {
+    const mapp = await hittaMapp(klient, '\\Drafts');
+    if (!mapp) return { ok: false };
+    const svar = await klient.append(mapp, ravara, ['\\Draft', '\\Seen']);
+    if (ersatt) {
+      const las = await klient.getMailboxLock(mapp);
+      try { await klient.messageDelete(String(ersatt), { uid: true }); }
+      catch { /* den gamla versionen får ligga kvar hellre än att sparandet faller */ }
+      finally { las.release(); }
+    }
+    return { ok: true, uid: (svar && svar.uid) || null };
+  });
+}
+
+/* Ta bort ett utkast som just skickats. */
+async function raderaUtkast(konto, uid) {
+  return medImap(konto, async (klient) => {
+    const mapp = await hittaMapp(klient, '\\Drafts');
+    if (!mapp) return;
+    const las = await klient.getMailboxLock(mapp);
+    try { await klient.messageDelete(String(uid), { uid: true }); }
+    finally { las.release(); }
   });
 }
 
@@ -313,27 +580,15 @@ function smtp(konto, tidsgrans) {
   });
 }
 
-async function skicka(konto, { till, kopia, dold, amne, text, svarPa, referenser }) {
+async function skicka(konto, data) {
   const post = smtp(konto);
 
-  const brev = {
-    from: konto.namn ? `${konto.namn} <${konto.adress}>` : konto.adress,
-    to: till,
-    subject: amne,
-    text,
-    /* Id och datum sätts här så att brevet som skickas och kopian i
-       Skickat — som byggs var för sig, se nedan — blir samma brev. */
-    messageId: `<${Date.now().toString(36)}.${crypto.randomBytes(8).toString('hex')}@${konto.adress.split('@')[1] || 'step1film.se'}>`,
-    date: new Date()
-  };
-  if (kopia) brev.cc = kopia;
-  if (dold) brev.bcc = dold;
-  /* In-Reply-To och References är det som gör att svaret hamnar i
-     samma tråd hos mottagaren i stället för som ett löst brev. */
-  if (svarPa) {
-    brev.inReplyTo = svarPa;
-    brev.references = referenser || svarPa;
-  }
+  const brev = byggBrev(konto, data);
+  /* Id och datum sätts här så att brevet som skickas och kopian i
+     Skickat — som byggs var för sig, se nedan — blir samma brev. */
+  brev.messageId = `<${Date.now().toString(36)}.${crypto.randomBytes(8).toString('hex')}@${konto.adress.split('@')[1] || 'step1film.se'}>`;
+  brev.date = new Date();
+  const { till, kopia, dold } = data;
 
   /* Brevet byggs en gång, till färdiga byte. Samma byte går ut på
      SMTP och läggs i Skickat — annars hade kopian kunnat skilja sig
@@ -413,4 +668,4 @@ async function skickaBrev({ fran, till, amne, text, html, svaraTill, hemligKopia
   return { id: kvitto.messageId || '' };
 }
 
-module.exports = { MAPPAR, konfigurerad, kontolista, kontoFor, avsandare, lista, las, radera, skicka, skickaBrev, hittaMapp };
+module.exports = { MAPPAR, byggBrev, konfigurerad, kontolista, kontoFor, avsandare, lista, las, bilaga, bilagorUr, markera, flytta, radera, skicka, sparaUtkast, raderaUtkast, skickaBrev, hittaMapp };

@@ -450,22 +450,48 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 .mejl-lista { flex: 1; overflow-y: auto; min-height: 0; }
 
 /* --- Inkorg / Skickat --- */
-.mejl-mappar { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+/* Fem mappar ryms inte på en rad i en smal spalt. De läggs i ett
+   rutnät som bryts på två rader i stället för att klippas i kanten —
+   varje mapp syns alltid hel. */
+.mejl-mappar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.4rem, 1fr));
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
 .mejl-mapp {
-  flex: 1;
-  padding: 0.7rem 0.9rem;
+  white-space: nowrap;
+  padding: 0.65rem 0.5rem;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
   color: var(--text-dim);
   font: inherit;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
 }
 .mejl-mapp:hover { color: var(--text); }
+.mejl-mapp:focus-visible { outline: 1px solid var(--line-s); outline-offset: -3px; }
 .mejl-mapp.vald { color: var(--white); border-bottom-color: var(--accent); }
+
+/* Mörka rullister — webbläsarens vita ser ut som ett hål i sidan. */
+.mejl-lista, .mejl-yta, .red-ruta, .visning-yta {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-s) transparent;
+}
+.red-ruta { scrollbar-color: #c4c4c4 #ffffff; }
+
+.mejl-traffar { padding: 0.5rem 0.9rem; font-size: 0.75rem; color: var(--text-dim); border-bottom: 1px solid var(--line); }
+
+/* --- Sökrutan --- */
+.mejl-sok { flex: none; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); }
+.mejl-sok input {
+  width: 100%; padding: 0.45rem 0.65rem; font: inherit; font-size: 0.85rem;
+  background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px;
+}
+.mejl-sok input:focus { outline: none; border-color: var(--line-s); }
 
 /* --- Rubrikraderna --- */
 .brevrad {
@@ -512,18 +538,100 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 /* Brevets egen text. Den kommer utifrån, så den får inte ärva
    sidans mått fritt — bilder och tabeller kan vara hur breda som
    helst i ett mejl. */
-.brev-kropp { font-size: 0.9rem; line-height: 1.6; overflow-wrap: anywhere; }
+.brev-bilder {
+  display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+  margin: 0 0 1rem; padding: 0.55rem 0.8rem; font-size: 0.8rem; color: var(--text-dim);
+  border: 1px solid var(--line); border-radius: 4px; background: var(--yta-hog);
+}
+.brev-bilder span { flex: 1 1 14rem; }
+.brev-bilder .knapp { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+
+/* contain: ett brev kan inte lägga något över resten av sidan, inte
+   ens med position: fixed i sin egen stil. */
+.brev-kropp { font-size: 0.9rem; line-height: 1.6; overflow-wrap: anywhere; contain: content; overflow-x: auto; }
 .brev-kropp img { max-width: 100%; height: auto; }
 .brev-kropp table { max-width: 100%; }
 .brev-kropp pre { white-space: pre-wrap; font: inherit; margin: 0; }
 .brev-kropp a { color: var(--accent); }
 .brev-bilagor { margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
 .brev-bilagor span { font-size: 0.8rem; color: var(--text-dim); display: block; }
+.brev-bilaga {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  margin: 0.45rem 0; padding: 0.45rem 0.6rem;
+  border: 1px solid var(--line); border-radius: 4px;
+}
+.brev-bilaga-namn { flex: 1 1 12rem; min-width: 0; font-size: 0.85rem; overflow-wrap: anywhere; }
+.brev-bilaga .knapp { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+/* --- Kalenderinbjudan --- */
+.kal-plats { margin-top: 1.2rem; }
+.kal-vantar { font-size: 0.85rem; color: var(--text-dim); }
+.kal {
+  border: 1px solid var(--line-s); border-left: 3px solid var(--accent);
+  border-radius: 6px; background: var(--yta-hog); padding: 1rem;
+  width: 100%; max-width: 40rem;
+}
+.visning-yta .kal { align-self: flex-start; margin: 0 auto; }
+.kal-topp { display: flex; gap: 1rem; align-items: flex-start; }
+.kal-ruta {
+  flex: none; width: 3.6rem; text-align: center;
+  border: 1px solid var(--line-s); border-radius: 6px; overflow: hidden;
+}
+.kal-man { display: block; background: var(--accent); color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.15rem 0; }
+.kal-dag { display: block; font-size: 1.5rem; font-weight: 600; padding: 0.2rem 0; color: var(--white); }
+.kal-info { flex: 1; min-width: 0; }
+.kal-titel { margin: 0 0 0.4rem; font-size: 1.05rem; font-weight: 600; color: var(--white); overflow-wrap: anywhere; }
+.kal-rad { margin: 0.2rem 0; font-size: 0.85rem; overflow-wrap: anywhere; }
+.kal-installt { display: inline-block; margin-bottom: 0.3rem; padding: 0.1rem 0.5rem; border-radius: 3px; background: var(--accent); color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.kal-verktyg { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+.kal-verktyg .knapp { text-decoration: none; }
+.kal-delt, .kal-besk { margin-top: 0.9rem; border-top: 1px solid var(--line); padding-top: 0.6rem; font-size: 0.85rem; }
+.kal-delt summary, .kal-besk summary { cursor: pointer; color: var(--text-dim); }
+.kal-delt ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.kal-delt li { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.25rem 0; flex-wrap: wrap; }
+.kal-person { overflow-wrap: anywhere; }
+.kal-svar { color: var(--text-dim); font-size: 0.8rem; }
+.kal-besk pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0.5rem 0 0; max-height: 20rem; overflow: auto; }
+@media (max-width: 640px) {
+  .kal { padding: 0.8rem; }
+  .kal-ruta { width: 3rem; }
+  .kal-verktyg .knapp { flex: 1; justify-content: center; }
+}
+
+/* --- Förhandsvisning av bilaga --- */
+body.visar-fil { overflow: hidden; }
+.visning {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column;
+  background: rgba(0,0,0,0.94);
+}
+.visning-topp {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 1rem; border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.visning-namn { flex: 1; min-width: 0; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.visning-yta {
+  flex: 1; min-height: 0; overflow: auto;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.visning-fil--bild, .visning-fil--video { max-width: 100%; max-height: 100%; object-fit: contain; }
+.visning-fil--pdf { width: 100%; height: 100%; border: 0; background: #fff; }
+.visning-fil--ljud { width: min(100%, 32rem); }
+.visning-fil--text {
+  align-self: stretch; width: 100%; max-width: 60rem; margin: 0 auto;
+  background: var(--bg); padding: 1rem; border-radius: 4px;
+  white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.85rem;
+}
+@media (max-width: 640px) {
+  .visning-yta { padding: 0.5rem; }
+}
 
 /* --- Skrivrutan --- */
 .skriv { display: flex; flex-direction: column; gap: 0.7rem; }
 .skriv label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 0.25rem; }
-.skriv input, .skriv textarea {
+.skriv input {
   width: 100%;
   background: var(--bg);
   border: 1px solid var(--line-s);
@@ -532,8 +640,70 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
   font: inherit;
   padding: 0.55rem 0.7rem;
 }
-.skriv textarea { min-height: 16rem; resize: vertical; line-height: 1.6; }
-.skriv input:focus, .skriv textarea:focus { outline: 1px solid var(--accent); outline-offset: 1px; }
+.skriv input:focus { outline: 1px solid var(--accent); outline-offset: 1px; }
+.skriv.dra { outline: 2px dashed var(--accent); outline-offset: 6px; border-radius: 4px; }
+
+/* --- Redigeraren: verktygsfält + vit skrivruta --- */
+.red { border: 1px solid var(--line-s); border-radius: 4px; overflow: hidden; }
+.red-falt {
+  display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: center;
+  padding: 0.4rem; background: var(--yta-hog); border-bottom: 1px solid var(--line-s);
+}
+.red-grupp { display: flex; gap: 0.15rem; align-items: center; }
+.red-grupp + .red-grupp { padding-left: 0.5rem; border-left: 1px solid var(--line); }
+.red-knapp {
+  position: relative;
+  min-width: 2rem; height: 2rem; padding: 0 0.4rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid transparent; border-radius: 4px;
+  color: var(--text); font: inherit; font-size: 0.9rem; cursor: pointer;
+}
+.red-knapp:hover { background: rgba(255,255,255,0.07); border-color: var(--line); }
+.red-knapp.pa { background: rgba(224,28,28,0.18); border-color: var(--accent); color: var(--white); }
+.red-fet { font-weight: 700; }
+.red-kursiv { font-style: italic; font-family: Georgia, serif; }
+.red-under { text-decoration: underline; }
+.red-genom { text-decoration: line-through; }
+.red-val {
+  height: 2rem; padding: 0 0.4rem; font: inherit; font-size: 0.8rem;
+  background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; cursor: pointer;
+}
+.red-farg { flex-direction: column; gap: 0; line-height: 1; }
+.red-farg span:first-child { font-weight: 700; font-size: 0.85rem; }
+.red-farg-strek { display: block; width: 1.1rem; height: 0.22rem; margin-top: 0.12rem; border-radius: 1px; }
+.red-farg input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; border: 0; padding: 0; }
+.red-ruta {
+  contain: content;
+  min-height: 18rem; max-height: 60vh; overflow-y: auto;
+  padding: 0.9rem 1rem; background: #ffffff; color: #222222;
+  outline: none; overflow-wrap: anywhere;
+}
+.red-ruta--kort { min-height: 8rem; }
+.red-ruta img { max-width: 100%; height: auto; }
+.red-ruta a { color: #0b57d0; }
+.red-ruta blockquote { margin: 0 0 0 0.8ex; border-left: 2px solid #cccccc; padding-left: 1ex; color: #444444; }
+.red-ruta table { max-width: 100%; }
+
+/* --- Bilagor i skrivrutan --- */
+.skriv-bilagor { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.skriv-bilagor-tips { font-size: 0.78rem; color: var(--text-dim); }
+.skriv-bilaga {
+  display: inline-flex; align-items: center; gap: 0.45rem; max-width: 100%;
+  padding: 0.3rem 0.35rem 0.3rem 0.6rem; font-size: 0.82rem;
+  border: 1px solid var(--line-s); border-radius: 999px; background: var(--yta-hog);
+}
+.skriv-bilaga-namn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 16rem; }
+.skriv-bilaga-storlek { color: var(--text-dim); font-size: 0.75rem; flex: none; }
+.skriv-bilaga-ta {
+  flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  border: 0; background: none; color: var(--text-dim); cursor: pointer; font: inherit; font-size: 0.75rem;
+}
+.skriv-bilaga-ta:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+@media (max-width: 640px) {
+  .red-grupp + .red-grupp { padding-left: 0; border-left: 0; }
+  .red-ruta { min-height: 14rem; padding: 0.75rem; }
+  .skriv-fot .knapp { flex: 1; justify-content: center; }
+}
 .skriv-fot { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
 .skriv-status { font-size: 0.8rem; color: var(--text-dim); }
 .skriv-status.fel { color: var(--accent); }

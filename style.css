@@ -4059,3 +4059,30 @@ body.sida #logo-mark > * { pointer-events: auto; }
   gap: 0.8rem;
 }
 
+
+/* =====================================================
+   TELEFON — finjusteringar
+   ===================================================== */
+@media (max-width: 900px) {
+  /* Skyltarna (DIGITAL LAB / STORE): ordet bröts på två rader i den
+     smala rutan. Mindre grad och tätare spärrning — samma storlek på
+     alla skyltar, och ordet håller sig på en rad. */
+  .fsign-mark { font-size: 1rem; }
+  .fsign-word {
+    font-size: 0.42rem;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    white-space: nowrap;
+  }
+
+  /* Klippspelaren göms på telefon. Den laddas bara när den syns
+     (IntersectionObserver i main.js), så inga klipp hämtas heller. */
+  .about-reel { display: none; }
+
+  /* Footern: kompakt remsa, högst ~17 % av skärmen. */
+  #footer { padding: 0.8rem 1.25rem; max-height: 17vh; overflow: hidden; }
+  #footer .foot-inner { gap: 0.35rem; }
+  #footer .foot-col { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.8rem; }
+  #footer .foot-brand { font-size: 0.9rem; width: 100%; }
+  #footer .foot-copy, #footer .foot-link { font-size: 0.62rem; letter-spacing: 0.12em; }
+}
