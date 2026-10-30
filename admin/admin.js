@@ -965,7 +965,14 @@
     }
     if (!renKrok) {
       DOMPurify.addHook('afterSanitizeAttributes', (n) => {
-        if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+        if (n.tagName === 'A') {
+          n.setAttribute('target', '_blank');
+          n.setAttribute('rel', 'noopener noreferrer');
+          /* Länktexten kan säga en sak och adressen en annan — det
+             vanligaste knepet i nätfiske. Håll musen över länken så
+             syns vart den verkligen går. */
+          if (n.getAttribute('href')) n.setAttribute('title', 'Går till: ' + n.getAttribute('href'));
+        }
       });
       renKrok = true;
     }
@@ -1268,6 +1275,17 @@
     huvud.appendChild(verktyg);
     yta.appendChild(huvud);
 
+    if (!iSkickat() && b.varningar && b.varningar.length) {
+      const varning = el('div', 'brev-varning');
+      varning.setAttribute('role', 'alert');
+      varning.appendChild(el('strong', '', 'Var försiktig med det här brevet'));
+      const punkter = el('ul', '');
+      b.varningar.forEach(t => punkter.appendChild(el('li', '', t)));
+      varning.appendChild(punkter);
+      varning.appendChild(el('span', '', 'Klicka inte på länkar, öppna inga bilagor och lämna aldrig lösenord eller kortuppgifter om du är osäker.'));
+      yta.appendChild(varning);
+    }
+
     const kropp = el('div', 'brev-kropp');
     if (b.html) {
       /* Tolkas i en <template> först: där är innehållet dött, så inga
@@ -1330,7 +1348,7 @@
 
     if (b.bilagor && b.bilagor.length) {
       const box = el('div', 'brev-bilagor');
-      box.appendChild(el('span', '', b.bilagor.length + ' bilaga' + (b.bilagor.length > 1 ? 'or' : '') + ':'));
+      box.appendChild(el('span', '', b.bilagor.length + (b.bilagor.length > 1 ? ' bilagor' : ' bilaga') + ':'));
       /* Brevlåda och mapp läses av nu, inte när man klickar: hinner man
          byta mapp innan man trycker ska rätt brev ändå frågas efter. */
       const konto = MEJL.konto, mapp = MEJL.mapp;
@@ -1338,6 +1356,8 @@
         const nr = Number.isInteger(f.nr) ? f.nr : i;
         const vem = { konto, mapp, uid: b.uid, nr, namn: f.namn, typ: f.typ };
         const rad = el('div', 'brev-bilaga');
+        const riskabel = riskabelFil(f.namn, f.typ);
+        if (riskabel) rad.classList.add('brev-bilaga--risk');
         const etikett = bilagaEtikett(f.typ);
         rad.appendChild(el('span', 'brev-bilaga-namn', f.namn + '  (' + (etikett ? etikett + ', ' : '')
           + Math.max(1, Math.round(f.storlek / 1024)) + ' kB)'));
@@ -1349,8 +1369,13 @@
         }
         const ned = el('button', 'knapp', 'Ladda ned');
         ned.type = 'button';
-        ned.onclick = () => mejlLaddaNed(ned, vem);
+        ned.onclick = () => {
+          if (riskabel && !confirm('"' + f.namn + '" är en fil som kan köra program på din dator.\n\n'
+            + 'Ladda bara ned den om du väntade dig den och litar på avsändaren. Vill du ladda ned den ändå?')) return;
+          mejlLaddaNed(ned, vem);
+        };
         rad.appendChild(ned);
+        if (riskabel) rad.appendChild(el('span', 'brev-bilaga-risk', 'Kan innehålla program eller makron — öppna bara om du litar på avsändaren.'));
         box.appendChild(rad);
       });
       /* Filen går genom en serverlös funktion, och ett svar får vara
@@ -1404,6 +1429,19 @@
     if (/^text\//.test(t) || /^application\/(json|xml)$/.test(t)
       || /\.(txt|csv|log|md|ics|vcf|json|xml|html?)$/.test(n)) return 'text';
     return null;
+  }
+
+  /* Filer som kan köra kod när de öppnas på datorn: program, skript,
+     genvägar, diskavbilder, Office-filer med makron — och arkiv, där
+     sådana filer gömmer sig. Det är så virus faktiskt kommer via mejl.
+     Inget av det kan köras här i admin; risken är när filen laddats
+     ned och öppnas. */
+  const RISKABLA = /\.(exe|com|scr|pif|msi|msix|bat|cmd|ps1|vbs|vbe|js|jse|wsf|wsh|hta|cpl|jar|lnk|reg|dll|app|dmg|pkg|iso|img|vhdx?|docm|xlsm|pptm|dotm|xlam|one|zip|rar|7z|gz|tgz|cab|html?|svg)$/i;
+  function riskabelFil(namn, typ) {
+    const n = String(namn || '');
+    /* Det sista efternamnet räknas, så "faktura.pdf.exe" fastnar. */
+    if (RISKABLA.test(n)) return true;
+    return /^application\/(x-msdownload|x-dosexec|x-msdos-program|java-archive|x-sh|hta)$/i.test(String(typ || ''));
   }
 
   /* Bilagans sort i klartext på raden, så att det syns vad en fil
