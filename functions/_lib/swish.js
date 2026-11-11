@@ -49,7 +49,15 @@ function apiBaseUrl() {
 /** true när servern har allt som krävs för en Swish-betalning.
     Används av payment-methods.js: saknas något visas inte Swish alls
     i kassan, i stället för att kunden möts av ett serverfel. */
+/* AVSTÄNGT TILLS VIDARE. Den egna Swish-kopplingen har två brister:
+   ordern skapas bara om kundens webbläsare hinner fråga efter status
+   (stänger kunden fliken är det betalt utan order), och varukorg och
+   adress läses från webbläsaren vid slutförandet. Tills det är
+   ombyggt krävs SWISH_ENABLED=true för att slå på den — ett
+   certifikat i miljön räcker inte. Swish går i stället att ta emot
+   genom Stripe: lägg till swish i STRIPE_PAYMENT_METHODS. */
 function swishConfigured() {
+  if (process.env.SWISH_ENABLED !== 'true') return false;
   return Boolean(process.env.SWISH_CERT_P12 && (process.env.SWISH_PAYEE_ALIAS || PAYEE_ALIAS) && apiBaseUrl());
 }
 

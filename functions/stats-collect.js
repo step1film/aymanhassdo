@@ -42,6 +42,7 @@ exports.handler = async (event) => {
 
   /* Bara sökvägen — frågesträngar kan bära e-post, ordernummer och annat. */
   const sida = String(d.p || '/').split(/[?#]/)[0].slice(0, 120) || '/';
+  if (sida[0] !== '/') return klart;                 // en sökväg börjar alltid med snedstreck
   if (/^\/admin/.test(sida)) return klart;
 
   const nu = Date.now();

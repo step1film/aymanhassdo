@@ -181,8 +181,16 @@ function tomDag(dag) {
     lander: {}, stader: {}, kallor: {}, sidor: {}, enheter: {} };
 }
 
+/* Nycklarna (källa, sida, stad) kommer från besökaren. "__proto__" som
+   nyckel pekar inte på en egen post utan på alla objekts gemensamma
+   mall — siffror som skrevs dit hade dykt upp i varenda lista. */
+const sakerNyckel = (k) => {
+  const s = String(k == null ? '' : k);
+  return (s === '__proto__' || s === 'constructor' || s === 'prototype') ? '_' + s : s;
+};
 function lagg(obj, nyckel, falt) {
-  const r = obj[nyckel] || (obj[nyckel] = {});
+  nyckel = sakerNyckel(nyckel);
+  const r = Object.prototype.hasOwnProperty.call(obj, nyckel) ? obj[nyckel] : (obj[nyckel] = {});
   for (const k in falt) r[k] = (r[k] || 0) + falt[k];
   return r;
 }
@@ -201,7 +209,8 @@ function byggBesok(handelser) {
     visningar: 0, ms: 0, sidor: {}, vag: []
   };
   for (const h of handelser) {
-    const s = b.sidor[h.p] || (b.sidor[h.p] = { visningar: 0, ms: 0 });
+    const sida = sakerNyckel(h.p);
+    const s = Object.prototype.hasOwnProperty.call(b.sidor, sida) ? b.sidor[sida] : (b.sidor[sida] = { visningar: 0, ms: 0 });
     if (h.t === 'pv') {
       b.visningar += 1; s.visningar += 1;
       b.vag.push({ p: h.p, ts: h.ts, ms: 0 });

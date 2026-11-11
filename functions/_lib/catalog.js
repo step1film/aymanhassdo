@@ -323,7 +323,29 @@ function validateRecipient(r) {
   return out;
 }
 
+/* Stripe tar högst 500 tecken per metadatavärde. Mottagaren (med ett
+   meddelande på upp till 500 tecken) och en lång vagn ryms inte i ett
+   värde — och ett kapat värde är trasig JSON, som webhooken inte kan
+   läsa: kunden hade betalat utan att ordern skapades. Därför delas
+   texten upp på flera nycklar (namn, namn_2, namn_3 …) och sätts ihop
+   igen i webhooken. */
+const META_DEL = 450;
+function metaDela(namn, text) {
+  const ut = {};
+  const s = String(text);
+  for (let i = 0, nr = 1; i < s.length || nr === 1; i += META_DEL, nr++) {
+    ut[nr === 1 ? namn : `${namn}_${nr}`] = s.slice(i, i + META_DEL);
+  }
+  return ut;
+}
+function metaLas(md, namn) {
+  let s = String((md && md[namn]) || '');
+  for (let nr = 2; md && md[`${namn}_${nr}`] != null; nr++) s += String(md[`${namn}_${nr}`]);
+  return s;
+}
+
 module.exports = {
+  metaDela, metaLas,
   CATALOG, CURRENCY, SHIPPING_FEE, SHIPPING_FREE_OVER, SHIPPING_MAX, SHIP_COUNTRIES, HIDDEN,
   priceFor, priceCart, validateRecipient
 };

@@ -13,7 +13,13 @@
    ===================================================== */
 'use strict';
 
-const { corsHeaders, isForeignOrigin } = require('./_lib/http');
+const { corsHeaders, isForeignOrigin, skapaSpärr, clientIp } = require('./_lib/http');
+
+/* Formuläret är öppet för alla, och varje anrop blir ett mejl i
+   inkorgen. Utan spärr kan ett skript fylla brevlådan (och äta upp
+   dagskvoten hos mejlleverantören) på några minuter. Fem förfrågningar
+   per kvart och adress räcker gott för en människa. */
+const spärrad = skapaSpärr({ windowMs: 15 * 60 * 1000, max: 5 });
 
 const TILL = 'collaboration@step1film.se';
 
@@ -69,6 +75,10 @@ exports.handler = async (event) => {
     pitch = fält(data, 'pitch', 4000, true);
   } catch (err) {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: String(err.message || err) }) };
+  }
+
+  if (spärrad(clientIp(event) || 'okänd')) {
+    return { statusCode: 429, headers: cors, body: JSON.stringify({ error: 'För många förfrågningar. Vänta en stund och försök igen.' }) };
   }
 
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)) {

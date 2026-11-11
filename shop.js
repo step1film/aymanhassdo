@@ -51,7 +51,7 @@
     payments: {
       apiBase: 'https://step1film.netlify.app/.netlify/functions',
       card: 'auto',  // Stripe: kort + Klarna
-      swish: 'auto'  // Swish Handel — tänds när certifikatet finns på servern
+      swish: false   // Egen Swish Handel avstängd — se swishConfigured() i functions/_lib/swish.js. Swish kan tas emot via Stripe.
     },
 
     /* -----------------------------------------------------
@@ -1316,7 +1316,13 @@
   /* -----------------------------------------------------
      STATE
   ----------------------------------------------------- */
-  let lang = localStorage.getItem('s1f_lang') || 'sv';
+  /* Lagringen kan vara blockerad (privat läge, inbyggda webbläsare i
+     appar). Då kastar varje anrop — och utan skyddet dog hela butiken. */
+  const lager = {
+    las: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    skriv: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* vagnen lever då bara tills sidan stängs */ } }
+  };
+  let lang = lager.las('s1f_lang') === 'en' ? 'en' : 'sv';
   let filter = 'all';
   // Fylls längre ned, när priceFor/variantKey finns definierade
   let cart = [];
@@ -1341,7 +1347,7 @@
    */
   function loadCart() {
     let raw;
-    try { raw = JSON.parse(localStorage.getItem('s1f_cart')); }
+    try { raw = JSON.parse(lager.las('s1f_cart')); }
     catch (e) { return []; }
     if (!Array.isArray(raw)) return [];
 
@@ -1369,7 +1375,7 @@
 
   // Nu finns alla hjälpfunktioner — läs in och sanera vagnen.
   cart = loadCart();
-  function saveCart() { localStorage.setItem('s1f_cart', JSON.stringify(cart)); }
+  function saveCart() { lager.skriv('s1f_cart', JSON.stringify(cart)); }
 
   /* -----------------------------------------------------
      GARMENT RENDER HELPER
@@ -2343,7 +2349,7 @@ ${t('total')}: ${grandTotal()} ${CONFIG.currency}`;
 
   function setLang(l) {
     lang = l;
-    localStorage.setItem('s1f_lang', l);
+    lager.skriv('s1f_lang', l);
     applyStaticI18n();
     // Banderollen och de avstängda knapparna byter språk de med
     const gammal = document.getElementById('stangtBanner');

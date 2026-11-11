@@ -544,6 +544,15 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
   border: 1px solid var(--line); border-radius: 4px; background: var(--yta-hog);
 }
 .brev-bilder span { flex: 1 1 14rem; }
+
+/* Varning för brev som kan vara förfalskade. */
+.brev-varning {
+  margin: 0 0 1rem; padding: 0.7rem 0.9rem; font-size: 0.82rem; color: var(--text);
+  border: 1px solid var(--accent); border-left-width: 3px; border-radius: 4px; background: rgba(224,28,28,0.1);
+}
+.brev-varning strong { display: block; color: var(--white); margin-bottom: 0.3rem; }
+.brev-varning ul { margin: 0 0 0.4rem; padding-left: 1.1rem; }
+.brev-varning span { color: var(--text-dim); }
 .brev-bilder .knapp { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
 
 /* contain: ett brev kan inte lägga något över resten av sidan, inte
@@ -562,6 +571,8 @@ textarea { resize: vertical; min-height: 4.5rem; line-height: 1.6; }
 }
 .brev-bilaga-namn { flex: 1 1 12rem; min-width: 0; font-size: 0.85rem; overflow-wrap: anywhere; }
 .brev-bilaga .knapp { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+.brev-bilaga--risk { border-color: var(--accent); }
+.brev-bilagor .brev-bilaga-risk { flex-basis: 100%; color: var(--accent); }
 
 /* --- Kalenderinbjudan --- */
 .kal-plats { margin-top: 1.2rem; }
@@ -949,4 +960,10 @@ body.visar-fil { overflow: hidden; }
 @media (max-width: 820px) {
   .stat-rutnat { grid-template-columns: 1fr; }
   .stat-staplar { height: 140px; }
+}
+
+/* Pekskärmar: iPhone zoomar in sidan när man trycker i ett fält med
+   mindre text än 16 px, och zoomar inte ut igen. */
+@media (hover: none) and (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
 }

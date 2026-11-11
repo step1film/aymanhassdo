@@ -288,6 +288,7 @@ async function las(konto, { mapp = 'inkorg', uid }) {
 
       return {
         uid: Number(uid),
+        varningar: granska(p),
         amne: p.subject || '(utan ämne)',
         fran: adr(p.from),
         till: adr(p.to),
@@ -316,6 +317,43 @@ async function las(konto, { mapp = 'inkorg', uid }) {
       las.release();
     }
   });
+}
+
+/* Tecken på att ett brev inte är från den det utger sig för.
+   -----------------------------------------------------
+   Avsändaradressen i ett mejl går att skriva fritt, precis som på ett
+   kuvert. Det som avslöjar en förfalskning är kontrollerna mottagarens
+   server gör när brevet kommer in (SPF, DKIM, DMARC) och skriver i
+   huvudet Authentication-Results. Saknas raden sägs ingenting — hellre
+   tyst än att varna för varje brev.
+
+   Två knep till syns direkt i brevet: ett visningsnamn som självt ser
+   ut som en annan adress ("PayPal <service@paypal.com>" <x@fusk.ru>),
+   och en Svara till-adress på en helt annan domän än avsändaren. */
+const domanAv = (a) => String(a || '').split('@')[1]?.toLowerCase().replace(/>$/, '') || '';
+function granska(p) {
+  const varningar = [];
+  const avs = (p.from && p.from.value && p.from.value[0]) || {};
+
+  const rader = [].concat(p.headers.get('authentication-results') || []).map(String).join(' ').toLowerCase();
+  if (rader) {
+    const fel = (sort) => new RegExp('\\b' + sort + '=(fail|softfail|permerror)\\b').test(rader);
+    const godkand = (sort) => new RegExp('\\b' + sort + '=pass\\b').test(rader);
+    if (fel('dmarc') || (fel('spf') && !godkand('dkim'))) {
+      varningar.push('Avsändaren kunde inte verifieras. Brevet kan vara förfalskat — det är inte säkert att det kommer från ' + (avs.address || 'den adress som står') + '.');
+    }
+  }
+
+  const iNamnet = String(avs.name || '').match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/);
+  if (iNamnet && iNamnet[0].toLowerCase() !== String(avs.address || '').toLowerCase()) {
+    varningar.push('Namnet ser ut som adressen ' + iNamnet[0] + ', men brevet kommer egentligen från ' + (avs.address || 'en annan adress') + '.');
+  }
+
+  const svar = (p.replyTo && p.replyTo.value && p.replyTo.value[0]) || null;
+  if (svar && svar.address && domanAv(svar.address) && domanAv(svar.address) !== domanAv(avs.address)) {
+    varningar.push('Avsändaren vill att svar går till ' + svar.address + ', en annan adress än den brevet kommer från. Knappen Svara skriver till avsändaren, inte dit.');
+  }
+  return varningar;
 }
 
 /* Bilagor utan filnamn — vidarebefordrade brev, kalenderinbjudningar,
