@@ -4086,3 +4086,9 @@ body.sida #logo-mark > * { pointer-events: auto; }
   #footer .foot-brand { font-size: 0.9rem; width: 100%; }
   #footer .foot-copy, #footer .foot-link { font-size: 0.62rem; letter-spacing: 0.12em; }
 }
+
+/* Pekskärmar: iPhone zoomar in sidan när man trycker i ett fält med
+   mindre text än 16 px, och zoomar inte ut igen. */
+@media (hover: none) and (pointer: coarse) {
+  .cf-field input, .cf-field textarea { font-size: 16px; }
+}

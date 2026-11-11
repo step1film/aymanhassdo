@@ -157,7 +157,8 @@
     ip40: 'Contact <a href="mailto:info@step1film.se">info@step1film.se</a> and we will help you. If you are unhappy with how we process your personal data you can complain to the <strong>Swedish Authority for Privacy Protection (IMY)</strong>, <a href="https://www.imy.se" target="_blank" rel="noopener">imy.se</a>.'
   };
 
-  let lang = localStorage.getItem('s1f_lang');
+  let lang = null;
+  try { lang = localStorage.getItem('s1f_lang'); } catch (e) { /* lagringen blockerad */ }
   if (lang !== 'sv' && lang !== 'en') lang = 'sv';
 
   // Svenskan i sidan är originalet — spara den innan något byts ut
@@ -226,7 +227,7 @@
       b.addEventListener('click', () => {
         if (b.dataset.lang !== 'sv' && b.dataset.lang !== 'en') return;
         lang = b.dataset.lang;
-        localStorage.setItem('s1f_lang', lang);
+        try { localStorage.setItem('s1f_lang', lang); } catch (e) { /* lagringen blockerad */ }
         apply();
       });
     });

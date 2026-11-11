@@ -15,7 +15,7 @@
 'use strict';
 
 const Stripe = require('stripe');
-const { priceCart, SHIP_COUNTRIES } = require('./_lib/catalog');
+const { priceCart, SHIP_COUNTRIES, metaLas } = require('./_lib/catalog');
 const { rimligFrakt, MAX_SEK } = require('./_lib/shipping');
 const { fulfilOrder } = require('./_lib/fulfil');
 
@@ -82,8 +82,8 @@ exports.handler = async (event) => {
 
   try {
     const md = session.metadata || {};
-    const recipient = JSON.parse(md.recipient || '{}');
-    const compact = JSON.parse(md.lines || '[]'); // [[id, color, size, qty], …]
+    const recipient = JSON.parse(metaLas(md, 'recipient') || '{}');
+    const compact = JSON.parse(metaLas(md, 'lines') || '[]'); // [[id, color, size, qty], …]
 
     // Räkna om priserna på servern igen — metadata är bara referens.
     let cart = priceCart(compact.map(([id, color, size, qty]) => ({ id, color, size, qty })));

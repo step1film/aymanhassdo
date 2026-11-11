@@ -14,7 +14,7 @@
 const { corsHeaders, isForeignOrigin } = require('./_lib/http');
 
 const Stripe = require('stripe');
-const { priceCart, validateRecipient } = require('./_lib/catalog');
+const { priceCart, validateRecipient, metaDela } = require('./_lib/catalog');
 const { resolveShipping } = require('./_lib/shipping');
 
 
@@ -106,8 +106,9 @@ exports.handler = async (event) => {
       // Kompakt orderdata så webhooken kan skapa Printful-ordern
       metadata: {
         reference,
-        recipient: JSON.stringify(recipient).slice(0, 480),
-        lines: JSON.stringify(cart.lines.map((l) => [l.id, l.color, l.size, l.qty])).slice(0, 480),
+        // Delas på flera nycklar — ett kapat värde hade varit trasig JSON
+        ...metaDela('recipient', JSON.stringify(recipient)),
+        ...metaDela('lines', JSON.stringify(cart.lines.map((l) => [l.id, l.color, l.size, l.qty]))),
         shipping: String(cart.shipping),
         // Så det går att se i Stripe om frakten var live eller reserven
         shippingSource: frakt.source,

@@ -6,11 +6,20 @@
   <meta name="theme-color" content="#0c0c0c" />
   <!-- Adminsidan ska aldrig hamna i en sökmotor -->
   <meta name="robots" content="noindex, nofollow, noarchive" />
+  <!-- Innehållspolicy. Sajten visas från GitHub Pages, där rubrikerna i
+       netlify.toml inte gäller — därför står policyn här i sidan.
+       Skript får bara komma från sajten själv: skulle något i ett mejl
+       ta sig förbi tvätten (DOMPurify) kan det ändå inte köras, och
+       sessionsnyckeln kan bara skickas till våra egna funktioner.
+         style 'unsafe-inline'  mejl har sin formatering i style-attribut
+         img https:             bilder i mejl, när man tryckt Visa bilder
+         blob:                  bilagor som visas direkt ur minnet -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://step1film.netlify.app; media-src 'self' blob:; frame-src blob:; object-src 'self' blob:; form-action 'self'; base-uri 'none'" />
   <title>STEP1FILM — admin</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230c0c0c'/><text x='2' y='22' font-family='Impact,sans-serif' font-size='14' fill='%23f2f2f2' letter-spacing='-1'>S<tspan fill='%23e01c1c'>1</tspan>F</text></svg>" />
   <!-- Typsnitten ligger lokalt: inget anrop lämnar sajten. Se assets/fonts/fonts.css -->
   <link rel="stylesheet" href="../assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="admin.css?v=2026-10-30" />
+  <link rel="stylesheet" href="admin.css?v=2026-11-11" />
 </head>
 <body>
 
@@ -205,6 +214,6 @@
      kan man sitta med en gammal adminsida långt efter en deploy.
      Räkna upp datumet när admin.js eller admin.css ändras. -->
 <script src="purify.min.js?v=3.4.16" defer></script>
-<script src="admin.js?v=2026-10-30" defer></script>
+<script src="admin.js?v=2026-11-11" defer></script>
 </body>
 </html>
